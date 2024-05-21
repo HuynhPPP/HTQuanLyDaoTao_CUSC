@@ -9,7 +9,7 @@
     @if (session('error'))
         <script>
             alert('{{ session('error') }}');
-            window.location = '{{ session('redirectTo') }}'; // Redirect to the specified page
+            window.location = '{{ session('redirectTo') }}';
         </script>
     @endif
 </body>

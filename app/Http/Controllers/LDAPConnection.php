@@ -43,12 +43,12 @@ class LDAPConnection extends Controller
             if (!$isITuser) {
                 throw new Exception('Login incorrect');
             }
-            
+
             ldap_close($ds);
             return view('ldap.index', ['message' => 'Login correct']);
         } catch (Exception $e) {
             ldap_close($ds);
-            return Redirect::to('error_alert')->with(['error' => 'Bạn đã nhập sai mật khẩu hoặc tài khoản', 'redirectTo' => '/']);
+            return Redirect::to('error_alert')->with(['error' => 'Bạn đã nhập sai mật khẩu hoặc tài khoản', 'redirectTo' => route('home')]);
         }
     }
 }
