@@ -10,6 +10,12 @@ class LDAPConnection extends Controller
 {
     public function index(Request $request)
     {
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+            'captcha' => 'required|captcha'
+        ]);
+
         $domain = 'cusc.ctu.vn';
         $username = $request->input('username');
         $password = $request->input('password');
@@ -37,12 +43,12 @@ class LDAPConnection extends Controller
             if (!$isITuser) {
                 throw new Exception('Login incorrect');
             }
-
+            
             ldap_close($ds);
             return view('ldap.index', ['message' => 'Login correct']);
         } catch (Exception $e) {
             ldap_close($ds);
-            return redirect('error_alert')->with('error', $e->getMessage());
+            return Redirect::to('error_alert')->with(['error' => 'Bạn đã nhập sai mật khẩu hoặc tài khoản', 'redirectTo' => '/']);
         }
     }
 }

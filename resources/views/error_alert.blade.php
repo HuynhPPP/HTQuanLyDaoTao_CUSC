@@ -9,9 +9,8 @@
     @if (session('error'))
         <script>
             alert('{{ session('error') }}');
-            window.history.back();
+            window.location = '{{ session('redirectTo') }}'; // Redirect to the specified page
         </script>
     @endif
 </body>
-</html>
 </html>
