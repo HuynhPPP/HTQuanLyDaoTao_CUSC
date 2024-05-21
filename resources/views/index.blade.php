@@ -1,5 +1,5 @@
 @extends('layouts.app')
-    
+
 @section('content')
 <div class="card mx-auto my-5" style="width: 25rem;">
   <h1 class="text-center pt-5 pb-4">Đăng nhập</h1>
@@ -23,17 +23,27 @@
     </div>
     <div class="d-grid">
       <button type="submit" class="btn btn-primary">Đăng nhập</button>
-    </div>  
+    </div>
   </form>
-  
+
 </div>
 @if ($errors->any())
-    <div style="color: red;">
-        <h1>
-            Sai captcha
-        </h1>
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class=" toast-body d-flex justify-content-between bg-danger">
+          <p5 class="text-white">Sai captcha</p5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
     </div>
+  </div>
 @endif
+<script>
+  const toastLiveExample = document.getElementById('liveToast');
+
+  if (toastLiveExample) {
+    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+    toastBootstrap.show(); // Show the toast immediately
+}
+
+</script>
 @endsection
-
-
