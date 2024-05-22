@@ -3,30 +3,34 @@
 @section('content')
 <div class="card mx-auto my-5" style="width: 25rem;">
   <h1 class="text-center pt-5 pb-4">Đăng nhập</h1>
-<form  action={{ route('ldap') }} method="POST" class="px-5 pb-5">
+<form action={{ route('ldap') }} method="POST" class="px-5 pb-5">
     @csrf
     <div class="mb-3">
-      <label for="InputEmail1" class="form-label">Tài khoản</label>
-      <input type="text" class="form-control" id="InputEmail1" name="username" aria-describedby="emailHelp">
+      <label for="InputUsername" class="form-label">Tài khoản</label>
+      <input type="text" class="form-control" id="InputUsername" name="username">
+      <div class="invalid-feedback"></div>
     </div>
     <div class="mb-4">
-      <label for="InputPassword1" class="form-label">Mật khẩu</label>
-      <input type="password" class="form-control" name="password" id="InputPassword1">
+      <label for="InputPassword" class="form-label">Mật khẩu</label>
+      <input type="password" class="form-control" name="password" id="InputPassword">
+      <div class="invalid-feedback"></div>
     </div>
     <div class="mb-3">
-      <div class="text-center mb-3 ">{!! captcha_img() !!}</div>
-      <input type="text" class="form-control" name="captcha">
+      <div class="d-flex justify-content-center mb-3" style="height: 3rem">{!! captcha_img() !!}</div>
+      <input type="text" class="form-control" name="captcha" id="InputCaptcha">
     </div>
     <div class="mb-3 form-check">
       <input type="checkbox" class="form-check-input" id="Check1">
       <label class="form-check-label" for="Check1">Nhớ tôi!</label>
     </div>
     <div class="d-grid">
-      <button type="submit" class="btn btn-primary">Đăng nhập</button>
+      <button id="submit-button" type="submit" class="btn btn-primary">Đăng nhập</button>
+      <div id="error-message" class="text-danger"></div>
     </div>
   </form>
 
 </div>
+
 @if ($errors->any())
   <div class="toast-container position-fixed bottom-0 end-0 p-3">
     <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -37,13 +41,41 @@
     </div>
   </div>
 @endif
+
 <script>
+
   const toastLiveExample = document.getElementById('liveToast');
 
   if (toastLiveExample) {
     const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
-    toastBootstrap.show(); // Show the toast immediately
-}
+    toastBootstrap.show();
+  }
+
+  document.getElementById('submit-button').addEventListener('click', function(event) {
+    const username = document.getElementById('InputUsername');
+    const password = document.getElementById('InputPassword');
+    const usernameValue = username.value.trim();
+    const passwordValue = password.value.trim();
+
+    if (usernameValue === '') {
+      username.classList.add('is-invalid');
+      username.nextElementSibling.innerText = 'Vui lòng nhập tài khoản.';
+      event.preventDefault();
+    } else {
+      username.classList.remove('is-invalid');
+      username.nextElementSibling.innerText = '';
+    }
+
+    if (passwordValue === '') {
+      password.classList.add('is-invalid');
+      password.nextElementSibling.innerText = 'Vui lòng nhập mật khẩu.';
+      event.preventDefault();
+    } else {
+      password.classList.remove('is-invalid');
+      password.nextElementSibling.innerText = '';
+    }
+  });
 
 </script>
 @endsection
+
