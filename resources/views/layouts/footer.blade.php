@@ -4,10 +4,10 @@
         <section class="">
           <div class="row">
             <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
-                <div class="rounded-circle bg-white shadow-1-strong d-flex align-items-center justify-content-center mb-4 mx-auto" style="width: 150px; height: 150px;">
-                    <img src="{{ asset('storage/logo_cusc.png') }}" height="75" alt="logo_cusc"
+                <a href="#" class="rounded-circle bg-white shadow-1-strong d-flex align-items-center justify-content-center mb-4 mx-auto" style="width: 150px; height: 150px;">
+                      <img src="{{ asset('storage/logo_cusc.png') }}" height="75" alt="logo_cusc"
                          loading="lazy" />
-                  </div>
+                  </a>
               <h5 class="text-uppercase text-center mb-4 font-weight-bold">
                 TRUNG TÂM CÔNG NGHỆ PHẦN MỀM ĐẠI HỌC CẦN THƠ
               </h5>
@@ -16,17 +16,17 @@
 
             <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
               <h6 class="text-uppercase mb-4 font-weight-bold">Tin tức</h6>
-              <p>
-                <a class="text-white">Tin tức hoạt động</a>
+              <p style="cursor: pointer">
+                <a class="link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Tin tức hoạt động</a>
               </p>
-              <p>
-                <a class="text-white">Hoạt động ngoại khóa</a>
+              <p style="cursor: pointer">
+                <a class="link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Hoạt động ngoại khóa</a>
               </p>
-              <p>
-                <a class="text-white">Tin giáo dục & công nghệ</a>
+              <p style="cursor: pointer">
+                <a class="link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Tin giáo dục & công nghệ</a>
               </p>
-              <p>
-                <a class="text-white">Thông báo</a>
+              <p style="cursor: pointer">
+                <a class="link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Thông báo</a>
               </p>
             </div>
             <hr class="w-100 clearfix d-md-none" />
@@ -34,28 +34,28 @@
               <h6 class="text-uppercase mb-4 font-weight-bold">
                 Giáo vụ
               </h6>
-              <p>
-                <a class="text-white">Quy định, quyết định</a>
+              <p style="cursor: pointer">
+                <a class="link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Quy định, quyết định</a>
               </p>
-              <p>
-                <a class="text-white">Biểu mẫu và quy trình</a>
+              <p style="cursor: pointer">
+                <a class="link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Biểu mẫu và quy trình</a>
               </p>
-              <p>
-                <a class="text-white">Hướng dẫn</a>
+              <p style="cursor: pointer">
+                <a class="link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Hướng dẫn</a>
               </p>
-              <p>
-                <a class="text-white">Thời khóa biểu</a>
+              <p style="cursor: pointer">
+                <a class="link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Thời khóa biểu</a>
               </p>
             </div>
             <hr class="w-100 clearfix d-md-none" />
             <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
               <h6 class="text-uppercase mb-4 font-weight-bold">Liên hệ</h6>
               <p class="d-flex">
-                <i class="fas fa-location-dot align-top mt-1 me-2"></i> <a type="button" class="ml-5" data-bs-toggle="modal" data-bs-target="#address__modal" role="button">   Khu III, Đại Học Cần Thơ, 01 Lý Tự Trọng, Q. Ninh Kiều, TP. Cần Thơ</a>
+                <i class="fas fa-location-dot align-top mt-1 me-2"></i> <a type="button" class="link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover ml-5" data-bs-toggle="modal" data-bs-target="#address__modal" role="button">   Khu III, Đại Học Cần Thơ, 01 Lý Tự Trọng, Q. Ninh Kiều, TP. Cần Thơ</a>
               </p>
-              <p><i class="fas fa-envelope me-2"></i><a href="mailto:cusc@ctu.edu.vn">cusc@ctu.edu.vn</a></p>
-              <p><i class="fas fa-phone me-2"></i> <a href="tel:+842923835581">+84 292 383 5581</a></p>
-              <p><i class="fas fa-print add me-2"></i> <a href="tel:+842923731071">+84 292 373 1071</a></p>
+              <p><i class="fas fa-envelope me-2"></i><a class="link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="mailto:cusc@ctu.edu.vn">cusc@ctu.edu.vn</a></p>
+              <p><i class="fas fa-phone me-2"></i> <a class="link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="tel:+842923835581">+84 292 383 5581</a></p>
+              <p><i class="fas fa-print add me-2"></i> <a class="link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="tel:+842923731071">+84 292 373 1071</a></p>
             </div>
           </div>
         </section>

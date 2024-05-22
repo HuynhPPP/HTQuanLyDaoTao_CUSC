@@ -1,26 +1,24 @@
-document.getElementById('InputEmail1').addEventListener('input', function() {
-    const username = this.value.trim();
-    if (username.length < 5) {
-        this.classList.add('is-invalid');
-    } else {
-        this.classList.remove('is-invalid');
-    }
-});
+document.getElementById('submit-button').addEventListener('click', function(event) {
+    const username = document.getElementById('InputUsername');
+    const password = document.getElementById('InputPassword');
+    const usernameValue = username.value.trim();
+    const passwordValue = password.value.trim();
 
-document.getElementById('InputPassword1').addEventListener('input', function() {
-    const password = this.value.trim();
-    if (password.length < 8) {
-        this.classList.add('is-invalid');
+    if (usernameValue === '') {
+      username.classList.add('is-invalid');
+      username.nextElementSibling.innerText = 'Vui lòng nhập tài khoản.';
+      event.preventDefault();
     } else {
-        this.classList.remove('is-invalid');
+      username.classList.remove('is-invalid');
+      username.nextElementSibling.innerText = '';
     }
-});
 
-document.getElementById('InputCaptcha').addEventListener('input', function() {
-    const captcha = this.value.trim();
-    if (captcha.length === 0) {
-        this.classList.add('is-invalid');
+    if (passwordValue === '') {
+      password.classList.add('is-invalid');
+      password.nextElementSibling.innerText = 'Vui lòng nhập mật khẩu.';
+      event.preventDefault();
     } else {
-        this.classList.remove('is-invalid');
+      password.classList.remove('is-invalid');
+      password.nextElementSibling.innerText = '';
     }
-});
+  });
