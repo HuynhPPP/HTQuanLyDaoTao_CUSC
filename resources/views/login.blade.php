@@ -1,9 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-@extends('layouts.app')
-
-@section('content')
 <div class="card mx-auto my-5" style="width: 25rem;">
   <h1 class="text-center pt-5 pb-4">Đăng nhập</h1>
 <form action={{ route('ldap') }} method="POST" class="px-5 pb-5">
@@ -51,9 +48,6 @@
         document.getElementById('captcha_image').src = "{{ $captchaUrl }}" + "?" + Math.random();
     }
 </script>
-
-@endsection
-
 
 @endsection
 
