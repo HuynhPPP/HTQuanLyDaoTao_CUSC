@@ -5,20 +5,24 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\Redirect;
-use Gregwar\Captcha\CaptchaBuilder;
-
-
 
 class LDAPConnection extends Controller
 {
     public function index(Request $request)
     {
+        // Validate input
         $request->validate([
             'username' => 'required',
             'password' => 'required',
-            'captcha' => 'required|captcha'
+            'captcha' => 'required'
         ]);
 
+        // Kiểm tra captcha
+        if ($request->input('captcha') !== session('captcha_phrase')) {
+            return back()->withErrors(['captcha' => 'Captcha không đúng.'])->withInput();
+        }
+
+        // LDAP configuration
         $domain = 'cusc.ctu.vn';
         $username = $request->input('username');
         $password = $request->input('password');
@@ -32,7 +36,7 @@ class LDAPConnection extends Controller
             $ds = ldap_connect($ldapconfig['host'], $ldapconfig['port']);
             if (!$ds) {
                 throw new Exception('Could not connect to LDAP server.');
-            } 
+            }
 
             ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
             ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
@@ -48,10 +52,23 @@ class LDAPConnection extends Controller
             }
 
             ldap_close($ds);
-            return view('ldap.index', ['message' => 'Login correct']);
+
+            // Lưu thông tin đăng nhập vào session
+            session(['user' => $username]);
+
+            return redirect()->route('home')->with('message', 'Login correct');
         } catch (Exception $e) {
-            ldap_close($ds);
+            if (isset($ds)) {
+                ldap_close($ds);
+            }
             return Redirect::to('error_alert')->with(['error' => 'Bạn đã nhập sai mật khẩu hoặc tài khoản', 'redirectTo' => route('home')]);
         }
+    }
+
+    // Phương thức đăng xuất
+    public function logout()
+    {
+        session()->forget('user');
+        return redirect()->route('home')->with('message', 'Đăng xuất thành công');
     }
 }

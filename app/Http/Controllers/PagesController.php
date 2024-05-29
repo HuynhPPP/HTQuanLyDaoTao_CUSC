@@ -3,20 +3,34 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Gregwar\Captcha\CaptchaBuilder;
+
 
 class PagesController extends Controller
 {
-    public function index(){
-        if (isset($_SESSION['user'])) {
-            header('location: /');
-            exit;
+    public function index()
+    {
+        return view('index');
+    }
+
+    public function about()
+    {
+        return view('about');
+    }
+
+    public function ministry()
+    {
+        return view('ministry');
+    }
+
+    public function login()
+    {
+        if (session()->has('user')) {
+            return redirect('/');
         }
 
-        $builder = new \Gregwar\Captcha\CaptchaBuilder();
-        $captcha = $builder->build();
+        $captchaUrl = route('captcha');
+        return view('login', compact('captchaUrl'));
 
-        $_SESSION['phrase'] = $captcha->getPhrase();
-        // echo $_SESSION['phrase'];
-        return view('index', compact ('builder'));
     }
 }

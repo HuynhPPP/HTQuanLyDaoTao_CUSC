@@ -3,12 +3,17 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LDAPConnection;
 use App\Http\Controllers\PagesController;
-use App\Http\Controllers\PostsController;
+use App\Http\Controllers\CaptchaController;
+
 
 
 
 Route::get('/', [PagesController::class, 'index'])->name('home');
-Route::get('/posts', [PostsController::class, 'index']);
+Route::get('/about', [PagesController::class, 'about'])->name('about');
+Route::get('/ministry', [PagesController::class, 'ministry'])->name('ministry');
+Route::get('/login', [PagesController::class, 'login'])->name('login');
+Route::get('/logout', [LDAPConnection::class, 'logout'])->name('logout');
+Route::get('/captcha', [CaptchaController::class, 'generateCaptcha'])->name('captcha');
 
 
 

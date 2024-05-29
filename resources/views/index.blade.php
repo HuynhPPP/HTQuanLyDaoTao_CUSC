@@ -1,49 +1,45 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="card mx-auto my-5" style="width: 25rem;">
-  <h1 class="text-center pt-5 pb-4">Đăng nhập</h1>
-<form action={{ route('ldap') }} method="POST" class="px-5 pb-5">
-    @csrf
-    <div class="mb-3">
-      <label for="InputUsername" class="form-label">Tài khoản</label>
-      <input type="text" class="form-control" id="InputUsername" name="username">
-      <div class="invalid-feedback"></div>
+<div class="container">
+  <div id="carouselIndicators" class="carousel slide w-100" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
+      <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button>
+      <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="5" aria-label="Slide 6"></button>
     </div>
-    <div class="mb-4">
-      <label for="InputPassword" class="form-label">Mật khẩu</label>
-      <input type="password" class="form-control" name="password" id="InputPassword">
-      <div class="invalid-feedback"></div>
-    </div>
-    <div class="text-center mb-3">
-      <img class="mb-3" src="<?php echo $builder->inline(); ?>" />
-      <input type="text" class="form-control" name="captcha" id="InputCaptcha">
-    </div>
-    <div class="mb-3 form-check">
-      <input type="checkbox" class="form-check-input" id="Check1">
-      <label class="form-check-label" for="Check1">Nhớ tôi!</label>
-    </div>
-    <div class="d-grid">
-      <button id="submit-button" type="submit" class="btn btn-primary">Đăng nhập</button>
-      <div id="error-message" class="text-danger"></div>
-    </div>
-  </form>
-
-</div>
-
-@if ($errors->any())
-  <div class="toast-container position-fixed bottom-0 end-0 p-3">
-    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class=" toast-body d-flex justify-content-between bg-danger">
-          <p5 class="text-white">Sai captcha</p5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+    <div class="carousel-inner">
+      <div class="carousel-item active" data-bs-interval="10000">
+        <img src="{{ asset('storage/slider_CUSC/2024-01-22%20web%20aptech%20aptech.jpg') }}" class="d-block w-100" alt="2024-01-22 web aptech aptech">
+      </div>
+      <div class="carousel-item" data-bs-interval="10000">
+        <img src="{{ asset('storage/slider_CUSC/2024-01-22%20web%20aptech%20arena.jpg') }}" class="d-block w-100" alt="2024-01-22 web aptech arena">
+      </div>
+      <div class="carousel-item" data-bs-interval="10000">
+        <img src="{{ asset('storage/slider_CUSC/2024-03-13%20web%20aptech.jpg') }}" class="d-block w-100" alt="2024-03-13 web aptech">
+      </div>
+      <div class="carousel-item" data-bs-interval="10000">
+        <img src="{{ asset('storage/slider_CUSC/2024-03-21%20web%20aptech.jpg') }}" class="d-block w-100" alt="2024-03-21 web aptech">
+      </div>
+      <div class="carousel-item" data-bs-interval="10000">
+        <img src="{{ asset('storage/slider_CUSC/2024-05-07%20web%20aptech.jpg') }}" class="d-block w-100" alt="2024-05-07 web aptech">
+      </div>
+      <div class="carousel-item" data-bs-interval="10000">
+        <img src="{{ asset('storage/slider_CUSC/2024-05-20%20web%20aptech.jpg') }}" class="d-block w-100" alt="2024-05-20 web aptech">
       </div>
     </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselIndicators" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselIndicators" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
   </div>
-@endif
-
-<script src="{{ asset('js/toast.js') }}"></script>
-<script src="{{ asset('js/validation.js') }}"></script>
-
+</div>
 @endsection
 

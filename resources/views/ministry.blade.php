@@ -2,5 +2,6 @@
 
 @section('content')
 
-@endsection
+MINISTRY PAGE
 
+ @endsection
