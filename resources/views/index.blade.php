@@ -15,8 +15,8 @@
       <input type="password" class="form-control" name="password" id="InputPassword">
       <div class="invalid-feedback"></div>
     </div>
-    <div class="mb-3">
-      <div class="d-flex justify-content-center mb-3" style="height: 3rem">{!! captcha_img() !!}</div>
+    <div class="text-center mb-3">
+      <img class="mb-3" src="<?php echo $builder->inline(); ?>" />
       <input type="text" class="form-control" name="captcha" id="InputCaptcha">
     </div>
     <div class="mb-3 form-check">

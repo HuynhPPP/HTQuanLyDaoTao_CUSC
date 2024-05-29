@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\Redirect;
+use Gregwar\Captcha\CaptchaBuilder;
+
+
 
 class LDAPConnection extends Controller
 {
