@@ -61,7 +61,7 @@ class LDAPConnection extends Controller
             if (isset($ds)) {
                 ldap_close($ds);
             }
-            return Redirect::to('error_alert')->with(['error' => 'Bạn đã nhập sai mật khẩu hoặc tài khoản', 'redirectTo' => route('home')]);
+            return Redirect::to('error_alert')->with(['error' => 'Bạn đã nhập sai mật khẩu hoặc tài khoản', 'redirectTo' => route('login')]);
         }
     }
 

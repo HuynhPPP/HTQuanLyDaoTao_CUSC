@@ -22,10 +22,10 @@
         </button>
       </div>
       <div class="col">
-        <button class="button__link">
+        <a href="{{ route('schedules') }}" class="button__link">
             <i class="fa-solid fa-calendar-days fs-1 mb-3"></i>
             Thời khóa biểu
-        </button>
+        </a>
       </div>
       <div class="col">
         <button class="button__link">
