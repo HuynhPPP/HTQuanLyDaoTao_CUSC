@@ -13,7 +13,7 @@ class TapHuan extends Model
     protected $table = 'TapHuan';
 
     // Khóa chính của bảng
-    protected $primaryKey = 'MaTapHuan';
+    //protected $primaryKey = 'MaTapHuan';
 
     // Các thuộc tính có thể gán
     protected $fillable = [

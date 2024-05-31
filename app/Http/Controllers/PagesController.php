@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use Gregwar\Captcha\CaptchaBuilder;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\TapHuan;
-
+use App\Models\bangcapcanbo;
+use App\Models\chucvu;
+use App\Models\hocvi;
+use App\Models\phutrach;
 class PagesController extends Controller
 {
     public function index()
@@ -21,7 +24,7 @@ class PagesController extends Controller
 
     public function ministry()
     {
-        $functions = [
+         $functions = [
                         [
                             'icon' => 'fa-calendar-days',
                             'text' => 'Lập thời khóa biểu',
@@ -102,6 +105,7 @@ class PagesController extends Controller
         return view('ministry', compact('functions'));
     }
 
+
     public function login()
     {
         if (session()->has('user')) {
@@ -117,8 +121,17 @@ class PagesController extends Controller
 {
     if (session()->has('user')) {
         $taphuans = TapHuan::all();
-
-        return view('schedules', compact('taphuans'));
+        $bangcapcanbo=BangCapCanBo::all();
+        $chucvu=ChucVu::all();
+        $hocvi=HocVi::all();
+        $phutrach=PhuTrach::all();
+        return view('schedules', compact(
+            'taphuans',
+            'bangcapcanbo',
+            'chucvu',
+            'hocvi',
+            'phutrach',
+        ));
     } else {
         return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
     }
