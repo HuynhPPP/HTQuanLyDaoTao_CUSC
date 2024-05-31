@@ -51,10 +51,18 @@ class LDAPConnection extends Controller
                 throw new Exception('Login incorrect');
             }
 
+            $entries = ldap_get_entries($ds, $isITuser);
+            if ($entries['count'] == 0) {
+                throw new Exception('User not found.');
+            }
+
+            // Truy xuất displayName từ kết quả tìm kiếm
+            $displayName = $entries[0]['displayname'][0] ?? $username;
+
             ldap_close($ds);
 
             // Lưu thông tin đăng nhập vào session
-            session(['user' => $username]);
+            session(['user' => $username, 'displayname' => $displayName]);
 
             return redirect()->route('home')->with('message', 'Login correct');
         } catch (Exception $e) {
@@ -69,6 +77,7 @@ class LDAPConnection extends Controller
     public function logout()
     {
         session()->forget('user');
+        session()->forget('displayname');
         return redirect()->route('home')->with('message', 'Đăng xuất thành công');
     }
 }
