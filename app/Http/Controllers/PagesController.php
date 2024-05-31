@@ -21,7 +21,85 @@ class PagesController extends Controller
 
     public function ministry()
     {
-        return view('ministry');
+        $functions = [
+                        [
+                            'icon' => 'fa-calendar-days',
+                            'text' => 'Lập thời khóa biểu',
+                            'link' => route('schedules'),
+                        ],
+                        [
+                            'icon' => 'fa-calendar-days',
+                            'text' => 'Lập lịch Theo dõi phòng học',
+                            'link' => '#',
+                        ],
+                        [
+                            'icon' => 'fa-calendar-days',
+                            'text' => 'Lập lịch theo dõi môn học sắp bắt đầu',
+                            'link' => '#',
+                        ],
+                        [
+                            'icon' => 'fa-rectangle-list',
+                            'text' => 'Lập điểm danh',
+                            'link' => '#',
+                            'type' => 'link'
+                        ],
+                        [
+                            'icon' => 'fa-calendar-days',
+                            'text' => 'Lập lịch thi tháng',
+                            'link' => '#',
+                        ],
+                        [
+                            'icon' => 'fa-rectangle-list',
+                            'text' => 'Lập phân công thi theo ngày',
+                            'link' => '#',
+                        ],
+                        [
+                            'icon' => 'fa-calendar-days',
+                            'text' => 'Lập lịch báo cáo đồ án',
+                            'link' => '#',
+                        ],
+                        [
+                            'icon' => 'fa-rectangle-list',
+                            'text' => 'Lập phân công báo cáo đồ án',
+                            'link' => '#',
+                        ],
+                        [
+                            'icon' => 'fa-scroll',
+                            'text' => 'Lập bảng điểm chi tiết',
+                            'link' => '#',
+                        ],
+                        [
+                            'icon' => 'fa-scroll',
+                            'text' => 'Lập bảng điểm tổng hợp',
+                            'link' => '#',
+                        ],
+                        [
+                            'icon' => 'fa-scroll',
+                            'text' => 'Lập bảng báo cáo kết quả học tập',
+                            'link' => '#',
+                        ],
+                        [
+                            'icon' => 'fa-rectangle-list',
+                            'text' => 'Lập danh sách xét tốt nghiệp',
+                            'link' => '#',
+                        ],
+                        [
+                            'icon' => 'fa-file',
+                            'text' => 'Xuất điểm nhập điểm lên portal',
+                            'link' => '#',
+                        ],
+                        [
+                            'icon' => 'fa-rectangle-list',
+                            'text' => 'Lập danh sách đề nghị ra quyết định công nhận tốt nghiệp',
+                            'link' => '#',
+                        ],
+                        [
+                            'icon' => 'fa-book',
+                            'text' => 'Lập nhật ký phát bằng',
+                            'link' => '#',
+                        ],
+                    ];
+        return view('ministry', compact('functions'));
     }
 
     public function login()
