@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Gregwar\Captcha\CaptchaBuilder;
 use Illuminate\Support\Facades\Redirect;
-use App\Models\TapHuan;
-use App\Models\bangcapcanbo;
-use App\Models\chucvu;
-use App\Models\hocvi;
-use App\Models\phutrach;
+use App\Models\loaidaotao;
+use App\Models\chuongtrinh;
+use App\Models\lophoc;
+use App\Models\phonghoc;
+use App\Models\tkb;
+
 class PagesController extends Controller
 {
     public function index()
@@ -105,7 +106,6 @@ class PagesController extends Controller
         return view('ministry', compact('functions'));
     }
 
-
     public function login()
     {
         if (session()->has('user')) {
@@ -119,29 +119,37 @@ class PagesController extends Controller
     public function schedules()
     {
         if (session()->has('user')) {
-            $taphuans = TapHuan::all();
+            $loaidaotaos = loaidaotao::all();
+            $chuongtrinhs = chuongtrinh::all();
+            $lophocs = lophoc::all();
+            $phongLTs = phonghoc::where('LoaiPhong', 'LyThuyet')->get();
+            $phongTHs = phonghoc::where('LoaiPhong', 'ThucHanh')->get();
+            $tkb = tkb::latest('TenTKB')->first();;
 
-            return view('schedules', compact('taphuans'));
+            return view('schedules', 
+            compact(
+                'loaidaotaos',
+                'chuongtrinhs',
+                'lophocs',
+                'phongLTs',
+                'phongTHs',
+                'tkb'
+                
+            ));
         } else {
             return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
         }
     }
 
-    public function submitSchedule(Request $request)
+    public function saveSchedule(Request $request)
     {
-        // Validate the request data
-        $request->validate([
-            'TenTKB' => 'required|string|max:255',
-            // Các trường khác tương tự
-        ]);
+        $schedule = new tkb();
+        $schedule->TenTKB = $request->input('TenTKB');
+        $schedule->MaLop = $request->input('Lop');
+        $schedule->save();
 
-        // Lưu dữ liệu hoặc xử lý logic cần thiết
-        $TenTKB = $request->input('TenTKB');
-
-        // Trả về view với dữ liệu đã nhập
-        return view('schedules', compact('TenTKB'));
+        return redirect()->route('schedules');
     }
-
 
     public function monitorClassroom()
     {

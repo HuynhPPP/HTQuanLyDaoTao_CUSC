@@ -6,63 +6,69 @@
         <div class="row">
             <h1 class="text-center my-5">Lập thời khóa biểu</h1>
             <div class="d-flex justify-content-center">
-            <form class="w-50" method="POST" action="{{ route('schedules.submit') }}">
+            <form class="w-50" method="POST" action="{{ route('saveSchedule') }}">
                     @csrf
                  <div class="mb-3">
                      <label for="TenTKB" class="form-label">Tên thời khóa biểu</label>
-                     <input type="text" class="form-control" id="TenTKB">
+                     <input type="text" class="form-control" id="TenTKB" name="TenTKB">
                  </div>
      
+                 {{-- <div class="mb-3">
+                     <label for="LoaiDaoTao" class="form-label">Loại đào tạo</label>
+                     <select id="LoaiDaoTao" class="form-select" aria-label="Chọn khóa đào tạo">
+                         <option selected>----- Loại Đào Tạo -----</option>
+                     @foreach($loaidaotaos as $loaidaotao)
+                         <option value="{{ $loaidaotao->TenKhoaDaoTao }}">{{ $loaidaotao->TenKhoaDaoTao }}</option>
+                     @endforeach
+                     </select>
+                 </div> --}}
+     
+                 {{-- <div class="mb-3">
+                     <label for="ChuongTrinhTruyenKhai" class="form-label">Chương trình triển khai </label>
+                     <input class="form-control" id="ChuongTrinhTruyenKhai" list="DanhSachChuongTrinh">
+                     <datalist id="DanhSachChuongTrinh">
+                     @foreach($chuongtrinhs as $chuongtrinh)
+                         <option value="{{ $chuongtrinh->MaChuongTrinh}}">{{ $chuongtrinh->TenChuongTrinh }}</option>
+                     @endforeach
+                     </datalist>
+                     </select>
+                 </div> --}}
+     
                  <div class="mb-3">
-                     <label for="KhoaDaoTao" class="form-label">Chọn khoá đào tạo</label>
-                     <select id="KhoaDaoTao" class="form-select" aria-label="Default select example">
-                         <option selected>----- Khóa Đào Tạo -----</option>
-                     {{-- @foreach($khoaDaoTaos as $khoaDaoTao)
-                         <option value="{{ $khoaDaoTao->id }}">{{ $khoaDaoTao->name }}</option>
-                     @endforeach --}}
+                     <label for="Lop" class="form-label">Mã lớp học </label>
+                     <input class="form-control" id="Lop" name="Lop" list="DanhSachLopHoc">
+                     <datalist id="DanhSachLopHoc">
+                         @foreach($lophocs as $lophoc)
+                             <option value="{{ $lophoc->MaLop }}">{{ $lophoc->TenLop }}</option>
+                         @endforeach
+                     </datalist>
                      </select>
                  </div>
      
-                 <div class="mb-3">
-                     <label for="ChuongTrinhTruyenKhai" class="form-label">Chọn chương trình triển khai </label>
-                     <select id="ChuongTrinhTruyenKhai" class="form-select" aria-label="Default select example">
-                     {{-- @foreach($chuongTrinhs as $chuongTrinh)
-                         <option value="{{ $chuongTrinh->id }}">{{ $chuongTrinh->name }}</option>
-                     @endforeach --}}
-                     </select>
-                 </div>
-     
-                 <div class="mb-3">
-                     <label for="Lop" class="form-label">Chọn lớp </label>
-                     <select id="Lop" class="form-select" aria-label="Default select example">
-                         {{-- @foreach($lops as $lop)
-                             <option value="{{ $lop->id }}">{{ $lop->name }}</option>
-                         @endforeach --}}
-                     </select>
-                 </div>
-     
-                 <div class="mb-3">
-                     <label for="NgayBatDau" class="form-label">Chọn ngày bắt đầu học </label>
+                 {{-- <div class="mb-3">
+                     <label for="NgayBatDau" class="form-label">Ngày bắt đầu học </label>
                      <input type="date" class="form-control" id="NgayBatDau">
-                 </div>
+                 </div> --}}
      
-                 <div class="mb-3">
-                     <label for="PhongLT" class="form-label">Chọn phòng học lý thuyết </label>
-                     <select id="PhongLT" class="form-select" aria-label="Default select example">
-                         {{-- @foreach($phongLTs as $phongLT)
-                             <option value="{{ $phongLT->id }}">{{ $phongLT->name }}</option>
-                         @endforeach --}}
+                 {{-- <div class="mb-3">
+                     <label for="PhongLT" class="form-label">Phòng học lý thuyết </label>
+                     <select id="PhongLT" class="form-select" aria-label="Chọn phòng học lý thuyết">
+                        <option selected>----- Phòng Học Lý Thuyết -----</option>
+                         @foreach($phongLTs as $phongLT)
+                             <option value="{{ $phongLT->TenPhong }}">{{ $phongLT->TenPhong }}</option>
+                         @endforeach
                      </select>
                  </div>
      
                  <div class="mb-3">
-                     <label for="PhongTH" class="form-label">Chọn phòng học thực hành </label>
-                     <select id="PhongTH" class="form-select" aria-label="Default select example">
-                         {{-- @foreach($phongTHs as $phongTH)
-                             <option value="{{ $phongTH->id }}">{{ $phongTH->name }}</option>
-                         @endforeach --}}
+                     <label for="PhongTH" class="form-label">Phòng học thực hành </label>
+                     <select id="PhongTH" class="form-select" aria-label="Chọn phòng học thực hành">
+                        <option selected>----- Phòng Học Thực Hành -----</option>
+                         @foreach($phongTHs as $phongTH)
+                             <option value="{{ $phongTH->TenPhong }}">{{ $phongTH->TenPhong }}</option>
+                         @endforeach
                      </select>
-                 </div>
+                 </div> --}}
                    
                    <div class="d-flex justify-content-center mt-5">
                      <button type="submit" class="btn btn-primary">Lập thời khóa biểu</button>
@@ -71,7 +77,6 @@
             </div>
         </div>
 
-{{-- @if(isset($TenTKB)) --}}
     <div class="row border border-3 rounded-3 mt-5 text-center">
         <div class="col my-5">
             <h5>TRUNG TÂM CÔNG NGHỆ PHẦN MỀM ĐẠI HỌC CẦN THƠ</h5>
@@ -79,11 +84,11 @@
             <p>Khu III, Đại học Cần Thơ – 01 Lý Tự Trọng, Tp. Cần Thơ – Tel: 0292.3731072 & Fax: 0292.3731071 – Email: cusc@ctu.edu.vn</p>
         </div>
         <div class="text-center">
-            <h1>{{ $TenTKB ?? 'Tên thời khóa biểu'}}</h1>
+            <h1>{{ $tkb->TenTKB ?? 'Tên TKB' }}</h1>
         </div>
         <div class="d-flex justify-content-between mb-5">
             <div class="col-3 align-items-start">
-                <p>Mã lớp:</p>
+                <p>Mã lớp: {{ $tkb->MaLop ?? 'Mã Lớp' }}</p>
             </div>
 
             <div class="col-4 text-start">
@@ -92,7 +97,7 @@
                 <p class="m-0">Học Thực hành tại phòng:</p>
             </div>
         </div>
-        <table class="">
+        <table class="table">
             <thead>
                 <tr>
                     <td>Ngày</td>
@@ -106,9 +111,26 @@
                 </tr>
             </thead>
             <tbody>
+                @for ($i = 1; $i <= $tkb->TuanHoc; $i++)
                 <tr>
-                    <!-- Nội dung bảng -->
+                    <th rowspan="2">Hàng {{ $i }}</th>
+                    <th rowspan="2">{{ $i }}</th>
+                    <th>7:00-9:00</th>
+                    <th>Hàng {{ $i }}</th>
+                    <th>Hàng {{ $i }}</th>
+                    <th>Hàng {{ $i }}</th>
+                    <th>Hàng {{ $i }}</th>
+                    <th>Hàng {{ $i }}</th>
                 </tr>
+                <tr>
+                    <th>13:00-15:00</th>
+                    <th>Hàng {{ $i }}</th>
+                    <th>Hàng {{ $i }}</th>
+                    <th>Hàng {{ $i }}</th>
+                    <th>Hàng {{ $i }}</th>
+                    <th>Hàng {{ $i }}</th>
+                </tr>
+            @endfor
             </tbody>
         </table>
     </div>

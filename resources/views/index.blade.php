@@ -3,7 +3,7 @@
 @section('content')
 
 @if(session('message'))
-<div class="toast text-bg-success align-items-center position-fixed bottom-0 end-0 mb-1 mr-5" role="alert" aria-live="assertive" aria-atomic="true" style="z-index: 1050;">
+<div class="toast text-bg-success align-items-center position-fixed bottom-0 end-0 mb-3 me-3" role="alert" aria-live="assertive" aria-atomic="true" style="z-index: 1050;">
   <div class="d-flex">
       <div class="toast-body">
           {{ session('message') }}
