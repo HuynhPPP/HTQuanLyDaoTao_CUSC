@@ -8,4 +8,39 @@ use Illuminate\Database\Eloquent\Model;
 class sinhvien extends Model
 {
     use HasFactory;
+    protected $table='SinhVien';
+    protected  $fillable=[
+        'MaSV',
+        'MaEnroll',
+        'MaEnrollOld',
+        'ChuongTrinhHoc',
+        'HoTen',
+        'InDebt',
+        'NgaySinh',
+        'GioiTinh',
+        'SoCCCD',
+        'NgayCap',
+        'NoiCap',
+        'Sdt',
+        'NoiSinh',
+        'DiaChi',
+        'Zalo',
+        'Receipt',
+        'Invoice' ,
+        'Billing' ,
+        'Coll' ,
+        'Billing(VND)' ,
+        'Coll(VND)' ,
+        'Discount' ,
+        'LiDo' ,
+        'NgayDangKi',
+        'HoTenNguoiThan' ,
+        'MoiQuanHe',
+        'SdtNguoiThan' ,
+        'ZaloNguoiThan' ,
+        'EmailNguoiThan' ,
+        'Email' ,
+        'EmailCUSC' ,
+        'Size' ,
+    ];
 }
