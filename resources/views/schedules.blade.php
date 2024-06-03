@@ -10,7 +10,10 @@
                     @csrf
                  <div class="mb-3">
                      <label for="TenTKB" class="form-label">Tên thời khóa biểu</label>
-                     <input type="text" class="form-control" id="TenTKB" name="TenTKB">
+                     <input type="text" class="form-control @error('TenTKB') is-invalid @enderror" id="TenTKB" name="TenTKB">
+                     @error('TenTKB')
+                     <div class="invalid-feedback">{{ $message }}</div>
+                     @enderror
                  </div>
      
                  {{-- <div class="mb-3">
@@ -36,14 +39,27 @@
      
                  <div class="mb-3">
                      <label for="Lop" class="form-label">Mã lớp học </label>
-                     <input class="form-control" id="Lop" name="Lop" list="DanhSachLopHoc">
+                     <input class="form-control @error('Lop') is-invalid @enderror" id="Lop" name="Lop" list="DanhSachLopHoc">
                      <datalist id="DanhSachLopHoc">
                          @foreach($lophocs as $lophoc)
                              <option value="{{ $lophoc->MaLop }}">{{ $lophoc->TenLop }}</option>
                          @endforeach
                      </datalist>
                      </select>
+                     @if ($errors->has('Lop'))
+                        @foreach ($errors->get('Lop') as $message)
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @endforeach
+                    @endif
                  </div>
+
+                 <div class="mb-3">
+                    <label for="TuanHoc" class="form-label">Tuần học</label>
+                    <input type="number" class="form-control @error('TuanHoc') is-invalid @enderror" id="TuanHoc" name="TuanHoc">
+                    @error('TuanHoc')
+                     <div class="invalid-feedback">{{ $message }}</div>
+                     @enderror
+                </div>
      
                  {{-- <div class="mb-3">
                      <label for="NgayBatDau" class="form-label">Ngày bắt đầu học </label>

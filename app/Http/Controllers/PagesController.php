@@ -143,9 +143,19 @@ class PagesController extends Controller
 
     public function saveSchedule(Request $request)
     {
+        // dd($request->all());
+
+        $request->validate([
+            'TenTKB' => 'required|string|max:255',
+            'Lop' => ['required', 'string', 'max:255', 'exists:LopHoc,MaLop'],
+            'TuanHoc' => 'required|integer|max:24',
+
+        ]);
+
         $schedule = new tkb();
         $schedule->TenTKB = $request->input('TenTKB');
         $schedule->MaLop = $request->input('Lop');
+        $schedule->TuanHoc = $request->input('TuanHoc');
         $schedule->save();
 
         return redirect()->route('schedules');
