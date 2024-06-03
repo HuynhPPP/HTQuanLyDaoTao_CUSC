@@ -1,6 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
+
+@if(session('message'))
+<div class="toast text-bg-success align-items-center position-fixed bottom-0 end-0 mb-1 mr-5" role="alert" aria-live="assertive" aria-atomic="true" style="z-index: 1050;">
+  <div class="d-flex">
+      <div class="toast-body">
+          {{ session('message') }}
+      </div>
+      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+</div>
+@endif  
+
 <div class="container"  style="height: 24rem">
   <div id="carouselIndicators" class="carousel slide w-75 p-5 mx-auto" data-bs-ride="carousel">
     <div class="carousel-indicators">
@@ -41,5 +53,12 @@
     </button>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var toast = new bootstrap.Toast(document.querySelector('.toast'));
+      toast.show();
+  });
+</script>
 @endsection
 

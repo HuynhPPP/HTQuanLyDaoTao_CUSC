@@ -33,17 +33,17 @@ class PagesController extends Controller
                         [
                             'icon' => 'fa-calendar-days',
                             'text' => 'Lập lịch Theo dõi phòng học',
-                            'link' => '#',
+                            'link' => route('monitorClassroom'),
                         ],
                         [
                             'icon' => 'fa-calendar-days',
                             'text' => 'Lập lịch theo dõi môn học sắp bắt đầu',
-                            'link' => '#',
+                            'link' => route('monitorSubject'),
                         ],
                         [
                             'icon' => 'fa-rectangle-list',
                             'text' => 'Lập điểm danh',
-                            'link' => '#',
+                            'link' => route('rollCall'),
                             'type' => 'link'
                         ],
                         [
@@ -114,26 +114,65 @@ class PagesController extends Controller
 
         $captchaUrl = route('captcha');
         return view('login', compact('captchaUrl'));
-
     }
 
     public function schedules()
-{
-    if (session()->has('user')) {
-        $taphuans = TapHuan::all();
-        $bangcapcanbo=BangCapCanBo::all();
-        $chucvu=ChucVu::all();
-        $hocvi=HocVi::all();
-        $phutrach=PhuTrach::all();
-        return view('schedules', compact(
-            'taphuans',
-            'bangcapcanbo',
-            'chucvu',
-            'hocvi',
-            'phutrach',
-        ));
-    } else {
-        return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
+    {
+        if (session()->has('user')) {
+            $taphuans = TapHuan::all();
+
+            return view('schedules', compact('taphuans'));
+        } else {
+            return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
+        }
     }
-}
+
+    public function submitSchedule(Request $request)
+    {
+        // Validate the request data
+        $request->validate([
+            'TenTKB' => 'required|string|max:255',
+            // Các trường khác tương tự
+        ]);
+
+        // Lưu dữ liệu hoặc xử lý logic cần thiết
+        $TenTKB = $request->input('TenTKB');
+
+        // Trả về view với dữ liệu đã nhập
+        return view('schedules', compact('TenTKB'));
+    }
+
+
+    public function monitorClassroom()
+    {
+        if (session()->has('user')) {
+            $taphuans = TapHuan::all();
+
+            return view('monitorClassroom', compact('taphuans'));
+        } else {
+            return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
+        }
+    }
+
+    public function monitorSubject()
+    {
+        if (session()->has('user')) {
+            $taphuans = TapHuan::all();
+
+            return view('monitorSubject', compact('taphuans'));
+        } else {
+            return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
+        }
+    }
+
+    public function rollCall()
+    {
+        if (session()->has('user')) {
+            $taphuans = TapHuan::all();
+
+            return view('rollCall', compact('taphuans'));
+        } else {
+            return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
+        }
+    }
 }
