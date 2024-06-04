@@ -10,10 +10,12 @@ class hocvi extends Model
     use HasFactory;
     protected $table='HocVi';
     protected $fillable = [
+        'MaHV',
         'TenHocVi',
-        'SoLuongHocVi',
-        'ThoiDiemNhanChungNhan',
-        'TenCoQuanCap',
-        'DiaDiem',
+        'NganhHoc',
+        'ChuyenNganh' ,
+ 	    'CoSoDaoTao' ,
+ 	    'NamCap' ,
+ 	    'HinhThucDaoTao'
     ];
 }

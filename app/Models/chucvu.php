@@ -11,10 +11,7 @@ class chucvu extends Model
     protected $table='ChucVu';
     protected $fillable = [
         'TenChucVu',
-        'SoChucVu',
-        'KinhNghiemLamviec',
-        'ThoiGianBDCongTac',
-        'ThoiGianKTCongTac',
-        'DangCongTac',
+        'ThoiGianDamNhanCV',
+        'ThoiGianKTCV',
     ];
 }

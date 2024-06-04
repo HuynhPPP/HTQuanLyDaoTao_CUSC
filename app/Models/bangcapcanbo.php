@@ -12,12 +12,11 @@ class bangcapcanbo extends Model
     //protected $primaryKey ='MaCB';
     public $timestamps = false;
     protected $fillable = [
-        'MaBangCap',
-        'TenBangCap',
-        'ChuyenMon',
+        'MaBang',
+        'TenBang',
         'ThoiGianCap',
         'DonViCap',
-        'SoVaoSo',
         'SoHieu',
+        'SoVaoSo',
     ];
 }

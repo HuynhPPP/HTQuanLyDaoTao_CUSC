@@ -14,5 +14,9 @@ class chuongtrinh extends Model
         'TenChuongTrinh',
         'PhienBan',
         'NgayTrienKhaiPB',
+        'TenKhoaDaoTao',
     ];
+    public function khoadaotao(){
+        return $this->belongsTo('KhoaDaoTao'::class,'TenKhoaDaoTao');
+    }
 }
