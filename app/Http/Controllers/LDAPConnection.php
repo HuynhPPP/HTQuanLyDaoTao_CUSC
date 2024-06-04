@@ -64,7 +64,7 @@ class LDAPConnection extends Controller
             // Lưu thông tin đăng nhập vào session
             session(['user' => $username, 'displayname' => $displayName]);
 
-            return redirect()->route('home')->with('message', 'Login correct');
+            return redirect()->route('home')->with('message', 'Đăng nhập thành công');
         } catch (Exception $e) {
             if (isset($ds)) {
                 ldap_close($ds);

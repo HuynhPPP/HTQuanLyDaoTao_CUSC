@@ -4,10 +4,6 @@
 
  <div class="container my-5">
     <div class="row border border-3 rounded-3 mt-5 text-center">
-        @if ($tkb->isEmpty())
-        <p>Không tìm thấy thời khóa biểu với tên đã cung cấp.</p>
-    @else
-        @foreach ($tkb as $schedule)
         <div class="col my-5">
             <h5>TRUNG TÂM CÔNG NGHỆ PHẦN MỀM ĐẠI HỌC CẦN THƠ</h5>
             <h1>CANTHO UNIVERSITY SOFTWARE CENTER</h1>
@@ -16,16 +12,21 @@
         <div class="text-center">
             <h1>{{ $schedule->TenTKB }}</h1>
         </div>
-        <div class="d-flex justify-content-between mb-5">
+        <div class="row justify-content-between">
             <div class="col-3 align-items-start">
                 <p>Mã lớp: {{ $schedule->MaLop }}</p>
+                <div>
+                    <span>Ver: {{ $chuongtrinh->PhienBan }}</span>
+                    <span>{{ \Carbon\Carbon::parse($chuongtrinh->NgayTrienKhaiPB)->format('d/m/Y') }}</span>
+                </div>
             </div>
 
             <div class="col-4 text-start">
-                <p class="m-0">Bắt đầu học từ ngày:</p>
-                <p class="m-0">Học Lý thuyết tại phòng:</p>
+                <p class="m-0">Bắt đầu học từ ngày: {{ isset($theodoimh) ? \Carbon\Carbon::parse($theodoimh->NgayBatDau)->format('d/m/Y') : 'Chưa có' }}</p>
+                <p class="m-0">Học Lý thuyết tại phòng: {{ isset($theodoimh) ? $theodoimh->TenPhong : 'Chưa có' }}</p>
                 <p class="m-0">Học Thực hành tại phòng:</p>
             </div>
+
         </div>
         <table class="table">
             <thead>
@@ -65,15 +66,13 @@
         </table>
     </div>
     <div class="text-center mt-3">
-        <form id="deleteScheduleForm" action="{{ route('deleteSchedule', ['TenTKB' => $tkb->first()->TenTKB]) }}" method="POST">
+        <form id="deleteScheduleForm" action="{{ route('deleteSchedule', ['TenTKB' => $schedule->first()->TenTKB]) }}" method="POST">
             @csrf
             @method('DELETE')
             <button type="button" class="btn btn-danger" onclick="confirmDelete()">Hủy bỏ</button>
             <button class="btn btn-primary">Xuất</button>
         </form>
     </div>
-    @endforeach
-@endif
 </div>
 
 <script>

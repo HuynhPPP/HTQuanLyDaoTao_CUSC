@@ -17,24 +17,24 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="LoaiDaoTao" class="form-label">Loại đào tạo</label>
-                    <select id="LoaiDaoTao" class="form-select @error('LoaiDaoTao') is-invalid @enderror" name="LoaiDaoTao">
-                        <option value="">----- Loại Đào Tạo -----</option>
+                    <label for="KhoaDaoTao" class="form-label">Khóa đào tạo</label>
+                    <select id="KhoaDaoTao" class="form-select @error('KhoaDaoTao') is-invalid @enderror" name="KhoaDaoTao">
+                        <option value="">----- Khóa Đào Tạo -----</option>
                         @foreach($khoadaotaos as $khoadaotao)
                             <option value="{{ $khoadaotao->TenKhoaDaoTao }}">{{ $khoadaotao->TenKhoaDaoTao }}</option>
                         @endforeach
                     </select>
-                    @error('LoaiDaoTao')
+                    @error('KhoaDaoTao')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="mb-3">
-                    <label for="ChuongTrinhTruyenKhai" class="form-label">Chương trình triển khai</label>
-                    <select id="ChuongTrinhTruyenKhai" class="form-select @error('ChuongTrinhTruyenKhai') is-invalid @enderror" name="ChuongTrinhTruyenKhai">
+                    <label for="ChuongTrinhTrienKhai" class="form-label">Chương trình triển khai</label>
+                    <select id="ChuongTrinhTrienKhai" class="form-select @error('ChuongTrinhTrienKhai') is-invalid @enderror" name="ChuongTrinhTrienKhai">
                         <option value="">----- Chương Trình Triển Khai -----</option>
                     </select>
-                    @error('ChuongTrinhTruyenKhai')
+                    @error('ChuongTrinhTrienKhai')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
@@ -68,22 +68,22 @@
 </div>
 
 <script>
-    document.getElementById('LoaiDaoTao').addEventListener('change', function() {
-        var loaiDaoTao = this.value;
-        if (loaiDaoTao) {
-            fetch(`/getChuongTrinh/${loaiDaoTao}`)
+    document.getElementById('KhoaDaoTao').addEventListener('change', function() {
+        var KhoaDaoTao = this.value;
+        if (KhoaDaoTao) {
+            fetch(`/getChuongTrinh/${KhoaDaoTao}`)
                 .then(response => response.json())
                 .then(data => {
-                    var chuongTrinhSelect = document.getElementById('ChuongTrinhTruyenKhai');
+                    var chuongTrinhSelect = document.getElementById('ChuongTrinhTrienKhai');
                     chuongTrinhSelect.innerHTML = '<option value="">----- Chương Trình Triển Khai -----</option>';
                     data.forEach(chuongTrinh => {
-                        chuongTrinhSelect.innerHTML += `<option value="${chuongTrinh.MaChuongTrinh}">${chuongTrinh.TenChuongTrinh}</option>`;
+                        chuongTrinhSelect.innerHTML += `<option value="${chuongTrinh.MaChuongTrinh}">${chuongTrinh.MaChuongTrinh} ${chuongTrinh.TenChuongTrinh}</option>`;
                     });
                 });
         }
     });
 
-    document.getElementById('ChuongTrinhTruyenKhai').addEventListener('change', function() {
+    document.getElementById('ChuongTrinhTrienKhai').addEventListener('change', function() {
         var chuongTrinh = this.value;
         if (chuongTrinh) {
             fetch(`/getLop/${chuongTrinh}`)
@@ -92,18 +92,18 @@
                     var lopSelect = document.getElementById('Lop');
                     lopSelect.innerHTML = '<option value="">----- Mã Lớp Học -----</option>';
                     data.forEach(lop => {
-                        lopSelect.innerHTML += `<option value="${lop.MaLop}">${lop.TenLop}</option>`;
+                        lopSelect.innerHTML += `<option value="${lop.MaLop}">${lop.MaLop} ${lop.TenLop}</option>`;
                     });
                 });
         }
     });
 
     // function validateForm() {
-    //     var loaiDaoTao = document.getElementById('LoaiDaoTao').value;
-    //     var chuongTrinh = document.getElementById('ChuongTrinhTruyenKhai').value;
+    //     var KhoaDaoTao = document.getElementById('KhoaDaoTao').value;
+    //     var chuongTrinh = document.getElementById('ChuongTrinhTrienKhai').value;
     //     var lop = document.getElementById('Lop').value;
 
-    //     if (loaiDaoTao === "" || chuongTrinh === "" || lop === "") {
+    //     if (KhoaDaoTao === "" || chuongTrinh === "" || lop === "") {
     //         alert('Vui lòng chọn đầy đủ các trường thông tin.');
     //         return false;
     //     }

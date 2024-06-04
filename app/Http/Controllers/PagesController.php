@@ -10,6 +10,8 @@ use App\Models\chuongtrinh;
 use App\Models\lophoc;
 use App\Models\phonghoc;
 use App\Models\tkb;
+use App\Models\theodoimhsapbatdau;
+
 
 class PagesController extends Controller
 {
@@ -157,10 +159,19 @@ class PagesController extends Controller
     {
         $request->validate([
             'TenTKB' => 'required|string|max:255',
-            'LoaiDaoTao' => 'required|string',
-            'ChuongTrinhTruyenKhai' => 'required|string',
-            'Lop' => 'required|string|max:255|exists:LopHoc,MaLop',
+            'KhoaDaoTao' => 'required|string',
+            'ChuongTrinhTrienKhai' => 'required|string',
+            'Lop' => 'required|string',
             'TuanHoc' => 'required|integer|max:24',
+        ], [
+            'TenTKB.required' => 'Hãy nhập tên thời khóa biểu!',
+            'TenTKB.max' => 'Tên thời khóa biểu không được vượt quá 255 ký tự.',
+            'KhoaDaoTao.required' => 'Hãy chọn khoá đào tạo!',
+            'ChuongTrinhTrienKhai.required' => 'Hãy chọn chương trình triển khai!',
+            'Lop.required' => 'Hãy chọn lớp!',
+            'TuanHoc.required' => 'Hãy chọn tuần học!',
+            'TuanHoc.integer' => 'Tuần học phải là một số nguyên.',
+            'TuanHoc.max' => 'Tuần học không được vượt quá 24 tuần.',
         ]);
 
         $schedule = new tkb();
@@ -176,16 +187,17 @@ class PagesController extends Controller
     public function schedule($TenTKB)
     {
         if (session()->has('user')) {
-            $tkb = tkb::where('TenTKB', $TenTKB)->get();
-
-            return view('schedule',
-            compact(
-                'tkb'  
-            ));
+            
+            $schedule = tkb::where('TenTKB', $TenTKB)->first();  
+            $lophoc = lophoc::where('MaLop', $schedule->MaLop)->first();
+            $chuongtrinh = chuongtrinh::where('MaChuongTrinh', $lophoc->MaChuongTrinh)->first();
+            $theodoimh = theodoimhsapbatdau::where('MaTheoDoiMH', $schedule->MaTheoDoiMH)->first();
+            return view('schedule', compact('schedule', 'chuongtrinh', 'theodoimh'));
         } else {
             return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
         }
     }
+
 
     public function deleteSchedule($TenTKB)
     {
