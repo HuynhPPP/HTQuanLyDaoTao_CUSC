@@ -26,6 +26,9 @@ Route::get('/login', [PagesController::class, 'login'])->name('login');
 Route::get('/logout', [LDAPConnection::class, 'logout'])->name('logout');
 Route::get('/captcha', [CaptchaController::class, 'generateCaptcha'])->name('captcha');
 
+Route::get('/getChuongTrinh/{TenKhoaDaoTao}', [App\Http\Controllers\PagesController::class, 'getChuongTrinh']);
+Route::get('/getLop/{MaChuongTrinh}', [App\Http\Controllers\PagesController::class, 'getLop']);
+
 
 
 Route::post('ldap', [

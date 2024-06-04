@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Gregwar\Captcha\CaptchaBuilder;
 use Illuminate\Support\Facades\Redirect;
-use App\Models\loaidaotao;
+use App\Models\khoadaotao;
 use App\Models\chuongtrinh;
 use App\Models\lophoc;
 use App\Models\phonghoc;
@@ -119,7 +119,7 @@ class PagesController extends Controller
     public function schedules()
     {
         if (session()->has('user')) {
-            $loaidaotaos = loaidaotao::all();
+            $khoadaotaos = khoadaotao::all();
             $chuongtrinhs = chuongtrinh::all();
             $lophocs = lophoc::all();
             $phongLTs = phonghoc::where('LoaiPhong', 'LyThuyet')->get();
@@ -127,7 +127,7 @@ class PagesController extends Controller
 
             return view('schedules', 
             compact(
-                'loaidaotaos',
+                'khoadaotaos',
                 'chuongtrinhs',
                 'lophocs',
                 'phongLTs',
@@ -139,15 +139,28 @@ class PagesController extends Controller
         }
     }
 
+    public function getChuongTrinh($TenKhoaDaoTao)
+    {
+        $chuongtrinhs = chuongtrinh::where('TenKhoaDaoTao', $TenKhoaDaoTao)->get();
+        return response()->json($chuongtrinhs);
+    }
+
+    public function getLop($MaChuongTrinh)
+    {
+        $lophocs = lophoc::where('MaChuongTrinh', $MaChuongTrinh)->get();
+        return response()->json($lophocs);
+    }
+
+
+
     public function saveSchedule(Request $request)
     {
-        // dd($request->all());
-
         $request->validate([
             'TenTKB' => 'required|string|max:255',
-            'Lop' => ['required', 'string', 'max:255', 'exists:LopHoc,MaLop'],
+            'LoaiDaoTao' => 'required|string',
+            'ChuongTrinhTruyenKhai' => 'required|string',
+            'Lop' => 'required|string|max:255|exists:LopHoc,MaLop',
             'TuanHoc' => 'required|integer|max:24',
-
         ]);
 
         $schedule = new tkb();
@@ -158,6 +171,7 @@ class PagesController extends Controller
 
         return redirect()->route('schedule', ['TenTKB' => $schedule->TenTKB]);
     }
+
 
     public function schedule($TenTKB)
     {
