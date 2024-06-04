@@ -124,7 +124,6 @@ class PagesController extends Controller
             $lophocs = lophoc::all();
             $phongLTs = phonghoc::where('LoaiPhong', 'LyThuyet')->get();
             $phongTHs = phonghoc::where('LoaiPhong', 'ThucHanh')->get();
-            $tkb = tkb::latest('TenTKB')->first();;
 
             return view('schedules', 
             compact(
@@ -132,8 +131,7 @@ class PagesController extends Controller
                 'chuongtrinhs',
                 'lophocs',
                 'phongLTs',
-                'phongTHs',
-                'tkb'
+                'phongTHs'
                 
             ));
         } else {
@@ -158,8 +156,38 @@ class PagesController extends Controller
         $schedule->TuanHoc = $request->input('TuanHoc');
         $schedule->save();
 
-        return redirect()->route('schedules');
+        return redirect()->route('schedule', ['TenTKB' => $schedule->TenTKB]);
     }
+
+    public function schedule($TenTKB)
+    {
+        if (session()->has('user')) {
+            $tkb = tkb::where('TenTKB', $TenTKB)->get();
+
+            return view('schedule',
+            compact(
+                'tkb'  
+            ));
+        } else {
+            return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
+        }
+    }
+
+    public function deleteSchedule($TenTKB)
+    {
+        if (session()->has('user')) {
+            $schedules = tkb::where('TenTKB', $TenTKB);
+            if ($schedules->exists()) {
+                $schedules->delete();
+                return redirect()->route('schedules')->with('success', 'Thời khóa biểu đã được xóa.');
+            } else {
+                return redirect()->route('schedules')->with('error', 'Không tìm thấy thời khóa biểu với tên đã cung cấp.');
+            }
+        } else {
+            return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
+        }
+    }
+
 
     public function monitorClassroom()
     {
