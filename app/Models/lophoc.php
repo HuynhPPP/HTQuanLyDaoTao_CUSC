@@ -13,17 +13,10 @@ class lophoc extends Model
         'MaLop'  ,
         'TenLop' ,
         'NgayBatDau' ,
-        'SiSoBanDau' ,
-        'SiSoHienTai' ,
         'MaChuongTrinh' ,
-        'MaGhiChu' ,
     ];
     public function loaidaotao(){
         return $this->belongsTo('ChuongTrinh'::class,'MaChuongTrinh');
     }
-    public function chitiettinhtrang(){
-        return $this->belongsTo('ChiTietTinhTrang'::class,'MaGhiChu');
-    }
-
 
 }

@@ -16,25 +16,23 @@ class canbo extends Model
         'GioiTinh',
         'Email',
         'Sdt',
-        'TenHocVi',
+        'MaHV',
         'TenChucVu',
-        'LinhVucPhuTrach',
-        'MaCT',
-        'MaBM',
+        'CongViecPhuTrach',
+        'MaDV',
         'MaBang',
         'MaTapHuan',
+        'ThoiGianBDCongTacCUSC',
+        'ThoiGianKTCongTacCUSC',
     ];
     public function hocvi(){
-        return $this->belongsTo('Hocvi'::class,'TenHocVi');
+        return $this->belongsTo('Hocvi'::class,'MaHV');
     }
     public function phutrach(){
-        return $this->belongsTo('PhuTrach'::class,'LinhVucPhuTrach');
-    }
-    public function congtac(){
-        return $this->belongsTo('Congtac'::class,'MaCT');
+        return $this->belongsTo('PhuTrach'::class,'CongViecPhuTrach');
     }
     public function bomon(){
-        return $this->belongsTo('BoMon'::class,'MaBM');
+        return $this->belongsTo('DonVi'::class,'MaDV');
     }
     public function bangcapcanbo(){
         return $this->belongsTo('BangCapCanBo'::class,'MaBang');

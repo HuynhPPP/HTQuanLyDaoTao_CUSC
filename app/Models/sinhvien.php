@@ -12,8 +12,6 @@ class sinhvien extends Model
     protected  $fillable=[
         'MaSV',
         'MaEnroll',
-        'MaEnrollOld',
-        'ChuongTrinhHoc',
         'HoTen',
         'InDebt',
         'NgaySinh',
