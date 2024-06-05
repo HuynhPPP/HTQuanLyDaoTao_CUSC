@@ -58,6 +58,35 @@
                      <div class="invalid-feedback">{{ $message }}</div>
                      @enderror
                 </div>
+                {{-- <div class="mb-3">
+                    <label for="PhongLT" class="form-label">Phòng lý thuyết</label>
+                    <select id="PhongLT" class="form-select @error('PhongLT') is-invalid @enderror" name="PhongLT">
+                        <option value="">Phòng lý thuyết</option>
+                        @foreach($phongLTs as $phonglt)
+                            <option value="{{ $phonglt->TenPhong }}">{{ $phonglt->TenPhong }}</option>
+                        @endforeach
+                    </select>
+                    @if ($errors->has('PhongLT'))
+                        @foreach ($errors->get('PhongLT') as $message)
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @endforeach
+                    @endif
+                </div>
+
+                <div class="mb-3">
+                    <label for="PhongTH" class="form-label">Phòng thực hành</label>
+                    <select id="PhongTH" class="form-select @error('PhongTH') is-invalid @enderror" name="PhongTH">
+                        <option value="">Phòng thực hành</option>
+                        @foreach($phongTHs as $phongTH)
+                            <option value="{{ $phongTH->TenPhong }}">{{ $phongTH->TenPhong }}</option>
+                        @endforeach
+                    </select>
+                    @if ($errors->has('PhongTH'))
+                        @foreach ($errors->get('PhongTH') as $message)
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @endforeach
+                    @endif
+                </div> --}}
 
                 <div class="d-flex justify-content-center mt-5">
                     <button type="submit" class="btn btn-primary">Lập thời khóa biểu</button>

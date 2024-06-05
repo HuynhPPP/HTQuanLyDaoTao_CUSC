@@ -18,12 +18,16 @@ class tkb extends Model
         'BuoiLyThuyet' ,
         'BuoiThucHanh' ,
         'MaTheoDoiMH' ,
+        'PhongLT',
+        'PhongTH',
     ];
     public function theodoimh(){
         return $this->belongsTo('TheoDoiMHSapBatDau'::class,'MaTheoDoiMH');
     }
-   public function phonghoc(){
-        return $this->belongsTo('PhongHoc'::class,'TenPhong');
+    public function phonglt(){
+        return $this->belongsTo('PhongHoc'::class,'PhongLT');
+    }public function phongth(){
+        return $this->belongsTo('PhongHoc'::class,'PhongTH');
     }
     public function lophoc(){
         return $this->belongsTo('LopHoc'::class,'MaLop');

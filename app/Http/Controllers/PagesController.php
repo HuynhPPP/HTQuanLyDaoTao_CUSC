@@ -128,10 +128,12 @@ class PagesController extends Controller
             $lophocs = lophoc::all();
             $phongLTs = phonghoc::where('LoaiPhong', 'LyThuyet')->get();
             $phongTHs = phonghoc::where('LoaiPhong', 'ThucHanh')->get();
+            // $phongLTs = phonghoc::where('LoaiPhong', 'LT')->get();
+            // $phongTHs = phonghoc::where('LoaiPhong', 'TH')->get();
             $tkbs = tkb::all();
 
 
-            return view('schedules', 
+            return view('schedules',
             compact(
                 'khoadaotaos',
                 'chuongtrinhs',
@@ -139,7 +141,7 @@ class PagesController extends Controller
                 'phongLTs',
                 'phongTHs',
                 'tkbs'
-                
+
             ));
         } else {
             return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
@@ -168,6 +170,8 @@ class PagesController extends Controller
             'ChuongTrinhTrienKhai' => 'required|string',
             'Lop' => 'required|string',
             'TuanHoc' => 'required|integer|max:24',
+            // 'PhongLT'=>'required|string',
+            // 'PhongTH'=>'required|string',
         ], [
             'TenTKB.required' => 'Hãy nhập tên thời khóa biểu!',
             'TenTKB.max' => 'Tên thời khóa biểu không được vượt quá 255 ký tự.',
@@ -183,6 +187,8 @@ class PagesController extends Controller
         $schedule->TenTKB = $request->input('TenTKB');
         $schedule->MaLop = $request->input('Lop');
         $schedule->TuanHoc = $request->input('TuanHoc');
+        // $schedule->PhongLT=$request->input('PhongLT');
+        // $schedule->PhongTH= $request->input('PhongTH');
         $schedule->save();
 
         return redirect()->route('schedule', ['TenTKB' => $schedule->TenTKB]);
@@ -192,11 +198,13 @@ class PagesController extends Controller
     public function schedule($TenTKB)
     {
         if (session()->has('user')) {
-            
-            $schedule = tkb::where('TenTKB', $TenTKB)->first();  
+
+            $schedule = tkb::where('TenTKB', $TenTKB)->first();
             $lophoc = lophoc::where('MaLop', $schedule->MaLop)->first();
             $chuongtrinh = chuongtrinh::where('MaChuongTrinh', $lophoc->MaChuongTrinh)->first();
             $theodoimh = theodoimhsapbatdau::where('MaTheoDoiMH', $schedule->MaTheoDoiMH)->first();
+            // $phongLTs=phonghoc::where('TenPhong', $schedule->PhongLT)->first();
+            // $phongTHs=phonghoc::where('TenPhong', $schedule->PhongTH)->first();
             return view('schedule', compact('schedule', 'chuongtrinh', 'theodoimh'));
         } else {
             return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);

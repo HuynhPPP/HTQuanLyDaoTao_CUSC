@@ -23,8 +23,8 @@
 
             <div class="col-4 text-start">
                 <p class="m-0">Bắt đầu học từ ngày: {{ isset($theodoimh) ? \Carbon\Carbon::parse($theodoimh->NgayBatDau)->format('d/m/Y') : 'Chưa có' }}</p>
-                <p class="m-0">Học Lý thuyết tại phòng: {{ isset($theodoimh) ? $theodoimh->TenPhong : 'Chưa có' }}</p>
-                <p class="m-0">Học Thực hành tại phòng:</p>
+                <p class="m-0">Học Lý thuyết tại phòng: {{--{{ $schedule->PhongLT  }}--}}</p>
+                <p class="m-0">Học Thực hành tại phòng: {{-- {{ $schedule->PhongTH }}--}}</p>
             </div>
         </div>
         <table class="table">
