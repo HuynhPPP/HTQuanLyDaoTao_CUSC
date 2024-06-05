@@ -67,6 +67,15 @@
     </div>
 </div>
 
+<div class="container my-5">
+    <div class="row text-center"">
+            <h1>Các thời khóa biểu đã lập</h1>
+            @foreach ($tkbs as $tkb)
+              <a href="{{ route('schedule',  $tkb->TenTKB) }}" class="link link-primary fs-5">{{ $tkb->TenTKB }}</a>
+            @endforeach
+    </div>
+</div>
+
 <script>
     document.getElementById('KhoaDaoTao').addEventListener('change', function() {
         var KhoaDaoTao = this.value;

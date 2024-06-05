@@ -11,6 +11,8 @@ use App\Models\lophoc;
 use App\Models\phonghoc;
 use App\Models\tkb;
 use App\Models\theodoimhsapbatdau;
+use App\Models\TapHuan;
+
 
 
 class PagesController extends Controller
@@ -126,6 +128,8 @@ class PagesController extends Controller
             $lophocs = lophoc::all();
             $phongLTs = phonghoc::where('LoaiPhong', 'LyThuyet')->get();
             $phongTHs = phonghoc::where('LoaiPhong', 'ThucHanh')->get();
+            $tkbs = tkb::all();
+
 
             return view('schedules', 
             compact(
@@ -133,7 +137,8 @@ class PagesController extends Controller
                 'chuongtrinhs',
                 'lophocs',
                 'phongLTs',
-                'phongTHs'
+                'phongTHs',
+                'tkbs'
                 
             ));
         } else {
