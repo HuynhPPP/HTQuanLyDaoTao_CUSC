@@ -72,13 +72,15 @@
             </tbody>
         </table>
     </div>
-    <div class="text-center mt-3">
+    <div class="d-flex justify-content-center mt-3">
         <form id="deleteScheduleForm" action="{{ route('deleteSchedule', ['TenTKB' => $schedule->TenTKB]) }}" method="POST">
             @csrf
             @method('DELETE')
             <button type="button" class="btn btn-danger" onclick="confirmDelete()">Xóa</button>
-            <button class="btn btn-primary">Xuất</button>
         </form>
+        <div class="ms-1">
+            <a href="{{ route('exportExcel', $schedule->TenTKB) }}" class="btn btn-primary">Xuất</a>
+        </div>
     </div>
 </div>
 

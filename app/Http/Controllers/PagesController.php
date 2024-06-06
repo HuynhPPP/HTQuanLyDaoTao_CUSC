@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Gregwar\Captcha\CaptchaBuilder;
 use Illuminate\Support\Facades\Redirect;
+
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ScheduleExport;
+
+
 use App\Models\khoadaotao;
 use App\Models\chuongtrinh;
 use App\Models\lophoc;
@@ -203,6 +208,7 @@ class PagesController extends Controller
             $lophoc = lophoc::where('MaLop', $schedule->MaLop)->first();
             $chuongtrinh = chuongtrinh::where('MaChuongTrinh', $lophoc->MaChuongTrinh)->first();
             $theodoimh = theodoimhsapbatdau::where('MaTheoDoiMH', $schedule->MaTheoDoiMH)->first();
+            
             // $phongLTs=phonghoc::where('TenPhong', $schedule->PhongLT)->first();
             // $phongTHs=phonghoc::where('TenPhong', $schedule->PhongTH)->first();
             return view('schedule', compact('schedule', 'chuongtrinh', 'theodoimh'));
@@ -225,6 +231,18 @@ class PagesController extends Controller
         } else {
             return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
         }
+    }
+
+    public function exportExcel($TenTKB)
+    {
+        // Lấy dữ liệu từ cơ sở dữ liệu
+        $schedule = tkb::where('TenTKB', $TenTKB)->first();
+        $lophoc = lophoc::where('MaLop', $schedule->MaLop)->first();
+        $chuongtrinh = chuongtrinh::where('MaChuongTrinh', $lophoc->MaChuongTrinh)->first();
+        $theodoimh = theodoimhsapbatdau::where('MaTheoDoiMH', $schedule->MaTheoDoiMH)->first();
+
+        // Tạo và xuất file Excel
+        return Excel::download(new ScheduleExport($schedule, $chuongtrinh, $theodoimh), 'schedule.xlsx');
     }
 
 
