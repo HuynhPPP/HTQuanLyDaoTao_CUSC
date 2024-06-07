@@ -9,14 +9,6 @@
             <form class="w-50" method="POST" action="{{ route('saveSchedule') }}" onsubmit="return validateForm()">
                 @csrf
                 <div class="mb-3">
-                    <label for="TenTKB" class="form-label">Tên thời khóa biểu</label>
-                    <input type="text" class="form-control @error('TenTKB') is-invalid @enderror" id="TenTKB" name="TenTKB">
-                    @error('TenTKB')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-3">
                     <label for="KhoaDaoTao" class="form-label">Khóa đào tạo</label>
                     <select id="KhoaDaoTao" class="form-select @error('KhoaDaoTao') is-invalid @enderror" name="KhoaDaoTao">
                         <option value="">----- Khóa Đào Tạo -----</option>
@@ -52,13 +44,45 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="TuanHoc" class="form-label">Tuần học</label>
-                    <input type="number" class="form-control @error('TuanHoc') is-invalid @enderror" id="TuanHoc" name="TuanHoc">
-                    @error('TuanHoc')
+                    <label for="HocKi" class="form-label">Học Kỳ</label>
+                    <select id="HocKi" class="form-select @error('HocKi') is-invalid @enderror" name="HocKi">
+                        <option value="">Học kỳ</option>
+                        @foreach($hockis as $hocki)
+                            <option value="{{ $hocki->MaHK }}">{{ $hocki->MaHK }}</option>
+                        @endforeach
+                    </select>
+                    @if ($errors->has('HocKi'))
+                        @foreach ($errors->get('HocKi') as $message)
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @endforeach
+                    @endif
+                </div>
+
+
+
+                <div class="mb-3">
+                    <label for="NgayHoc" class="form-label">Ngày bắt đầu học</label>
+                    <input type="date" class="form-control @error('NgayHoc') is-invalid @enderror" id="NgayHoc" name="NgayHoc">
+                    @error('NgayHoc')
                      <div class="invalid-feedback">{{ $message }}</div>
                      @enderror
                 </div>
-                {{-- <div class="mb-3">
+
+                <div class="mb-3">
+                    <label for="TenKG" class="form-label">Khung gio hoc</label>
+                    <select id="TenKG" class="form-select @error('TenKG') is-invalid @enderror" name="TenKG">
+                        <option value="">----- Khung gio hoc -----</option>
+                         @foreach($khunggios as $khunggio)
+                            <option value="{{ $khunggio->TenKhungGio }}">{{ $khunggio->TenKhungGio }}</option>
+                        @endforeach
+                    </select>
+                    @error('TenKG')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+
+                <div class="mb-3">
                     <label for="PhongLT" class="form-label">Phòng lý thuyết</label>
                     <select id="PhongLT" class="form-select @error('PhongLT') is-invalid @enderror" name="PhongLT">
                         <option value="">Phòng lý thuyết</option>
@@ -86,8 +110,7 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @endforeach
                     @endif
-                </div> --}}
-
+                </div>
                 <div class="d-flex justify-content-center mt-5">
                     <button type="submit" class="btn btn-primary">Lập thời khóa biểu</button>
                 </div>

@@ -22,9 +22,9 @@
             </div>
 
             <div class="col-4 text-start">
-                <p class="m-0">Bắt đầu học từ ngày: {{ isset($theodoimh) ? \Carbon\Carbon::parse($theodoimh->NgayBatDau)->format('d/m/Y') : 'Chưa có' }}</p>
-                <p class="m-0">Học Lý thuyết tại phòng: {{--{{ $schedule->PhongLT  }}--}}</p>
-                <p class="m-0">Học Thực hành tại phòng: {{-- {{ $schedule->PhongTH }}--}}</p>
+                <p class="m-0">Bắt đầu học từ ngày: {{  \Carbon\Carbon::parse($schedule->NgayHoc)->format('d/m/Y')}}</p>
+                <p class="m-0">Học Lý thuyết tại phòng: {{ $schedule->PhongLT  }}</p>
+                <p class="m-0">Học Thực hành tại phòng:  {{ $schedule->PhongTH }}</p>
             </div>
         </div>
         <table class="table">
@@ -42,32 +42,32 @@
             </thead>
             <tbody>
                 @php
-                    $startDate = isset($theodoimh) ? \Carbon\Carbon::parse($theodoimh->NgayBatDau) : null;
+                    $startDate = \Carbon\Carbon::parse($schedule->NgayHoc);
                 @endphp
 
-                @for ($i = 1; $i <= $schedule->TuanHoc; $i++)
+                @for ($i = 1; $i <= $schedule->NgayHoc; $i++)
                     @php
                         $weekStart = $startDate ? $startDate->copy()->addWeeks($i - 1)->startOfWeek() : null;
                         $weekEnd = $startDate ? $weekStart->copy()->endOfWeek()->subDays(2) : null;
                     @endphp
                     <tr>
-                        <th rowspan="2">{{ $weekStart ? $weekStart->format('d/m/Y') . ' - ' . $weekEnd->format('d/m/Y') : '' }}</th>
-                        <th rowspan="2">Tuần {{ $i }}</th>
-                        <th>7:00-9:00</th>
+                        <th rowspan="1">{{ $weekStart ? $weekStart->format('d/m/Y') . ' - ' . $weekEnd->format('d/m/Y') : '' }}</th>
+                        <th rowspan="1">Tuần {{ $i }}</th>
+                        <th>{{ $schedule->TenKhungGio}}</th>
                         <th>Hàng {{ $i }}</th>
                         <th>Hàng {{ $i }}</th>
                         <th>Hàng {{ $i }}</th>
                         <th>Hàng {{ $i }}</th>
                         <th>Hàng {{ $i }}</th>
                     </tr>
-                    <tr>
+                    {{-- <tr>
                         <th>13:00-15:00</th>
                         <th>Hàng {{ $i }}</th>
                         <th>Hàng {{ $i }}</th>
                         <th>Hàng {{ $i }}</th>
                         <th>Hàng {{ $i }}</th>
                         <th>Hàng {{ $i }}</th>
-                    </tr>
+                    </tr> --}}
                 @endfor
             </tbody>
         </table>

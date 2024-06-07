@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Gregwar\Captcha\CaptchaBuilder;
 use Illuminate\Support\Facades\Redirect;
 
 use Maatwebsite\Excel\Facades\Excel;
@@ -17,7 +16,8 @@ use App\Models\phonghoc;
 use App\Models\tkb;
 use App\Models\theodoimhsapbatdau;
 use App\Models\TapHuan;
-
+use App\Models\hocki;
+use App\Models\khunggio;
 
 
 class PagesController extends Controller
@@ -127,15 +127,17 @@ class PagesController extends Controller
 
     public function schedules()
     {
-        if (session()->has('user')) {
+        //if (session()->has('user')) {
             $khoadaotaos = khoadaotao::all();
             $chuongtrinhs = chuongtrinh::all();
             $lophocs = lophoc::all();
             $phongLTs = phonghoc::where('LoaiPhong', 'LyThuyet')->get();
             $phongTHs = phonghoc::where('LoaiPhong', 'ThucHanh')->get();
-            // $phongLTs = phonghoc::where('LoaiPhong', 'LT')->get();
-            // $phongTHs = phonghoc::where('LoaiPhong', 'TH')->get();
+            $phongLTs = phonghoc::where('LoaiPhong', 'LT')->get();
+            $phongTHs = phonghoc::where('LoaiPhong', 'TH')->get();
+            $hockis=hocki::all();
             $tkbs = tkb::all();
+            $khunggios=khunggio::all();
 
 
             return view('schedules',
@@ -145,12 +147,14 @@ class PagesController extends Controller
                 'lophocs',
                 'phongLTs',
                 'phongTHs',
-                'tkbs'
+                'tkbs',
+                'hockis',
+                'khunggios',
 
             ));
-        } else {
-            return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
-        }
+        // } else {
+        //     return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
+        // }
     }
 
     public function getChuongTrinh($TenKhoaDaoTao)
@@ -169,31 +173,30 @@ class PagesController extends Controller
 
     public function saveSchedule(Request $request)
     {
+        //dd($request->all());
         $request->validate([
-            'TenTKB' => 'required|string|max:255',
             'KhoaDaoTao' => 'required|string',
             'ChuongTrinhTrienKhai' => 'required|string',
+            'HocKi'=> 'required|string',
             'Lop' => 'required|string',
-            'TuanHoc' => 'required|integer|max:24',
-            // 'PhongLT'=>'required|string',
-            // 'PhongTH'=>'required|string',
+            'NgayHoc' => 'required|string',
+            'PhongLT'=>'required|string',
+            'PhongTH'=>'required|string',
         ], [
-            'TenTKB.required' => 'Hãy nhập tên thời khóa biểu!',
-            'TenTKB.max' => 'Tên thời khóa biểu không được vượt quá 255 ký tự.',
+        //    'TenTKB.max' => 'Tên thời khóa biểu không được vượt quá 255 ký tự.',
             'KhoaDaoTao.required' => 'Hãy chọn khoá đào tạo!',
             'ChuongTrinhTrienKhai.required' => 'Hãy chọn chương trình triển khai!',
             'Lop.required' => 'Hãy chọn lớp!',
-            'TuanHoc.required' => 'Hãy chọn tuần học!',
-            'TuanHoc.integer' => 'Tuần học phải là một số nguyên.',
-            'TuanHoc.max' => 'Tuần học không được vượt quá 24 tuần.',
         ]);
 
         $schedule = new tkb();
-        $schedule->TenTKB = $request->input('TenTKB');
+        $schedule->TenTKB= $request->input('Lop').'-'. $request->input('HocKi') . '-' . $request->input('ChuongTrinhTrienKhai') ;
         $schedule->MaLop = $request->input('Lop');
-        $schedule->TuanHoc = $request->input('TuanHoc');
-        // $schedule->PhongLT=$request->input('PhongLT');
-        // $schedule->PhongTH= $request->input('PhongTH');
+        $schedule->TenKhungGio= $request->input('TenKG');
+        $schedule->MaHK=$request->input('HocKi');
+        $schedule->NgayHoc = $request->input('NgayHoc');
+        $schedule->PhongLT=$request->input('PhongLT');
+        $schedule->PhongTH= $request->input('PhongTH');
         $schedule->save();
 
         return redirect()->route('schedule', ['TenTKB' => $schedule->TenTKB]);
@@ -202,25 +205,25 @@ class PagesController extends Controller
 
     public function schedule($TenTKB)
     {
-        if (session()->has('user')) {
+        //if (session()->has('user')) {
 
             $schedule = tkb::where('TenTKB', $TenTKB)->first();
             $lophoc = lophoc::where('MaLop', $schedule->MaLop)->first();
             $chuongtrinh = chuongtrinh::where('MaChuongTrinh', $lophoc->MaChuongTrinh)->first();
             $theodoimh = theodoimhsapbatdau::where('MaTheoDoiMH', $schedule->MaTheoDoiMH)->first();
-            
-            // $phongLTs=phonghoc::where('TenPhong', $schedule->PhongLT)->first();
-            // $phongTHs=phonghoc::where('TenPhong', $schedule->PhongTH)->first();
+            $hocki = hocki::where('MaHK',$schedule->MaHK)->first();
+            $phongLTs=phonghoc::where('TenPhong', $schedule->PhongLT)->first();
+            $phongTHs=phonghoc::where('TenPhong', $schedule->PhongTH)->first();
             return view('schedule', compact('schedule', 'chuongtrinh', 'theodoimh'));
-        } else {
-            return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
-        }
+        // } else {
+        //     return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
+        // }
     }
 
 
     public function deleteSchedule($TenTKB)
     {
-        if (session()->has('user')) {
+        //if (session()->has('user')) {
             $schedules = tkb::where('TenTKB', $TenTKB);
             if ($schedules->exists()) {
                 $schedules->delete();
@@ -228,9 +231,9 @@ class PagesController extends Controller
             } else {
                 return redirect()->route('schedules')->with('error', 'Không tìm thấy thời khóa biểu với tên đã cung cấp.');
             }
-        } else {
-            return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
-        }
+        // } else {
+        //     return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
+        // }
     }
 
     public function exportExcel($TenTKB)
