@@ -14,6 +14,7 @@ class danhsachmonhoc extends Model
     protected $fillable=[
         'TenKhungGio',
         'TenMH',
+        'TenTKB',
     ];
 
     public function khungGio()
@@ -25,4 +26,10 @@ class danhsachmonhoc extends Model
     {
         return $this->belongsTo(MonHoc::class, 'TenMH');
     }
+
+     public function tkb()
+    {
+        return $this->belongsTo(TKB::class, 'TenTKB');
+    }
+
 }
