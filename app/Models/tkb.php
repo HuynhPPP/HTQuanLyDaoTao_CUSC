@@ -13,24 +13,17 @@ class tkb extends Model
     protected $fillable=[
         'TenTKB' ,
         'MaLop' ,
-        'TuanHoc' ,
-        'TenPhong' ,
-        'BuoiLyThuyet' ,
-        'BuoiThucHanh' ,
-        'MaTheoDoiMH' ,
-        'PhongLT',
-        'PhongTH',
+        'MaHK',
+        'NgayHoc' ,
+        'TuanHoc',
     ];
-    public function theodoimh(){
-        return $this->belongsTo('TheoDoiMHSapBatDau'::class,'MaTheoDoiMH');
-    }
-    public function phonglt(){
-        return $this->belongsTo('PhongHoc'::class,'PhongLT');
-    }public function phongth(){
-        return $this->belongsTo('PhongHoc'::class,'PhongTH');
-    }
-    public function lophoc(){
-        return $this->belongsTo('LopHoc'::class,'MaLop');
+    public function hocKi()
+    {
+        return $this->belongsTo(HocKi::class, 'MaHK');
     }
 
+    public function lopHoc()
+    {
+        return $this->belongsTo(LopHoc::class, 'MaLop');
+    }
 }

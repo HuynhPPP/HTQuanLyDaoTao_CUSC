@@ -246,36 +246,12 @@ VALUES
 ('18h-21h 3,5,7','3'),
 ('8h-11h t7,cn','3');
 
-CREATE TABLE `TKB` (
-  `TenTKB` VARCHAR(255) PRIMARY KEY,
-  `MaLop` VARCHAR(12),
-  `TenKhungGio` VARCHAR(100),/*khung gio hoc 7-9 hay 18-21 2,4,6 ,...*/
-  `MaHK` VARCHAR(12),
-  `TuanHoc` INT,
-  `NgayHoc` DATE,
-  `PhongLT` VARCHAR(20),
-  `PhongTH` VARCHAR(20),
-  FOREIGN KEY (`MaHK`) REFERENCES `HocKi`(`MaHK`),
-  FOREIGN KEY (`TenKhungGio`) REFERENCES `KhungGio`(`TenKhungGio`),
-  FOREIGN KEY (`PhongLT`) REFERENCES `PhongHoc`(`TenPhong`),
-  FOREIGN KEY (`PhongTH`) REFERENCES `PhongHoc`(`TenPhong`),
-  FOREIGN KEY (`MaLop`) REFERENCES `LopHoc`(`MaLop`)
-);
-
 CREATE TABLE `DanhSachPhong`(
 	`MaLop` VARCHAR(12) ,
 	`TenPhong` VARCHAR(20),
 	FOREIGN KEY (`MaLop`) REFERENCES `LopHoc`(`MaLop`),
 	FOREIGN KEY (`TenPhong`) REFERENCES `PhongHoc`(`TenPhong`),
 	PRIMARY KEY (`MaLop`,`TenPhong`)
-);
-CREATE TABLE `DanhSachMH`(
-	`TenKhungGio` VARCHAR(100),
-	`TenMH` VARCHAR(255),
-	FOREIGN KEY (`TenKhungGio`) REFERENCES `KhungGio`(`TenKhungGio`),
-	FOREIGN KEY (`TenMH`) REFERENCES `MonHoc`(`TenMH`),
-	PRIMARY KEY (`TenMH`,`TenKhungGio`)
-	
 );
 
 CREATE TABLE `NgayNghi`(
@@ -286,8 +262,22 @@ CREATE TABLE `NgayNghi`(
 INSERT INTO ngaynghi(TenNgayNghi) 
 VALUES
 ('Lễ Quốc Khánh'),
-('Ngày giải phóng miền Nam'),
-('Ngày nhà giáo Việt Nam');
+('Nghỉ 30/04-01/05'),
+('Nghỉ hè'),
+('self study'),
+('team works');
+
+
+
+CREATE TABLE `TKB` (
+  `TenTKB` VARCHAR(255) PRIMARY KEY,
+  `MaLop` VARCHAR(12),
+  `MaHK` VARCHAR(12),
+  `TuanHoc` INT,
+  `NgayHoc` DATE,
+  FOREIGN KEY (`MaHK`) REFERENCES `HocKi`(`MaHK`),
+  FOREIGN KEY (`MaLop`) REFERENCES `LopHoc`(`MaLop`)
+);
 
 CREATE TABLE `DanhSachNgayNghi`(
 	`TenNgayNghi` VARCHAR(50),
@@ -297,6 +287,19 @@ CREATE TABLE `DanhSachNgayNghi`(
 	PRIMARY KEY (`TenNgayNghi`,`TenTKB`)
 
 );
+
+CREATE TABLE `DanhSachMH`(
+	`TenKhungGio` VARCHAR(100),
+	`TenMH` VARCHAR(255),
+	`TenTKB` VARCHAR(255),
+	FOREIGN KEY (`TenTKB`) REFERENCES `TKB`(`TenTKB`),
+	FOREIGN KEY (`TenKhungGio`) REFERENCES `KhungGio`(`TenKhungGio`),
+	FOREIGN KEY (`TenMH`) REFERENCES `MonHoc`(`TenMH`),
+	PRIMARY KEY (`TenMH`,`TenKhungGio`,`TenTKB`)
+	
+);
+
+
 /*CREATE TABLE `TheoDoiMHSapBatDau`(
 	`MaTheoDoiMH` VARCHAR(12) PRIMARY KEY,
   TenMH VARCHAR(30) ,
