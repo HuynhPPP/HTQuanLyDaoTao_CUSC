@@ -61,18 +61,6 @@
                     @enderror
                 </div>
 
-                <div class="mb-3">
-                    <label for="TenKG" class="form-label">Khung gio hoc</label>
-                    <select id="TenKG" class="form-select @error('TenKG') is-invalid @enderror" name="TenKG">
-                        <option value="">----- Khung gio hoc -----</option>
-                         @foreach($khunggios as $khunggio)
-                            <option value="{{ $khunggio->TenKhungGio }}">{{ $khunggio->TenKhungGio }}</option>
-                        @endforeach
-                    </select>
-                    @error('TenKG')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
 
                 <div class="d-flex justify-content-center mt-5">
                     <button type="submit" class="btn btn-primary">Lập thời khóa biểu</button>
@@ -94,48 +82,71 @@
 <script>
     document.getElementById('KhoaDaoTao').addEventListener('change', function() {
         var KhoaDaoTao = this.value;
-        if (KhoaDaoTao) {
+        var chuongTrinhSelect = document.getElementById('ChuongTrinhTrienKhai');
+        var lopSelect = document.getElementById('Lop');
+        var HocKiSelect = document.getElementById('HocKi');
+
+        if (KhoaDaoTao && KhoaDaoTao !== "") {
             fetch(`/getChuongTrinh/${KhoaDaoTao}`)
                 .then(response => response.json())
                 .then(data => {
-                    var chuongTrinhSelect = document.getElementById('ChuongTrinhTrienKhai');
                     chuongTrinhSelect.innerHTML = '<option value="">----- Chương Trình Triển Khai -----</option>';
                     data.forEach(chuongTrinh => {
                         chuongTrinhSelect.innerHTML += `<option value="${chuongTrinh.MaChuongTrinh}">${chuongTrinh.MaChuongTrinh} ${chuongTrinh.TenChuongTrinh}</option>`;
                     });
+                    chuongTrinhSelect.disabled = false;
                 });
+        } else {
+            chuongTrinhSelect.innerHTML = '<option value="">----- Chương Trình Triển Khai -----</option>';
+            chuongTrinhSelect.disabled = true;
         }
+
+        lopSelect.innerHTML = '<option value="">----- Mã Lớp Học -----</option>';
+        lopSelect.disabled = true;
+
+        HocKiSelect.innerHTML = '<option value="">----- Mã Học Kỳ -----</option>';
+        HocKiSelect.disabled = true;
     });
 
     document.getElementById('ChuongTrinhTrienKhai').addEventListener('change', function() {
         var chuongTrinh = this.value;
-        if (chuongTrinh) {
+        var lopSelect = document.getElementById('Lop');
+        var HocKiSelect = document.getElementById('HocKi');
+
+        if (chuongTrinh && chuongTrinh !== "") {
             fetch(`/getLop/${chuongTrinh}`)
                 .then(response => response.json())
                 .then(data => {
-                    var lopSelect = document.getElementById('Lop');
                     lopSelect.innerHTML = '<option value="">----- Mã Lớp Học -----</option>';
                     data.forEach(lop => {
                         lopSelect.innerHTML += `<option value="${lop.MaLop}">${lop.MaLop} ${lop.TenLop}</option>`;
                     });
+                    lopSelect.disabled = false;
                 });
-        }
-    });
 
-    document.getElementById('ChuongTrinhTrienKhai').addEventListener('change', function() {
-        var hocki = this.value;
-        if (hocki) {
-            fetch(`/getHK/${hocki}`)
+            fetch(`/getHK/${chuongTrinh}`)
                 .then(response => response.json())
                 .then(data => {
-                    var HocKiSelect = document.getElementById('HocKi');
                     HocKiSelect.innerHTML = '<option value="">----- Mã Học Kỳ -----</option>';
                     data.forEach(HocKi => {
                         HocKiSelect.innerHTML += `<option value="${HocKi.MaHK}">${HocKi.MaHK} ${HocKi.TenHK}</option>`;
                     });
+                    HocKiSelect.disabled = false;
                 });
+        } else {
+            lopSelect.innerHTML = '<option value="">----- Mã Lớp Học -----</option>';
+            lopSelect.disabled = true;
+
+            HocKiSelect.innerHTML = '<option value="">----- Mã Học Kỳ -----</option>';
+            HocKiSelect.disabled = true;
         }
     });
+
+    document.getElementById('ChuongTrinhTrienKhai').disabled = true;
+    document.getElementById('Lop').disabled = true;
+    document.getElementById('HocKi').disabled = true;
+
+
 
     // function validateForm() {
     //     var KhoaDaoTao = document.getElementById('KhoaDaoTao').value;
