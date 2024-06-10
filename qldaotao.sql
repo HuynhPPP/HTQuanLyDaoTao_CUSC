@@ -21,8 +21,8 @@ CREATE TABLE `TapHuan`(
 
 CREATE TABLE `ChucVu`(
 	`TenChucVu` VARCHAR(30) PRIMARY KEY,
- 	`ThoiGianDamNhanCV` VARCHAR(50),/*Thoi gian bat dau cong viec*/
- 	`ThoiGianKTCV` VARCHAR(50)/*Thoi gian ket thuc cong viec*/
+ 	`ThoiGianBatDauCV` VARCHAR(50),/*Thoi gian bat dau chuc vu*/
+ 	`ThoiGianKTCV` VARCHAR(50)/*Thoi gian ket thuc chuc vu*/
 );
  
 CREATE TABLE `HocVi` (
@@ -82,8 +82,12 @@ CREATE TABLE `ChuongTrinh` (
   `TenKhoaDaoTao` VARCHAR(20),/*môn học trong chương trình*/
   FOREIGN KEY (`TenKhoaDaoTao`) REFERENCES `KhoaDaoTao`(`TenKhoaDaoTao`)
 );
- 
-
+INSERT INTO khoadaotao(TenKhoaDaoTao,ThoiGianDaoTao) VALUES ('Dài hạn', '2 năm'), ('Ngắn hạn','1 học kì');
+INSERT INTO chuongtrinh(MaChuongTrinh,TenChuongTrinh,TenKhoaDaoTao) 
+VALUES 
+('OV-7023','Lap trinh vien quoc te','Dài hạn'),
+('OV9001','lap trinh vien arena','Dài hạn'),
+('AT7096','My thuat da phuong tien','Ngắn hạn');
 
 CREATE TABLE `SinhVien` (
   `MaSV` VARCHAR(12) PRIMARY KEY,
@@ -130,7 +134,7 @@ CREATE TABLE `TinhTrangHocTap`(
 	`MaTTHocTap` VARCHAR(12) PRIMARY KEY,
 	`TinhTrang` VARCHAR(255),
 	`MaSV` VARCHAR(12),
-	FOREIGN KEY (`MaSV`) REFERENCES `SinhVien`(`MaSV`)
+	FOREIGN KEY (`MaSV`) REFERENCES `SinhVien`(`MaSV`)/*them phieulido*/
 );
 
 
@@ -142,7 +146,7 @@ CREATE TABLE `PhieuLiDo`(
 	`MonSau` VARCHAR(255), /*chuyen tu mon nay sang mon khac lop khac*/
 	`LiDo` VARCHAR(255),
 	`NgayDuyetDon` DATE,
-	`NguoiDuyetDon` DATE
+	`NguoiDuyetDon` DATE 
 );
 
 
@@ -153,27 +157,40 @@ CREATE TABLE `LopHoc` (
   `MaChuongTrinh` VARCHAR(12),
   FOREIGN KEY (`MaChuongTrinh`) REFERENCES `ChuongTrinh`(`MaChuongTrinh`)
 );
+INSERT INTO LopHoc (MaLop,MaChuongTrinh) VALUES ('CP2396G11','OV-7023'), ('CP2396M02','OV-7023'), ('CP2296H07','OV-7023');
 
 CREATE TABLE `DanhSachSV`(
 	`MaLop` VARCHAR(12),
 	`MaSV` VARCHAR(12),
 	FOREIGN KEY (`MaLop`) REFERENCES `LopHoc`(`MaLop`),
-	FOREIGN KEY (`MaSV`) REFERENCES `SinhVien`(`MaSV`)
+	FOREIGN KEY (`MaSV`) REFERENCES `SinhVien`(`MaSV`),
+	PRIMARY KEY (`MaLop`,`MaSV`)
 );
 
 CREATE TABLE `HinhThucDanhGia`(
 	`MaHTDanhGia` VARCHAR(12) PRIMARY KEY,
-	`LT` BOOLEAN,
-	`TH` BOOLEAN,
-	`Assignment` BOOLEAN,
-	`BCProject` BOOLEAN,
-	`BaiTapLon` BOOLEAN
+	`HinhThuc` VARCHAR(255)
 );
+ CREATE TABLE `HocKi`(
+ 	`MaHK` VARCHAR(12) PRIMARY KEY ,
+ 	`TenHK` VARCHAR(30),
+ 	`GioGoc` INT,
+ 	`GioTrienKhai` INT,
+ 	`MaChuongTrinh` VARCHAR(12),
+   FOREIGN KEY (`MaChuongTrinh`) REFERENCES `ChuongTrinh`(`MaChuongTrinh`)
+ );
+ INSERT INTO hocki(MaHK,TenHK,MaChuongTrinh)
+ VALUES 
+ ('OV-7023-hk1','Học kì 1','OV-7023'),
+ ('OV-7023-hk2','Học kì 2','OV-7023'),
+ ('OV-7023-hk3','Học kì 3','OV-7023'),
+ ('OV-7023-hk4','Học kì 4','OV-7023'),
+ ('OV-7023-hk5','Học kì 5','OV-7023');
 
 CREATE TABLE `MonHoc` (
   `TenMH` VARCHAR(255) PRIMARY KEY,
   `MaMH` VARCHAR(12),
-  `MaChuongTrinh` VARCHAR(12),
+  `MaHK` VARCHAR(12),
   `GioGoc` INT,
   `GioTrienKhai` INT,
   `SoTietLT`  INT,
@@ -181,8 +198,17 @@ CREATE TABLE `MonHoc` (
   `SoTietLTvaTH` INT,
   `MaHTDanhGia` VARCHAR(12),
   FOREIGN KEY (`MaHTDanhGia`) REFERENCES `HinhThucDanhGia`(`MaHTDanhGia`),
-  FOREIGN KEY (`MaChuongTrinh`) REFERENCES `ChuongTrinh`(`MaChuongTrinh`)
+  FOREIGN KEY (`MaHK`) REFERENCES `HocKi`(`MaHK`)
 );
+INSERT INTO MonHoc(TenMH, MaHK, GioGoc, GioTrienKhai)
+VALUES 
+('Computer fundamentals' , 'OV-7023-hk1', '0', '8'),
+('Logic Building and Elementary Programing' , 'OV-7023-hk1', '40', '42'),
+('AngularJS' , 'OV-7023-hk2', '16', '16'),
+('HTML5,CSS and Javascript' , 'OV-7023-hk3', '40', '44'),
+('eProject-Website Development' , 'OV-7023-hk4', '2', '8'),
+('Database Design and Development(core)' , 'OV-7023-hk5', '24', '16'),
+('Data Management with SQL server' , 'OV-7023-hk2', '40', '40');
 
 CREATE TABLE `TrangThaiMH`(
 	`MaTTMH` VARCHAR(12) PRIMARY KEY,
@@ -191,17 +217,91 @@ CREATE TABLE `TrangThaiMH`(
 
 
 CREATE TABLE `PhongHoc` (
-  `TenPhong` VARCHAR(20) PRIMARY KEY,
+  `TenPhong` VARCHAR(20) PRIMARY KEY ,
   `LoaiPhong` VARCHAR(255),
   `SucChua` INT
 );
+INSERT INTO phonghoc(TenPhong, LoaiPhong) 
+VALUES 
+('LT1','LT'),
+('LT2','LT'),
+('TH1','TH'),
+('TH2','TH');
 
-CREATE TABLE `TheoDoiMHSapBatDau`(
+CREATE TABLE `KhungGio`(
+	`TenKhungGio` VARCHAR(100) PRIMARY KEY ,
+	`ThoiGian` INT
+);
+INSERT INTO khunggio(TenKhungGio, ThoiGian)
+VALUES 
+('7h-9h','2'),
+('9h-11h','2'),
+('13h-15h','2'),
+('15h-17h','2'),
+('17h30-19h30','2'),
+('19h30-21h30','2'),
+('13h30-16h30','3'),
+('14h-17h','3'),
+('18h-21h 2,4,6','3'),
+('18h-21h 3,5,7','3'),
+('8h-11h t7,cn','3');
+
+CREATE TABLE `TKB` (
+  `TenTKB` VARCHAR(255) PRIMARY KEY,
+  `MaLop` VARCHAR(12),
+  `TenKhungGio` VARCHAR(100),/*khung gio hoc 7-9 hay 18-21 2,4,6 ,...*/
+  `MaHK` VARCHAR(12),
+  `TuanHoc` INT,
+  `NgayHoc` DATE,
+  `PhongLT` VARCHAR(20),
+  `PhongTH` VARCHAR(20),
+  FOREIGN KEY (`MaHK`) REFERENCES `HocKi`(`MaHK`),
+  FOREIGN KEY (`TenKhungGio`) REFERENCES `KhungGio`(`TenKhungGio`),
+  FOREIGN KEY (`PhongLT`) REFERENCES `PhongHoc`(`TenPhong`),
+  FOREIGN KEY (`PhongTH`) REFERENCES `PhongHoc`(`TenPhong`),
+  FOREIGN KEY (`MaLop`) REFERENCES `LopHoc`(`MaLop`)
+);
+
+CREATE TABLE `DanhSachPhong`(
+	`MaLop` VARCHAR(12) ,
+	`TenPhong` VARCHAR(20),
+	FOREIGN KEY (`MaLop`) REFERENCES `LopHoc`(`MaLop`),
+	FOREIGN KEY (`TenPhong`) REFERENCES `PhongHoc`(`TenPhong`),
+	PRIMARY KEY (`MaLop`,`TenPhong`)
+);
+CREATE TABLE `DanhSachMH`(
+	`TenKhungGio` VARCHAR(100),
+	`TenMH` VARCHAR(255),
+	FOREIGN KEY (`TenKhungGio`) REFERENCES `KhungGio`(`TenKhungGio`),
+	FOREIGN KEY (`TenMH`) REFERENCES `MonHoc`(`TenMH`),
+	PRIMARY KEY (`TenMH`,`TenKhungGio`)
+	
+);
+
+CREATE TABLE `NgayNghi`(
+	`TenNgayNghi` VARCHAR(50) PRIMARY KEY,
+	`NgayBDNghi` DATE,
+	`NgayKT` DATE /*vi du le 30/04-01/05 thi nghi 3 ngay */
+);
+INSERT INTO ngaynghi(TenNgayNghi) 
+VALUES
+('Lễ Quốc Khánh'),
+('Ngày giải phóng miền Nam'),
+('Ngày nhà giáo Việt Nam');
+
+CREATE TABLE `DanhSachNgayNghi`(
+	`TenNgayNghi` VARCHAR(50),
+	`TenTKB` VARCHAR(12),
+	FOREIGN KEY (`TenNgayNghi`) REFERENCES `NgayNghi`(`TenNgayNghi`),
+	FOREIGN KEY (`TenTKB`) REFERENCES `TKB`(`TenTKB`),
+	PRIMARY KEY (`TenNgayNghi`,`TenTKB`)
+
+);
+/*CREATE TABLE `TheoDoiMHSapBatDau`(
 	`MaTheoDoiMH` VARCHAR(12) PRIMARY KEY,
   TenMH VARCHAR(30) ,
   `MaLop` VARCHAR(12),
-  TenPhong VARCHAR(12) ,
-  NgayBatDau DATE,
+  TenPhong VARCHAR(20) ,
   `GioHoc` VARCHAR(30),
   `HocKy` VARCHAR(50), 
   `MaTTMH` VARCHAR(12),
@@ -222,23 +322,6 @@ CREATE TABLE `PhanCongGiangDay` (
   FOREIGN KEY (`MaLop`) REFERENCES `LopHoc`(`MaLop`),
   FOREIGN KEY (`MaCB`) REFERENCES `CanBo`(`MaCB`)
 );
-
-CREATE TABLE `TKB` (
-	`TenTKB` VARCHAR(30) PRIMARY KEY,
-  `MaLop` VARCHAR(12),
-  `TuanHoc` INT,
-  `TenPhongLT` VARCHAR(20),
-  `TenPhongTH` VARCHAR(20),
-  `BuoiLyThuyet` INT,
-  `BuoiThucHanh` INT,
-  `MaTheoDoiMH` VARCHAR(12),
-  FOREIGN KEY (`MaTheoDoiMH`) REFERENCES `TheoDoiMHSapBatDau`(`MaTheoDoiMH`),
-  FOREIGN KEY (`TenPhongLT`) REFERENCES `PhongHoc`(`TenPhong`),
-  FOREIGN KEY (`TenPhongTH`) REFERENCES `PhongHoc`(`TenPhong`),
-  FOREIGN KEY (`MaLop`) REFERENCES `LopHoc`(`MaLop`)
-);
-
-
 
 CREATE TABLE `LichThi` (
   `MaLichThi` VARCHAR(12) PRIMARY KEY,
@@ -281,113 +364,12 @@ CREATE TABLE `BaoCaoKetQuaHocTap` (
   FOREIGN KEY (`MaTheoDoiMH`) REFERENCES `TheoDoiMHSapBatDau`(`MaTheoDoiMH`)
 );
 CREATE TABLE `TheoDoiPhongHoc`(
+  `TenMH` VARCHAR(255),
   `GhiChu` VARCHAR(255),
   `MaCB` VARCHAR(12),
   `TenTKB` VARCHAR(30),
   FOREIGN KEY (`MaCB`) REFERENCES `CanBo`(`MaCB`),
   FOREIGN KEY (`TenTKB`) REFERENCES `TKB`(`TenTKB`)
  
-);
+);*/
 
-INSERT INTO TapHuan (MaTapHuan, TenKhoaTapHuan, ThoiGianBatDau, ThoiGianKetThuc, DiaDiem)
-VALUES
-('MH001', 'Khoa học dữ liệu', '2024-05-31', '2024-06-02', 'TP. Hồ Chí Minh'),
-('MH002', 'Phân tích dữ liệu lớn', '2024-06-05', '2024-06-09', 'Hà Nội'),
-('MH003', 'Lập trình ứng dụng web', '2024-06-12', '2024-06-16', 'Đà Nẵng'),
-('MH004', 'Hệ thống nhúng', '2024-06-19', '2024-06-23', 'Cần Thơ'),
-('MH005', 'Mạng máy tính và truyền thông', '2024-06-26', '2024-06-30', 'Hải Phòng'),
-('MH006', 'An ninh mạng', '2024-07-03', '2024-07-07', 'Huế'),
-('MH007', 'Trí tuệ nhân tạo', '2024-07-10', '2024-07-14', 'Quảng Ninh'),
-('MH008', 'Xử lý ngôn ngữ tự nhiên', '2024-07-17', '2024-07-21', 'Bình Dương'),
-('MH009', 'Học máy', '2024-07-24', '2024-07-28', 'Đồng Nai'),
-('MH010', 'Khai phá dữ liệu', '2024-07-31', '2024-08-04', 'Vũng Tàu'),
-('MH011', 'Công nghệ thông tin di động', '2024-08-07', '2024-08-11', 'Cần Thơ'),
-('MH012', 'Bảo mật thông tin', '2024-08-14', '2024-08-18', 'TP. Hồ Chí Minh');
-/*du lieu cua bang bang cap can bo*/
-INSERT INTO BangCapCanBo (MaBang, TenBang, ChuyenMon, ThoiGianCap, DonViCap, SoHieu, SoVaoSo)
-VALUES
-('BC001', 'Cử nhân Công nghệ Thông tin', 'Công nghệ phần mềm', '2020-07-01', ' Trường Đại học Cần Thơ', 'A123456', 'GV123456'),
-('BC002', 'Thạc sĩ An toàn thông tin', 'An ninh mạng', '2022-06-30', 'Đại học Bách khoa TP. Hồ Chí Minh', 'B789012', 'CB789012'),
-('BC003', 'Tiến sĩ Khoa học Máy tính', 'Trí tuệ nhân tạo', '2023-12-25', 'Viện Hàn lâm Khoa học và Công nghệ Việt Nam', 'C345678', 'CN345678'),
-('BC004', 'Cao đẳng Quản trị kinh doanh', 'Marketing', '2019-05-10', 'Cao đẳng Kinh tế Tây Nam', 'D901234', 'NV901234'),
-('BC005', 'Trung cấp Kế toán doanh nghiệp', 'Kế toán tổng hợp', '2021-09-17', 'Trung cấp Thương mại và Du lịch Cần Thơ', 'E567890', 'KT567890'),
-('BC006', 'Cử nhân Ngôn ngữ Anh', 'Tiếng Anh thương mại', '2018-02-22', 'Đại học Ngoại ngữ - Đại học Đà Nẵng', 'F123456', 'QT123456'),
-('BC007', 'Thạc sĩ Quản lý giáo dục', 'Quản lý đào tạo', '2024-01-15', 'Đại học Sư phạm TP. Hồ Chí Minh', 'G789012', 'QL789012'),
-('BC008', 'Cao đẳng Điều dưỡng', 'Điều dưỡng đa khoa', '2022-03-08', 'Cao đẳng Y tế Cần Thơ', 'H345678', 'DY345678'),
-('BC009', 'Trung cấp Điện tử', 'Sửa chữa điện tử dân dụng', '2020-11-21', 'Trung cấp Công nghiệp và Nghề Hà Nội', 'I901234', 'KT901234'),
-('BC010', 'Cử nhân Luật', 'Luật thương mại', '2023-08-10', 'Đại học Luật TP. Hồ Chí Minh', 'J567890', 'PH567890'); 
-/* dữ liệu bảng chức vụ*/
-INSERT INTO ChucVu (TenChucVu, SoChucVu, KinhNghiemLamViec, ThoiGianBDCongTac, ThoiGianKTCongTac, DangCongTac)
-VALUES
-('Giám đốc', 1, 'Trên 15 năm kinh nghiệm quản lý doanh nghiệp', '2010-01-01', 'NULL', 'Đang công tác'),
-('Phó giám đốc', 2, 'Trên 10 năm kinh nghiệm quản lý cấp phòng', '2015-03-01', 'NULL', 'Đang công tác'),
-('Trưởng phòng', 5, 'Trên 5 năm kinh nghiệm quản lý bộ phận', '2018-07-01', 'NULL', 'Đã ngưng công tác'),
-('Chuyên viên cao cấp', 8, 'Trên 3 năm kinh nghiệm chuyên môn', '2020-11-01', 'NULL', 'Đang công tác'),
-('Chuyên viên', 10, 'Trên 1 năm kinh nghiệm chuyên môn', '2022-05-01', 'NULL', 'Đang công tác'),
-('Kỹ thuật viên', 15, 'Có kinh nghiệm kỹ thuật', '2023-09-01', 'NULL', 'Đang công tác'),
-('Nhân viên văn phòng', 20, 'Có kỹ năng văn phòng', '2024-01-01', 'NULL', 'Đang công tác'),
-('Công nhân kỹ thuật', 12, 'Có tay nghề kỹ thuật', '2019-02-01', 'NULL', 'Đang tạm nghỉ'),
-('Bảo vệ', 15, 'Có sức khỏe tốt', '2021-06-01', 'NULL', 'Đang công tác'),
-('Lễ tân', 10, 'Có ngoại hình ưa nhìn', '2020-10-01', 'NULL', 'Đang công tác'),
-('Kế toán', 8, 'Có trình độ kế toán', '2018-04-01', 'NULL', 'Đang công tác'),
-('Nhân viên bán hàng', 12, 'Có kỹ năng bán hàng', '2022-08-01', 'NULL', 'Đang tạm nghỉ');
-/*dữ liệu bảng học vị*/
-INSERT INTO HocVi (TenHocVi, SoLuongHocVi, ThoiDiemNhanChungNhan, TenCoQuanCap, DiaDiem)
-VALUES
-  ('Cử nhân Công nghệ Thông tin', 1, '2015-06-20', 'Đại học Quốc gia Hà Nội', 'Hà Nội'),
-  ('Thạc sĩ Quản trị Kinh doanh', 1, '2018-09-15', 'Đại học Kinh tế Quốc dân', 'Hà Nội'),
-  ('Cử nhân Luật', 1, '2020-12-30', 'Đại học Luật Hà Nội', 'Hà Nội'),
-  ('Kỹ sư Điện tử Viễn thông', 1, '2022-03-25', 'Đại học Bách khoa Hà Nội', 'Hà Nội'),
-  ('Cử nhân Ngôn ngữ Anh', 1, '2016-07-10', 'Đại học Ngoại thương', 'Hà Nội'),
-  ('Thạc sĩ Khoa học Máy tính', 1, '2019-11-01', 'Đại học Khoa học và Công nghệ Hà Nội', 'Hà Nội'),
-  ('Cử nhân Tài chính - Ngân hàng', 1, '2021-02-20', 'Đại học Kinh tế TP. Hồ Chí Minh', 'TP. Hồ Chí Minh'),
-  ('Kỹ sư Cơ khí', 1, '2023-05-31', 'Đại học Bách khoa TP. Hồ Chí Minh', 'TP. Hồ Chí Minh'),
-  ('Cử nhân Báo chí', 1, '2017-08-15', 'Đại học Khoa học Xã hội và Nhân văn TP. Hồ Chí Minh', 'TP. Hồ Chí Minh'),
-  ('Thạc sĩ Quản trị Công', 1, '2020-12-24', 'Đại học Quốc gia TP. Hồ Chí Minh', 'TP. Hồ Chí Minh');
-/*du lieu phu trach*/
-INSERT INTO PhuTrach (CongViecPhuTrach, MieuTaChiTiet, SoLuongCVPhuTrach)
-VALUES ('Quản lý nhân sự', 'Tuyển dụng, đào tạo, đánh giá cán bộ', 5),
-       ('Quản lý tài chính', 'Lập kế hoạch thu chi, quản lý ngân sách', 3),
-       ('Phát triển sản phẩm', 'Nghiên cứu thị trường, thiết kế sản phẩm, marketing', 7),
-       ('Quản lý dự án', 'Lập kế hoạch dự án, theo dõi tiến độ, kiểm soát chất lượng', 4),
-       ('Công nghệ thông tin', 'Bảo trì hệ thống, hỗ trợ người dùng, phát triển phần mềm', 6),
-       ('Hành chính văn phòng', 'Soạn thảo văn bản, quản lý tài liệu, tổ chức hội họp', 4),
-       ('Chăm sóc khách hàng ', ' chăm sóc khách hàng, giải quyết khiếu nại', 2),
-       ('Tiếp thị', 'Xây dựng chiến lược marketing, thực hiện các chiến dịch marketing', 3),
-       ('Bán hàng', 'Tìm kiếm khách hàng, tư vấn sản phẩm, chốt hợp đồng', 3),
-       ('Kiểm soát chất lượng', 'Thực hiện kiểm tra chất lượng sản phẩm, dịch vụ', 2);
-/*du lieu bang cong tac*/
-INSERT INTO CongTac (MaCT, NamBatDauCongTac, NamBatDauCTCUSC, NamKTCTCUSC)
-VALUES ('NV000001', 2015, 2018, NULL),
-       ('NV000002', 2017, 2019, NULL),
-       ('NV000003', 2020, 2022, NULL),
-       ('NV000004', 2018, 2021, 2023),  
-       ('NV000005', 2022, 2023, 2023),
-       ('NV000006', 2019, 2020, NULL),
-       ('NV000007', 2021, 2023, NULL),
-       ('NV000008', 2016, 2018, 2020),
-       ('NV000009', 2023, 2023, NULL),
-       ('NV000010', 2020, 2022, NULL);
-/*du lieu bang bo mon*/
-INSERT INTO DonVi (MaDV, TenBMHienTai, TenBMTungCongTac)
-VALUES ('BM000001', 'Khoa học máy tính', 'Khoa học máy tính'),
-       ('BM000002', 'Công nghệ phần mềm', 'Công nghệ phần mềm'),
-       ('BM000003', 'Hệ thống thông tin', 'Hệ thống thông tin'),
-       ('BM000004', 'Mạng máy tính', 'Mạng máy tính'),
-       ('BM000005', 'An ninh mạng', 'An ninh mạng'),
-       ('BM000006', 'Trí tuệ nhân tạo', 'Trí tuệ nhân tạo'),
-       ('BM000007', 'Kỹ thuật phần mềm', 'Kỹ thuật phần mềm'),
-       ('BM000008', 'Truyền thông đa phương tiện', 'Truyền thông đa phương tiện'),
-       ('BM000009', 'Quản trị mạng', 'Quản trị mạng'),
-       ('BM000010', 'Kinh doanh điện tử', 'Kinh doanh điện tử'),
-       ('BM000011', 'Khoa học dữ liệu', 'Khoa học dữ liệu'),
-       ('BM000012', 'Điện toán đám mây', 'Điện toán đám mây'),
-       ('BM000013', 'Bảo mật thông tin di động', 'Bảo mật thông tin di động');
-/*du lieu can bo*/
-INSERT INTO CanBo (MaCB, HoTenCB, GioiTinh, Email, Sdt, TenHocVi, TenChucVu, CongViecPhuTrach, MaCT, MaDV, MaBang, MaTapHuan)
-VALUES
-('CB001', 'Nguyễn Văn A', 'Nam', 'nv_a@gmail.com', '0123456789', 'Cử nhân Công nghệ Thông tin', 'Chuyên viên cao cấp', 'Công nghệ thông tin', 'NV000001', 'BM000001', 'BC001', 'MH001');
-/*('CB002', 'Trần Thị B', 'Nữ', 'tran_b@yahoo.com', '0987654321', 'Cử nhân', 'Trợ giảng', 'Quản trị kinh doanh', 'CT001', 'BM002', 'BC002', 'TH002'),
-('CB003', 'Lê Văn C', 'Nam', 'le_c@hotmail.com', '0345678901', 'Tiến sĩ', 'Phó khoa', 'Kỹ thuật cơ khí', 'CT002', 'BM003', 'BC003', 'TH003');*/
-INSERT INTO tkb(TuanHoc) VALUES ('8');
-INSERT INTO theodoimhsapbatdau(MaTheoDoiMH,NgayBatDau) VALUES('afwafagj','2024-03-25');

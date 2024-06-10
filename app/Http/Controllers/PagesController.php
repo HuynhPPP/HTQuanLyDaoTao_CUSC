@@ -189,8 +189,10 @@ class PagesController extends Controller
             'Lop.required' => 'Hãy chọn lớp!',
         ]);
 
+        $hocki=hocki::where('MaHK', $request->input('HocKi'))->first();
+
         $schedule = new tkb();
-        $schedule->TenTKB= $request->input('Lop').'-'. $request->input('HocKi') . '-' . $request->input('ChuongTrinhTrienKhai') ;
+        $schedule->TenTKB= $request->input('Lop').'-'. $hocki->TenHK . '-' . $request->input('ChuongTrinhTrienKhai') ;
         $schedule->MaLop = $request->input('Lop');
         $schedule->TenKhungGio= $request->input('TenKG');
         $schedule->MaHK=$request->input('HocKi');
@@ -211,7 +213,7 @@ class PagesController extends Controller
             $lophoc = lophoc::where('MaLop', $schedule->MaLop)->first();
             $chuongtrinh = chuongtrinh::where('MaChuongTrinh', $lophoc->MaChuongTrinh)->first();
             $theodoimh = theodoimhsapbatdau::where('MaTheoDoiMH', $schedule->MaTheoDoiMH)->first();
-            $hocki = hocki::where('MaHK',$schedule->MaHK)->first();
+            $hocki = hocki::where('TenHK',$schedule->MaHK)->first();
             $phongLTs=phonghoc::where('TenPhong', $schedule->PhongLT)->first();
             $phongTHs=phonghoc::where('TenPhong', $schedule->PhongTH)->first();
             return view('schedule', compact('schedule', 'chuongtrinh', 'theodoimh'));
