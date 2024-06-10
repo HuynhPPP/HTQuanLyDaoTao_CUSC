@@ -19,17 +19,11 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
     protected $chuongtrinh;
     protected $theodoimh;
 
-    public function __construct($tkb, $chuongtrinh, $theodoimh, )
+    public function __construct($tkb, $chuongtrinh, $theodoimh)
     {
         $this->tkb = $tkb;
         $this->chuongtrinh = $chuongtrinh;
         $this->theodoimh = $theodoimh;
-
-        \Log::info('ScheduleExport Construct:', [
-            'tkb' => $tkb,
-            'chuongtrinh' => $chuongtrinh,
-            'theodoimh' => $theodoimh
-        ]);
     }
 
     public function collection()
@@ -37,25 +31,19 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $data = [];
         $startDate = $this->theodoimh ? Carbon::parse($this->theodoimh->NgayBatDau) : null;
 
+        // Add an empty row at row 10
+        $data[] = ['', '', '', '', '', '', '', '', '', ''];
+
         for ($i = 1; $i <= $this->tkb->TuanHoc; $i++) {
             $weekStart = $startDate ? $startDate->copy()->addWeeks($i - 1)->startOfWeek() : null;
             $weekEnd = $startDate ? $weekStart->copy()->endOfWeek()->subDays(2) : null;
 
             $data[] = [
-                'Ngày' => $weekStart ? $weekStart->format('d/m/Y') . ' - ' . $weekEnd->format('d/m/Y') : '',
-                'Tuần' => $i,
-                'Giờ học' => '7:00-9:00',
-                'THỨ HAI' => "Hàng $i",
-                'THỨ BA' => "Hàng $i",
-                'THỨ TƯ' => "Hàng $i",
-                'THỨ NĂM' => "Hàng $i",
-                'THỨ SÁU' => "Hàng $i",
-            ];
-
-            $data[] = [
-                'Ngày' => '',
-                'Tuần' => '',
-                'Giờ học' => '13:00-15:00',
+                'NGÀY' => $weekStart ? $weekStart->format('d/m/Y') : '',
+                '-' => '-',
+                '' => $weekEnd ? $weekEnd->format('d/m/Y') : '',
+                'TUẦN' => $i,
+                'GIỜ HỌC' => '7:00-9:00',
                 'THỨ HAI' => "Hàng $i",
                 'THỨ BA' => "Hàng $i",
                 'THỨ TƯ' => "Hàng $i",
@@ -70,9 +58,11 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
     public function headings(): array
     {
         return [
-            'Ngày',
-            'Tuần',
-            'Giờ học',
+            'NGÀY',
+            '-',
+            '',
+            'TUẦN',
+            'GIỜ HỌC',
             'THỨ HAI',
             'THỨ BA',
             'THỨ TƯ',
@@ -88,33 +78,80 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
 
     public function startCell(): string
     {
-        return 'A8';
+        return 'A9';
     }
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->mergeCells('A1:H1');
-        $sheet->mergeCells('A2:H2');
-        $sheet->mergeCells('A3:H3');
-        $sheet->mergeCells('A4:H4');
-        $sheet->mergeCells('A5:H5');
+        $sheet->getParent()->getDefaultStyle()->getFont()->setName('Times New Roman');
+
+        $sheet->mergeCells('A1:J1');
+        $sheet->mergeCells('A2:J2');
+        $sheet->mergeCells('A3:J3');
+        $sheet->mergeCells('A5:J5');
+        $sheet->mergeCells('A9:C9');
+
+        $sheet->getColumnDimension('A')->setWidth(12.66);
+        $sheet->getColumnDimension('B')->setWidth(2.55);
+        $sheet->getColumnDimension('C')->setWidth(11.55);
+        $sheet->getColumnDimension('D')->setWidth(6.10);
+        $sheet->getColumnDimension('E')->setWidth(12.33);
+        $sheet->getColumnDimension('F')->setWidth(24.66);
+        $sheet->getColumnDimension('G')->setWidth(24.66);
+        $sheet->getColumnDimension('H')->setWidth(24.66);
+        $sheet->getColumnDimension('I')->setWidth(25.55);
+        $sheet->getColumnDimension('J')->setWidth(25.33);
+
+        $sheet->getRowDimension(5)->setRowHeight(41.3);
+        $sheet->getRowDimension(9)->setRowHeight(33.8);
+        $sheet->getRowDimension(10)->setRowHeight(7.5);
 
         $sheet->setCellValue('A1', 'TRUNG TÂM CÔNG NGHỆ PHẦN MỀM ĐẠI HỌC CẦN THƠ');
         $sheet->setCellValue('A2', 'CANTHO UNIVERSITY SOFTWARE CENTER');
         $sheet->setCellValue('A3', 'Khu III, Đại học Cần Thơ – 01 Lý Tự Trọng, Tp. Cần Thơ – Tel: 0292.3731072 & Fax: 0292.3731071 – Email: cusc@ctu.edu.vn');
-        $sheet->setCellValue('A4', $this->tkb->TenTKB);
-        $sheet->setCellValue('A5', 'Mã lớp: ' . $this->tkb->MaLop . ' - Ver: ' . $this->chuongtrinh->PhienBan . ' - Ngày triển khai: ' . Carbon::parse($this->chuongtrinh->NgayTrienKhaiPB)->format('d/m/Y'));
-        $sheet->setCellValue('A6', 'Bắt đầu học từ ngày: ' .  Carbon::parse($this->theodoimh->NgayBatDau)->format('d/m/Y'));
-        $sheet->setCellValue('A7', 'Học Lý thuyết tại phòng: ' . $this->theodoimh->TenPhong );
+        $sheet->setCellValue('A5', $this->tkb->TenTKB);
+        $sheet->setCellValue('C7', 'Mã Lớp:');
+        $sheet->setCellValue('D7', $this->tkb->MaLop);
+        $sheet->setCellValue('I6', 'Bắt đầu học từ ngày: ');
+        $sheet->setCellValue('J6', Carbon::parse($this->theodoimh->NgayBatDau)->format('d/m/Y'));
+        $sheet->setCellValue('I7', 'Học Lý thuyết tại phòng: ');
+        $sheet->setCellValue('J7', $this->theodoimh->TenPhong);
+        $sheet->setCellValue('I8', 'Học Thực hành tại phòng: ');
+        $sheet->setCellValue('J8', $this->theodoimh->TenPhong);
+        $sheet->setCellValue('D8', 'Ver ' . $this->chuongtrinh->PhienBan);
+        $sheet->setCellValue('E8', Carbon::parse($this->chuongtrinh->NgayTrienKhaiPB)->format('d/m/Y'));
 
-        $sheet->getStyle('A1:H7')->getFont()->setBold(true);
-        $sheet->getStyle('A1:H5')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A1')->getFont()->setSize(11)->setBold(true);
+        $sheet->getStyle('A2')->getFont()->setSize(17)->setBold(true);
+        $sheet->getStyle('A3')->getFont()->setSize(10)->setItalic(true);
+        $sheet->getStyle('A5')->getFont()->setSize(18)->setBold(true);
+        $sheet->getStyle('A5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A1:J5')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('C7')->getFont()->setSize(12)->setBold(true);
+        $sheet->getStyle('D7')->getFont()->setSize(12)->setBold(true)->getColor()->setRGB('FF0000');
+        $sheet->getStyle('D8')->getFont()->setSize(10);
+        $sheet->getStyle('E8')->getFont()->setSize(9)->setItalic(true);
+        $sheet->getStyle('E8')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('I6:I8')->getFont()->setSize(12)->setBold(true);
+        $sheet->getStyle('J6:J8')->getFont()->setSize(12)->setBold(true)->getColor()->setRGB('FF0000');
 
-        return [
-            // Styling for the headings
-            8 => ['font' => ['bold' => true]],
-        ];
+        $sheet->getStyle('A9:J9')->getFont()->setSize(10)->setBold(true);
+        $sheet->getStyle('A9:J9')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A9:J9')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A9:J9')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
+
+        // Set row height for data rows and align cells
+        $rowCount = $this->collection()->count();
+        for ($row = 11; $row < 11 + $rowCount; $row++) {
+            $sheet->getRowDimension($row)->setRowHeight(53.3);
+            $sheet->getStyle("A$row:J$row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A$row:J$row")->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+            
+            // Bold for 'Tuần' and 'Giờ học' columns
+            $sheet->getStyle("D$row")->getFont()->setBold(true);
+            $sheet->getStyle("E$row")->getFont()->setBold(true);
+        }
+
+        return [];
     }
 }
-
-

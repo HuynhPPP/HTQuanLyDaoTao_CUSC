@@ -36,26 +36,19 @@
                     <select id="Lop" class="form-select @error('Lop') is-invalid @enderror" name="Lop">
                         <option value="">----- Mã Lớp Học -----</option>
                     </select>
-                    @if ($errors->has('Lop'))
-                        @foreach ($errors->get('Lop') as $message)
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @endforeach
-                    @endif
+                    @error ('Lop')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
                     <label for="HocKi" class="form-label">Học Kỳ</label>
                     <select id="HocKi" class="form-select @error('HocKi') is-invalid @enderror" name="HocKi">
-                        <option value="">Học kỳ</option>
-                        @foreach($hockis as $hocki)
-                            <option value="{{ $hocki->MaHK }}">{{ $hocki->MaHK }}</option>
-                        @endforeach
+                        <option value="">----- Mã Học Kỳ -----</option>
                     </select>
-                    @if ($errors->has('HocKi'))
-                        @foreach ($errors->get('HocKi') as $message)
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @endforeach
-                    @endif
+                    @error ('HocKi')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
 
@@ -65,7 +58,7 @@
                     <input type="date" class="form-control @error('NgayHoc') is-invalid @enderror" id="NgayHoc" name="NgayHoc">
                     @error('NgayHoc')
                      <div class="invalid-feedback">{{ $message }}</div>
-                     @enderror
+                    @enderror
                 </div>
 
                 <div class="mb-3">
@@ -81,36 +74,6 @@
                     @enderror
                 </div>
 
-
-                <div class="mb-3">
-                    <label for="PhongLT" class="form-label">Phòng lý thuyết</label>
-                    <select id="PhongLT" class="form-select @error('PhongLT') is-invalid @enderror" name="PhongLT">
-                        <option value="">Phòng lý thuyết</option>
-                        @foreach($phongLTs as $phonglt)
-                            <option value="{{ $phonglt->TenPhong }}">{{ $phonglt->TenPhong }}</option>
-                        @endforeach
-                    </select>
-                    @if ($errors->has('PhongLT'))
-                        @foreach ($errors->get('PhongLT') as $message)
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @endforeach
-                    @endif
-                </div>
-
-                <div class="mb-3">
-                    <label for="PhongTH" class="form-label">Phòng thực hành</label>
-                    <select id="PhongTH" class="form-select @error('PhongTH') is-invalid @enderror" name="PhongTH">
-                        <option value="">Phòng thực hành</option>
-                        @foreach($phongTHs as $phongTH)
-                            <option value="{{ $phongTH->TenPhong }}">{{ $phongTH->TenPhong }}</option>
-                        @endforeach
-                    </select>
-                    @if ($errors->has('PhongTH'))
-                        @foreach ($errors->get('PhongTH') as $message)
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @endforeach
-                    @endif
-                </div>
                 <div class="d-flex justify-content-center mt-5">
                     <button type="submit" class="btn btn-primary">Lập thời khóa biểu</button>
                 </div>
@@ -154,6 +117,21 @@
                     lopSelect.innerHTML = '<option value="">----- Mã Lớp Học -----</option>';
                     data.forEach(lop => {
                         lopSelect.innerHTML += `<option value="${lop.MaLop}">${lop.MaLop} ${lop.TenLop}</option>`;
+                    });
+                });
+        }
+    });
+
+    document.getElementById('ChuongTrinhTrienKhai').addEventListener('change', function() {
+        var hocki = this.value;
+        if (hocki) {
+            fetch(`/getHK/${hocki}`)
+                .then(response => response.json())
+                .then(data => {
+                    var HocKiSelect = document.getElementById('HocKi');
+                    HocKiSelect.innerHTML = '<option value="">----- Mã Học Kỳ -----</option>';
+                    data.forEach(HocKi => {
+                        HocKiSelect.innerHTML += `<option value="${HocKi.MaHK}">${HocKi.MaHK} ${HocKi.TenHK}</option>`;
                     });
                 });
         }

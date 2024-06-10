@@ -18,6 +18,7 @@ use App\Models\theodoimhsapbatdau;
 use App\Models\TapHuan;
 use App\Models\hocki;
 use App\Models\khunggio;
+use App\Models\danhsachphong;
 
 
 class PagesController extends Controller
@@ -131,10 +132,6 @@ class PagesController extends Controller
             $khoadaotaos = khoadaotao::all();
             $chuongtrinhs = chuongtrinh::all();
             $lophocs = lophoc::all();
-            $phongLTs = phonghoc::where('LoaiPhong', 'LyThuyet')->get();
-            $phongTHs = phonghoc::where('LoaiPhong', 'ThucHanh')->get();
-            $phongLTs = phonghoc::where('LoaiPhong', 'LT')->get();
-            $phongTHs = phonghoc::where('LoaiPhong', 'TH')->get();
             $hockis=hocki::all();
             $tkbs = tkb::all();
             $khunggios=khunggio::all();
@@ -145,8 +142,6 @@ class PagesController extends Controller
                 'khoadaotaos',
                 'chuongtrinhs',
                 'lophocs',
-                'phongLTs',
-                'phongTHs',
                 'tkbs',
                 'hockis',
                 'khunggios',
@@ -169,6 +164,12 @@ class PagesController extends Controller
         return response()->json($lophocs);
     }
 
+    public function getHK($MaChuongTrinh)
+    {
+        $hockis = hocki::where('MaChuongTrinh', $MaChuongTrinh)->get();
+        return response()->json($hockis);
+    }
+
 
 
     public function saveSchedule(Request $request)
@@ -179,26 +180,23 @@ class PagesController extends Controller
             'ChuongTrinhTrienKhai' => 'required|string',
             'HocKi'=> 'required|string',
             'Lop' => 'required|string',
-            'NgayHoc' => 'required|string',
-            'PhongLT'=>'required|string',
-            'PhongTH'=>'required|string',
+            'NgayHoc' => 'required|date',
         ], [
-        //    'TenTKB.max' => 'Tên thời khóa biểu không được vượt quá 255 ký tự.',
             'KhoaDaoTao.required' => 'Hãy chọn khoá đào tạo!',
             'ChuongTrinhTrienKhai.required' => 'Hãy chọn chương trình triển khai!',
+            'HocKi.required' => 'Hãy chọn học kỳ!',
+            'NgayHoc.required' => 'Hãy chọn ngày bắt đầu học!',
             'Lop.required' => 'Hãy chọn lớp!',
         ]);
 
         $hocki=hocki::where('MaHK', $request->input('HocKi'))->first();
 
         $schedule = new tkb();
-        $schedule->TenTKB= $request->input('Lop').'-'. $hocki->TenHK . '-' . $request->input('ChuongTrinhTrienKhai') ;
+        $schedule->TenTKB= 'THỜI KHÓA BIỂU LỚP ' . $request->input('Lop') . ' - ' . $hocki->TenHK . ' (' . $request->input('ChuongTrinhTrienKhai') . ')' ;
         $schedule->MaLop = $request->input('Lop');
         $schedule->TenKhungGio= $request->input('TenKG');
         $schedule->MaHK=$request->input('HocKi');
         $schedule->NgayHoc = $request->input('NgayHoc');
-        $schedule->PhongLT=$request->input('PhongLT');
-        $schedule->PhongTH= $request->input('PhongTH');
         $schedule->save();
 
         return redirect()->route('schedule', ['TenTKB' => $schedule->TenTKB]);
@@ -212,11 +210,9 @@ class PagesController extends Controller
             $schedule = tkb::where('TenTKB', $TenTKB)->first();
             $lophoc = lophoc::where('MaLop', $schedule->MaLop)->first();
             $chuongtrinh = chuongtrinh::where('MaChuongTrinh', $lophoc->MaChuongTrinh)->first();
-            $theodoimh = theodoimhsapbatdau::where('MaTheoDoiMH', $schedule->MaTheoDoiMH)->first();
+            // $theodoimh = theodoimhsapbatdau::where('MaTheoDoiMH', $schedule->MaTheoDoiMH)->first();
             $hocki = hocki::where('TenHK',$schedule->MaHK)->first();
-            $phongLTs=phonghoc::where('TenPhong', $schedule->PhongLT)->first();
-            $phongTHs=phonghoc::where('TenPhong', $schedule->PhongTH)->first();
-            return view('schedule', compact('schedule', 'chuongtrinh', 'theodoimh'));
+            return view('schedule', compact('schedule', 'chuongtrinh'));
         // } else {
         //     return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
         // }
