@@ -14,7 +14,7 @@ use App\Models\chuongtrinh;
 use App\Models\lophoc;
 use App\Models\phonghoc;
 use App\Models\tkb;
-use App\Models\theodoimhsapbatdau;
+use App\Models\monhoc;
 use App\Models\TapHuan;
 use App\Models\hocki;
 use App\Models\khunggio;
@@ -194,7 +194,6 @@ class PagesController extends Controller
         $schedule = new tkb();
         $schedule->TenTKB= 'THỜI KHÓA BIỂU LỚP ' . $request->input('Lop') . ' - ' . $hocki->TenHK . ' (' . $request->input('ChuongTrinhTrienKhai') . ')' ;
         $schedule->MaLop = $request->input('Lop');
-        $schedule->TenKhungGio= $request->input('TenKG');
         $schedule->MaHK=$request->input('HocKi');
         $schedule->NgayHoc = $request->input('NgayHoc');
         $schedule->save();
@@ -210,9 +209,11 @@ class PagesController extends Controller
             $schedule = tkb::where('TenTKB', $TenTKB)->first();
             $lophoc = lophoc::where('MaLop', $schedule->MaLop)->first();
             $chuongtrinh = chuongtrinh::where('MaChuongTrinh', $lophoc->MaChuongTrinh)->first();
-            // $theodoimh = theodoimhsapbatdau::where('MaTheoDoiMH', $schedule->MaTheoDoiMH)->first();
-            $hocki = hocki::where('TenHK',$schedule->MaHK)->first();
-            return view('schedule', compact('schedule', 'chuongtrinh'));
+            $phonglt = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%LT%')->first();
+            $phongth = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%TH%')->first();
+            $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
+            $monhocs = monhoc::where('MaHK', $hocki->MaHK)->get();
+            return view('schedule', compact('schedule', 'chuongtrinh', 'phonglt', 'phongth', 'hocki', 'monhocs'));
         // } else {
         //     return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
         // }
@@ -280,3 +281,4 @@ class PagesController extends Controller
         }
     }
 }
+

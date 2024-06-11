@@ -23,8 +23,8 @@
 
             <div class="col-4 text-start">
                 <p class="m-0">Bắt đầu học từ ngày: {{  \Carbon\Carbon::parse($schedule->NgayHoc)->format('d/m/Y')}}</p>
-                <p class="m-0">Học Lý thuyết tại phòng: {{ $schedule->PhongLT  }}</p>
-                <p class="m-0">Học Thực hành tại phòng:  {{ $schedule->PhongTH }}</p>
+                <p class="m-0">Học Lý thuyết tại phòng: {{ $phonglt->TenPhong ?? ' Chưa có ' }}</p>
+                <p class="m-0">Học Thực hành tại phòng:  {{ $phongth->TenPhong ?? ' Chưa có ' }}</p>
             </div>
         </div>
         <table class="table">
@@ -42,32 +42,74 @@
             </thead>
             <tbody>
                 @php
-                    $startDate = \Carbon\Carbon::parse($schedule->NgayHoc);
+                    use Carbon\Carbon;
+                    $startDate = Carbon::parse($schedule->NgayHoc);
+                    $totalHours = $hocki->GioTrienKhai;
+                    $totalWeeks = ceil($totalHours / 10);
+                    $subjectHours = [];
+                    $subjectOccurrences = [];
+
+                    foreach ($monhocs as $monhoc) {
+                        $subjectHours[$monhoc->TenMH] = $monhoc->GioTrienKhai;
+                        $subjectOccurrences[$monhoc->TenMH] = [
+                            'first' => null,
+                            'last' => null,
+                            'remaining' => $monhoc->GioTrienKhai
+                        ];
+                    }
+
+                    $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU'];
+
+                    function getSubjectForDay(&$subjectOccurrences, $currentDate) {
+                        foreach ($subjectOccurrences as $subject => &$details) {
+                            if ($details['remaining'] > 0) {
+                                if (is_null($details['first'])) {
+                                    $details['first'] = $currentDate;
+                                }
+                                $details['remaining'] -= 2; // Assuming 2 hours per day
+                                if ($details['remaining'] <= 0) {
+                                    $details['last'] = $currentDate;
+                                }
+                                return $subject;
+                            }
+                        }
+                        return '';
+                    }
                 @endphp
 
-                @for ($i = 1; $i <= $schedule->NgayHoc; $i++)
+                @for ($week = 1; $week <= $totalWeeks; $week++)
                     @php
-                        $weekStart = $startDate ? $startDate->copy()->addWeeks($i - 1)->startOfWeek() : null;
-                        $weekEnd = $startDate ? $weekStart->copy()->endOfWeek()->subDays(2) : null;
+                        $weekStart = $startDate->copy()->addWeeks($week - 1)->startOfWeek();
+                        $weekEnd = $weekStart->copy()->endOfWeek()->subDays(2);
                     @endphp
                     <tr>
-                        <th rowspan="1">{{ $weekStart ? $weekStart->format('d/m/Y') . ' - ' . $weekEnd->format('d/m/Y') : '' }}</th>
-                        <th rowspan="1">Tuần {{ $i }}</th>
-                        <th>{{ $schedule->TenKhungGio}}</th>
-                        <th>Hàng {{ $i }}</th>
-                        <th>Hàng {{ $i }}</th>
-                        <th>Hàng {{ $i }}</th>
-                        <th>Hàng {{ $i }}</th>
-                        <th>Hàng {{ $i }}</th>
+                        <th>{{ $weekStart->format('d/m/Y') . ' - ' . $weekEnd->format('d/m/Y') }}</th>
+                        <th>{{ $week }}</th>
+                        <th>{{ $schedule->TenKhungGio }}</th>
+
+                        @foreach ($weekDays as $day)
+                            @php
+                                $currentDate = $weekStart->copy()->addDays(array_search($day, $weekDays));
+                                $subject = '';
+                                $style = '';
+
+                                if ($currentDate->gte($startDate)) {
+                                    $subject = getSubjectForDay($subjectOccurrences, $currentDate);
+
+                                    if ($subject) {
+                                        if ($subjectOccurrences[$subject]['first'] == $currentDate) {
+                                            $style = 'color: red; font-weight: bold;';
+                                        } elseif ($subjectOccurrences[$subject]['last'] == $currentDate) {
+                                            $style = 'color: purple; font-weight: bold;';
+                                        }
+                                    }
+                                }
+                            @endphp
+                            <td class="text-wrap" style="width: 10rem; {{ $style }}">
+                                {{ $subject }}
+                            </td>
+                        @endforeach
                     </tr>
-                    {{-- <tr>
-                        <th>13:00-15:00</th>
-                        <th>Hàng {{ $i }}</th>
-                        <th>Hàng {{ $i }}</th>
-                        <th>Hàng {{ $i }}</th>
-                        <th>Hàng {{ $i }}</th>
-                        <th>Hàng {{ $i }}</th>
-                    </tr> --}}
                 @endfor
             </tbody>
         </table>
