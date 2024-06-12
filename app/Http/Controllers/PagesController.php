@@ -241,10 +241,14 @@ class PagesController extends Controller
         $schedule = tkb::where('TenTKB', $TenTKB)->first();
         $lophoc = lophoc::where('MaLop', $schedule->MaLop)->first();
         $chuongtrinh = chuongtrinh::where('MaChuongTrinh', $lophoc->MaChuongTrinh)->first();
-        $theodoimh = theodoimhsapbatdau::where('MaTheoDoiMH', $schedule->MaTheoDoiMH)->first();
+        $phonglt = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%LT%')->first();
+        $phongth = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%TH%')->first();
+        $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
+        $monhocs = monhoc::where('MaHK', $hocki->MaHK)->get();
+
 
         // Tạo và xuất file Excel
-        return Excel::download(new ScheduleExport($schedule, $chuongtrinh, $theodoimh), 'schedule.xlsx');
+        return Excel::download(new ScheduleExport($schedule, $chuongtrinh, $phonglt, $phongth, $hocki, $monhocs), 'schedule.xlsx');
     }
 
 

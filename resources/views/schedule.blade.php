@@ -46,11 +46,9 @@
                     $startDate = Carbon::parse($schedule->NgayHoc);
                     $totalHours = $hocki->GioTrienKhai;
                     $totalWeeks = ceil($totalHours / 10);
-                    $subjectHours = [];
                     $subjectOccurrences = [];
 
                     foreach ($monhocs as $monhoc) {
-                        $subjectHours[$monhoc->TenMH] = $monhoc->GioTrienKhai;
                         $subjectOccurrences[$monhoc->TenMH] = [
                             'first' => null,
                             'last' => null,
@@ -66,7 +64,7 @@
                                 if (is_null($details['first'])) {
                                     $details['first'] = $currentDate;
                                 }
-                                $details['remaining'] -= 2; // Assuming 2 hours per day
+                                $details['remaining'] -= 2;
                                 if ($details['remaining'] <= 0) {
                                     $details['last'] = $currentDate;
                                 }

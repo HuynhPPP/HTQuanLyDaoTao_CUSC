@@ -2,9 +2,6 @@
 
 namespace App\Exports;
 
-use App\Models\tkb;
-use App\Models\chuongtrinh;
-use App\Models\theodoimhsapbatdau;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -17,57 +14,90 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
 {
     protected $tkb;
     protected $chuongtrinh;
-    protected $theodoimh;
+    protected $phonglt;
+    protected $phongth;
+    protected $hocki;
+    protected $monhocs;
+    protected $subjectOccurrences;
 
-    public function __construct($tkb, $chuongtrinh, $theodoimh)
+    public function __construct($tkb, $chuongtrinh, $phonglt, $phongth, $hocki, $monhocs)
     {
         $this->tkb = $tkb;
         $this->chuongtrinh = $chuongtrinh;
-        $this->theodoimh = $theodoimh;
+        $this->phonglt = $phonglt;
+        $this->phongth = $phongth;
+        $this->hocki = $hocki;
+        $this->monhocs = $monhocs;
+
+        $this->subjectOccurrences = [];
+        foreach ($this->monhocs as $monhoc) {
+            $this->subjectOccurrences[$monhoc->TenMH] = [
+                'first' => null,
+                'last' => null,
+                'remaining' => $monhoc->GioTrienKhai
+            ];
+        }
     }
 
     public function collection()
     {
         $data = [];
-        $startDate = $this->theodoimh ? Carbon::parse($this->theodoimh->NgayBatDau) : null;
-
-        // Add an empty row at row 10
         $data[] = ['', '', '', '', '', '', '', '', '', ''];
+        $startDate = $this->tkb ? Carbon::parse($this->tkb->NgayHoc) : null;
+        $totalHours = $this->hocki->GioTrienKhai;
+        $totalWeeks = ceil($totalHours / 10);
+        $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU'];
 
-        for ($i = 1; $i <= $this->tkb->TuanHoc; $i++) {
-            $weekStart = $startDate ? $startDate->copy()->addWeeks($i - 1)->startOfWeek() : null;
-            $weekEnd = $startDate ? $weekStart->copy()->endOfWeek()->subDays(2) : null;
+        for ($week = 1; $week <= $totalWeeks; $week++) {
+            $weekStart = $startDate ? $startDate->copy()->addWeeks($week - 1)->startOfWeek() : null;
+            $weekEnd = $weekStart ? $weekStart->copy()->endOfWeek()->subDays(2) : null;
 
-            $data[] = [
-                'NGÀY' => $weekStart ? $weekStart->format('d/m/Y') : '',
-                '-' => '-',
-                '' => $weekEnd ? $weekEnd->format('d/m/Y') : '',
-                'TUẦN' => $i,
-                'GIỜ HỌC' => '7:00-9:00',
-                'THỨ HAI' => "Hàng $i",
-                'THỨ BA' => "Hàng $i",
-                'THỨ TƯ' => "Hàng $i",
-                'THỨ NĂM' => "Hàng $i",
-                'THỨ SÁU' => "Hàng $i",
+            $row = [
+                $weekStart ? $weekStart->format('d/m/Y') : '',
+                '-',
+                $weekEnd ? $weekEnd->format('d/m/Y') : '',
+                $week,
+                $this->tkb->TenKhungGio
             ];
+
+            foreach ($weekDays as $day) {
+                $currentDate = $weekStart ? $weekStart->copy()->addDays(array_search($day, $weekDays)) : null;
+                $subject = '';
+
+                if ($currentDate && $currentDate->gte($startDate)) {
+                    $subject = $this->getSubjectForDay($currentDate);
+                }
+
+                $row[] = $subject;
+            }
+
+            $data[] = $row;
         }
 
         return collect($data);
     }
 
+    protected function getSubjectForDay($currentDate)
+    {
+        foreach ($this->subjectOccurrences as $subject => &$details) {
+            if ($details['remaining'] > 0) {
+                if (is_null($details['first'])) {
+                    $details['first'] = $currentDate;
+                }
+                $details['remaining'] -= 2;
+                if ($details['remaining'] <= 0) {
+                    $details['last'] = $currentDate;
+                }
+                return $subject;
+            }
+        }
+        return '';
+    }
+
     public function headings(): array
     {
         return [
-            'NGÀY',
-            '-',
-            '',
-            'TUẦN',
-            'GIỜ HỌC',
-            'THỨ HAI',
-            'THỨ BA',
-            'THỨ TƯ',
-            'THỨ NĂM',
-            'THỨ SÁU',
+            'NGÀY', '-', '', 'TUẦN', 'GIỜ HỌC', 'THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU'
         ];
     }
 
@@ -113,11 +143,11 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $sheet->setCellValue('C7', 'Mã Lớp:');
         $sheet->setCellValue('D7', $this->tkb->MaLop);
         $sheet->setCellValue('I6', 'Bắt đầu học từ ngày: ');
-        $sheet->setCellValue('J6', Carbon::parse($this->theodoimh->NgayBatDau)->format('d/m/Y'));
+        $sheet->setCellValue('J6', Carbon::parse($this->tkb->NgayHoc)->format('d/m/Y'));
         $sheet->setCellValue('I7', 'Học Lý thuyết tại phòng: ');
-        $sheet->setCellValue('J7', $this->theodoimh->TenPhong);
+        $sheet->setCellValue('J7', $this->phonglt->TenPhong);
         $sheet->setCellValue('I8', 'Học Thực hành tại phòng: ');
-        $sheet->setCellValue('J8', $this->theodoimh->TenPhong);
+        $sheet->setCellValue('J8', $this->phongth->TenPhong);
         $sheet->setCellValue('D8', 'Ver ' . $this->chuongtrinh->PhienBan);
         $sheet->setCellValue('E8', Carbon::parse($this->chuongtrinh->NgayTrienKhaiPB)->format('d/m/Y'));
 
@@ -139,19 +169,20 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $sheet->getStyle('A9:J9')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle('A9:J9')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
         $sheet->getStyle('A9:J9')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
-
-        // Set row height for data rows and align cells
+        $sheet->getStyle('F11:J28')->getAlignment()->setWrapText(true);
+        
+        
         $rowCount = $this->collection()->count();
         for ($row = 11; $row < 11 + $rowCount; $row++) {
             $sheet->getRowDimension($row)->setRowHeight(53.3);
             $sheet->getStyle("A$row:J$row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle("A$row:J$row")->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-            
-            // Bold for 'Tuần' and 'Giờ học' columns
+        
             $sheet->getStyle("D$row")->getFont()->setBold(true);
             $sheet->getStyle("E$row")->getFont()->setBold(true);
         }
 
         return [];
     }
+    
 }
