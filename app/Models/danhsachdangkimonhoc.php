@@ -5,16 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class danhsachmonhoc extends Model
+class danhsachdangkimonhoc extends Model
 {
     use HasFactory;
-    protected $table = 'DanhSachMH';
+    protected $table = 'DanhSachDKMH';
 
     public $timestamps = false; // Disable timestamp columns if not used
     protected $fillable=[
         'TenKhungGio',
-        'TenMH',
-        'TenTKB',
+        'MaHK',
     ];
 
     public function khungGio()
@@ -22,14 +21,9 @@ class danhsachmonhoc extends Model
         return $this->belongsTo(KhungGio::class, 'TenKhungGio');
     }
 
-    public function monHoc()
+    public function hocki()
     {
-        return $this->belongsTo(MonHoc::class, 'TenMH');
-    }
-
-     public function tkb()
-    {
-        return $this->belongsTo(TKB::class, 'TenTKB');
+        return $this->belongsTo(hocki::class, 'MaHK');
     }
 
 }

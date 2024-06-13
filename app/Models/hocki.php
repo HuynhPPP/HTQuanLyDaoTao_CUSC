@@ -12,8 +12,8 @@ class hocki extends Model
     protected $fillable = [
         'MaHK',
         'TenHK',
-        'GioGoc',
-        'GioTrienKhai' ,
+        'TongGioGoc',
+        'TongGioTrienKhai' ,
  	    'MaChuongTrinh' ,
     ];
 }
