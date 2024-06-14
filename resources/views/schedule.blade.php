@@ -42,73 +42,146 @@
             </thead>
             <tbody>
                 @php
-                    use Carbon\Carbon;
-                    $startDate = Carbon::parse($schedule->NgayHoc);
-                    $totalHours = $hocki->GioTrienKhai;
-                    $totalWeeks = ceil($totalHours / 10);
-                    $subjectOccurrences = [];
+                use Carbon\Carbon;
 
-                    foreach ($monhocs as $monhoc) {
-                        $subjectOccurrences[$monhoc->TenMH] = [
-                            'first' => null,
-                            'last' => null,
-                            'remaining' => $monhoc->GioTrienKhai
-                        ];
+                // Ngày bắt đầu học
+                $startDate = Carbon::parse($schedule->NgayHoc);
+                $totalHours = $hocki->TongGioTrienKhai;
+                $emptyDays = 0;
+
+                // Xác định ngày đầu tuần (Thứ 2) của tuần chứa ngày bắt đầu học
+                $weekStartDate = $startDate->copy()->startOfWeek();
+
+                // Đếm số ngày trống trước ngày bắt đầu học trong tuần đó (không tính thứ 7 và Chủ nhật)
+                for ($date = $weekStartDate; $date->lt($startDate); $date->addDay()) {
+                    if ($date->dayOfWeek !== Carbon::SATURDAY && $date->dayOfWeek !== Carbon::SUNDAY) {
+                        $emptyDays++;
                     }
+                }
 
-                    $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU'];
+                // Cộng số ngày trống vào tổng thời gian (2 giờ cho mỗi ngày trống)
+                $totalHours += $emptyDays * 2;
 
-                    function getSubjectForDay(&$subjectOccurrences, $currentDate) {
-                        foreach ($subjectOccurrences as $subject => &$details) {
-                            if ($details['remaining'] > 0) {
-                                if (is_null($details['first'])) {
-                                    $details['first'] = $currentDate;
-                                }
-                                $details['remaining'] -= 2;
-                                if ($details['remaining'] <= 0) {
-                                    $details['last'] = $currentDate;
-                                }
-                                return $subject;
-                            }
+                // Tính tổng số giờ học và tổng số tuần
+                $holidayHours = 0;
+
+                 // Xử lý số giờ học bị ảnh hưởng bởi ngày nghỉ
+                 foreach ($ngaynghis as $ngaynghi) {
+                        $ngayBatDauNghi = Carbon::parse($ngaynghi->NgayBDNghi);
+                        $ngayKetThucNghi = Carbon::parse($ngaynghi->NgayKT);
+
+                        // Kiểm tra xem ngày nghỉ có nằm trong khoảng thời gian của thời khóa biểu không
+                        if ($ngayBatDauNghi->between($startDate, $startDate->copy()->addWeeks($totalHours / 10))) {
+                            // Ngày nghỉ nằm trong khoảng thời gian của thời khóa biểu
+                            $daysOff = $ngayBatDauNghi->diffInDaysFiltered(function ($date) {
+                                return $date->dayOfWeek !== Carbon::SATURDAY && $date->dayOfWeek !== Carbon::SUNDAY;
+                            }, $ngayKetThucNghi) + 1;
+
+                            $holidayHours += $daysOff * 2; // Mỗi ngày nghỉ thêm 2 giờ
                         }
-                        return '';
                     }
-                @endphp
 
-                @for ($week = 1; $week <= $totalWeeks; $week++)
-                    @php
-                        $weekStart = $startDate->copy()->addWeeks($week - 1)->startOfWeek();
-                        $weekEnd = $weekStart->copy()->endOfWeek()->subDays(2);
-                    @endphp
-                    <tr>
-                        <th>{{ $weekStart->format('d/m/Y') . ' - ' . $weekEnd->format('d/m/Y') }}</th>
-                        <th>{{ $week }}</th>
-                        <th>{{ $schedule->TenKhungGio }}</th>
+                $totalHours += $holidayHours;
+                $totalWeeks = ceil($totalHours / 10);
 
-                        @foreach ($weekDays as $day)
-                            @php
-                                $currentDate = $weekStart->copy()->addDays(array_search($day, $weekDays));
-                                $subject = '';
-                                $style = '';
+                // Danh sách môn học và số giờ triển khai
+                $subjectOccurrences = [];
 
-                                if ($currentDate->gte($startDate)) {
-                                    $subject = getSubjectForDay($subjectOccurrences, $currentDate);
+                foreach ($monhocs as $monhoc) {
+                    $subjectOccurrences[$monhoc->TenMH] = [
+                        'first' => null,
+                        'last' => null,
+                        'remaining' => $monhoc->GioTrienKhai
+                    ];
+                }
 
-                                    if ($subject) {
-                                        if ($subjectOccurrences[$subject]['first'] == $currentDate) {
-                                            $style = 'color: red; font-weight: bold;';
-                                        } elseif ($subjectOccurrences[$subject]['last'] == $currentDate) {
-                                            $style = 'color: purple; font-weight: bold;';
-                                        }
+                $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU'];
+                $holidayDates = $ngaynghis->pluck('NgayBDNghi')->map(function($date) {
+                    return Carbon::parse($date)->format('Y-m-d');
+                })->toArray();
+
+                $getSubjectForDay = function(&$subjectOccurrences, $currentDate) {
+                    foreach ($subjectOccurrences as $subject => &$details) {
+                        if ($details['remaining'] > 0) {
+                            if (is_null($details['first'])) {
+                                $details['first'] = $currentDate;
+                            }
+                            $details['remaining'] -= 2;
+                            if ($details['remaining'] <= 0) {
+                                $details['last'] = $currentDate;
+                            }
+                            return $subject;
+                        }
+                    }
+                    return '';
+                };
+
+                // Tạo lịch học và xử lý ngày nghỉ
+                $scheduleMatrix = [];
+                for ($week = 1; $week <= $totalWeeks; $week++) {
+                    $weekStart = $startDate->copy()->addWeeks($week - 1)->startOfWeek();
+                    $weekEnd = $weekStart->copy()->endOfWeek()->subDays(2);
+                    $scheduleMatrix[$week] = [];
+
+                    foreach ($weekDays as $dayIndex => $day) {
+                        $currentDate = $weekStart->copy()->addDays($dayIndex);
+                        $subject = '';
+                        $style = '';
+                        $backgroundColor = '';
+
+                        if ($currentDate->gte($startDate)) {
+                            $isHoliday = false;
+                            foreach ($ngaynghis as $ngaynghi) {
+                                $ngayBatDauNghi = Carbon::parse($ngaynghi->NgayBDNghi);
+                                $ngayKetThucNghi = Carbon::parse($ngaynghi->NgayKT);
+
+                                if ($currentDate->between($ngayBatDauNghi, $ngayKetThucNghi)) {
+                                    $subject = $ngaynghi->TenNgayNghi;
+                                    $backgroundColor = 'background-color: yellow;';
+                                    $isHoliday = true;
+                                    break;
+                                }
+                            }
+
+                            if (!$isHoliday) {
+                                $subject = $getSubjectForDay($subjectOccurrences, $currentDate);
+
+                                if ($subject) {
+                                    if ($subjectOccurrences[$subject]['first'] == $currentDate) {
+                                        $style = 'color: red; font-weight: bold;';
+                                    } elseif ($subjectOccurrences[$subject]['last'] == $currentDate) {
+                                        $style = 'color: purple; font-weight: bold;';
                                     }
                                 }
-                            @endphp
-                            <td class="text-wrap" style="width: 10rem; {{ $style }}">
-                                {{ $subject }}
-                            </td>
-                        @endforeach
-                    </tr>
-                @endfor
+                            }
+                        }
+
+                        $scheduleMatrix[$week][$day] = [
+                            'date' => $currentDate->format('d/m/Y'),
+                            'subject' => $subject,
+                            'style' => $style,
+                            'backgroundColor' => $backgroundColor
+                        ];
+                    }
+                }
+            @endphp
+
+            @foreach ($scheduleMatrix as $week => $days)
+                @php
+                    $weekDates = collect($days)->pluck('date')->toArray();
+                @endphp
+                <tr>
+                    <th>{{ implode(' - ', [$weekDates[0], end($weekDates)]) }}</th>
+                    <th class="text-wrap align-middle">{{ $week }}</th>
+                    <th class="text-wrap align-middle" style="width: 12rem;">{{ $dsdkmn->TenKhungGio ?? ''}}</th>
+
+                    @foreach ($days as $dayData)
+                        <td class="text-wrap align-middle" style="width: 12rem; {{ $dayData['style'] }} {{ $dayData['backgroundColor'] }}">
+                            {{ $dayData['subject'] }}
+                        </td>
+                    @endforeach
+                </tr>
+            @endforeach
             </tbody>
         </table>
     </div>
@@ -123,6 +196,85 @@
         </div>
     </div>
 </div>
+
+<div class="position-fixed bottom-0 start-0 m-3">
+    <div class="mb-2">
+        <button type="button" class="btn btn-primary btn-lg rounded-circle" id="addTimeSlotButton" data-bs-toggle="modal" data-bs-target="#timeSlotModal">
+            <i class="fas fa-clock"></i>
+        </button>
+    </div>
+    <div >
+      <button type="button" class="btn btn-primary btn-lg rounded-circle" id="addAbsenceButton" data-bs-toggle="modal" data-bs-target="#absenceModal">
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Absence Modal -->
+  <div class="modal fade" id="absenceModal" tabindex="-1" aria-labelledby="absenceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="absenceModalLabel">Thêm Ngày Nghỉ</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="absenceForm" method="POST" action="{{ route('saveholiday', ['TenTKB' => $schedule->TenTKB]) }}">
+            @csrf
+            <div class="mb-3">
+              <label for="TenNgayNghi" class="form-label">Tên ngày nghỉ:</label>
+              <textarea class="form-control" id="TenNgayNghi" name="TenNgayNghi" rows="1" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="NgayBDNghi" class="form-label">Ngày bắt đầu nghỉ :</label>
+              <input type="date" class="form-control" id="NgayBDNghi" name="NgayBDNghi" required>
+            </div>
+            <div class="mb-3">
+              <label for="NgayKT" class="form-label">Ngày kết thúc :</label>
+              <input type="date" class="form-control" id="NgayKT" name="NgayKT" required>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+              <button type="submit" class="btn btn-primary" id="saveAbsenceButton">Lưu</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Time Slot Modal -->
+  <div class="modal fade" id="timeSlotModal" tabindex="-1" aria-labelledby="timeSlotModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="timeSlotModalLabel">Thêm Khung Giờ Học</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="timeSlotForm" method="POST" action="{{ route('saveTimeSlot', ['TenTKB' => $schedule->TenTKB]) }}">
+            @csrf
+            <div class="mb-3">
+              <label for="khunggio" class="form-label">Tên khung giờ</label>
+              <select id="khunggio" class="form-select @error('khunggio') is-invalid @enderror" name="khunggio">
+                <option value="">----- Tên khung giờ -----</option>
+                @foreach($khunggio as $kg)
+                  <option value="{{ $kg->TenKhungGio }}">{{ $kg->TenKhungGio }}</option>
+                @endforeach
+              </select>
+              @error ('khunggio')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+              <button type="submit" class="btn btn-primary" id="saveTimeSlotButton">Lưu</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <script>
     function confirmDelete() {

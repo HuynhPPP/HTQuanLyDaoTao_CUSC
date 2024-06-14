@@ -44,7 +44,7 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $data = [];
         $data[] = ['', '', '', '', '', '', '', '', '', ''];
         $startDate = $this->tkb ? Carbon::parse($this->tkb->NgayHoc) : null;
-        $totalHours = $this->hocki->GioTrienKhai;
+        $totalHours = $this->hocki->TongGioTrienKhai;
         $totalWeeks = ceil($totalHours / 10);
         $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU'];
 

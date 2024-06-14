@@ -15,10 +15,12 @@ use App\Models\lophoc;
 use App\Models\phonghoc;
 use App\Models\tkb;
 use App\Models\monhoc;
+use App\Models\ngaynghi;
 use App\Models\TapHuan;
 use App\Models\hocki;
 use App\Models\khunggio;
 use App\Models\danhsachphong;
+use App\Models\danhsachdangkimonhoc;
 
 
 class PagesController extends Controller
@@ -209,11 +211,14 @@ class PagesController extends Controller
             $schedule = tkb::where('TenTKB', $TenTKB)->first();
             $lophoc = lophoc::where('MaLop', $schedule->MaLop)->first();
             $chuongtrinh = chuongtrinh::where('MaChuongTrinh', $lophoc->MaChuongTrinh)->first();
-            $phonglt = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%LT%')->first();
-            $phongth = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%TH%')->first();
+            $phonglt = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
+            $phongth = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
             $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
+            $dsdkmn = danhsachdangkimonhoc::where('MaHK', $hocki->MaHK)->first();
+            $ngaynghis = ngaynghi::all();
             $monhocs = monhoc::where('MaHK', $hocki->MaHK)->get();
-            return view('schedule', compact('schedule', 'chuongtrinh', 'phonglt', 'phongth', 'hocki', 'monhocs'));
+            $khunggio = khunggio::all();
+            return view('schedule', compact('schedule', 'chuongtrinh', 'phonglt', 'phongth', 'hocki', 'dsdkmn', 'ngaynghis', 'monhocs', 'khunggio'));
         // } else {
         //     return Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
         // }
@@ -241,16 +246,55 @@ class PagesController extends Controller
         $schedule = tkb::where('TenTKB', $TenTKB)->first();
         $lophoc = lophoc::where('MaLop', $schedule->MaLop)->first();
         $chuongtrinh = chuongtrinh::where('MaChuongTrinh', $lophoc->MaChuongTrinh)->first();
-        $phonglt = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%LT%')->first();
-        $phongth = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%TH%')->first();
+        $phonglt = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
+        $phongth = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
         $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
         $monhocs = monhoc::where('MaHK', $hocki->MaHK)->get();
-
 
         // Tạo và xuất file Excel
         return Excel::download(new ScheduleExport($schedule, $chuongtrinh, $phonglt, $phongth, $hocki, $monhocs), 'schedule.xlsx');
     }
 
+    public function saveTimeSlot(Request $request, $TenTKB)
+    {
+        //dd($request->all());
+        $request->validate([
+            'khunggio'=> 'required',
+        ], [
+            'khunggio.required' => 'Hãy chọn khung giờ!'
+        ]);
+        $schedule = tkb::where('TenTKB', $TenTKB)->first();
+        $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
+
+        $timeSlot = new danhsachdangkimonhoc();
+        $timeSlot->TenKhungGio = $request->input('khunggio');
+        $timeSlot->MaHK = $hocki->MaHK;
+        $timeSlot->save();
+
+        return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
+
+    }
+
+    public function saveholiday(Request $request, $TenTKB)
+    {
+        $request->validate([
+            'TenNgayNghi' => 'required|string|max:255',
+            'NgayBDNghi' => 'required|date',
+            'NgayKT'=> 'required|date',
+        ], [
+            'TenNgayNghi.required' => 'Hãy nhập tên ngày nghỉ!',
+            'NgayBDNghi.required' => 'Hãy chọn ngày bắt đầu nghỉ!',
+            'NgayKT.required' => 'Hãy chọn ngày kết thúc nghỉ!',
+        ]);
+        $absence = new ngaynghi;
+        $absence->TenNgayNghi = $request->input('TenNgayNghi');
+        $absence->NgayBDNghi = $request->input('NgayBDNghi');
+        $absence->NgayKT = $request->input('NgayKT');
+        $absence->save();
+
+        return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
+
+    }
 
     public function monitorClassroom()
     {
