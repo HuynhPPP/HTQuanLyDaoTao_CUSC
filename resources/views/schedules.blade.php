@@ -143,26 +143,23 @@
     document.getElementById('ChuongTrinhTrienKhai').disabled = true;
     document.getElementById('Lop').disabled = true;
     document.getElementById('HocKi').disabled = true;
-const ngayHoc = document.getElementById('NgayHoc');
-//const errorElement = document.querySelector('.error-message'); // Assuming the error message element has a class 'error-message'
+// const ngayHoc = document.getElementById('NgayHoc');
 
-ngayHoc.addEventListener('change', function() {
-  const ngay = new Date(this.value);
-  const thu = ngay.getDay();
+// ngayHoc.addEventListener('change', function() {
+//   const ngay = new Date(this.value);
+//   const thu = ngay.getDay();
 
-  if (thu === 0 || thu === 6) {
-    // Hiển thị thông báo lỗi
-    ngayHoc.classList.add('is-invalid');
-    //errorElement.textContent = 'Vui lòng chọn ngày trong tuần (Thứ Hai - Thứ Sáu)';
+//   if (thu === 0 || thu === 6) {
+//     // Hiển thị thông báo lỗi
+//     ngayHoc.classList.add('is-invalid');
 
-    // Reset form về trạng thái chưa chọn
-    this.value = ''; // Xóa giá trị trong input
-  } else {
-    // Xóa thông báo lỗi và class invalid
-    ngayHoc.classList.remove('is-invalid');
-    //errorElement.textContent = '';
-  }
-});
+//     // Reset form về trạng thái chưa chọn
+//     this.value = ''; // Xóa giá trị trong input
+//   } else {
+//     // Xóa thông báo lỗi và class invalid
+//     ngayHoc.classList.remove('is-invalid');
+//   }
+// });
 
 
 

@@ -100,12 +100,12 @@ class PagesController extends Controller
             'ChuongTrinhTrienKhai' => 'required|string',
             'HocKi' => 'required|string',
             'Lop' => 'required|string',
-            'NgayHoc' => 'required|date',
+            'NgayHoc' => 'required|date|in:Monday,Tuesday,Wednesday,Thursday,Friday',
         ], [
             'KhoaDaoTao.required' => 'Hãy chọn khoá đào tạo!',
             'ChuongTrinhTrienKhai.required' => 'Hãy chọn chương trình triển khai!',
             'HocKi.required' => 'Hãy chọn học kỳ!',
-            'NgayHoc.required' => 'Hãy chọn ngày bắt đầu học!',
+            'NgayHoc.in' => 'Ngày bắt đầu học không được là thứ 7 hoặc chủ nhật!',
             'Lop.required' => 'Hãy chọn lớp!',
         ]);
 
