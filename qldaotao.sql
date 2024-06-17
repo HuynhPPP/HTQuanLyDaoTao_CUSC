@@ -265,17 +265,21 @@ VALUES
 ('CP2296H07', 'Lab1');
 
 CREATE TABLE `NgayNghi`(
-	`TenNgayNghi` VARCHAR(50) PRIMARY KEY,
+	`MaNgayNghi` INT auto_increment PRIMARY KEY,
+	`TenNgayNghi` VARCHAR(50),
 	`NgayBDNghi` DATE,
 	`NgayKT` DATE /*vi du le 30/04-01/05 thi nghi 3 ngay */
 );
-INSERT INTO ngaynghi(TenNgayNghi) 
-VALUES
-('Lễ Quốc Khánh'),
-('Nghỉ 30/04-01/05'),
-('Nghỉ hè'),
-('self study'),
-('team works');
+INSERT INTO `ngaynghi` (`TenNgayNghi`, `NgayBDNghi`, `NgayKT`) VALUES
+	('Lễ Quốc Khánh', '2024-09-02', '2024-09-03'),
+	('Nghỉ - Giỏ Tổ Hùng Vương', '2024-04-18', '2024-04-18'),
+	('Nghỉ 30/04-01/05', '2024-04-29', '2024-05-01'),
+	('Nghỉ hè', '2024-05-28', '2024-08-04'),
+	('Nghỉ Tết DL', '2024-01-01', '2024-01-01'),
+	('Nghỉ Tết Nguyên Đán 2024', '2024-02-05', '2024-02-16'),
+	('self study', NULL, NULL),
+	('team works', NULL, NULL);
+
 
 
 
@@ -287,26 +291,27 @@ CREATE TABLE `TKB` (
   FOREIGN KEY (`MaHK`) REFERENCES `HocKi`(`MaHK`),
   FOREIGN KEY (`MaLop`) REFERENCES `LopHoc`(`MaLop`)
 );
-INSERT INTO tkb(TenTKB)
-VALUES ('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kì 4 (OV-7023)');
+
+INSERT INTO tkb(TenTKB,MaLop,MaHK,NgayHoc)
+VALUES ('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kì 4 (OV-7023)','CP2296H07','OV-7023-hk4','2024-06-18'),
+('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kì 3 (OV-7023)','CP2296H07','OV-7023-hk3','2024-05-18');
 CREATE TABLE `DanhSachNgayNghi`(
 	`TenTKB` VARCHAR(255),
-	`TenNgayNghi` VARCHAR(50),
+	`MaNgayNghi` int,
 	FOREIGN KEY (`TenTKB`) REFERENCES `TKB`(`TenTKB`),
-	FOREIGN KEY (`TenNgayNghi`) REFERENCES `NgayNghi`(`TenNgayNghi`)
+	FOREIGN KEY (`MaNgayNghi`) REFERENCES `NgayNghi`(`MaNgayNghi`)
 );
-INSERT INTO danhsachngaynghi(TenTKB, TenNgayNghi)
+INSERT INTO danhsachngaynghi(TenTKB, MaNgayNghi)
 VALUES 
-('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kì 4 (OV-7023)', 'Lễ Quốc Khánh'),
-('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kì 4 (OV-7023)', 'Nghỉ 30/04-01/05'),
-('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kì 4 (OV-7023)', 'Nghỉ hè');
+('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kì 4 (OV-7023)', '1'),
+('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kì 4 (OV-7023)', '2'),
+('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kì 4 (OV-7023)', '3');
 CREATE TABLE `DanhSachDKMH`(
 	`TenKhungGio` VARCHAR(100),
 	`MaHK` VARCHAR(12),
 	FOREIGN KEY (`TenKhungGio`) REFERENCES `KhungGio`(`TenKhungGio`),
 	FOREIGN KEY (`MaHK`) REFERENCES `HocKi`(`MaHK`),
 	PRIMARY KEY (`MaHK`)
-	qldaotao
 );
 
 
