@@ -11,6 +11,7 @@ class ngaynghi extends Model
     protected $table ='NgayNghi';
     public $timestamps = false;
     protected $fillable = [
+        'MaNgayNghi',
         'TenNgayNghi',
         'NgayBDNghi',
         'NgayKT',

@@ -13,12 +13,12 @@ class danhsachngaynghi extends Model
     public $timestamps = false; // Disable timestamp columns if not used
     protected $fillable = [
         'TenTKB',
-        'TenNgayNghi',
+        'MaNgayNghi',
     ];
 
     public function ngayNghi()
     {
-        return $this->belongsTo(NgayNghi::class, 'TenNgayNghi');
+        return $this->belongsTo(NgayNghi::class, 'MaNgayNghi');
     }
 
     public function tkb()
