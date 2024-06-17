@@ -12,8 +12,8 @@ class danhsachngaynghi extends Model
 
     public $timestamps = false; // Disable timestamp columns if not used
     protected $fillable = [
-        'TenNgayNghi',
         'TenTKB',
+        'TenNgayNghi',
     ];
 
     public function ngayNghi()

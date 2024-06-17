@@ -287,15 +287,26 @@ CREATE TABLE `TKB` (
   FOREIGN KEY (`MaHK`) REFERENCES `HocKi`(`MaHK`),
   FOREIGN KEY (`MaLop`) REFERENCES `LopHoc`(`MaLop`)
 );
-
-
+INSERT INTO tkb(TenTKB)
+VALUES ('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kì 4 (OV-7023)');
+CREATE TABLE `DanhSachNgayNghi`(
+	`TenTKB` VARCHAR(255),
+	`TenNgayNghi` VARCHAR(50),
+	FOREIGN KEY (`TenTKB`) REFERENCES `TKB`(`TenTKB`),
+	FOREIGN KEY (`TenNgayNghi`) REFERENCES `NgayNghi`(`TenNgayNghi`)
+);
+INSERT INTO danhsachngaynghi(TenTKB, TenNgayNghi)
+VALUES 
+('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kì 4 (OV-7023)', 'Lễ Quốc Khánh'),
+('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kì 4 (OV-7023)', 'Nghỉ 30/04-01/05'),
+('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kì 4 (OV-7023)', 'Nghỉ hè');
 CREATE TABLE `DanhSachDKMH`(
 	`TenKhungGio` VARCHAR(100),
 	`MaHK` VARCHAR(12),
 	FOREIGN KEY (`TenKhungGio`) REFERENCES `KhungGio`(`TenKhungGio`),
 	FOREIGN KEY (`MaHK`) REFERENCES `HocKi`(`MaHK`),
-	PRIMARY KEY (`TenKhungGio`)
-	
+	PRIMARY KEY (`MaHK`)
+	qldaotao
 );
 
 
