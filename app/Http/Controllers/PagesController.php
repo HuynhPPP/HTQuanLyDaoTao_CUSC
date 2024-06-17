@@ -164,15 +164,34 @@ class PagesController extends Controller
     }
 
     public function saveTimeSlot(Request $request, $TenTKB)
-    {
-        $request->validate(['khunggio' => 'required'], ['khunggio.required' => 'Hãy chọn khung giờ!']);
-        $schedule = tkb::where('TenTKB', $TenTKB)->first();
-        $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
+{
+    // Validate request with improved error message
+    $request->validate([
+        'khunggio' => 'required',
+    ], [
+        'khunggio.required' => 'Hãy chọn khung giờ!',
+    ]);
 
-        danhsachdangkimonhoc::create(['TenKhungGio' => $request->input('khunggio'), 'MaHK' => $hocki->MaHK]);
+    // Retrieve schedule and semester information
+    $schedule = tkb::where('TenTKB', $TenTKB)->first();
+    $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
 
-        return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
+    // Find existing time slot
+    $timeSlot = danhsachdangkimonhoc::where('MaHK', $hocki->MaHK)->update(
+        ['TenKhungGio' => $request->input('khunggio')]);
+    //DD(request()->all());
+    if (!$timeSlot) {
+        // Update existing time slot (delete and recreate)
+        $timeSlot = new danhsachdangkimonhoc();
+        $timeSlot->TenKhungGio = $request->input('khunggio');
+        $timeSlot->MaHK = $hocki->MaHK;
+        $timeSlot->save();
     }
+
+
+    // Redirect with success message
+    return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
+}
 
     public function saveholiday(Request $request, $TenTKB)
     {
