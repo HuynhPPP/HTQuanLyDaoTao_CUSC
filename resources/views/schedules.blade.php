@@ -51,14 +51,12 @@
                     @enderror
                 </div>
 
-
-
                 <div class="mb-3">
                     <label for="NgayHoc" class="form-label">Ngày bắt đầu học</label>
                     <input type="date" class="form-control @error('NgayHoc') is-invalid @enderror" id="NgayHoc" name="NgayHoc">
-                    @error('NgayHoc')
-                     <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                    <div id="NgayHoc" class="invalid-feedback">
+                        Không thể chọn ngày bắt đầu là thứ 7 hoặc chủ nhật.
+                    </div>
                 </div>
 
 
@@ -145,6 +143,26 @@
     document.getElementById('ChuongTrinhTrienKhai').disabled = true;
     document.getElementById('Lop').disabled = true;
     document.getElementById('HocKi').disabled = true;
+const ngayHoc = document.getElementById('NgayHoc');
+//const errorElement = document.querySelector('.error-message'); // Assuming the error message element has a class 'error-message'
+
+ngayHoc.addEventListener('change', function() {
+  const ngay = new Date(this.value);
+  const thu = ngay.getDay();
+
+  if (thu === 0 || thu === 6) {
+    // Hiển thị thông báo lỗi
+    ngayHoc.classList.add('is-invalid');
+    //errorElement.textContent = 'Vui lòng chọn ngày trong tuần (Thứ Hai - Thứ Sáu)';
+
+    // Reset form về trạng thái chưa chọn
+    this.value = ''; // Xóa giá trị trong input
+  } else {
+    // Xóa thông báo lỗi và class invalid
+    ngayHoc.classList.remove('is-invalid');
+    //errorElement.textContent = '';
+  }
+});
 
 
 
