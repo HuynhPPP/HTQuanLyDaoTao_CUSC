@@ -31,7 +31,8 @@ Route::get('/getChuongTrinh/{TenKhoaDaoTao}', [PagesController::class, 'getChuon
 Route::get('/getLop/{MaChuongTrinh}', [PagesController::class, 'getLop']);
 Route::get('/getHK/{MaChuongTrinh}', [PagesController::class, 'getHK']);
 
-
+Route::post('/saveTimeSlot/{TenTKB}', [PagesController::class, 'saveTimeSlot'])->name('saveTimeSlot');
+Route::post('/saveholiday/{TenTKB}', [PagesController::class, 'saveholiday'])->name('saveholiday');
 
 
 Route::post('ldap', [
@@ -42,3 +43,4 @@ Route::post('ldap', [
 Route::get('error_alert', function () {
     return view('error_alert');
 });
+
