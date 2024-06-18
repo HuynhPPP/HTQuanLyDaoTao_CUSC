@@ -9,7 +9,8 @@ class bangcapcanbo extends Model
 {
     use HasFactory;
     protected $table='BangCapCanBo';
-    //protected $primaryKey ='MaCB';
+    protected $primaryKey ='MaCB';
+    protected $keyType='string';
     public $timestamps = false;
     protected $fillable = [
         'MaBang',

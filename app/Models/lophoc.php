@@ -9,6 +9,8 @@ class lophoc extends Model
 {
     use HasFactory;
     protected $table='LopHoc';
+    protected $primaryKey='MaLop';
+    protected $keyType='string';
     protected  $fillable=[
         'MaLop'  ,
         'TenLop' ,

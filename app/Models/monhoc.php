@@ -9,8 +9,11 @@ class monhoc extends Model
 {
     use HasFactory;
     protected $table='MonHoc';
+    protected $primaryKey='TenMH';
+    protected $keyType='string';
     protected  $fillable=[
         'TenMH',
+        'Stt',
         'MaMH',
         'MaChuongTrinh',
         'GioGoc',

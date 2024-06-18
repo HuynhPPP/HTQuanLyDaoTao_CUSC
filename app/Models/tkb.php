@@ -10,6 +10,8 @@ class tkb extends Model
     use HasFactory;
     protected $table='TKB';
     public $timestamps = false;
+    protected $primaryKey='TenTKB';
+    protected $keyType='string';
     protected $fillable=[
         'TenTKB' ,
         'MaLop' ,

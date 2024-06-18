@@ -9,6 +9,8 @@ class hocvi extends Model
 {
     use HasFactory;
     protected $table='HocVi';
+    protected $primaryKey='MaHV';
+    protected $keyType='string';
     protected $fillable = [
         'MaHV',
         'TenHocVi',

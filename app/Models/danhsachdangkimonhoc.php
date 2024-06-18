@@ -11,6 +11,8 @@ class danhsachdangkimonhoc extends Model
     protected $table = 'DanhSachDKMH';
 
     public $timestamps = false; // Disable timestamp columns if not used
+    protected $keyType='string';
+    protected $primaryKey='MaHK';
     protected $fillable=[
         'TenKhungGio',
         'MaHK',

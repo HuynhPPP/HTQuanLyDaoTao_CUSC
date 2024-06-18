@@ -9,6 +9,8 @@ class hocki extends Model
 {
     use HasFactory;
     protected $table='HocKi';
+    protected $primaryKey='MaHK';
+    protected $keyType='string';
     protected $fillable = [
         'MaHK',
         'TenHK',

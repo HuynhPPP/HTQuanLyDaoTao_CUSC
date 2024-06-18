@@ -9,6 +9,8 @@ class donvi extends Model
 {
     use HasFactory;
     protected $table='DonVi';
+    protected $primaryKey='MaDV';
+    protected $keyType='string';
     protected $fillable=[
         'MaDV',
         'TenDVHienTai',

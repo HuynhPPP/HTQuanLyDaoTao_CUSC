@@ -10,6 +10,8 @@ class canbo extends Model
 {
     use HasFactory;
     protected $table='CanBo';
+    protected $primaryKey='MaCB';
+    protected $keyType='string';
     protected $fillable = [
         'MaCB',
         'HoTenCB',

@@ -9,6 +9,8 @@ class phonghoc extends Model
 {
     use HasFactory;
     protected $table='PhongHoc';
+    protected $primaryKey='TenPhong';
+    protected $keyType='string';
     protected $fillable = [
         'TenPhong' ,
         'LoaiPhong' ,

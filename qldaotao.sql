@@ -24,7 +24,7 @@ CREATE TABLE `ChucVu`(
  	`ThoiGianBatDauCV` VARCHAR(50),/*Thoi gian bat dau chuc vu*/
  	`ThoiGianKTCV` VARCHAR(50)/*Thoi gian ket thuc chuc vu*/
 );
-
+ 
 CREATE TABLE `HocVi` (
 	`MaHV` VARCHAR(12) PRIMARY KEY,
  	`TenHocVi` VARCHAR(50) ,
@@ -45,9 +45,9 @@ CREATE TABLE `PhuTrach`(
 CREATE TABLE `DonVi`(
 	`MaDV` VARCHAR(12) PRIMARY KEY,
 	`TenDVHienTai` VARCHAR(255),
-	`TenDVTungCongTac` VARCHAR(255)/*co the chuyen sang ban khac  hay k can bo co the cong tac tai nhieu bo mon khac nhau*/
+	`TenDVTungCongTac` VARCHAR(255)/*co the chuyen sang ban khac  hay k can bo co the cong tac tai nhieu bo mon khac nhau*/ 
 );
-
+ 
 CREATE TABLE `CanBo` (
   `MaCB` VARCHAR(12) PRIMARY KEY,
   `HoTenCB` VARCHAR(30),
@@ -83,8 +83,8 @@ CREATE TABLE `ChuongTrinh` (
   FOREIGN KEY (`TenKhoaDaoTao`) REFERENCES `KhoaDaoTao`(`TenKhoaDaoTao`)
 );
 INSERT INTO khoadaotao(TenKhoaDaoTao,ThoiGianDaoTao) VALUES ('Dài hạn', '2 năm'), ('Ngắn hạn','1 học kì');
-INSERT INTO chuongtrinh(MaChuongTrinh,TenChuongTrinh, PhienBan,TenKhoaDaoTao)
-VALUES
+INSERT INTO chuongtrinh(MaChuongTrinh,TenChuongTrinh, PhienBan,TenKhoaDaoTao) 
+VALUES 
 ('OV-7023','Lap trinh vien quoc te','1.0','Dài hạn'),
 ('OV9001','lap trinh vien arena','2.0','Dài hạn'),
 ('AT7096','My thuat da phuong tien','3.0','Ngắn hạn');
@@ -146,7 +146,7 @@ CREATE TABLE `PhieuLiDo`(
 	`MonSau` VARCHAR(255), /*chuyen tu mon nay sang mon khac lop khac*/
 	`LiDo` VARCHAR(255),
 	`NgayDuyetDon` DATE,
-	`NguoiDuyetDon` DATE
+	`NguoiDuyetDon` DATE 
 );
 
 
@@ -157,10 +157,10 @@ CREATE TABLE `LopHoc` (
   `MaChuongTrinh` VARCHAR(12),
   FOREIGN KEY (`MaChuongTrinh`) REFERENCES `ChuongTrinh`(`MaChuongTrinh`)
 );
-INSERT INTO LopHoc (MaLop,TenLop,MaChuongTrinh)
-VALUES
+INSERT INTO LopHoc (MaLop,TenLop,MaChuongTrinh) 
+VALUES 
 ('CP2396G11','Lập trình viên','OV-7023'),
-('CP2396M02','Quản trị mạng','OV-7023'),
+('CP2396M02','Quản trị mạng','OV-7023'), 
 ('CP2296H07','Truyền thông đa phương tiện','OV-7023');
 
 CREATE TABLE `DanhSachSV`(
@@ -184,15 +184,16 @@ CREATE TABLE `HinhThucDanhGia`(
    FOREIGN KEY (`MaChuongTrinh`) REFERENCES `ChuongTrinh`(`MaChuongTrinh`)
  );
  INSERT INTO hocki(MaHK,TenHK,TongGioGoc, TongGioTrienKhai, MaChuongTrinh)
- VALUES
- ('OV-7023-hk1','Học kì 1','168','172','OV-7023'),
- ('OV-7023-hk2','Học kì 2','218','200','OV-7023'),
- ('OV-7023-hk3','Học kì 3','170','168','OV-7023'),
- ('OV-7023-hk4','Học kì 4','194','208','OV-7023'),
- ('OV-7023-hk5','Học kì 5','168','172','OV-7023');
+ VALUES 
+ ('OV-7023-hk1','HỌC KỲ 1','168','172','OV-7023'),
+ ('OV-7023-hk2','HỌC KỲ 2','218','200','OV-7023'),
+ ('OV-7023-hk3','HỌC KỲ 3','170','168','OV-7023'),
+ ('OV-7023-hk4','HỌC KỲ 4','194','208','OV-7023'),
+ ('OV-7023-hk5','HỌC KỲ 5','168','172','OV-7023');
 
 CREATE TABLE `MonHoc` (
   `TenMH` VARCHAR(255) PRIMARY KEY,
+  `Stt` INT,
   `MaMH` VARCHAR(12),
   `MaHK` VARCHAR(12),
   `GioGoc` INT,
@@ -204,23 +205,23 @@ CREATE TABLE `MonHoc` (
   FOREIGN KEY (`MaHTDanhGia`) REFERENCES `HinhThucDanhGia`(`MaHTDanhGia`),
   FOREIGN KEY (`MaHK`) REFERENCES `HocKi`(`MaHK`)
 );
-INSERT INTO MonHoc(TenMH, MaHK, GioGoc, GioTrienKhai)
-VALUES
-('Computer fundamentals' , 'OV-7023-hk1', '0', '8'),
-('Logic Building and Elementary Programing' , 'OV-7023-hk1', '40', '42'),
-('AngularJS' , 'OV-7023-hk1', '16', '16'),
-('HTML5,CSS and Javascript' , 'OV-7023-hk1', '40', '44'),
-('eProject-Website Development' , 'OV-7023-hk1', '2', '8'),
-('Database Design and Development(core)' , 'OV-7023-hk1', '24', '16'),
-('Data Management with SQL server' , 'OV-7023-hk1', '40', '40'),
-('Markup Language & JSON ', 'OV-7023-hk2','16','16') ,
-('Java Programming - I', 'OV-7023-hk2', '36', '40'),
-('Java Programming -II', 'OV-7023-hk2', '40', '42'),
-('Information Systems Analysis(Core)', 'OV-7023-hk2', '24', '12'),
-('Project-Java Application Development', 'OV-7023-hk2', '2', '12'),
-('Application Programming with C#', 'OV-7023-hk2', '36', '38'),
-('PHP Development with Laravel Framework', 'OV-7023-hk2', '40', '40'),
-('Professional Issues in IT(Elective','OV-7023-hk2' , '24', '0');
+INSERT INTO MonHoc(TenMH,Stt, MaHK, GioGoc, GioTrienKhai)
+VALUES 
+('Computer fundamentals' ,'1', 'OV-7023-hk1', '0', '8'),
+('Logic Building and Elementary Programing' , '2','OV-7023-hk1', '40', '42'),
+('HTML5,CSS and Javascript' ,'3', 'OV-7023-hk1', '40', '44'),
+('AngularJS' ,'4', 'OV-7023-hk1', '16', '16'),
+('eProject-Website Development' ,'5', 'OV-7023-hk1', '2', '8'),
+('Database Design and Development(core)' ,'6', 'OV-7023-hk1', '24', '16'),
+('Data Management with SQL server' ,'7', 'OV-7023-hk1', '40', '40'),
+('Markup Language & JSON ','8', 'OV-7023-hk2','16','16') ,
+('Java Programming - I','9', 'OV-7023-hk2', '36', '40'),
+('Java Programming -II','10', 'OV-7023-hk2', '40', '42'),
+('Information Systems Analysis(Core)','11', 'OV-7023-hk2', '24', '12'),
+('Project-Java Application Development','12', 'OV-7023-hk2', '2', '12'),
+('Application Programming with C#','13', 'OV-7023-hk2', '36', '38'),
+('PHP Development with Laravel Framework','14', 'OV-7023-hk2', '40', '40'),
+('Professional Issues in IT(Elective','15','OV-7023-hk2' , '24', '0');
 CREATE TABLE `TrangThaiMH`(
 	`MaTTMH` VARCHAR(12) PRIMARY KEY,
 	`TrangThai` BOOLEAN
@@ -232,8 +233,8 @@ CREATE TABLE `PhongHoc` (
   `LoaiPhong` VARCHAR(255),
   `SucChua` INT
 );
-INSERT INTO phonghoc(TenPhong, LoaiPhong)
-VALUES
+INSERT INTO phonghoc(TenPhong, LoaiPhong) 
+VALUES 
 ('Class1','Class'),
 ('Class2','Class'),
 ('Lab1','Lab'),
@@ -244,7 +245,7 @@ CREATE TABLE `KhungGio`(
 	`ThoiGian` INT
 );
 INSERT INTO khunggio(TenKhungGio, ThoiGian)
-VALUES
+VALUES 
 ('7:00-9:00','2'),
 ('9:00-11:00','2'),
 ('13:00-15:00','2'),
@@ -259,8 +260,8 @@ CREATE TABLE `DanhSachPhong`(
 	FOREIGN KEY (`TenPhong`) REFERENCES `PhongHoc`(`TenPhong`),
 	PRIMARY KEY (`MaLop`,`TenPhong`)
 );
-INSERT INTO danhsachphong(MaLop, TenPhong)
-VALUES
+INSERT INTO danhsachphong(MaLop, TenPhong) 
+VALUES 
 ('CP2296H07', 'Class1'),
 ('CP2296H07', 'Lab1');
 
@@ -302,7 +303,7 @@ CREATE TABLE `DanhSachNgayNghi`(
 	FOREIGN KEY (`MaNgayNghi`) REFERENCES `NgayNghi`(`MaNgayNghi`)
 );
 INSERT INTO danhsachngaynghi(TenTKB, MaNgayNghi)
-VALUES
+VALUES 
 ('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kì 4 (OV-7023)', '1'),
 ('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kì 4 (OV-7023)', '2'),
 ('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kì 4 (OV-7023)', '3');
@@ -311,7 +312,7 @@ CREATE TABLE `DanhSachDKMH`(
 	`MaHK` VARCHAR(12),
 	FOREIGN KEY (`TenKhungGio`) REFERENCES `KhungGio`(`TenKhungGio`),
 	FOREIGN KEY (`MaHK`) REFERENCES `HocKi`(`MaHK`),
-	PRIMARY KEY (`MaHK`)
+	PRIMARY KEY(`MaHK`)
 );
 INSERT INTO danhsachdkmh(TenKhungGio,MaHK)
 VALUES
@@ -325,7 +326,7 @@ VALUES
   `MaLop` VARCHAR(12),
   TenPhong VARCHAR(20) ,
   `GioHoc` VARCHAR(30),
-  `HocKy` VARCHAR(50),
+  `HocKy` VARCHAR(50), 
   `MaTTMH` VARCHAR(12),
   FOREIGN KEY (`MaTTMH`) REFERENCES `TrangThaiMH`(`MaTTMH`),
   FOREIGN KEY (`MaLop`) REFERENCES `LopHoc`(`MaLop`),
@@ -392,6 +393,6 @@ CREATE TABLE `TheoDoiPhongHoc`(
   `TenTKB` VARCHAR(30),
   FOREIGN KEY (`MaCB`) REFERENCES `CanBo`(`MaCB`),
   FOREIGN KEY (`TenTKB`) REFERENCES `TKB`(`TenTKB`)
-
+ 
 );*/
 

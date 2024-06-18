@@ -9,6 +9,8 @@ class congtac extends Model
 {
     use HasFactory;
     protected $table='CongTac';
+    protected $primaryKey='MaCT';
+    protected $keyType='string';
     protected $fillable = [
         'MaCT',
         'NamBatDauCongTac',
