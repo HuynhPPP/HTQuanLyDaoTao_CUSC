@@ -93,6 +93,8 @@ class PagesController extends Controller
         return response()->json(hocki::where('MaChuongTrinh', $MaChuongTrinh)->get());
     }
 
+
+
     public function saveSchedule(Request $request)
     {
         $request->validate([
@@ -100,12 +102,12 @@ class PagesController extends Controller
             'ChuongTrinhTrienKhai' => 'required|string',
             'HocKi' => 'required|string',
             'Lop' => 'required|string',
-            'NgayHoc' => 'required|date|in:Monday,Tuesday,Wednesday,Thursday,Friday',
+            'NgayHoc' => 'required|date',
         ], [
             'KhoaDaoTao.required' => 'Hãy chọn khoá đào tạo!',
             'ChuongTrinhTrienKhai.required' => 'Hãy chọn chương trình triển khai!',
             'HocKi.required' => 'Hãy chọn học kỳ!',
-            'NgayHoc.in' => 'Ngày bắt đầu học không được là thứ 7 hoặc chủ nhật!',
+            'NgayHoc' => 'Ngày bắt đầu học không được là thứ 7 hoặc chủ nhật!',
             'Lop.required' => 'Hãy chọn lớp!',
         ]);
 
@@ -120,7 +122,6 @@ class PagesController extends Controller
 
         return redirect()->route('schedule', ['TenTKB' => $schedule->TenTKB]);
     }
-
     public function schedule($TenTKB)
     {
         $schedule = tkb::where('TenTKB', $TenTKB)->first();
@@ -205,7 +206,16 @@ class PagesController extends Controller
             'NgayKT.required' => 'Hãy chọn ngày kết thúc nghỉ!',
         ]);
 
-        ngaynghi::create($request->only('TenNgayNghi', 'NgayBDNghi', 'NgayKT'));
+        $ngaynghimoi = ngaynghi::create($request->only('TenNgayNghi', 'NgayBDNghi', 'NgayKT'));
+
+        // Extract the newly created 'id_ngay_nghi'
+        $mangaynghimoi = $ngaynghimoi->MaNgayNghi;
+
+        // Insert the 'id_ngay_nghi' and 'TenTKB' into the 'danhsachngaynghi' table
+        danhsachngaynghi::create([
+        'MaNgayNghi' => $mangaynghimoi,
+        'TenTKB' => $TenTKB,
+        ]);
 
         return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
     }
