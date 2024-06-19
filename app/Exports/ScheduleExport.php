@@ -17,15 +17,17 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
     protected $phonglt;
     protected $phongth;
     protected $hocki;
+    protected $dsdkmn;
     protected $monhocs;
     protected $subjectOccurrences;
 
-    public function __construct($tkb, $chuongtrinh, $phonglt, $phongth, $hocki, $monhocs)
+    public function __construct($tkb, $chuongtrinh, $phonglt, $phongth, $dsdkmn, $hocki, $monhocs)
     {
         $this->tkb = $tkb;
         $this->chuongtrinh = $chuongtrinh;
         $this->phonglt = $phonglt;
         $this->phongth = $phongth;
+        $this->dsdkmn = $dsdkmn;
         $this->hocki = $hocki;
         $this->monhocs = $monhocs;
 
@@ -48,6 +50,9 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $totalWeeks = ceil($totalHours / 10);
         $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU'];
 
+        $lastSubject = end($this->monhocs); // Môn học cuối cùng trong danh sách
+        reset($this->monhocs); // Đưa con trỏ về lại đầu danh sách
+
         for ($week = 1; $week <= $totalWeeks; $week++) {
             $weekStart = $startDate ? $startDate->copy()->addWeeks($week - 1)->startOfWeek() : null;
             $weekEnd = $weekStart ? $weekStart->copy()->endOfWeek()->subDays(2) : null;
@@ -57,7 +62,7 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
                 '-',
                 $weekEnd ? $weekEnd->format('d/m/Y') : '',
                 $week,
-                $this->tkb->TenKhungGio
+                $this->dsdkmn->TenKhungGio
             ];
 
             foreach ($weekDays as $day) {
@@ -65,7 +70,12 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
                 $subject = '';
 
                 if ($currentDate && $currentDate->gte($startDate)) {
-                    $subject = $this->getSubjectForDay($currentDate);
+                    if ($lastSubject === current($this->monhocs)) {
+                        // Xử lý môn học cuối cùng
+                        $subject = $this->getFinalSubjectForDay($currentDate);
+                    } else {
+                        $subject = $this->getSubjectForDay($currentDate);
+                    }
                 }
 
                 $row[] = $subject;
@@ -87,6 +97,41 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
                 $details['remaining'] -= 2;
                 if ($details['remaining'] <= 0) {
                     $details['last'] = $currentDate;
+                }
+                return $subject;
+            }
+        }
+        return '';
+    }
+
+    protected function getFinalSubjectForDay($currentDate)
+    {
+        foreach ($this->subjectOccurrences as $subject => &$details) {
+            if ($details['remaining'] > 0) {
+                if (is_null($details['first'])) {
+                    $details['first'] = $currentDate;
+                }
+                $details['remaining'] -= 2;
+                if ($details['remaining'] <= 0) {
+                    // Xử lý môn học cuối cùng
+                    $details['last'] = $currentDate;
+
+                    // Tính ngày thi vào tuần sau, thứ 6
+                    $examDate = $currentDate->copy()->addWeek()->startOfWeek()->next(Carbon::FRIDAY);
+
+                    // Đặt tên là "self-study" cho các ngày trống từ ngày kết thúc môn đến ngày thi
+                    $emptyDays = $currentDate->diffInDays($examDate) - 1;
+                    for ($i = 0; $i < $emptyDays; $i++) {
+                        $selfStudyDate = $currentDate->copy()->addDays($i + 1);
+                        if ($selfStudyDate->dayOfWeek !== Carbon::SATURDAY && $selfStudyDate->dayOfWeek !== Carbon::SUNDAY) {
+                            $this->subjectOccurrences[$subject]['remaining'] += 2; // Cộng lại 2 giờ cho ngày self-study
+                            return "self-study";
+                        }
+                    }
+
+                    // Cộng thêm 2 giờ vào tổng thời gian
+                    $this->hocki->TongGioTrienKhai += 2;
+                    return "Thi $subject";
                 }
                 return $subject;
             }
@@ -169,7 +214,6 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $sheet->getStyle('A9:J9')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle('A9:J9')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
         $sheet->getStyle('A9:J9')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
-        $sheet->getStyle('F11:J28')->getAlignment()->setWrapText(true);
         
         
         $rowCount = $this->collection()->count();
@@ -177,12 +221,37 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
             $sheet->getRowDimension($row)->setRowHeight(53.3);
             $sheet->getStyle("A$row:J$row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle("A$row:J$row")->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A$row:J$row")->getAlignment()->setWrapText(true);
         
             $sheet->getStyle("D$row")->getFont()->setBold(true);
             $sheet->getStyle("E$row")->getFont()->setBold(true);
         }
 
-        return [];
+        return [
+            'A1:J1' => ['font' => ['bold' => true, 'size' => 11]],
+            'A2:J2' => ['font' => ['bold' => true, 'size' => 17]],
+            'A3:J3' => ['font' => ['italic' => true, 'size' => 10]],
+            'A5' => ['font' => ['bold' => true, 'size' => 18]],
+            'A9:J9' => [
+                'font' => ['bold' => true, 'size' => 10],
+                'alignment' => [
+                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    ],
+                ],
+            ],
+            'A10:J' . (9 + count($this->collection())) => [
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    ],
+                ],
+            ],
+        ];
     }
-    
 }
+
