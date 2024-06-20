@@ -20,6 +20,7 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
     protected $dsdkmn;
     protected $monhocs;
     protected $subjectOccurrences;
+    protected $examDays;
 
     public function __construct($tkb, $chuongtrinh, $phonglt, $phongth, $dsdkmn, $hocki, $monhocs)
     {
@@ -32,13 +33,17 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $this->monhocs = $monhocs;
 
         $this->subjectOccurrences = [];
-        foreach ($this->monhocs as $monhoc) {
+        $subjectCount = count($monhocs);
+        foreach ($this->monhocs as $index => $monhoc) {
             $this->subjectOccurrences[$monhoc->TenMH] = [
                 'first' => null,
                 'last' => null,
-                'remaining' => $monhoc->GioTrienKhai
+                'remaining' => $monhoc->GioTrienKhai,
+                'lastSubject' => ($index === $subjectCount - 1)
             ];
         }
+
+        $this->examDays = [];
     }
 
     public function collection()
@@ -47,16 +52,19 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $data[] = ['', '', '', '', '', '', '', '', '', ''];
         $startDate = $this->tkb ? Carbon::parse($this->tkb->NgayHoc) : null;
         $totalHours = $this->hocki->TongGioTrienKhai;
-        $totalWeeks = ceil($totalHours / 10);
+    
+        // Calculate initial empty days before the start date
+        $emptyDays = $this->calculateEmptyDays($startDate);
+        $totalHours += $emptyDays * 2;
+    
+        // Cập nhật lại tổng tuần sau khi cập nhật tổng giờ học
+        $this->totalWeeks = ceil($totalHours / 10);
         $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU'];
-
-        $lastSubject = end($this->monhocs); // Môn học cuối cùng trong danh sách
-        reset($this->monhocs); // Đưa con trỏ về lại đầu danh sách
-
-        for ($week = 1; $week <= $totalWeeks; $week++) {
+    
+        for ($week = 1; $week <= $this->totalWeeks; $week++) {
             $weekStart = $startDate ? $startDate->copy()->addWeeks($week - 1)->startOfWeek() : null;
             $weekEnd = $weekStart ? $weekStart->copy()->endOfWeek()->subDays(2) : null;
-
+    
             $row = [
                 $weekStart ? $weekStart->format('d/m/Y') : '',
                 '-',
@@ -64,47 +72,46 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
                 $week,
                 $this->dsdkmn->TenKhungGio
             ];
-
+    
             foreach ($weekDays as $day) {
                 $currentDate = $weekStart ? $weekStart->copy()->addDays(array_search($day, $weekDays)) : null;
                 $subject = '';
-
+    
                 if ($currentDate && $currentDate->gte($startDate)) {
-                    if ($lastSubject === current($this->monhocs)) {
-                        // Xử lý môn học cuối cùng
-                        $subject = $this->getFinalSubjectForDay($currentDate);
+                    if (isset($this->examDays[$currentDate->format('Y-m-d')])) {
+                        $subject = $this->examDays[$currentDate->format('Y-m-d')];
                     } else {
-                        $subject = $this->getSubjectForDay($currentDate);
+                        $subject = $this->getSubjectForDay($currentDate, $totalHours);
+                        $this->totalWeeks = ceil($totalHours / 10);
                     }
                 }
-
+    
                 $row[] = $subject;
             }
-
+    
             $data[] = $row;
         }
-
+    
+        $this->totalRows = count($data); // Lưu tổng số hàng vào biến thành viên
+    
         return collect($data);
     }
-
-    protected function getSubjectForDay($currentDate)
+    
+    protected function calculateEmptyDays($startDate)
     {
-        foreach ($this->subjectOccurrences as $subject => &$details) {
-            if ($details['remaining'] > 0) {
-                if (is_null($details['first'])) {
-                    $details['first'] = $currentDate;
-                }
-                $details['remaining'] -= 2;
-                if ($details['remaining'] <= 0) {
-                    $details['last'] = $currentDate;
-                }
-                return $subject;
+        $weekStartDate = $startDate->copy()->startOfWeek();
+        $emptyDays = 0;
+
+        for ($date = $weekStartDate; $date->lt($startDate); $date->addDay()) {
+            if ($date->dayOfWeek !== Carbon::SATURDAY && $date->dayOfWeek !== Carbon::SUNDAY) {
+                $emptyDays++;
             }
         }
-        return '';
+
+        return $emptyDays;
     }
 
-    protected function getFinalSubjectForDay($currentDate)
+    protected function getSubjectForDay(&$currentDate, &$totalHours)
     {
         foreach ($this->subjectOccurrences as $subject => &$details) {
             if ($details['remaining'] > 0) {
@@ -113,30 +120,53 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
                 }
                 $details['remaining'] -= 2;
                 if ($details['remaining'] <= 0) {
-                    // Xử lý môn học cuối cùng
                     $details['last'] = $currentDate;
 
-                    // Tính ngày thi vào tuần sau, thứ 6
-                    $examDate = $currentDate->copy()->addWeek()->startOfWeek()->next(Carbon::FRIDAY);
+                    if ($details['lastSubject']) {
+                        // Calculate exam date for the last subject
+                        $examDate = $currentDate->copy()->addWeek()->startOfWeek()->next(Carbon::FRIDAY);
+                        
+                        // Mark days between the last class day and the exam date as self-study
+                        $emptyDays = $currentDate->diffInDays($examDate) - 1;
+                        for ($i = 0; $i < $emptyDays; $i++) {
+                            $selfStudyDate = $currentDate->copy()->addDays($i + 1);
+                            if ($selfStudyDate->dayOfWeek !== Carbon::SATURDAY && $selfStudyDate->dayOfWeek !== Carbon::SUNDAY) {
+                                $this->examDays[$selfStudyDate->format('Y-m-d')] = "self-study";
+                                $totalHours += 2;
+                            }
+                        }
+                    } else {
+                        // Calculate exam date for other subjects
+                        $examDate = $this->addDaysSkippingWeekends(clone $currentDate, 5);
 
-                    // Đặt tên là "self-study" cho các ngày trống từ ngày kết thúc môn đến ngày thi
-                    $emptyDays = $currentDate->diffInDays($examDate) - 1;
-                    for ($i = 0; $i < $emptyDays; $i++) {
-                        $selfStudyDate = $currentDate->copy()->addDays($i + 1);
-                        if ($selfStudyDate->dayOfWeek !== Carbon::SATURDAY && $selfStudyDate->dayOfWeek !== Carbon::SUNDAY) {
-                            $this->subjectOccurrences[$subject]['remaining'] += 2; // Cộng lại 2 giờ cho ngày self-study
-                            return "self-study";
+                        // Mark the day before the exam as self-study, if applicable
+                        if ($examDate->dayOfWeek !== Carbon::MONDAY) {
+                            $selfStudyDate = $examDate->copy()->subDay();
+                            if ($selfStudyDate->dayOfWeek !== Carbon::SATURDAY && $selfStudyDate->dayOfWeek !== Carbon::SUNDAY) {
+                                $this->examDays[$selfStudyDate->format('Y-m-d')] = "self-study";
+                                $totalHours += 2;
+                            }
                         }
                     }
 
-                    // Cộng thêm 2 giờ vào tổng thời gian
-                    $this->hocki->TongGioTrienKhai += 2;
-                    return "Thi $subject";
+                    $this->examDays[$examDate->format('Y-m-d')] = "Thi $subject";
+                    $totalHours += 2;
                 }
                 return $subject;
             }
         }
         return '';
+    }
+
+    protected function addDaysSkippingWeekends($date, $days)
+    {
+        while ($days > 0) {
+            $date->addDay();
+            if ($date->dayOfWeek !== Carbon::SATURDAY && $date->dayOfWeek !== Carbon::SUNDAY) {
+                $days--;
+            }
+        }
+        return $date;
     }
 
     public function headings(): array
@@ -216,17 +246,19 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $sheet->getStyle('A9:J9')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
         
         
-        $rowCount = $this->collection()->count();
-        for ($row = 11; $row < 11 + $rowCount; $row++) {
+        $collection = $this->collection();
+        $rowCount = $collection->count();
+    
+        for ($row = 11; $row < 13 + $rowCount; $row++) {
             $sheet->getRowDimension($row)->setRowHeight(53.3);
             $sheet->getStyle("A$row:J$row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle("A$row:J$row")->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
             $sheet->getStyle("A$row:J$row")->getAlignment()->setWrapText(true);
-        
+    
             $sheet->getStyle("D$row")->getFont()->setBold(true);
             $sheet->getStyle("E$row")->getFont()->setBold(true);
         }
-
+    
         return [
             'A1:J1' => ['font' => ['bold' => true, 'size' => 11]],
             'A2:J2' => ['font' => ['bold' => true, 'size' => 17]],
@@ -244,7 +276,7 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
                     ],
                 ],
             ],
-            'A10:J' . (9 + count($this->collection())) => [
+            'A10:J' . (12 + $rowCount) => [
                 'borders' => [
                     'allBorders' => [
                         'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
@@ -254,4 +286,3 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         ];
     }
 }
-
