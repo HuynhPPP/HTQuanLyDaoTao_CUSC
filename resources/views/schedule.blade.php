@@ -65,19 +65,28 @@
                 // Tính tổng số giờ học và tổng số tuần
                 $totalWeeks = ceil($totalHours / 10);
 
-                // Danh sách môn học và số giờ triển khai
-                $subjectOccurrences = [];
-
                 // Đếm số môn học
+                $subjectOccurrences = [];
+                $filteredMonHocs = [];
+
                 $subjectCount = count($monhocs);
                 foreach ($monhocs as $index => $monhoc) {
+                    if ($monhoc->GioTrienKhai > 0) {
+                        $filteredMonHocs[] = $monhoc;
+                    }
+                }
+
+                // Sử dụng $filteredMonHocs thay cho $monhocs ở các vòng lặp tiếp theo
+                $subjectCount = count($filteredMonHocs);
+                foreach ($filteredMonHocs as $index => $monhoc) {
                     $subjectOccurrences[$monhoc->TenMH] = [
                         'first' => null,
                         'last' => null,
                         'remaining' => $monhoc->GioTrienKhai
                     ];
+
                     // Nếu là môn học cuối cùng, đánh dấu bằng chỉ số
-                    if ($index === $subjectCount - 1 ) {
+                    if ($index === $subjectCount - 1) {
                         $subjectOccurrences[$monhoc->TenMH]['lastSubject'] = true;
                     }
                 }
