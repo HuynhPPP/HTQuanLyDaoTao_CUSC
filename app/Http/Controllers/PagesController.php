@@ -19,7 +19,8 @@ use App\Models\{
     hocki,
     khunggio,
     danhsachphong,
-    danhsachdangkimonhoc
+    danhsachdangkimonhoc,
+    ngaytuhoc
 };
 
 class PagesController extends Controller
@@ -69,11 +70,8 @@ class PagesController extends Controller
     {
         $data = [
             'khoadaotaos' => khoadaotao::all(),
-            'chuongtrinhs' => chuongtrinh::all(),
-            'lophocs' => lophoc::all(),
             'tkbs' => tkb::all(),
-            'hockis' => hocki::all(),
-            'khunggios' => khunggio::all(),
+
         ];
         return view('schedules', $data);
     }
@@ -120,7 +118,7 @@ class PagesController extends Controller
         ]);
         $schedule->save();
 
-        return redirect()->route('schedule', ['TenTKB' => $schedule->TenTKB]);
+        return redirect()->route('schedule', ['TenTKB' => 'THỜI KHÓA BIỂU LỚP ' . $request->input('Lop') . ' - ' . $hocki->TenHK . ' (' . $request->input('ChuongTrinhTrienKhai') . ')']);
     }
     public function schedule($TenTKB)
     {
@@ -134,10 +132,14 @@ class PagesController extends Controller
         $ngaynghis = danhsachngaynghi::where('TenTKB', $TenTKB)->get()->map(function ($ngaynghi) {
             return ngaynghi::where('MaNgayNghi', $ngaynghi->MaNgayNghi)->first();
         });
-        $monhocs = monhoc::where('MaHK', $hocki->MaHK)->get();
+        $monhocs = monhoc::where('MaHK', $hocki->MaHK)->orderBy('Stt')->get();
         $khunggio = khunggio::all();
+        $ngaytuhocs = ngaytuhoc::all();
+        $chuongtrinhEdit=chuongtrinh::all();
+        $lophocEdit=lophoc::all();
+        $hockyEdit=hocki::all();
 
-        return view('schedule', compact('schedule', 'chuongtrinh', 'phonglt', 'phongth', 'hocki', 'dsdkmn', 'ngaynghis', 'monhocs', 'khunggio'));
+        return view('schedule', compact('schedule', 'chuongtrinh', 'phonglt', 'phongth', 'hocki', 'dsdkmn', 'ngaynghis', 'monhocs', 'khunggio','ngaytuhocs','chuongtrinhEdit','hockyEdit','lophocEdit'));
     }
 
     public function deleteSchedule($TenTKB)
@@ -159,9 +161,25 @@ class PagesController extends Controller
         $phonglt = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
         $phongth = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
         $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
+        $dsdkmn = danhsachdangkimonhoc::where('MaHK', $hocki->MaHK)->first();
         $monhocs = monhoc::where('MaHK', $hocki->MaHK)->get();
 
-        return Excel::download(new ScheduleExport($schedule, $chuongtrinh, $phonglt, $phongth, $hocki, $monhocs), 'schedule.xlsx');
+        return Excel::download(new ScheduleExport($schedule, $chuongtrinh, $phonglt, $phongth, $dsdkmn, $hocki, $monhocs), 'schedule.xlsx');
+    }
+    public function EditTKB(Request $request, $TenTKB){
+        //DD(request()->all());
+        $request->validate([
+            'NgayHoc' => 'required|date',
+        ], [
+            'NgayHoc.required' => 'Ngày bắt đầu học không được là thứ 7 hoặc chủ nhật!',
+        ]);
+
+    tkb::where('TenTKB',$TenTKB)->update(
+        [
+            'NgayHoc'=>$request->input('NgayHoc'),
+        ]);
+
+     return redirect()->route('schedule', ['TenTKB' =>$TenTKB]);
     }
 
     public function saveTimeSlot(Request $request, $TenTKB)
@@ -172,7 +190,6 @@ class PagesController extends Controller
     ], [
         'khunggio.required' => 'Hãy chọn khung giờ!',
     ]);
-
     // Retrieve schedule and semester information
     $schedule = tkb::where('TenTKB', $TenTKB)->first();
     $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
@@ -188,8 +205,6 @@ class PagesController extends Controller
         $timeSlot->MaHK = $hocki->MaHK;
         $timeSlot->save();
     }
-
-
     // Redirect with success message
     return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
 }
@@ -217,6 +232,25 @@ class PagesController extends Controller
         'TenTKB' => $TenTKB,
         ]);
 
+        return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
+    }
+     public function saveSelfStudy(Request $request, $TenTKB)
+    {
+        // DD(request()->all());
+        $request->validate([
+            'ngaytuhoc' => 'required',
+            'NgayBDTuHoc' => 'required|date',
+            'NgayKTTuHoc' => 'required|date', // Ensure end date is after start date
+        ]);
+            // Create a new SelfStudy instance
+            $selfStudy = new ngaytuhoc([
+                'TenTKB'=>$TenTKB,
+                'TenNgayTuHoc'=>$request->input('ngaytuhoc'),
+                'NgayBDTuHoc'=>$request->input('NgayBDTuHoc'),
+                'NgayKTTuHoc'=>$request->input('NgayKTTuHoc'),
+            ]);
+            // Save the SelfStudy record
+            $selfStudy->save();
         return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
     }
 

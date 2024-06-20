@@ -43,31 +43,31 @@
             <tbody>
                 @php
                 use Carbon\Carbon;
-                
+
                 // Ngày bắt đầu học
                 $startDate = Carbon::parse($schedule->NgayHoc);
                 $totalHours = $hocki->TongGioTrienKhai;
                 $emptyDays = 0;
-                
+
                 // Xác định ngày đầu tuần (Thứ 2) của tuần chứa ngày bắt đầu học
                 $weekStartDate = $startDate->copy()->startOfWeek();
-                
+
                 // Đếm số ngày trống trước ngày bắt đầu học trong tuần đó (không tính thứ 7 và Chủ nhật)
                 for ($date = $weekStartDate; $date->lt($startDate); $date->addDay()) {
                     if ($date->dayOfWeek !== Carbon::SATURDAY && $date->dayOfWeek !== Carbon::SUNDAY) {
                         $emptyDays++;
                     }
                 }
-                
+
                 // Cộng số ngày trống vào tổng thời gian (2 giờ cho mỗi ngày trống)
                 $totalHours += $emptyDays * 2;
-                
+
                 // Tính tổng số giờ học và tổng số tuần
                 $totalWeeks = ceil($totalHours / 10);
-                
+
                 // Danh sách môn học và số giờ triển khai
                 $subjectOccurrences = [];
-                
+
                 // Đếm số môn học
                 $subjectCount = count($monhocs);
                 foreach ($monhocs as $index => $monhoc) {
@@ -81,9 +81,9 @@
                         $subjectOccurrences[$monhoc->TenMH]['lastSubject'] = true;
                     }
                 }
-                
+
                 $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU'];
-                
+
                 $addDaysSkippingWeekends = function($date, $days) {
                     while ($days > 0) {
                         $date->addDay();
@@ -93,7 +93,7 @@
                     }
                     return $date;
                 };
-                
+
                 $getSubjectForDay = function(&$subjectOccurrences, $currentDate, &$totalHours, &$examDays, $addDaysSkippingWeekends) {
                     foreach ($subjectOccurrences as $subject => &$details) {
                         if ($details['remaining'] > 0) {
@@ -103,11 +103,11 @@
                             $details['remaining'] -= 2;
                             if ($details['remaining'] <= 0) {
                                 $details['last'] = $currentDate;
-                
+
                                 if (isset($details['lastSubject']) && $details['lastSubject']) {
                                     // Xử lý môn học cuối cùng
                                     $examDate = $currentDate->copy()->addWeek()->startOfWeek()->next(Carbon::FRIDAY);
-                
+
                                     // Đặt tên là "self-study" cho các ngày trống trước ngày thi
                                     $emptyDays = $currentDate->diffInDays($examDate) - 1;
                                     for ($i = 0; $i < $emptyDays; $i++) {
@@ -137,7 +137,7 @@
                                         }
                                     }
                                 }
-                
+
                                 $examDays[$examDate->format('Y-m-d')] = "Thi $subject";
                                 $totalHours += 2;
                             }
@@ -146,7 +146,7 @@
                     }
                     return '';
                 };
-                
+
                 // Tạo lịch học
                 $scheduleMatrix = [];
                 $examDays = [];
@@ -154,13 +154,13 @@
                     $weekStart = $startDate->copy()->addWeeks($week - 1)->startOfWeek();
                     $weekEnd = $weekStart->copy()->endOfWeek()->subDays(2);
                     $scheduleMatrix[$week] = [];
-                
+
                     foreach ($weekDays as $dayIndex => $day) {
                         $currentDate = $weekStart->copy()->addDays($dayIndex);
                         $subject = '';
                         $style = '';
                         $backgroundColor = '';
-                
+
                         if ($currentDate->gte($startDate)) {
                             if (isset($examDays[$currentDate->format('Y-m-d')])) {
                                 $subject = $examDays[$currentDate->format('Y-m-d')];
@@ -170,7 +170,7 @@
                                 }
                             } else {
                                 $subject = $getSubjectForDay($subjectOccurrences, $currentDate, $totalHours, $examDays, $addDaysSkippingWeekends);
-                
+
                                 if ($subject) {
                                     if ($subjectOccurrences[$subject]['first'] == $currentDate) {
                                         $style = 'color: red; font-weight: bold;';
@@ -183,7 +183,7 @@
 
                         $totalWeeks = ceil($totalHours / 10);
 
-                
+
                         $scheduleMatrix[$week][$day] = [
                             'date' => $currentDate->format('d/m/Y'),
                             'subject' => $subject,
@@ -192,13 +192,13 @@
                         ];
                     }
                 }
-                
+
                 // Debugging: Print out total hours and total weeks
                 echo "Total hours after: $totalHours<br>";
                 echo "Total hours before: $hocki->TongGioTrienKhai<br>";
                 echo "Total weeks: $totalWeeks<br>";
                 @endphp
-                
+
                 @foreach ($scheduleMatrix as $week => $days)
                     @php
                     $weekDates = collect($days)->pluck('date')->toArray();
@@ -207,7 +207,7 @@
                         <th>{{ implode(' - ', [$weekDates[0], end($weekDates)]) }}</th>
                         <th class="text-wrap align-middle">{{ $week }}</th>
                         <th class="text-wrap align-middle" style="width: 12rem;">{{ $dsdkmn->TenKhungGio ?? ''}}</th>
-                
+
                         @foreach ($days as $dayData)
                             <td class="text-wrap align-middle" style="width: 12rem; {{ $dayData['style'] }} {{ $dayData['backgroundColor'] }}">
                                 {{ $dayData['subject'] }}
@@ -215,7 +215,7 @@
                         @endforeach
                     </tr>
                 @endforeach
-                                      
+
             </tbody>
         </table>
     </div>
@@ -237,13 +237,23 @@
             <i class="fas fa-clock"></i>
         </button>
     </div>
-    <div >
+    <div class="mb-2" >
       <button type="button" class="btn btn-primary btn-lg rounded-circle" id="addAbsenceButton" data-bs-toggle="modal" data-bs-target="#absenceModal">
         <i class="fas fa-plus"></i>
       </button>
     </div>
+    <div class="mb-2" >
+      <button type="button" class="btn btn-primary btn-lg rounded-circle" id="addSelfStudy" data-bs-toggle="modal" data-bs-target="#SelfStudyModal">
+        <i class="fa-brands fa-leanpub"></i>
+      </button>
+    </div>
+    <div class="mb-2" >
+      <button type="button" class="btn btn-primary btn-lg rounded-circle" id="editTKB" data-bs-toggle="modal" data-bs-target="#EditTKBModal">
+        <i class="fa-regular fa-calendar"></i>
+      </button>
+    </div>
   </div>
-  
+
   <!-- Absence Modal -->
   <div class="modal fade" id="absenceModal" tabindex="-1" aria-labelledby="absenceModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -276,7 +286,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Time Slot Modal -->
   <div class="modal fade" id="timeSlotModal" tabindex="-1" aria-labelledby="timeSlotModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -309,6 +319,71 @@
       </div>
     </div>
   </div>
+  <div class="modal fade" id="SelfStudyModal" tabindex="-1" aria-labelledby="SelfStudyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="SelfStudyModalLabel">Thêm ngày tự học</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="SelfStudyForm" method="POST" action="{{ route('saveSelfStudy', ['TenTKB' => $schedule->TenTKB]) }}">
+            @csrf
+            <div class="mb-3">
+              <label for="ngaytuhoc" class="form-label">Tên Ngày Tự Học</label>
+              <select id="ngaytuhoc" class="form-select @error('ngaytuhoc') is-invalid @enderror" name="ngaytuhoc">
+                <option value="">----- Tên Ngày Tự Học  -----</option>
+                <option value="Self Study">Self Study</option>
+                <option value="Team works">Team Works</option>
+              </select>
+
+            </div>
+            <div class="mb-3">
+              <label for="NgayBDTuHoc" class="form-label">Ngày bắt đầu tự học :</label>
+              <input type="date" class="form-control" id="NgayBDTuHoc" name="NgayBDTuHoc" required>
+            </div>
+            <div class="mb-3">
+              <label for="NgayKTTuHoc" class="form-label">Ngày kết thúc tự học :</label>
+              <input type="date" class="form-control" id="NgayKTTuHoc" name="NgayKTTuHoc" required>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+              <button type="submit" class="btn btn-primary" id="saveSelfStudyButton">Lưu</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="EditTKBModal" tabindex="-1" aria-labelledby="EditTKBModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="EditTKBModalLabel">Chỉnh sửa thời gian khai giảng</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="EditTKBForm" method="POST" action="{{ route('EditTKB', ['TenTKB' => $schedule->TenTKB]) }}">
+            @csrf
+            <div class="mb-3">
+                    <label for="NgayHoc" class="form-label">Ngày bắt đầu học</label>
+                    <input type="date" class="form-control @error('NgayHoc') is-invalid @enderror" id="NgayHoc" name="NgayHoc">
+                    <div id="NgayHoc" class="invalid-feedback">
+                        Không thể chọn ngày bắt đầu là thứ 7 hoặc chủ nhật.
+                    </div>
+                </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+              <button type="submit" class="btn btn-primary" id="saveSelfStudyButton">Lưu</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 <script>
     function confirmDelete() {

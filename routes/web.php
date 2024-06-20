@@ -33,8 +33,8 @@ Route::get('/getHK/{MaChuongTrinh}', [PagesController::class, 'getHK']);
 
 Route::post('/saveTimeSlot/{TenTKB}', [PagesController::class, 'saveTimeSlot'])->name('saveTimeSlot');
 Route::post('/saveholiday/{TenTKB}', [PagesController::class, 'saveholiday'])->name('saveholiday');
-
-
+Route::post('/saveSelfStudy/{TenTKB}',[PagesController::class,'saveSelfStudy'])->name('saveSelfStudy');
+Route::post('/EditTKB/{TenTKB}',[PagesController::class,'EditTKB'])->name('EditTKB');
 Route::post('ldap', [
     LDAPConnection::class,
     'index'
@@ -43,4 +43,3 @@ Route::post('ldap', [
 Route::get('error_alert', function () {
     return view('error_alert');
 });
-
