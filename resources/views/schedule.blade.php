@@ -263,7 +263,7 @@
     </div>
   </div>
 
-  <!-- Absence Modal -->
+  <!-- modal thêm ngày nghỉ -->
   <div class="modal fade" id="absenceModal" tabindex="-1" aria-labelledby="absenceModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -296,7 +296,7 @@
     </div>
   </div>
 
-  <!-- Time Slot Modal -->
+  <!-- modal lưu khung giờ học -->
   <div class="modal fade" id="timeSlotModal" tabindex="-1" aria-labelledby="timeSlotModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -328,6 +328,7 @@
       </div>
     </div>
   </div>
+  {{-- modal lưu ngày tự học --}}
   <div class="modal fade" id="SelfStudyModal" tabindex="-1" aria-labelledby="SelfStudyModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -365,7 +366,7 @@
     </div>
   </div>
 
-
+  {{-- modal chỉnh sửa ngày khai giảng --}}
   <div class="modal fade" id="EditTKBModal" tabindex="-1" aria-labelledby="EditTKBModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -388,11 +389,35 @@
               <button type="submit" class="btn btn-primary" id="saveSelfStudyButton">Lưu</button>
             </div>
           </form>
+
         </div>
       </div>
     </div>
   </div>
 
+{{-- toast message thông báo lỗi --}}
+@if ($errors->any() && request()->route('saveSelfStudy', ['TenTKB' => $schedule->TenTKB]))
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class=" toast-body d-flex justify-content-between bg-danger">
+          <p5 class="text-white">Vui lòng kiểm tra lại, ngày kết thúc phải sau ngày bắt đầu</p5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+@elseif ($errors->any() && request()->route('saveholiday', ['TenTKB' => $schedule->TenTKB]))
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class=" toast-body d-flex justify-content-between bg-danger">
+          <p5 class="text-white">Vui lòng kiểm tra lại, ngày kết thúc phải sau ngày bắt đầu</p5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+@endif
+
+<script src="{{ asset('js/toast.js') }}"></script>
+<script src="{{ asset('js/validation.js') }}"></script>
 
 <script>
     function confirmDelete() {
@@ -400,6 +425,7 @@
             document.getElementById('deleteScheduleForm').submit();
         }
     }
+
 </script>
 
 @endsection
