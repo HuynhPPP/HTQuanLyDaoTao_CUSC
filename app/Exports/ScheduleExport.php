@@ -30,10 +30,12 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $this->phongth = $phongth;
         $this->dsdkmn = $dsdkmn;
         $this->hocki = $hocki;
-        $this->monhocs = $monhocs;
+        $this->monhocs = $monhocs->filter(function($monhoc) {
+            return $monhoc->GioTrienKhai > 0;
+        });
 
         $this->subjectOccurrences = [];
-        $subjectCount = count($monhocs);
+        $subjectCount = count($this->monhocs);
         foreach ($this->monhocs as $index => $monhoc) {
             $this->subjectOccurrences[$monhoc->TenMH] = [
                 'first' => null,

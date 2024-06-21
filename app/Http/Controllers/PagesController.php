@@ -120,26 +120,21 @@ class PagesController extends Controller
 
         return redirect()->route('schedule', ['TenTKB' => 'THỜI KHÓA BIỂU LỚP ' . $request->input('Lop') . ' - ' . $hocki->TenHK . ' (' . $request->input('ChuongTrinhTrienKhai') . ')']);
     }
+
     public function schedule($TenTKB)
     {
-        $schedule = tkb::where('TenTKB', $TenTKB)->first();
-        $lophoc = lophoc::where('MaLop', $schedule->MaLop)->first();
-        $chuongtrinh = chuongtrinh::where('MaChuongTrinh', $lophoc->MaChuongTrinh)->first();
-        $phonglt = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
-        $phongth = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
-        $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
-        $dsdkmn = danhsachdangkimonhoc::where('MaHK', $hocki->MaHK)->first();
-        $ngaynghis = danhsachngaynghi::where('TenTKB', $TenTKB)->get()->map(function ($ngaynghi) {
-            return ngaynghi::where('MaNgayNghi', $ngaynghi->MaNgayNghi)->first();
-        });
+        $schedule = tkb::find($TenTKB);
+        $lophoc = lophoc::find($schedule->MaLop);
+        $chuongtrinh = chuongtrinh::find($lophoc->MaChuongTrinh);
+        $phonglt = danhsachphong::find($lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
+        $phongth = danhsachphong::find($lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
+        $hocki = hocki::find($schedule->MaHK);
+        $dsdkmn = danhsachdangkimonhoc::find($hocki->MaHK);
+        $ngaynghis = danhsachngaynghi::where('TenTKB', $TenTKB)->get()->pluck('ngayNghi');
         $monhocs = monhoc::where('MaHK', $hocki->MaHK)->orderBy('Stt')->get();
         $khunggio = khunggio::all();
-        $ngaytuhocs = ngaytuhoc::all();
-        $chuongtrinhEdit=chuongtrinh::all();
-        $lophocEdit=lophoc::all();
-        $hockyEdit=hocki::all();
 
-        return view('schedule', compact('schedule', 'chuongtrinh', 'phonglt', 'phongth', 'hocki', 'dsdkmn', 'ngaynghis', 'monhocs', 'khunggio','ngaytuhocs','chuongtrinhEdit','hockyEdit','lophocEdit'));
+        return view('schedule', compact('schedule', 'chuongtrinh', 'phonglt', 'phongth', 'hocki', 'dsdkmn', 'ngaynghis', 'monhocs', 'khunggio'));
     }
 
     public function deleteSchedule($TenTKB)
@@ -162,7 +157,7 @@ class PagesController extends Controller
         $phongth = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
         $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
         $dsdkmn = danhsachdangkimonhoc::where('MaHK', $hocki->MaHK)->first();
-        $monhocs = monhoc::where('MaHK', $hocki->MaHK)->get();
+        $monhocs = monhoc::where('MaHK', $hocki->MaHK)->orderBy('Stt')->get();
 
         return Excel::download(new ScheduleExport($schedule, $chuongtrinh, $phonglt, $phongth, $dsdkmn, $hocki, $monhocs), 'schedule.xlsx');
     }
@@ -234,6 +229,7 @@ class PagesController extends Controller
 
         return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
     }
+    
      public function saveSelfStudy(Request $request, $TenTKB)
     {
         // DD(request()->all());

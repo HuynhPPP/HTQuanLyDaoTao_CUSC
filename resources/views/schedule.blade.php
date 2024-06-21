@@ -103,6 +103,7 @@
                     return $date;
                 };
 
+                
                 $getSubjectForDay = function(&$subjectOccurrences, $currentDate, &$totalHours, &$examDays, $addDaysSkippingWeekends) {
                     foreach ($subjectOccurrences as $subject => &$details) {
                         if ($details['remaining'] > 0) {
@@ -156,6 +157,21 @@
                     return '';
                 };
 
+                $holidayDates = [];
+                  foreach ($ngaynghis as $ngaynghi) {
+                    $holidayStart = Carbon::parse($ngaynghi->NgayBDNghi);
+                    $holidayEnd = Carbon::parse($ngaynghi->NgayKT);
+
+                    while ($holidayStart->lte($holidayEnd)) {
+                        if ($holidayStart->dayOfWeek !== Carbon::SATURDAY && $holidayStart->dayOfWeek !== Carbon::SUNDAY) {
+                            $holidayDates[$holidayStart->format('Y-m-d')] = $ngaynghi->TenNgayNghi;
+                            $totalHours += 2; 
+                        }
+                        $holidayStart->addDay();
+                    }
+                  }
+
+
                 // Tạo lịch học
                 $scheduleMatrix = [];
                 $examDays = [];
@@ -168,16 +184,19 @@
                         $currentDate = $weekStart->copy()->addDays($dayIndex);
                         $subject = '';
                         $style = '';
-                        $backgroundColor = '';
 
                         if ($currentDate->gte($startDate)) {
                             if (isset($examDays[$currentDate->format('Y-m-d')])) {
                                 $subject = $examDays[$currentDate->format('Y-m-d')];
                                 $style = 'color: blue; font-weight: bold;';
                                 if ($subject === "self-study") {
-                                    $style = 'color: black;';
+                                    $style = 'text-dark';
                                 }
-                            } else {
+                            }else {
+                                if (isset($holidayDates[$currentDate->format('Y-m-d')])) {
+                                    $subject = $holidayDates[$currentDate->format('Y-m-d')];
+                                    $style = "background-color: yellow;";
+                                } else {
                                 $subject = $getSubjectForDay($subjectOccurrences, $currentDate, $totalHours, $examDays, $addDaysSkippingWeekends);
 
                                 if ($subject) {
@@ -185,8 +204,9 @@
                                         $style = 'color: red; font-weight: bold;';
                                     } elseif ($subjectOccurrences[$subject]['last'] == $currentDate) {
                                         $style = 'color: purple; font-weight: bold;';
-                                    }
+                                  }
                                 }
+                              }
                             }
                         }
 
@@ -197,7 +217,6 @@
                             'date' => $currentDate->format('d/m/Y'),
                             'subject' => $subject,
                             'style' => $style,
-                            'backgroundColor' => $backgroundColor
                         ];
                     }
                 }
@@ -218,7 +237,7 @@
                         <th class="text-wrap align-middle" style="width: 12rem;">{{ $dsdkmn->TenKhungGio ?? ''}}</th>
 
                         @foreach ($days as $dayData)
-                            <td class="text-wrap align-middle" style="width: 12rem; {{ $dayData['style'] }} {{ $dayData['backgroundColor'] }}">
+                            <td class="text-wrap align-middle" style="width: 12rem; {{ $dayData['style'] }}">
                                 {{ $dayData['subject'] }}
                             </td>
                         @endforeach
@@ -263,7 +282,7 @@
     </div>
   </div>
 
-  <!-- modal thêm ngày nghỉ -->
+  <!-- Absence Modal -->
   <div class="modal fade" id="absenceModal" tabindex="-1" aria-labelledby="absenceModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -296,7 +315,7 @@
     </div>
   </div>
 
-  <!-- modal lưu khung giờ học -->
+  <!-- Time Slot Modal -->
   <div class="modal fade" id="timeSlotModal" tabindex="-1" aria-labelledby="timeSlotModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -328,7 +347,6 @@
       </div>
     </div>
   </div>
-  {{-- modal lưu ngày tự học --}}
   <div class="modal fade" id="SelfStudyModal" tabindex="-1" aria-labelledby="SelfStudyModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -366,7 +384,7 @@
     </div>
   </div>
 
-  {{-- modal chỉnh sửa ngày khai giảng --}}
+
   <div class="modal fade" id="EditTKBModal" tabindex="-1" aria-labelledby="EditTKBModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -389,35 +407,11 @@
               <button type="submit" class="btn btn-primary" id="saveSelfStudyButton">Lưu</button>
             </div>
           </form>
-
         </div>
       </div>
     </div>
   </div>
 
-{{-- toast message thông báo lỗi --}}
-@if ($errors->any() && request()->route('saveSelfStudy', ['TenTKB' => $schedule->TenTKB]))
-  <div class="toast-container position-fixed bottom-0 end-0 p-3">
-    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class=" toast-body d-flex justify-content-between bg-danger">
-          <p5 class="text-white">Vui lòng kiểm tra lại, ngày kết thúc phải sau ngày bắt đầu</p5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-    </div>
-  </div>
-@elseif ($errors->any() && request()->route('saveholiday', ['TenTKB' => $schedule->TenTKB]))
-  <div class="toast-container position-fixed bottom-0 end-0 p-3">
-    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class=" toast-body d-flex justify-content-between bg-danger">
-          <p5 class="text-white">Vui lòng kiểm tra lại, ngày kết thúc phải sau ngày bắt đầu</p5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-    </div>
-  </div>
-@endif
-
-<script src="{{ asset('js/toast.js') }}"></script>
-<script src="{{ asset('js/validation.js') }}"></script>
 
 <script>
     function confirmDelete() {
@@ -425,7 +419,6 @@
             document.getElementById('deleteScheduleForm').submit();
         }
     }
-
 </script>
 
 @endsection
