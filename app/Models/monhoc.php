@@ -13,9 +13,7 @@ class monhoc extends Model
     protected $keyType='string';
     protected  $fillable=[
         'TenMH',
-        'Stt',
         'MaMH',
-        'MaChuongTrinh',
         'GioGoc',
         'GioTrienKhai',
         'SoTietLT',

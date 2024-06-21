@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ScheduleExport;
+use Exception;
 use App\Models\{
     khoadaotao,
     chuongtrinh,
@@ -19,7 +20,7 @@ use App\Models\{
     hocki,
     khunggio,
     danhsachphong,
-    danhsachdangkimonhoc,
+    danhsachmonhoc,
     ngaytuhoc
 };
 
@@ -129,7 +130,7 @@ class PagesController extends Controller
         $phonglt = danhsachphong::find($lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
         $phongth = danhsachphong::find($lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
         $hocki = hocki::find($schedule->MaHK);
-        $dsdkmn = danhsachdangkimonhoc::find($hocki->MaHK);
+        $dsdkmn = danhsachmonhoc::find($hocki->MaHK);
         $ngaynghis = danhsachngaynghi::where('TenTKB', $TenTKB)->get()->pluck('ngayNghi');
         $monhocs = monhoc::where('MaHK', $hocki->MaHK)->orderBy('Stt')->get();
         $khunggio = khunggio::all();
@@ -156,7 +157,7 @@ class PagesController extends Controller
         $phonglt = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
         $phongth = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
         $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
-        $dsdkmn = danhsachdangkimonhoc::where('MaHK', $hocki->MaHK)->first();
+        $dsdkmn = danhsachmonhoc::where('MaHK', $hocki->MaHK)->first();
         $monhocs = monhoc::where('MaHK', $hocki->MaHK)->orderBy('Stt')->get();
 
         return Excel::download(new ScheduleExport($schedule, $chuongtrinh, $phonglt, $phongth, $dsdkmn, $hocki, $monhocs), 'schedule.xlsx');
@@ -179,41 +180,42 @@ class PagesController extends Controller
 
     public function saveTimeSlot(Request $request, $TenTKB)
 {
-    // Validate request with improved error message
-    $request->validate([
-        'khunggio' => 'required',
-    ], [
-        'khunggio.required' => 'Hãy chọn khung giờ!',
-    ]);
-    // Retrieve schedule and semester information
-    $schedule = tkb::where('TenTKB', $TenTKB)->first();
-    $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
+        // Validate request with improved error message
+        $request->validate([
+            'khunggio' => 'required',
+        ], [
+            'khunggio.required' => 'Hãy chọn khung giờ!',
+        ]);
+        // Retrieve schedule and semester information
+        $schedule = tkb::where('TenTKB', $TenTKB)->first();
+        $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
 
-    // Find existing time slot
-    $timeSlot = danhsachdangkimonhoc::where('MaHK', $hocki->MaHK)->update(
-        ['TenKhungGio' => $request->input('khunggio')]);
-    //DD(request()->all());
-    if (!$timeSlot) {
-        // Update existing time slot (delete and recreate)
-        $timeSlot = new danhsachdangkimonhoc();
-        $timeSlot->TenKhungGio = $request->input('khunggio');
-        $timeSlot->MaHK = $hocki->MaHK;
-        $timeSlot->save();
-    }
-    // Redirect with success message
-    return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
+        // Find existing time slot
+        $timeSlot = danhsachmonhoc::where('MaHK', $hocki->MaHK)->update(
+            ['TenKhungGio' => $request->input('khunggio')]);
+        //DD(request()->all());
+        if (!$timeSlot) {
+            // Update existing time slot (delete and recreate)
+            $timeSlot = new danhsachmonhoc();
+            $timeSlot->TenKhungGio = $request->input('khunggio');
+            $timeSlot->MaHK = $hocki->MaHK;
+            $timeSlot->save();
+        }
+        // Redirect with success message
+        return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
 }
 
     public function saveholiday(Request $request, $TenTKB)
     {
+    try{
         $request->validate([
             'TenNgayNghi' => 'required|string|max:255',
             'NgayBDNghi' => 'required|date',
-            'NgayKT' => 'required|date',
+            'NgayKT' => 'required|date|after_or_equal:NgayBDNghi',
         ], [
             'TenNgayNghi.required' => 'Hãy nhập tên ngày nghỉ!',
             'NgayBDNghi.required' => 'Hãy chọn ngày bắt đầu nghỉ!',
-            'NgayKT.required' => 'Hãy chọn ngày kết thúc nghỉ!',
+            'NgayKT.after_or_equal' ,
         ]);
 
         $ngaynghimoi = ngaynghi::create($request->only('TenNgayNghi', 'NgayBDNghi', 'NgayKT'));
@@ -228,16 +230,25 @@ class PagesController extends Controller
         ]);
 
         return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
+    }catch(Exception $e){
+        return Redirect::to('error_alert')->with(['error' => 'Ngày kết thúc phải sau ngày bắt đầu', 'redirectTo' => route('schedule', ['TenTKB' => $TenTKB])]);
     }
-    
+    }
+
      public function saveSelfStudy(Request $request, $TenTKB)
     {
         // DD(request()->all());
+    try{
         $request->validate([
             'ngaytuhoc' => 'required',
             'NgayBDTuHoc' => 'required|date',
-            'NgayKTTuHoc' => 'required|date', // Ensure end date is after start date
+            'NgayKTTuHoc' => 'required|date||after_or_equal:NgayBDTuHoc', // Ensure end date is after start date
+        ], [
+            'ngaytuhoc.required' => 'Hãy nhập tên ngày tự học!',
+            'NgayBDTuHoc.required' => 'Hãy chọn ngày bắt đầu tự học!',
+            'NgayKTTuHoc.after_or_equal',
         ]);
+
             // Create a new SelfStudy instance
             $selfStudy = new ngaytuhoc([
                 'TenTKB'=>$TenTKB,
@@ -248,6 +259,9 @@ class PagesController extends Controller
             // Save the SelfStudy record
             $selfStudy->save();
         return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
+    }catch(Exception $e){
+        return Redirect::to('error_alert')->with(['error' => 'Ngày kết thúc phải sau ngày bắt đầu', 'redirectTo' => route('schedule', ['TenTKB' => $TenTKB])]);
+    }
     }
 
     public function monitorClassroom()

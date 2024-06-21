@@ -193,35 +193,32 @@ CREATE TABLE `HinhThucDanhGia`(
 
 CREATE TABLE `MonHoc` (
   `TenMH` VARCHAR(255) PRIMARY KEY,
-  `Stt` INT,
   `MaMH` VARCHAR(12),
-  `MaHK` VARCHAR(12),
   `GioGoc` INT,
   `GioTrienKhai` INT,
   `SoTietLT`  INT,
   `SoTietTH` INT,
   `SoTietLTvaTH` INT,
   `MaHTDanhGia` VARCHAR(12),
-  FOREIGN KEY (`MaHTDanhGia`) REFERENCES `HinhThucDanhGia`(`MaHTDanhGia`),
-  FOREIGN KEY (`MaHK`) REFERENCES `HocKi`(`MaHK`)
+  FOREIGN KEY (`MaHTDanhGia`) REFERENCES `HinhThucDanhGia`(`MaHTDanhGia`)
 );
-INSERT INTO MonHoc(TenMH,Stt, MaHK, GioGoc, GioTrienKhai)
+INSERT INTO MonHoc(TenMH, GioGoc, GioTrienKhai)
 VALUES
-('Computer fundamentals' ,'1', 'OV-7023-HK I', '0', '8'),
-('Logic Building and Elementary Programing' , '2','OV-7023-HK I', '40', '42'),
-('HTML5,CSS and Javascript' ,'3', 'OV-7023-HK I', '40', '44'),
-('AngularJS' ,'4', 'OV-7023-HK I', '16', '16'),
-('eProject-Website Development' ,'5', 'OV-7023-HK I', '2', '8'),
-('Database Design and Development(core)' ,'6', 'OV-7023-HK I', '24', '16'),
-('Data Management with SQL server' ,'7', 'OV-7023-HK I', '40', '40'),
-('Markup Language & JSON ','8', 'OV-7023-HK II','16','16') ,
-('Java Programming - I','9', 'OV-7023-HK II', '36', '40'),
-('Java Programming -II','10', 'OV-7023-HK II', '40', '42'),
-('Information Systems Analysis(Core)','11', 'OV-7023-HK II', '24', '12'),
-('Project-Java Application Development','12', 'OV-7023-HK II', '2', '12'),
-('Application Programming with C#','13', 'OV-7023-HK II', '36', '38'),
-('PHP Development with Laravel Framework','14', 'OV-7023-HK II', '40', '40'),
-('Professional Issues in IT(Elective','15','OV-7023-HK II' , '24', '0');
+('Computer fundamentals' , '0', '8'),
+('Logic Building and Elementary Programing' , '40', '42'),
+('HTML5,CSS and Javascript' , '40', '44'),
+('AngularJS' , '16', '16'),
+('eProject-Website Development' , '2', '8'),
+('Database Design and Development(core)' , '24', '16'),
+('Data Management with SQL server' , '40', '40'),
+('Markup Language & JSON ','16','16') ,
+('Java Programming - I', '36', '40'),
+('Java Programming -II', '40', '42'),
+('Information Systems Analysis(Core)', '24', '12'),
+('Project-Java Application Development', '2', '12'),
+('Application Programming with C#', '36', '38'),
+('PHP Development with Laravel Framework', '40', '40');
+
 CREATE TABLE `TrangThaiMH`(
 	`MaTTMH` VARCHAR(12) PRIMARY KEY,
 	`TrangThai` BOOLEAN
@@ -305,25 +302,39 @@ CREATE TABLE `DanhSachNgayNghi`(
 	`TenTKB` VARCHAR(255),
 	`MaNgayNghi` int,
 	FOREIGN KEY (`TenTKB`) REFERENCES `TKB`(`TenTKB`),
-	FOREIGN KEY (`MaNgayNghi`) REFERENCES `NgayNghi`(`MaNgayNghi`)
+	FOREIGN KEY (`MaNgayNghi`) REFERENCES `NgayNghi`(`MaNgayNghi`),
+	PRIMARY KEY (`MaNgayNghi`)
 );
 INSERT INTO danhsachngaynghi(TenTKB, MaNgayNghi)
 VALUES
 ('THỜI KHÓA BIỂU LỚP CP2296H07 - Học Kỳ IV (OV-7023)', '1'),
 ('THỜI KHÓA BIỂU LỚP CP2296H07 - Học Kỳ IV (OV-7023)', '2'),
 ('THỜI KHÓA BIỂU LỚP CP2296H07 - Học Kỳ IV (OV-7023)', '3');
-CREATE TABLE `DanhSachDKMH`(
-	`TenKhungGio` VARCHAR(100),
+CREATE TABLE `DanhSachMH`(
 	`MaHK` VARCHAR(50),
+	`TenKhungGio` VARCHAR(100),
+	`SttMH` INT,
+	`TenMH` VARCHAR(255),
 	FOREIGN KEY (`TenKhungGio`) REFERENCES `KhungGio`(`TenKhungGio`),
 	FOREIGN KEY (`MaHK`) REFERENCES `HocKi`(`MaHK`),
-	PRIMARY KEY(`MaHK`)
+	FOREIGN KEY (`TenMH`) REFERENCES `MonHoc`(`TenMH`)
 );
-INSERT INTO danhsachdkmh(TenKhungGio,MaHK)
+INSERT INTO danhsachmh(MaHK, SttMH, TenMH)
 VALUES
-('7:00-9:00','OV-7023-HK I'),
-('7:00-9:00','OV-7023-HK II');
-
+('OV-7023-HK I','1','Computer fundamentals' ),
+('OV-7023-HK I','2','Logic Building and Elementary Programing' ),
+('OV-7023-HK I','3','HTML5,CSS and Javascript' ),
+('OV-7023-HK I','4','AngularJS'),
+('OV-7023-HK I','5', 'eProject-Website Development' ),
+('OV-7023-HK I','6','Database Design and Development(core)' ),
+('OV-7023-HK I','7','Data Management with SQL server'),
+('OV-7023-HK II','8','Markup Language & JSON '),
+('OV-7023-HK II','9','Java Programming - I'),
+('OV-7023-HK II','10','Java Programming -II'),
+('OV-7023-HK II','11','Information Systems Analysis(Core)'),
+('OV-7023-HK II','12','Project-Java Application Development'),
+('OV-7023-HK II','13','Application Programming with C#'),
+('OV-7023-HK II','14','PHP Development with Laravel Framework');
 
 /*CREATE TABLE `TheoDoiMHSapBatDau`(
 	`MaTheoDoiMH` VARCHAR(12) PRIMARY KEY,
@@ -400,4 +411,3 @@ CREATE TABLE `TheoDoiPhongHoc`(
   FOREIGN KEY (`TenTKB`) REFERENCES `TKB`(`TenTKB`)
 
 );*/
-
