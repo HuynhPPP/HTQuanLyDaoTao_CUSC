@@ -130,12 +130,12 @@ class PagesController extends Controller
         $phonglt = danhsachphong::find($lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
         $phongth = danhsachphong::find($lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
         $hocki = hocki::find($schedule->MaHK);
-        $dsdkmn = danhsachmonhoc::find($hocki->MaHK);
+        $dsmh = danhsachmonhoc::find($hocki->MaHK);
         $ngaynghis = danhsachngaynghi::where('TenTKB', $TenTKB)->get()->pluck('ngayNghi');
-        $monhocs = monhoc::where('MaHK', $hocki->MaHK)->orderBy('Stt')->get();
+        $monhocs = danhsachmonhoc::where('MaHK', $hocki->MaHK)->get()->pluck('monhoc');
         $khunggio = khunggio::all();
-
-        return view('schedule', compact('schedule', 'chuongtrinh', 'phonglt', 'phongth', 'hocki', 'dsdkmn', 'ngaynghis', 'monhocs', 'khunggio'));
+        $ngaytuhocs = ngaytuhoc::where('TenTKB', $schedule->TenTKB)->get();
+        return view('schedule', compact('schedule', 'chuongtrinh', 'phonglt', 'phongth', 'hocki', 'dsmh', 'ngaynghis', 'monhocs', 'khunggio', 'ngaytuhocs'));
     }
 
     public function deleteSchedule($TenTKB)
@@ -157,10 +157,10 @@ class PagesController extends Controller
         $phonglt = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
         $phongth = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
         $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
-        $dsdkmn = danhsachmonhoc::where('MaHK', $hocki->MaHK)->first();
+        $dsmh = danhsachmonhoc::where('MaHK', $hocki->MaHK)->first();
         $monhocs = monhoc::where('MaHK', $hocki->MaHK)->orderBy('Stt')->get();
 
-        return Excel::download(new ScheduleExport($schedule, $chuongtrinh, $phonglt, $phongth, $dsdkmn, $hocki, $monhocs), 'schedule.xlsx');
+        return Excel::download(new ScheduleExport($schedule, $chuongtrinh, $phonglt, $phongth, $dsmh, $hocki, $monhocs), 'schedule.xlsx');
     }
     public function EditTKB(Request $request, $TenTKB){
         //DD(request()->all());

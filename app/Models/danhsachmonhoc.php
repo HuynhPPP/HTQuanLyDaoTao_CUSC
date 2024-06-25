@@ -31,6 +31,6 @@ class danhsachmonhoc extends Model
     }
 
     public function monhoc(){
-        return $this->belongsTo('MonHoc'::class,'TenMH');
+        return $this->belongsTo(monhoc::class,'TenMH');
     }
 }
