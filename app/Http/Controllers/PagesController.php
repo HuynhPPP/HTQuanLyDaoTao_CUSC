@@ -157,10 +157,12 @@ class PagesController extends Controller
         $phonglt = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
         $phongth = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
         $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
-        $dsmh = danhsachmonhoc::where('MaHK', $hocki->MaHK)->first();
-        $monhocs = monhoc::where('MaHK', $hocki->MaHK)->orderBy('Stt')->get();
+        $dsmh = danhsachmonhoc::find($hocki->MaHK);
+        $ngaynghis = danhsachngaynghi::where('TenTKB', $TenTKB)->get()->pluck('ngayNghi');
+        $monhocs = danhsachmonhoc::where('MaHK', $hocki->MaHK)->get()->pluck('monhoc');
+        $ngaytuhocs = ngaytuhoc::where('TenTKB', $schedule->TenTKB)->get();
 
-        return Excel::download(new ScheduleExport($schedule, $chuongtrinh, $phonglt, $phongth, $dsmh, $hocki, $monhocs), 'schedule.xlsx');
+        return Excel::download(new ScheduleExport($schedule, $chuongtrinh, $phonglt, $phongth, $dsmh, $hocki, $ngaynghis, $monhocs, $ngaytuhocs  ), 'schedule.xlsx');
     }
     public function EditTKB(Request $request, $TenTKB){
         //DD(request()->all());

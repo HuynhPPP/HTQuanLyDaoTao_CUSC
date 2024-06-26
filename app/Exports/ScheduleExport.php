@@ -17,19 +17,23 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
     protected $phonglt;
     protected $phongth;
     protected $hocki;
-    protected $dsdkmn;
+    protected $dsmh;
     protected $monhocs;
+    protected $ngaynghis;
+    protected $ngaytuhocs;
     protected $subjectOccurrences;
     protected $examDays;
 
-    public function __construct($tkb, $chuongtrinh, $phonglt, $phongth, $dsdkmn, $hocki, $monhocs)
+    public function __construct($tkb, $chuongtrinh, $phonglt, $phongth, $dsmh, $hocki, $ngaynghis, $monhocs,  $ngaytuhocs)
     {
         $this->tkb = $tkb;
         $this->chuongtrinh = $chuongtrinh;
         $this->phonglt = $phonglt;
         $this->phongth = $phongth;
-        $this->dsdkmn = $dsdkmn;
+        $this->dsmh = $dsmh;
         $this->hocki = $hocki;
+        $this->ngaynghis = $ngaynghis;
+        $this->ngaytuhocs = $ngaytuhocs;
         $this->monhocs = $monhocs->filter(function($monhoc) {
             return $monhoc->GioTrienKhai > 0;
         });
@@ -63,6 +67,9 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $this->totalWeeks = ceil($totalHours / 10);
         $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU'];
     
+        // Tính tổng số ngày nghỉ và cập nhật tổng giờ học
+        $holidayDates = $this->calculateHolidayDays($totalHours);
+    
         for ($week = 1; $week <= $this->totalWeeks; $week++) {
             $weekStart = $startDate ? $startDate->copy()->addWeeks($week - 1)->startOfWeek() : null;
             $weekEnd = $weekStart ? $weekStart->copy()->endOfWeek()->subDays(2) : null;
@@ -72,16 +79,20 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
                 '-',
                 $weekEnd ? $weekEnd->format('d/m/Y') : '',
                 $week,
-                $this->dsdkmn->TenKhungGio
+                $this->dsmh->TenKhungGio
             ];
     
             foreach ($weekDays as $day) {
                 $currentDate = $weekStart ? $weekStart->copy()->addDays(array_search($day, $weekDays)) : null;
                 $subject = '';
+                $style = '';
     
                 if ($currentDate && $currentDate->gte($startDate)) {
                     if (isset($this->examDays[$currentDate->format('Y-m-d')])) {
                         $subject = $this->examDays[$currentDate->format('Y-m-d')];
+                    } else if (isset($holidayDates[$currentDate->format('Y-m-d')])) {
+                        $subject = $holidayDates[$currentDate->format('Y-m-d')];
+                        $style = "background-color: yellow;";
                     } else {
                         $subject = $this->getSubjectForDay($currentDate, $totalHours);
                         $this->totalWeeks = ceil($totalHours / 10);
@@ -111,6 +122,24 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         }
 
         return $emptyDays;
+    }
+
+    protected function calculateHolidayDays(&$totalHours)
+    {
+        $holidayDates = [];
+        foreach ($this->ngaynghis as $ngaynghi) {
+            $holidayStart = Carbon::parse($ngaynghi->NgayBDNghi);
+            $holidayEnd = Carbon::parse($ngaynghi->NgayKT);
+
+            while ($holidayStart->lte($holidayEnd)) {
+                if ($holidayStart->dayOfWeek !== Carbon::SATURDAY && $holidayStart->dayOfWeek !== Carbon::SUNDAY) {
+                    $holidayDates[$holidayStart->format('Y-m-d')] = $ngaynghi->TenNgayNghi;
+                    $totalHours += 2; 
+                }
+                $holidayStart->addDay();
+            }
+        }
+        return $holidayDates;
     }
 
     protected function getSubjectForDay(&$currentDate, &$totalHours)
