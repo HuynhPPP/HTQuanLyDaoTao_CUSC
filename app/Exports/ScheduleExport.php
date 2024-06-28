@@ -69,6 +69,7 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
     
         // Tính tổng số ngày nghỉ và cập nhật tổng giờ học
         $holidayDates = $this->calculateHolidayDays($totalHours);
+        $selfStudyDays = $this->addSelfStudyDays($totalHours, $holidayDates);
     
         for ($week = 1; $week <= $this->totalWeeks; $week++) {
             $weekStart = $startDate ? $startDate->copy()->addWeeks($week - 1)->startOfWeek() : null;
@@ -85,31 +86,73 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
             foreach ($weekDays as $day) {
                 $currentDate = $weekStart ? $weekStart->copy()->addDays(array_search($day, $weekDays)) : null;
                 $subject = '';
-                $style = '';
-    
+
                 if ($currentDate && $currentDate->gte($startDate)) {
+                    // Adjust exam days to avoid holidays
                     if (isset($this->examDays[$currentDate->format('Y-m-d')])) {
                         $subject = $this->examDays[$currentDate->format('Y-m-d')];
-                    } else if (isset($holidayDates[$currentDate->format('Y-m-d')])) {
+                    } elseif (isset($holidayDates[$currentDate->format('Y-m-d')])) {
+                        // Handle holidays overlapping with exam days
                         $subject = $holidayDates[$currentDate->format('Y-m-d')];
-                        $style = "background-color: yellow;";
+                    } elseif (isset($selfStudyDays[$currentDate->format('Y-m-d')])) {
+                        $subject = $selfStudyDays[$currentDate->format('Y-m-d')];
                     } else {
+                        // Calculate and assign subjects for regular days
                         $subject = $this->getSubjectForDay($currentDate, $totalHours);
                         $this->totalWeeks = ceil($totalHours / 10);
                     }
                 }
-    
+
                 $row[] = $subject;
             }
-    
+
             $data[] = $row;
         }
-    
-        $this->totalRows = count($data); // Lưu tổng số hàng vào biến thành viên
-    
         return collect($data);
     }
+
+    protected function addSelfStudyDays(&$totalHours, &$holidayDates)
+    {
+        $selfStudyDays = [];
+        foreach ($this->ngaytuhocs as $ngaytuhoc) {
+            $selfStudyStart = Carbon::parse($ngaytuhoc->NgayBDTuHoc);
+            $selfStudyEnd = Carbon::parse($ngaytuhoc->NgayKTTuHoc);
     
+            while ($selfStudyStart->lte($selfStudyEnd)) {
+                // Check if the self-study day is not a Saturday, Sunday, holiday, or day before an exam
+                if ($selfStudyStart->dayOfWeek !== Carbon::SATURDAY && 
+                    $selfStudyStart->dayOfWeek !== Carbon::SUNDAY &&
+                    !isset($holidayDates[$selfStudyStart->format('Y-m-d')]) &&
+                    !$this->isSelfStudyBeforeExam($selfStudyStart, $holidayDates)) {
+    
+                    $selfStudyDays[$selfStudyStart->format('Y-m-d')] = $ngaytuhoc->TenNgayTuHoc;
+                    $totalHours += 2; // Add hours for each self-study day
+                }
+    
+                $selfStudyStart->addDay();
+            }
+        }
+    
+        return $selfStudyDays;
+    }
+    
+
+    protected function isSelfStudyBeforeExam($selfStudyDate, $holidayDates)
+    {
+        foreach ($this->examDays as $examDate => $subject) {
+            $examDate = Carbon::parse($examDate);
+            $daysBeforeExam = $examDate->copy()->subDay();
+
+            if ($selfStudyDate->eq($daysBeforeExam) &&
+                $selfStudyDate->dayOfWeek !== Carbon::SATURDAY && $selfStudyDate->dayOfWeek !== Carbon::SUNDAY &&
+                !isset($holidayDates[$selfStudyDate->format('Y-m-d')])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+        
     protected function calculateEmptyDays($startDate)
     {
         $weekStartDate = $startDate->copy()->startOfWeek();
