@@ -69,221 +69,298 @@ class PagesController extends Controller
 
     public function schedules()
     {
-        $data = [
-            'khoadaotaos' => khoadaotao::all(),
-            'tkbs' => tkb::all(),
-
-        ];
-        return view('schedules', $data);
+        if (session()->has('user')) {
+            $data = [
+                'khoadaotaos' => khoadaotao::all(),
+                'tkbs' => tkb::all(),
+            ];
+            return view('schedules', $data);
+        }
+        return Redirect::to('error_alert')->with([
+            'error' => 'Truy cập bị từ chối',
+            'redirectTo' => route('ministry'),
+        ]);
     }
 
     public function getChuongTrinh($TenKhoaDaoTao)
     {
-        return response()->json(chuongtrinh::where('TenKhoaDaoTao', $TenKhoaDaoTao)->get());
+        if (session()->has('user')) {
+            return response()->json(chuongtrinh::where('TenKhoaDaoTao', $TenKhoaDaoTao)->get());
+        }
+        return Redirect::to('error_alert')->with([
+            'error' => 'Truy cập bị từ chối',
+            'redirectTo' => route('ministry'),
+        ]);
     }
 
     public function getLop($MaChuongTrinh)
     {
-        return response()->json(lophoc::where('MaChuongTrinh', $MaChuongTrinh)->get());
+        if (session()->has('user')) {
+            return response()->json(lophoc::where('MaChuongTrinh', $MaChuongTrinh)->get());
+        }
+        return Redirect::to('error_alert')->with([
+            'error' => 'Truy cập bị từ chối',
+            'redirectTo' => route('ministry'),
+        ]);
     }
 
     public function getHK($MaChuongTrinh)
     {
-        return response()->json(hocki::where('MaChuongTrinh', $MaChuongTrinh)->get());
+        if (session()->has('user')) {
+            return response()->json(hocki::where('MaChuongTrinh', $MaChuongTrinh)->get());
+        }
+        return Redirect::to('error_alert')->with([
+            'error' => 'Truy cập bị từ chối',
+            'redirectTo' => route('ministry'),
+        ]);
     }
-
-
 
     public function saveSchedule(Request $request)
     {
-        $request->validate([
-            'KhoaDaoTao' => 'required|string',
-            'ChuongTrinhTrienKhai' => 'required|string',
-            'HocKi' => 'required|string',
-            'Lop' => 'required|string',
-            'NgayHoc' => 'required|date',
-        ], [
-            'KhoaDaoTao.required' => 'Hãy chọn khoá đào tạo!',
-            'ChuongTrinhTrienKhai.required' => 'Hãy chọn chương trình triển khai!',
-            'HocKi.required' => 'Hãy chọn học kỳ!',
-            'NgayHoc' => 'Ngày bắt đầu học không được là thứ 7 hoặc chủ nhật!',
-            'Lop.required' => 'Hãy chọn lớp!',
-        ]);
+        if (session()->has('user')) {
+            $request->validate([
+                'KhoaDaoTao' => 'required|string',
+                'ChuongTrinhTrienKhai' => 'required|string',
+                'HocKi' => 'required|string',
+                'Lop' => 'required|string',
+                'NgayHoc' => 'required|date',
+            ], [
+                'KhoaDaoTao.required' => 'Hãy chọn khoá đào tạo!',
+                'ChuongTrinhTrienKhai.required' => 'Hãy chọn chương trình triển khai!',
+                'HocKi.required' => 'Hãy chọn học kỳ!',
+                'NgayHoc' => 'Ngày bắt đầu học không được là thứ 7 hoặc chủ nhật!',
+                'Lop.required' => 'Hãy chọn lớp!',
+            ]);
 
-        $hocki = hocki::where('MaHK', $request->input('HocKi'))->first();
-        $schedule = new tkb([
-            'TenTKB' => 'THỜI KHÓA BIỂU LỚP ' . $request->input('Lop') . ' - ' . $hocki->TenHK . ' (' . $request->input('ChuongTrinhTrienKhai') . ')',
-            'MaLop' => $request->input('Lop'),
-            'MaHK' => $request->input('HocKi'),
-            'NgayHoc' => $request->input('NgayHoc'),
-        ]);
-        $schedule->save();
+            $hocki = hocki::where('MaHK', $request->input('HocKi'))->first();
+            $schedule = new tkb([
+                'TenTKB' => 'THỜI KHÓA BIỂU LỚP ' . $request->input('Lop') . ' - ' . $hocki->TenHK . ' (' . $request->input('ChuongTrinhTrienKhai') . ')',
+                'MaLop' => $request->input('Lop'),
+                'MaHK' => $request->input('HocKi'),
+                'NgayHoc' => $request->input('NgayHoc'),
+            ]);
+            $schedule->save();
 
-        return redirect()->route('schedule', ['TenTKB' => 'THỜI KHÓA BIỂU LỚP ' . $request->input('Lop') . ' - ' . $hocki->TenHK . ' (' . $request->input('ChuongTrinhTrienKhai') . ')']);
+            return redirect()->route('schedule', ['TenTKB' => $schedule->TenTKB]);
+        }
+        return Redirect::to('error_alert')->with([
+            'error' => 'Truy cập bị từ chối',
+            'redirectTo' => route('ministry'),
+        ]);
     }
 
     public function schedule($TenTKB)
     {
-        $schedule = tkb::find($TenTKB);
-        $lophoc = lophoc::find($schedule->MaLop);
-        $chuongtrinh = chuongtrinh::find($lophoc->MaChuongTrinh);
-        $phonglt = danhsachphong::find($lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
-        $phongth = danhsachphong::find($lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
-        $hocki = hocki::find($schedule->MaHK);
-        $dsmh = danhsachmonhoc::find($hocki->MaHK);
-        $ngaynghis = danhsachngaynghi::where('TenTKB', $TenTKB)->get()->pluck('ngayNghi');
-        $monhocs = danhsachmonhoc::where('MaHK', $hocki->MaHK)->get()->pluck('monhoc');
-        $khunggio = khunggio::all();
-        $ngaytuhocs = ngaytuhoc::where('TenTKB', $schedule->TenTKB)->get();
-        return view('schedule', compact('schedule', 'chuongtrinh', 'phonglt', 'phongth', 'hocki', 'dsmh', 'ngaynghis', 'monhocs', 'khunggio', 'ngaytuhocs'));
+        if (session()->has('user')) {
+            $schedule = tkb::find($TenTKB);
+            $lophoc = lophoc::find($schedule->MaLop);
+            $chuongtrinh = chuongtrinh::find($lophoc->MaChuongTrinh);
+            $phonglt = danhsachphong::find($lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
+            $phongth = danhsachphong::find($lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
+            $hocki = hocki::find($schedule->MaHK);
+            $dsmh = danhsachmonhoc::find($hocki->MaHK);
+            $ngaynghis = danhsachngaynghi::where('TenTKB', $TenTKB)->get()->pluck('ngayNghi');
+            $monhocs = danhsachmonhoc::where('MaHK', $hocki->MaHK)->get()->pluck('monhoc');
+            $khunggio = khunggio::all();
+            $ngaytuhocs = ngaytuhoc::where('TenTKB', $schedule->TenTKB)->get();
+            return view('schedule', compact('schedule', 'chuongtrinh', 'phonglt', 'phongth', 'hocki', 'dsmh', 'ngaynghis', 'monhocs', 'khunggio', 'ngaytuhocs'));
+        }
+        return Redirect::to('error_alert')->with([
+            'error' => 'Truy cập bị từ chối',
+            'redirectTo' => route('ministry'),
+        ]);
     }
 
     public function deleteSchedule($TenTKB)
     {
-        $schedules = tkb::where('TenTKB', $TenTKB);
-        if ($schedules->exists()) {
-            $schedules->delete();
-            return redirect()->route('schedules')->with('success', 'Thời khóa biểu đã được xóa.');
-        } else {
-            return redirect()->route('schedules')->with('error', 'Không tìm thấy thời khóa biểu với tên đã cung cấp.');
+        if (session()->has('user')) {
+            $schedule = tkb::where('TenTKB', $TenTKB);
+            if ($schedule->exists()) {
+                $schedule->delete();
+                return redirect()->route('schedules')->with('success', 'Thời khóa biểu đã được xóa.');
+            } else {
+                return redirect()->route('schedules')->with('error', 'Không tìm thấy thời khóa biểu với tên đã cung cấp.');
+            }
         }
+        return Redirect::to('error_alert')->with([
+            'error' => 'Truy cập bị từ chối',
+            'redirectTo' => route('ministry'),
+        ]);
     }
 
     public function exportExcel($TenTKB)
     {
-        $schedule = tkb::where('TenTKB', $TenTKB)->first();
-        $lophoc = lophoc::where('MaLop', $schedule->MaLop)->first();
-        $chuongtrinh = chuongtrinh::where('MaChuongTrinh', $lophoc->MaChuongTrinh)->first();
-        $phonglt = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
-        $phongth = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
-        $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
-        $dsmh = danhsachmonhoc::find($hocki->MaHK);
-        $ngaynghis = danhsachngaynghi::where('TenTKB', $TenTKB)->get()->pluck('ngayNghi');
-        $monhocs = danhsachmonhoc::where('MaHK', $hocki->MaHK)->get()->pluck('monhoc');
-        $ngaytuhocs = ngaytuhoc::where('TenTKB', $schedule->TenTKB)->get();
+        if (session()->has('user')) {
+            $schedule = tkb::where('TenTKB', $TenTKB)->first();
+            $lophoc = lophoc::where('MaLop', $schedule->MaLop)->first();
+            $chuongtrinh = chuongtrinh::where('MaChuongTrinh', $lophoc->MaChuongTrinh)->first();
+            $phonglt = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
+            $phongth = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
+            $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
+            $dsmh = danhsachmonhoc::find($hocki->MaHK);
+            $ngaynghis = danhsachngaynghi::where('TenTKB', $TenTKB)->get()->pluck('ngayNghi');
+            $monhocs = danhsachmonhoc::where('MaHK', $hocki->MaHK)->get()->pluck('monhoc');
+            $ngaytuhocs = ngaytuhoc::where('TenTKB', $schedule->TenTKB)->get();
 
-        return Excel::download(new ScheduleExport($schedule, $chuongtrinh, $phonglt, $phongth, $dsmh, $hocki, $ngaynghis, $monhocs, $ngaytuhocs  ), 'schedule.xlsx');
+            return Excel::download(new ScheduleExport($schedule, $chuongtrinh, $phonglt, $phongth, $dsmh, $hocki, $ngaynghis, $monhocs, $ngaytuhocs), 'schedule.xlsx');
+        }
+        return Redirect::to('error_alert')->with([
+            'error' => 'Truy cập bị từ chối',
+            'redirectTo' => route('ministry'),
+        ]);
     }
-    public function EditTKB(Request $request, $TenTKB){
-        //DD(request()->all());
-        $request->validate([
-            'NgayHoc' => 'required|date',
-        ], [
-            'NgayHoc.required' => 'Ngày bắt đầu học không được là thứ 7 hoặc chủ nhật!',
-        ]);
 
-    tkb::where('TenTKB',$TenTKB)->update(
-        [
-            'NgayHoc'=>$request->input('NgayHoc'),
-        ]);
+    public function EditTKB(Request $request, $TenTKB)
+    {
+        if (session()->has('user')) {
+            $request->validate([
+                'NgayHoc' => ['required', 'date', function ($attribute, $value, $fail) {
+                    $dayOfWeek = date('N', strtotime($value));
+                    if ($dayOfWeek == 6 || $dayOfWeek == 7) {
+                        $fail('Ngày bắt đầu học không được là thứ 7 hoặc chủ nhật!');
+                    }
+                }],
+            ], [
+                'NgayHoc.required' => 'Hãy chọn ngày bắt đầu!',
+            ]);
 
-     return redirect()->route('schedule', ['TenTKB' =>$TenTKB]);
+            tkb::where('TenTKB', $TenTKB)->update([
+                'NgayHoc' => $request->input('NgayHoc'),
+            ]);
+
+            return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
+        }
+        return Redirect::to('error_alert')->with([
+            'error' => 'Truy cập bị từ chối',
+            'redirectTo' => route('ministry'),
+        ]);
     }
 
     public function saveTimeSlot(Request $request, $TenTKB)
-{
-        // Validate request with improved error message
-        $request->validate([
-            'khunggio' => 'required',
-        ], [
-            'khunggio.required' => 'Hãy chọn khung giờ!',
-        ]);
-        // Retrieve schedule and semester information
-        $schedule = tkb::where('TenTKB', $TenTKB)->first();
-        $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
+    {
+        if (session()->has('user')) {
+            $request->validate([
+                'khunggio' => 'required',
+            ], [
+                'khunggio.required' => 'Hãy chọn khung giờ!',
+            ]);
 
-        // Find existing time slot
-        $timeSlot = danhsachmonhoc::where('MaHK', $hocki->MaHK)->update(
-            ['TenKhungGio' => $request->input('khunggio')]);
-        //DD(request()->all());
-        if (!$timeSlot) {
-            // Update existing time slot (delete and recreate)
-            $timeSlot = new danhsachmonhoc();
-            $timeSlot->TenKhungGio = $request->input('khunggio');
-            $timeSlot->MaHK = $hocki->MaHK;
-            $timeSlot->save();
+            $schedule = tkb::where('TenTKB', $TenTKB)->first();
+            $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
+
+            danhsachmonhoc::updateOrCreate(
+                ['MaHK' => $hocki->MaHK],
+                ['TenKhungGio' => $request->input('khunggio')]
+            );
+
+            return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
         }
-        // Redirect with success message
-        return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
-}
+        return Redirect::to('error_alert')->with([
+            'error' => 'Truy cập bị từ chối',
+            'redirectTo' => route('ministry'),
+        ]);
+    }
 
     public function saveholiday(Request $request, $TenTKB)
     {
-    try{
-        $request->validate([
-            'TenNgayNghi' => 'required|string|max:255',
-            'NgayBDNghi' => 'required|date',
-            'NgayKT' => 'required|date|after_or_equal:NgayBDNghi',
-        ], [
-            'TenNgayNghi.required' => 'Hãy nhập tên ngày nghỉ!',
-            'NgayBDNghi.required' => 'Hãy chọn ngày bắt đầu nghỉ!',
-            'NgayKT.after_or_equal' ,
+        if (session()->has('user')) {
+            try {
+                $request->validate([
+                    'TenNgayNghi' => 'required|string|max:255',
+                    'NgayBDNghi' => 'required|date',
+                    'NgayKT' => 'required|date|after_or_equal:NgayBDNghi',
+                ], [
+                    'TenNgayNghi.required' => 'Hãy nhập tên ngày nghỉ!',
+                    'NgayBDNghi.required' => 'Hãy chọn ngày bắt đầu nghỉ!',
+                    'NgayKT.after_or_equal' => 'Ngày kết thúc phải sau ngày bắt đầu!',
+                ]);
+
+                $ngaynghimoi = ngaynghi::create($request->only('TenNgayNghi', 'NgayBDNghi', 'NgayKT'));
+
+                danhsachngaynghi::create([
+                    'MaNgayNghi' => $ngaynghimoi->MaNgayNghi,
+                    'TenTKB' => $TenTKB,
+                ]);
+
+                return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
+            } catch (Exception $e) {
+                return redirect()->route('error_alert')->with([
+                    'error' => 'Ngày kết thúc phải sau ngày bắt đầu!',
+                    'redirectTo' => route('schedule', ['TenTKB' => $TenTKB]),
+                ]);
+            }
+        }
+        return Redirect::to('error_alert')->with([
+            'error' => 'Truy cập bị từ chối',
+            'redirectTo' => route('ministry'),
         ]);
-
-        $ngaynghimoi = ngaynghi::create($request->only('TenNgayNghi', 'NgayBDNghi', 'NgayKT'));
-
-        // Extract the newly created 'id_ngay_nghi'
-        $mangaynghimoi = $ngaynghimoi->MaNgayNghi;
-
-        // Insert the 'id_ngay_nghi' and 'TenTKB' into the 'danhsachngaynghi' table
-        danhsachngaynghi::create([
-        'MaNgayNghi' => $mangaynghimoi,
-        'TenTKB' => $TenTKB,
-        ]);
-
-        return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
-    }catch(Exception $e){
-        return Redirect::to('error_alert')->with(['error' => 'Ngày kết thúc phải sau ngày bắt đầu', 'redirectTo' => route('schedule', ['TenTKB' => $TenTKB])]);
-    }
     }
 
-     public function saveSelfStudy(Request $request, $TenTKB)
+    public function saveSelfStudy(Request $request, $TenTKB)
     {
-        // DD(request()->all());
-    try{
-        $request->validate([
-            'ngaytuhoc' => 'required',
-            'NgayBDTuHoc' => 'required|date',
-            'NgayKTTuHoc' => 'required|date||after_or_equal:NgayBDTuHoc', // Ensure end date is after start date
-        ], [
-            'ngaytuhoc.required' => 'Hãy nhập tên ngày tự học!',
-            'NgayBDTuHoc.required' => 'Hãy chọn ngày bắt đầu tự học!',
-            'NgayKTTuHoc.after_or_equal',
-        ]);
+        if (session()->has('user')) {
+            try {
+                $request->validate([
+                    'ngaytuhoc' => 'required',
+                    'NgayBDTuHoc' => 'required|date',
+                    'NgayKTTuHoc' => 'required|date|after_or_equal:NgayBDTuHoc',
+                ], [
+                    'ngaytuhoc.required' => 'Hãy nhập tên ngày tự học!',
+                    'NgayBDTuHoc.required' => 'Hãy chọn ngày bắt đầu tự học!',
+                    'NgayKTTuHoc.after_or_equal' => 'Ngày kết thúc phải sau ngày bắt đầu!',
+                ]);
 
-            // Create a new SelfStudy instance
-            $selfStudy = new ngaytuhoc([
-                'TenTKB'=>$TenTKB,
-                'TenNgayTuHoc'=>$request->input('ngaytuhoc'),
-                'NgayBDTuHoc'=>$request->input('NgayBDTuHoc'),
-                'NgayKTTuHoc'=>$request->input('NgayKTTuHoc'),
-            ]);
-            // Save the SelfStudy record
-            $selfStudy->save();
-        return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
-    }catch(Exception $e){
-        return Redirect::to('error_alert')->with(['error' => 'Ngày kết thúc phải sau ngày bắt đầu', 'redirectTo' => route('schedule', ['TenTKB' => $TenTKB])]);
-    }
+                ngaytuhoc::create([
+                    'TenTKB' => $TenTKB,
+                    'TenNgayTuHoc' => $request->input('ngaytuhoc'),
+                    'NgayBDTuHoc' => $request->input('NgayBDTuHoc'),
+                    'NgayKTTuHoc' => $request->input('NgayKTTuHoc'),
+                ]);
+
+                return redirect()->route('schedule', ['TenTKB' => $TenTKB]);
+            } catch (Exception $e) {
+                return redirect()->route('error_alert')->with([
+                    'error' => 'Ngày kết thúc phải sau ngày bắt đầu!',
+                    'redirectTo' => route('schedule', ['TenTKB' => $TenTKB]),
+                ]);
+            }
+        }
+        return Redirect::to('error_alert')->with([
+            'error' => 'Truy cập bị từ chối',
+            'redirectTo' => route('ministry'),
+        ]);
     }
 
     public function monitorClassroom()
     {
-        return session()->has('user')
-            ? view('monitorClassroom', ['taphuans' => TapHuan::all()])
-            : Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
+        if (session()->has('user')) {
+            return view('monitorClassroom', ['taphuans' => TapHuan::all()]);
+        }
+        return Redirect::to('error_alert')->with([
+            'error' => 'Truy cập bị từ chối',
+            'redirectTo' => route('ministry'),
+        ]);
     }
 
     public function monitorSubject()
     {
-        return session()->has('user')
-            ? view('monitorSubject', ['taphuans' => TapHuan::all()])
-            : Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
+        if (session()->has('user')) {
+            return view('monitorSubject', ['taphuans' => TapHuan::all()]);
+        }
+        return Redirect::to('error_alert')->with([
+            'error' => 'Truy cập bị từ chối',
+            'redirectTo' => route('ministry'),
+        ]);
     }
 
     public function rollCall()
     {
-        return session()->has('user')
-            ? view('rollCall', ['taphuans' => TapHuan::all()])
-            : Redirect::to('error_alert')->with(['error' => 'Truy cập bị từ chối', 'redirectTo' => route('ministry')]);
+        if (session()->has('user')) {
+            return view('rollCall', ['taphuans' => TapHuan::all()]);
+        }
+        return Redirect::to('error_alert')->with([
+            'error' => 'Truy cập bị từ chối',
+            'redirectTo' => route('ministry'),
+        ]);
     }
 }

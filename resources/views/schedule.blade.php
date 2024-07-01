@@ -64,11 +64,9 @@
 
                 // Tính tổng số giờ học và tổng số tuần
                 $totalWeeks = ceil($totalHours / 10);
-
-                // Đếm số môn học
-                $subjectOccurrences = [];
+                
+                //lọc môn học có giờ triển khai nhiều hơn 0
                 $filteredMonHocs = [];
-
                 $subjectCount = count($monhocs);
                 foreach ($monhocs as $index => $monhoc) {
                     if ($monhoc->GioTrienKhai > 0) {
@@ -76,7 +74,8 @@
                     }
                 }
 
-                // Sử dụng $filteredMonHocs thay cho $monhocs ở các vòng lặp tiếp theo
+                // Đếm số môn học
+                $subjectOccurrences = [];
                 $subjectCount = count($filteredMonHocs);
                 foreach ($filteredMonHocs as $index => $monhoc) {
                     $subjectOccurrences[$monhoc->TenMH] = [
@@ -90,9 +89,10 @@
                         $subjectOccurrences[$monhoc->TenMH]['lastSubject'] = true;
                     }
                 }
-
+                // Các ngày trong tuần
                 $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU'];
 
+                // Hàm thêm ngày bỏ qua cuối tuần
                 $addDaysSkippingWeekends = function($date, $days) {
                     while ($days > 0) {
                         $date->addDay();
@@ -103,6 +103,7 @@
                     return $date;
                 };
 
+                // Xử lý các ngày tự học
                 $selfStudyDays = [];
                 foreach ($ngaytuhocs as $ngaytuhoc) {
                     $selfStudyStart = Carbon::parse($ngaytuhoc->NgayBDTuHoc);
@@ -110,12 +111,13 @@
                     while ($selfStudyStart->lte($selfStudyEnd)) {
                         if ($selfStudyStart->dayOfWeek !== Carbon::SATURDAY && $selfStudyStart->dayOfWeek !== Carbon::SUNDAY) {
                             $selfStudyDays[$selfStudyStart->format('Y-m-d')] = $ngaytuhoc->TenNgayTuHoc;
-                            $totalHours += 2; // Cộng giờ cho mỗi ngày tự học
+                            $totalHours += 2;
                         }
                         $selfStudyStart->addDay();
                     }
                 };
 
+                // Xử lý các ngày nghỉ
                 $holidayDates = [];
                 foreach ($ngaynghis as $ngaynghi) {
                     $holidayStart = Carbon::parse($ngaynghi->NgayBDNghi);
@@ -130,6 +132,7 @@
                     }
                 }
 
+                 // Hàm lấy môn học cho ngày hiện tại
                 $getSubjectForDay = function(&$subjectOccurrences, $currentDate, &$totalHours, &$examDays, &$selfStudyDays, $addDaysSkippingWeekends, $holidayDates) {
                     foreach ($subjectOccurrences as $subject => &$details) {
                         if ($details['remaining'] > 0) {
@@ -244,11 +247,6 @@
                         ];
                     }
                 }
-
-                // Debugging: Print out total hours and total weeks
-                echo "Total hours after: $totalHours<br>";
-                echo "Total hours before: $hocki->TongGioTrienKhai<br>";
-                echo "Total weeks: $totalWeeks<br>";
                 @endphp
 
                 @foreach ($scheduleMatrix as $week => $days)
@@ -421,9 +419,9 @@
             <div class="mb-3">
                     <label for="NgayHoc" class="form-label">Ngày bắt đầu học</label>
                     <input type="date" class="form-control @error('NgayHoc') is-invalid @enderror" id="NgayHoc" name="NgayHoc">
-                    <div id="NgayHoc" class="invalid-feedback">
-                        Không thể chọn ngày bắt đầu là thứ 7 hoặc chủ nhật.
-                    </div>
+                    @error ('NgayHoc')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
