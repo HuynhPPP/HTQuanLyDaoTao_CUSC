@@ -51,6 +51,7 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         }
 
         $this->examDays = [];
+        
     }
 
     public function collection()
@@ -81,6 +82,9 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
                 $this->dsmh->TenKhungGio
             ];
     
+
+            $this->examCounter = 0;
+
             foreach ($weekDays as $day) {
                 $currentDate = $weekStart ? $weekStart->copy()->addDays(array_search($day, $weekDays)) : null;
                 $subject = '';
@@ -93,7 +97,7 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
                     } elseif (isset($this->holidayDates[$currentDate->format('Y-m-d')])) {
                         $subject = $this->holidayDates[$currentDate->format('Y-m-d')];
                     } else {
-                        $subject = $this->getSubjectForDay($currentDate, $totalHours);
+                        $subject = $this->getSubjectForDay($currentDate, $totalHours, $examCounter);
                     }
                 }
                 $this->totalWeeks = ceil($totalHours / 10);
@@ -159,7 +163,7 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         return $holidayDates;
     }
 
-    protected function getSubjectForDay(&$currentDate, &$totalHours)
+    protected function getSubjectForDay(&$currentDate, &$totalHours, &$examCounter)
     {
         foreach ($this->subjectOccurrences as $subject => &$details) {
             if ($details['remaining'] > 0) {
@@ -202,8 +206,8 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
                             }
                         }
                     }
-
-                    $this->examDays[$examDate->format('Y-m-d')] = "Thi $subject";
+                    $examCounter++;
+                    $this->examDays[$examDate->format('Y-m-d')] = "Thi $subject (E$examCounter) - L";
                     $totalHours += 2;
                 }
                 return $subject;

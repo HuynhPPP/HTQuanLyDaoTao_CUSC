@@ -133,7 +133,7 @@
                 }
 
                  // Hàm lấy môn học cho ngày hiện tại
-                $getSubjectForDay = function(&$subjectOccurrences, $currentDate, &$totalHours, &$examDays, &$selfStudyDays, $addDaysSkippingWeekends, $holidayDates) {
+                 $getSubjectForDay = function(&$subjectOccurrences, $currentDate, &$totalHours, &$examDays, &$selfStudyDays, $addDaysSkippingWeekends, $holidayDates, &$examCounter) {
                     foreach ($subjectOccurrences as $subject => &$details) {
                         if ($details['remaining'] > 0) {
                             if (is_null($details['first'])) {
@@ -147,8 +147,8 @@
                                     // Xử lý môn học cuối cùng
                                     $examDate = $currentDate->copy()->addWeek()->startOfWeek()->next(Carbon::FRIDAY);
 
-                                    // Kiểm tra và điều chỉnh nếu ngày thi trùng với ngày nghỉ
-                                    while (isset($holidayDates[$examDate->format('Y-m-d')])) {
+                                    // Kiểm tra và điều chỉnh nếu ngày thi trùng với ngày nghỉ hoặc ngày tự học
+                                    while (isset($holidayDates[$examDate->format('Y-m-d')]) || isset($selfStudyDays[$examDate->format('Y-m-d')])) {
                                         $examDate->addDay();
                                     }
 
@@ -157,16 +157,18 @@
                                     for ($i = 0; $i < $emptyDays; $i++) {
                                         $selfStudyDate = $currentDate->copy()->addDays($i + 1);
                                         if ($selfStudyDate->dayOfWeek !== Carbon::SATURDAY && $selfStudyDate->dayOfWeek !== Carbon::SUNDAY && !isset($holidayDates[$selfStudyDate->format('Y-m-d')])) {
-                                            $examDays[$selfStudyDate->format('Y-m-d')] = "self-study";
-                                            $totalHours += 2;
+                                            if (!isset($selfStudyDays[$selfStudyDate->format('Y-m-d')])) {
+                                                $examDays[$selfStudyDate->format('Y-m-d')] = "self-study";
+                                                $totalHours += 2;
+                                            }
                                         }
                                     }
                                 } else {
                                     // Xử lý các môn học khác
                                     $examDate = $addDaysSkippingWeekends(clone $currentDate, 5);
 
-                                    // Kiểm tra và điều chỉnh nếu ngày thi trùng với ngày nghỉ
-                                    while (isset($holidayDates[$examDate->format('Y-m-d')])) {
+                                    // Kiểm tra và điều chỉnh nếu ngày thi trùng với ngày nghỉ hoặc ngày tự học
+                                    while (isset($holidayDates[$examDate->format('Y-m-d')]) || isset($selfStudyDays[$examDate->format('Y-m-d')])) {
                                         $examDate->addDay();
                                     }
 
@@ -175,20 +177,23 @@
                                         $selfStudyDate = $examDate->copy()->subDay();
                                         // Nếu ngày self-study không rơi vào thứ 7 hoặc Chủ nhật
                                         if ($selfStudyDate->dayOfWeek !== Carbon::SATURDAY && $selfStudyDate->dayOfWeek !== Carbon::SUNDAY && !isset($holidayDates[$selfStudyDate->format('Y-m-d')])) {
-                                            $examDays[$selfStudyDate->format('Y-m-d')] = "self-study";
-                                            $totalHours += 2;
-                                            // Điều chỉnh các môn học bị trùng với ngày self-study
-                                            foreach ($subjectOccurrences as $s => &$d) {
-                                                if ($d['first'] && $d['first']->eq($selfStudyDate)) {
-                                                    $d['first'] = $addDaysSkippingWeekends($selfStudyDate->copy(), 1);
-                                                    $d['last'] = $addDaysSkippingWeekends($d['last']->copy(), 1);
+                                            if (!isset($selfStudyDays[$selfStudyDate->format('Y-m-d')])) {
+                                                $examDays[$selfStudyDate->format('Y-m-d')] = "self-study";
+                                                $totalHours += 2;
+                                                // Điều chỉnh các môn học bị trùng với ngày self-study
+                                                foreach ($subjectOccurrences as $s => &$d) {
+                                                    if ($d['first'] && $d['first']->eq($selfStudyDate)) {
+                                                        $d['first'] = $addDaysSkippingWeekends($selfStudyDate->copy(), 1);
+                                                        $d['last'] = $addDaysSkippingWeekends($d['last']->copy(), 1);
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
 
-                                $examDays[$examDate->format('Y-m-d')] = "Thi $subject";
+                                $examCounter++;
+                                $examDays[$examDate->format('Y-m-d')] = "Thi $subject (E$examCounter) - L";
                                 $totalHours += 2;
                             }
                             return $subject;
@@ -196,6 +201,8 @@
                     }
                     return '';
                 };
+
+                $examCounter = 0;
 
                 // Tạo lịch học
                 $scheduleMatrix = [];
@@ -225,7 +232,7 @@
                                     $subject = $holidayDates[$currentDate->format('Y-m-d')];
                                     $style = "background-color: yellow;";
                                 } else {
-                                    $subject = $getSubjectForDay($subjectOccurrences, $currentDate, $totalHours, $examDays, $selfStudyDays, $addDaysSkippingWeekends, $holidayDates);
+                                    $subject = $getSubjectForDay($subjectOccurrences, $currentDate, $totalHours, $examDays, $selfStudyDays, $addDaysSkippingWeekends, $holidayDates, $examCounter);
 
                                     if ($subject) {
                                         if ($subjectOccurrences[$subject]['first'] == $currentDate) {
