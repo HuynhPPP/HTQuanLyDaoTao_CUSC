@@ -21,8 +21,8 @@ CREATE TABLE `TapHuan`(
 
 CREATE TABLE `ChucVu`(
 	`TenChucVu` VARCHAR(30) PRIMARY KEY,
- 	`ThoiGianBatDauCV` VARCHAR(50),/*Thoi gian bat dau chuc vu*/
- 	`ThoiGianKTCV` VARCHAR(50)/*Thoi gian ket thuc chuc vu*/
+ 	`ThoiGianBatDauCV` VARCHAR(50),
+ 	`ThoiGianKTCV` VARCHAR(50)
 );
 
 CREATE TABLE `HocVi` (
@@ -37,7 +37,7 @@ CREATE TABLE `HocVi` (
 
 CREATE TABLE `PhuTrach`(
 	`CongViecPhuTrach` VARCHAR(255) PRIMARY KEY,
-	`MieuTaChiTiet` VARCHAR(255) /*giai thich cong viec can bo phu trach*/
+	`MieuTaChiTiet` VARCHAR(255)
 );
 
 
@@ -45,7 +45,7 @@ CREATE TABLE `PhuTrach`(
 CREATE TABLE `DonVi`(
 	`MaDV` VARCHAR(12) PRIMARY KEY,
 	`TenDVHienTai` VARCHAR(255),
-	`TenDVTungCongTac` VARCHAR(255)/*co the chuyen sang ban khac  hay k can bo co the cong tac tai nhieu bo mon khac nhau*/
+	`TenDVTungCongTac` VARCHAR(255)
 );
 
 CREATE TABLE `CanBo` (
@@ -70,8 +70,8 @@ CREATE TABLE `CanBo` (
   FOREIGN KEY (`MaTapHuan`) REFERENCES `TapHuan`(`MaTapHuan`)
 );
 
-CREATE TABLE `KhoaDaoTao`(/*doi thanh khoadaotao*/
-	`TenKhoaDaoTao` VARCHAR(20) PRIMARY KEY,/*daihan,nganhan,theo yeu cau*/
+CREATE TABLE `KhoaDaoTao`(
+	`TenKhoaDaoTao` VARCHAR(20) PRIMARY KEY,
 	`ThoiGianDaoTao` VARCHAR(10)
 );
 CREATE TABLE `ChuongTrinh` (
@@ -79,15 +79,10 @@ CREATE TABLE `ChuongTrinh` (
   `TenChuongTrinh` VARCHAR(30),
   `PhienBan` VARCHAR(12),
   `NgayTrienKhaiPB` DATE,
-  `TenKhoaDaoTao` VARCHAR(20),/*môn học trong chương trình*/
+  `TenKhoaDaoTao` VARCHAR(20),
   FOREIGN KEY (`TenKhoaDaoTao`) REFERENCES `KhoaDaoTao`(`TenKhoaDaoTao`)
 );
-INSERT INTO khoadaotao(TenKhoaDaoTao,ThoiGianDaoTao) VALUES ('Dài hạn', '2 năm'), ('Ngắn hạn','1 Học Kỳ');
-INSERT INTO chuongtrinh(MaChuongTrinh,TenChuongTrinh, PhienBan,TenKhoaDaoTao)
-VALUES
-('OV-7023','Lap trinh vien quoc te','1.0','Dài hạn'),
-('OV9001','lap trinh vien arena','2.0','Dài hạn'),
-('AT7096','My thuat da phuong tien','3.0','Ngắn hạn');
+
 
 CREATE TABLE `SinhVien` (
   `MaSV` VARCHAR(12) PRIMARY KEY,
@@ -134,7 +129,7 @@ CREATE TABLE `TinhTrangHocTap`(
 	`MaTTHocTap` VARCHAR(12) PRIMARY KEY,
 	`TinhTrang` VARCHAR(255),
 	`MaSV` VARCHAR(12),
-	FOREIGN KEY (`MaSV`) REFERENCES `SinhVien`(`MaSV`)/*them phieulido*/
+	FOREIGN KEY (`MaSV`) REFERENCES `SinhVien`(`MaSV`)
 );
 
 
@@ -143,7 +138,7 @@ CREATE TABLE `PhieuLiDo`(
 	`ThoiGianBD` DATE,
 	`ThoiGianKT` DATE,
 	`MonBD` VARCHAR(255),
-	`MonSau` VARCHAR(255), /*chuyen tu mon nay sang mon khac lop khac*/
+	`MonSau` VARCHAR(255),
 	`LiDo` VARCHAR(255),
 	`NgayDuyetDon` DATE,
 	`NguoiDuyetDon` DATE
@@ -157,11 +152,7 @@ CREATE TABLE `LopHoc` (
   `MaChuongTrinh` VARCHAR(12),
   FOREIGN KEY (`MaChuongTrinh`) REFERENCES `ChuongTrinh`(`MaChuongTrinh`)
 );
-INSERT INTO LopHoc (MaLop,TenLop,MaChuongTrinh)
-VALUES
-('CP2396G11','Lập trình viên','OV-7023'),
-('CP2396M02','Quản trị mạng','OV-7023'),
-('CP2296H07','Truyền thông đa phương tiện','OV-7023');
+
 
 CREATE TABLE `DanhSachSV`(
 	`MaLop` VARCHAR(12),
@@ -183,41 +174,20 @@ CREATE TABLE `HinhThucDanhGia`(
  	`MaChuongTrinh` VARCHAR(12),
    FOREIGN KEY (`MaChuongTrinh`) REFERENCES `ChuongTrinh`(`MaChuongTrinh`)
  );
- INSERT INTO hocki(MaHK,TenHK,TongGioGoc, TongGioTrienKhai, MaChuongTrinh)
- VALUES
- ('OV-7023-HK I','HỌC KỲ I','168','172','OV-7023'),
- ('OV-7023-HK II','HỌC KỲ II','218','200','OV-7023'),
- ('OV-7023-HK III','HỌC KỲ III','170','168','OV-7023'),
- ('OV-7023-HK IV','HỌC KỲ IV','194','208','OV-7023'),
- ('OV-7023-HK V','HỌC KỲ V','168','172','OV-7023');
+
 
 CREATE TABLE `MonHoc` (
   `TenMH` VARCHAR(255) PRIMARY KEY,
   `MaMH` VARCHAR(12),
   `GioGoc` INT,
   `GioTrienKhai` INT,
-  `SoTietLT`  INT,
-  `SoTietTH` INT,
-  `SoTietLTvaTH` INT,
+  `TietLT`  boolean,
+  `TietTH` boolean,
+  `TietLTvaTH` boolean,
   `MaHTDanhGia` VARCHAR(12),
   FOREIGN KEY (`MaHTDanhGia`) REFERENCES `HinhThucDanhGia`(`MaHTDanhGia`)
 );
-INSERT INTO MonHoc(TenMH, GioGoc, GioTrienKhai)
-VALUES
-('Computer fundamentals' , '0', '8'),
-('Logic Building and Elementary Programing' , '40', '42'),
-('HTML5,CSS and Javascript' , '40', '44'),
-('AngularJS' , '16', '16'),
-('eProject-Website Development' , '2', '8'),
-('Database Design and Development(core)' , '24', '16'),
-('Data Management with SQL server' , '40', '40'),
-('Markup Language & JSON ','16','16') ,
-('Java Programming - I', '36', '40'),
-('Java Programming -II', '40', '42'),
-('Information Systems Analysis(Core)', '24', '12'),
-('Project-Java Application Development', '2', '12'),
-('Application Programming with C#', '36', '38'),
-('PHP Web Development with Laravel Framework', '40', '40');
+
 
 CREATE TABLE `TrangThaiMH`(
 	`MaTTMH` VARCHAR(12) PRIMARY KEY,
@@ -230,25 +200,13 @@ CREATE TABLE `PhongHoc` (
   `LoaiPhong` VARCHAR(255),
   `SucChua` INT
 );
-INSERT INTO phonghoc(TenPhong, LoaiPhong)
-VALUES
-('Class1','Class'),
-('Class2','Class'),
-('Lab1','Lab'),
-('Lab2','Lab');
+
 
 CREATE TABLE `KhungGio`(
 	`TenKhungGio` VARCHAR(100) PRIMARY KEY ,
 	`ThoiGian` INT
 );
-INSERT INTO khunggio(TenKhungGio, ThoiGian)
-VALUES
-('7:00-9:00','2'),
-('9:00-11:00','2'),
-('13:00-15:00','2'),
-('15:00-17:00','2'),
-('17:30-19:30','2'),
-('19:30-21:30','2');
+
 
 CREATE TABLE `DanhSachPhong`(
 	`MaLop` VARCHAR(12) ,
@@ -257,40 +215,26 @@ CREATE TABLE `DanhSachPhong`(
 	FOREIGN KEY (`TenPhong`) REFERENCES `PhongHoc`(`TenPhong`),
 	PRIMARY KEY (`MaLop`,`TenPhong`)
 );
-INSERT INTO danhsachphong(MaLop, TenPhong)
-VALUES
-('CP2296H07', 'Class1'),
-('CP2296H07', 'Lab1'),
-('CP2396M02','Class2'),
-('CP2396M02', 'Lab2');
+
 
 CREATE TABLE `NgayNghi`(
 	`MaNgayNghi` INT auto_increment PRIMARY KEY,
 	`TenNgayNghi` VARCHAR(50),
 	`NgayBDNghi` DATE,
-	`NgayKT` DATE /*vi du le 30/04-01/05 thi nghi 3 ngay */
+	`NgayKT` DATE
 );
-INSERT INTO `ngaynghi` (`TenNgayNghi`, `NgayBDNghi`, `NgayKT`) VALUES
-	('Nghỉ Tết DL', '2024-01-01', '2024-01-01'),
-	('Nghỉ Tết Nguyên Đán 2024', '2024-02-05', '2024-02-16'),
-	('Nghỉ - Giỗ Tổ Hùng Vương', '2024-04-18', '2024-04-18'),
-	('Nghỉ 30/04-01/05', '2024-04-29', '2024-05-01'),
-	('Nghỉ hè', '2024-07-15', '2024-07-26');
-	
 
 CREATE TABLE `TKB` (
   `TenTKB` VARCHAR(255) PRIMARY KEY,
   `MaLop` VARCHAR(12),
   `MaHK` VARCHAR(50),
   `NgayHoc` DATE,
+  `NgayPhienBan` VARCHAR(12),
   FOREIGN KEY (`MaHK`) REFERENCES `HocKi`(`MaHK`),
   FOREIGN KEY (`MaLop`) REFERENCES `LopHoc`(`MaLop`)
 );
 
-INSERT INTO tkb(TenTKB,MaLop,MaHK,NgayHoc)
-VALUES
-('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)','CP2396M02','OV-7023-HK II','2023-12-26'),
-('THỜI KHÓA BIỂU LỚP CP2296H07 - Học Kỳ II (OV-7023)','CP2296H07','OV-7023-HK II','2023-12-30');
+
 
 CREATE TABLE `NgayTuHoc`(
 	`MaNgayTuHoc` INT AUTO_INCREMENT primary KEY,
@@ -300,30 +244,7 @@ CREATE TABLE `NgayTuHoc`(
 	`TenTKB` VARCHAR (255),
 	FOREIGN KEY  (`TenTKB`) REFERENCES `TKB`(`TenTKB`)
 );
-INSERT INTO ngaytuhoc(TenNgayTuHoc, NgayBDTuHoc, NgayKTTuHoc,TenTKB)
-VALUES
-('self study', '2023-12-28', '2023-12-28','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('self study', '2024-01-26', '2024-01-26','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('self study', '2024-02-27', '2024-02-27','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('self study', '2024-02-29', '2024-02-29','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('self study', '2024-03-06', '2024-03-06','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('self study', '2024-03-13', '2024-03-13','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('self study', '2024-03-20', '2024-03-20','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('self study', '2024-03-27', '2024-03-27','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('self study', '2024-04-03', '2024-04-03','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('Team works', '2024-04-24', '2024-04-24','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('Team works', '2024-04-26', '2024-04-26','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('Team works', '2024-05-03', '2024-05-03','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('Team works', '2024-05-06', '2024-05-08','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('Team works', '2024-05-10', '2024-05-10','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('Team works', '2024-05-13', '2024-05-15','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('Team works', '2024-05-17', '2024-05-17','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('Team works', '2024-05-20', '2024-05-22','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('Team works', '2024-05-24', '2024-05-24','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('Team works', '2024-05-27', '2024-05-29','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('Team works', '2024-05-31', '2024-05-31','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('Team works', '2024-06-03', '2024-06-06','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-('Báo cáo đồ án', '2024-06-07', '2024-06-07','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)');
+
 
 CREATE TABLE `DanhSachNgayNghi`(
 	`TenTKB` VARCHAR(255),
@@ -332,13 +253,7 @@ CREATE TABLE `DanhSachNgayNghi`(
 	FOREIGN KEY (`MaNgayNghi`) REFERENCES `NgayNghi`(`MaNgayNghi`),
 	PRIMARY KEY (`MaNgayNghi`)
 );
-INSERT INTO danhsachngaynghi(TenTKB, MaNgayNghi)
-VALUES
-('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)', '1'),
-('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)', '2'),
-('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)', '3'),
-('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)', '4'),
-('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)', '5');
+
 CREATE TABLE `DanhSachMH`(
 	`MaHK` VARCHAR(50),
 	`TenKhungGio` VARCHAR(100),
@@ -348,22 +263,7 @@ CREATE TABLE `DanhSachMH`(
 	FOREIGN KEY (`MaHK`) REFERENCES `HocKi`(`MaHK`),
 	FOREIGN KEY (`TenMH`) REFERENCES `MonHoc`(`TenMH`)
 );
-INSERT INTO danhsachmh(MaHK, SttMH, TenMH)
-VALUES
-('OV-7023-HK I','1','Computer fundamentals' ),
-('OV-7023-HK I','2','Logic Building and Elementary Programing' ),
-('OV-7023-HK I','3','HTML5,CSS and Javascript' ),
-('OV-7023-HK I','4','AngularJS'),
-('OV-7023-HK I','5', 'eProject-Website Development' ),
-('OV-7023-HK I','6','Database Design and Development(core)' ),
-('OV-7023-HK I','7','Data Management with SQL server'),
-('OV-7023-HK II','8','Markup Language & JSON '),
-('OV-7023-HK II','9','Java Programming - I'),
-('OV-7023-HK II','10','Java Programming -II'),
-('OV-7023-HK II','11','Information Systems Analysis(Core)'),
-('OV-7023-HK II','12','Project-Java Application Development'),
-('OV-7023-HK II','13','Application Programming with C#'),
-('OV-7023-HK II','14','PHP Web Development with Laravel Framework');
+
 
 /*CREATE TABLE `TheoDoiMHSapBatDau`(
 	`MaTheoDoiMH` VARCHAR(12) PRIMARY KEY,
@@ -440,3 +340,125 @@ CREATE TABLE `TheoDoiPhongHoc`(
   FOREIGN KEY (`TenTKB`) REFERENCES `TKB`(`TenTKB`)
 
 );*/
+INSERT INTO khoadaotao(TenKhoaDaoTao,ThoiGianDaoTao) VALUES ('Dài hạn', '2 năm'), ('Ngắn hạn','1 Học Kỳ');
+
+INSERT INTO chuongtrinh(MaChuongTrinh,TenChuongTrinh, PhienBan,TenKhoaDaoTao)
+VALUES
+('OV-7023','Lap trinh vien quoc te','1.0','Dài hạn'),
+('OV9001','lap trinh vien arena','2.0','Dài hạn'),
+('AT7096','My thuat da phuong tien','3.0','Ngắn hạn');
+
+INSERT INTO LopHoc (MaLop,TenLop,MaChuongTrinh)
+VALUES
+('CP2396G11','Lập trình viên','OV-7023'),
+('CP2396M02','Quản trị mạng','OV-7023'),
+('CP2296H07','Truyền thông đa phương tiện','OV-7023');
+
+INSERT INTO hocki(MaHK,TenHK,TongGioGoc, TongGioTrienKhai, MaChuongTrinh)
+ VALUES
+ ('OV-7023-HK I','HỌC KỲ I','168','172','OV-7023'),
+ ('OV-7023-HK II','HỌC KỲ II','218','200','OV-7023'),
+ ('OV-7023-HK III','HỌC KỲ III','170','168','OV-7023'),
+ ('OV-7023-HK IV','HỌC KỲ IV','194','208','OV-7023'),
+ ('OV-7023-HK V','HỌC KỲ V','168','172','OV-7023');
+
+INSERT INTO MonHoc(TenMH, GioGoc, GioTrienKhai, TietLT, TietTH)
+VALUES
+('Computer fundamentals' , '0', '8','0','1'),
+('Logic Building and Elementary Programing' , '40', '42','0','1'),
+('HTML5,CSS and Javascript' , '40', '44','0','1'),
+('AngularJS' , '16', '16','0','1'),
+('eProject-Website Development' , '2', '8','0','1'),
+('Database Design and Development(core)' , '24', '16','0','1'),
+('Data Management with SQL server' , '40', '40','0','1'),
+('Markup Language & JSON ','16','16','0','1') ,
+('Java Programming - I', '36', '40','0','1'),
+('Java Programming -II', '40', '42','0','1'),
+('Information Systems Analysis(Core)', '24', '12','1','0'),
+('Project-Java Application Development', '2', '12','1','0'),
+('Application Programming with C#', '36', '38','0','1'),
+('PHP Web Development with Laravel Framework', '40', '40','0','1');
+
+INSERT INTO phonghoc(TenPhong, LoaiPhong)
+VALUES
+('Class1','Class'),
+('Class2','Class'),
+('Lab1','Lab'),
+('Lab2','Lab');
+
+INSERT INTO khunggio(TenKhungGio, ThoiGian)
+VALUES
+('7:00-9:00','2'),
+('9:00-11:00','2'),
+('13:00-15:00','2'),
+('15:00-17:00','2'),
+('17:30-19:30','2'),
+('19:30-21:30','2');
+
+INSERT INTO danhsachphong(MaLop, TenPhong)
+VALUES
+('CP2296H07', 'Class1'),
+('CP2296H07', 'Lab1'),
+('CP2396M02','Class2'),
+('CP2396M02', 'Lab2');
+
+INSERT INTO `ngaynghi` (`TenNgayNghi`, `NgayBDNghi`, `NgayKT`) VALUES
+	('Nghỉ Tết DL', '2024-01-01', '2024-01-01'),
+	('Nghỉ Tết Nguyên Đán 2024', '2024-02-05', '2024-02-16'),
+	('Nghỉ - Giỗ Tổ Hùng Vương', '2024-04-18', '2024-04-18'),
+	('Nghỉ 30/04-01/05', '2024-04-29', '2024-05-01'),
+	('Nghỉ hè', '2024-07-15', '2024-07-26');
+
+INSERT INTO tkb(TenTKB,MaLop,MaHK,NgayHoc, NgayPhienBan)
+VALUES
+('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)','CP2396M02','OV-7023-HK II','2023-12-26','1.0');
+
+INSERT INTO ngaytuhoc(TenNgayTuHoc, NgayBDTuHoc, NgayKTTuHoc,TenTKB)
+VALUES
+('self study', '2023-12-28', '2023-12-28','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('self study', '2024-01-26', '2024-01-26','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+
+('self study', '2024-02-29', '2024-02-29','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('self study', '2024-03-06', '2024-03-06','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('self study', '2024-03-13', '2024-03-13','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('self study', '2024-03-20', '2024-03-20','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('self study', '2024-03-27', '2024-03-27','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('self study', '2024-04-03', '2024-04-03','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('Team works', '2024-04-24', '2024-04-24','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('Team works', '2024-04-26', '2024-04-26','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('Team works', '2024-05-03', '2024-05-03','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('Team works', '2024-05-06', '2024-05-08','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('Team works', '2024-05-10', '2024-05-10','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('Team works', '2024-05-13', '2024-05-15','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('Team works', '2024-05-17', '2024-05-17','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('Team works', '2024-05-20', '2024-05-22','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('Team works', '2024-05-24', '2024-05-24','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('Team works', '2024-05-27', '2024-05-29','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('Team works', '2024-05-31', '2024-05-31','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('Team works', '2024-06-03', '2024-06-06','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
+('Báo cáo đồ án', '2024-06-07', '2024-06-07','THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)');
+
+INSERT INTO danhsachngaynghi(TenTKB, MaNgayNghi)
+VALUES
+('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)', '1'),
+('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)', '2'),
+('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)', '3'),
+('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)', '4'),
+('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)', '5');
+
+INSERT INTO danhsachmh(MaHK, SttMH, TenMH)
+VALUES
+('OV-7023-HK I','1','Computer fundamentals' ),
+('OV-7023-HK I','2','Logic Building and Elementary Programing' ),
+('OV-7023-HK I','3','HTML5,CSS and Javascript' ),
+('OV-7023-HK I','4','AngularJS'),
+('OV-7023-HK I','5', 'eProject-Website Development' ),
+('OV-7023-HK I','6','Database Design and Development(core)' ),
+('OV-7023-HK I','7','Data Management with SQL server'),
+('OV-7023-HK II','8','Markup Language & JSON '),
+('OV-7023-HK II','9','Java Programming - I'),
+('OV-7023-HK II','10','Java Programming -II'),
+('OV-7023-HK II','11','Information Systems Analysis(Core)'),
+('OV-7023-HK II','12','Project-Java Application Development'),
+('OV-7023-HK II','13','Application Programming with C#'),
+('OV-7023-HK II','14','PHP Web Development with Laravel Framework');

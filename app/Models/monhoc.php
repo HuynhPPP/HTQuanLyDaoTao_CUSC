@@ -16,9 +16,9 @@ class monhoc extends Model
         'MaMH',
         'GioGoc',
         'GioTrienKhai',
-        'SoTietLT',
-        'SoTietTH',
-        'SoTietLTvaTH',
+        'TietLT',
+        'TietTH',
+        'TietLTvaTH',
         'MaHTDanhGia',
     ];
     public function loaidaotao(){

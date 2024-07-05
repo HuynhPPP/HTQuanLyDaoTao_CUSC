@@ -17,6 +17,7 @@ class tkb extends Model
         'MaLop' ,
         'MaHK',
         'NgayHoc' ,
+        'NgayPhienBan'
     ];
     public function hocKi()
     {
