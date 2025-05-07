@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LDAPConnection;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\CaptchaController;
-use App\Http\Controllers\LDAPTest;
 
 
 Route::get('/', [PagesController::class, 'index'])->name('home');
@@ -44,5 +43,3 @@ Route::post('ldap', [
 Route::get('error_alert', function () {
     return view('error_alert');
 });
-
-Route::get('/ldap-test', [LDAPTest::class, 'testConnection']);

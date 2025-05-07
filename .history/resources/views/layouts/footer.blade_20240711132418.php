@@ -5,7 +5,7 @@
           <div class="row">
             <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
                 <a href="#" class="rounded-circle bg-white shadow-1-strong d-flex align-items-center justify-content-center mb-4 mx-auto" style="width: 150px; height: 150px;">
-                      <img src="{{ asset('images/logo_CTU.png') }}" height="75" alt="logo_cusc"
+                      <img src="{{ asset('storage/logo_cusc.png') }}" height="75" alt="logo_cusc"
                          loading="lazy" />
                   </a>
               <h5 class="text-uppercase text-center mb-4 font-weight-bold">

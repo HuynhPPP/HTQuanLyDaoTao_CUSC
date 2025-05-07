@@ -1,7 +1,7 @@
 <div class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container d-flex justify-content-center">
         <a class="navbar-brand" href="{{ route('home') }}">
-            <img src="{{ asset('images/logo_CTU.png') }}" width="80" height="80" alt="logo_ctu">
+            <img src="{{ asset('storage/logo_ctu.png') }}" width="80" height="80" alt="logo_ctu">
         </a>
         <img src="{{ asset('images/banner_cusc.png') }}" width="800" height="120" alt="banner_cusc">
     </div>
