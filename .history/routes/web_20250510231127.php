@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LDAPConnection;
 use App\Http\Controllers\PagesController;
-use App\Http\Controllers\CaptchaController;
+    use App\Http\Controllers\CaptchaController;
+    use App\Http\Controllers\LDAPTest;
 use App\Http\Middleware\RoleMiddleware;
 
 // Trang chủ, giới thiệu, login, logout, captcha: ai cũng truy cập được
@@ -13,8 +14,8 @@ Route::get('/login', [PagesController::class, 'login'])->name('login');
 Route::get('/logout', [LDAPConnection::class, 'logout'])->name('logout');
 Route::get('/captcha', [CaptchaController::class, 'generateCaptcha'])->name('captcha');
 Route::post('ldap', [LDAPConnection::class, 'index'])->name('ldap');
-Route::get('error_alert', function () {
-    return view('error_alert'); });
+Route::get('error_alert', function () { return view('error_alert'); });
+Route::get('/ldap-test', [LDAPTest::class, 'testConnection']);
 
 // Các route ministry: chỉ cho admin và staff
 Route::middleware([RoleMiddleware::class . ':admin,staff'])->group(function () {
@@ -36,8 +37,8 @@ Route::middleware([RoleMiddleware::class . ':admin,staff,teacher'])->group(funct
     Route::get('/getHK/{MaChuongTrinh}', [PagesController::class, 'getHK']);
     Route::post('/saveTimeSlot/{TenTKB}', [PagesController::class, 'saveTimeSlot'])->name('saveTimeSlot');
     Route::post('/saveholiday/{TenTKB}', [PagesController::class, 'saveholiday'])->name('saveholiday');
-    Route::post('/saveSelfStudy/{TenTKB}', [PagesController::class, 'saveSelfStudy'])->name('saveSelfStudy');
-    Route::post('/EditTKB/{TenTKB}', [PagesController::class, 'EditTKB'])->name('EditTKB');
+    Route::post('/saveSelfStudy/{TenTKB}',[PagesController::class,'saveSelfStudy'])->name('saveSelfStudy');
+    Route::post('/EditTKB/{TenTKB}',[PagesController::class,'EditTKB'])->name('EditTKB');
 });
 
 

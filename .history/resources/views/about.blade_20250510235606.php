@@ -52,15 +52,17 @@
           </div>
       </div> --}}
             <div id="carouselExampleIndicators3" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators3" data-slide-to="0" class=""></li>
+                    <li data-target="#carouselExampleIndicators3" data-slide-to="1" class=""></li>
+                    <li data-target="#carouselExampleIndicators3" data-slide-to="2" class="active"></li>
+                </ol>
                 <div class="carousel-inner">
                     <div class="carousel-item">
-                        <img class="d-block w-100 h-100" src="{{ asset('images/banner_cusc_2.png') }}" alt="First slide">
+                        <img class="d-block w-100" src="{{ asset('images/banner_cusc_1.png') }}" alt="First slide">
                     </div>
                     <div class="carousel-item">
-                        <img class="d-block w-100 h-100" src="{{ asset('images/banner_cusc_1.png') }}" alt="Second slide">
-                    </div>
-                    <div class="carousel-item active">
-                        <img class="d-block w-100 h-100" src="{{ asset('images/banner_cusc_1.png') }}" alt="Third slide">
+                        <img class="d-block w-100" src="{{ asset('images/banner_cusc_2.png') }}" alt="Second slide">
                     </div>
                 </div>
                 <a class="carousel-control-prev" href="#carouselExampleIndicators3" role="button" data-slide="prev">

@@ -11,17 +11,13 @@
             </a>
         </div>
         <ul class="sidebar-menu">
-            <li class="dropdown {{ request()->routeIs('about') ? 'active' : '' }}">
-                <a href="{{ route('about') }}" class="nav-link">
-                    <i class="fas fa-columns"></i>
-                    <span>Giới thiệu</span>
-                </a>
+            <li class="dropdown">
+                <a href="{{ route('about') }}" class="nav-link"><i class="fas fa-columns"></i>
+                    <span>Giới thiệu</span></a>
             </li>
-            <li class="dropdown {{ request()->routeIs('home') ? 'active' : '' }}">
-                <a href="{{ route('home') }}" class="nav-link">
-                    <i class="fas fa-fire"></i>
-                    <span>Quản lý đào tạo</span>
-                </a>
+            <li class="dropdown active">
+                <a href="{{ route('home') }}" class="nav-link"><i class="fas fa-fire"></i><span>Quản lý đào
+                        tạo</span></a>
             </li>
         </ul>
     </aside>

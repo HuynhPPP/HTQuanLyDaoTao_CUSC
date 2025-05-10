@@ -142,6 +142,6 @@ class LDAPConnection extends Controller
         session()->forget('displayname');
         session()->forget('role');
         session()->flush();
-        return redirect()->route('about')->with('success', 'Đăng xuất thành công!');
+        return redirect()->route('home')->with('success', 'Đăng xuất thành công!');
     }
 }
