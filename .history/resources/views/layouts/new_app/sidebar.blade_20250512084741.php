@@ -17,35 +17,21 @@
                     <span>Giới thiệu</span>
                 </a>
             </li>
-            <li
-                class="dropdown {{ request()->routeIs('student.list') || request()->routeIs('staff.*') ? 'active' : '' }}">
-                <a href="#" class="nav-link has-dropdown"><i class="far fa-file-alt"></i> <span>Dữ liệu hệ
-                        thống</span></a>
+            <li class="dropdown {{ request()->routeIs('student.list') || request()->routeIs('staff.*') ? 'active' : '' }}">
+                <a href="#" class="nav-link has-dropdown"><i class="far fa-file-alt"></i> <span>Dữ liệu hệ thống</span></a>
                 <ul class="dropdown-menu">
                     <li class="{{ request()->routeIs('student.list') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('student.list') }}">Quản lý sinh viên</a>
                     </li>
-                    <li class="">
-                        <a class="nav-link" href="">Quản lý giáo viên</a>
-                    </li>
                     <li class="{{ request()->routeIs('staff.*') ? 'active' : '' }}">
-                        <a class="nav-link" href="">Quản lý cán bộ</a>
-                    </li>
-                    <li class="">
-                        <a class="nav-link" href="">Quản lý bằng cấp</a>
-                    </li>
-                    <li class="">
-                        <a class="nav-link" href="">Quản lý cơ sở vật chất</a>
-                    </li>
-                    <li class="">
-                        <a class="nav-link" href="">Danh sách phản hồi</a>
+                        <a class="nav-link" href="{{ route('staff.list') }}">Quản lý cán bộ</a>
                     </li>
                 </ul>
             </li>
             <li class="dropdown {{ request()->routeIs('home') ? 'active' : '' }}">
                 <a href="{{ route('home') }}" class="nav-link">
                     <i class="fas fa-fire"></i>
-                    <span>Hệ thống lập lịch</span>
+                    <span>Quản lý đào tạo</span>
                 </a>
             </li>
         </ul>

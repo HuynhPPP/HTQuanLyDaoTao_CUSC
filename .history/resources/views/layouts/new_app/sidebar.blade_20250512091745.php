@@ -32,6 +32,9 @@
                         <a class="nav-link" href="">Quản lý cán bộ</a>
                     </li>
                     <li class="">
+                        <a class="nav-link" href="">Quản lý lớp học</a>
+                    </li>
+                    <li class="">
                         <a class="nav-link" href="">Quản lý bằng cấp</a>
                     </li>
                     <li class="">

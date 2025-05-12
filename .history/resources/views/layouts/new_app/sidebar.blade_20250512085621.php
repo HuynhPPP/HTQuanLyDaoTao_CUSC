@@ -37,9 +37,6 @@
                     <li class="">
                         <a class="nav-link" href="">Quản lý cơ sở vật chất</a>
                     </li>
-                    <li class="">
-                        <a class="nav-link" href="">Danh sách phản hồi</a>
-                    </li>
                 </ul>
             </li>
             <li class="dropdown {{ request()->routeIs('home') ? 'active' : '' }}">

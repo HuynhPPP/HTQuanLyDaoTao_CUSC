@@ -37,15 +37,12 @@
                     <li class="">
                         <a class="nav-link" href="">Quản lý cơ sở vật chất</a>
                     </li>
-                    <li class="">
-                        <a class="nav-link" href="">Danh sách phản hồi</a>
-                    </li>
                 </ul>
             </li>
             <li class="dropdown {{ request()->routeIs('home') ? 'active' : '' }}">
                 <a href="{{ route('home') }}" class="nav-link">
                     <i class="fas fa-fire"></i>
-                    <span>Hệ thống lập lịch</span>
+                    <span>Tổ chức đào tạo</span>
                 </a>
             </li>
         </ul>
