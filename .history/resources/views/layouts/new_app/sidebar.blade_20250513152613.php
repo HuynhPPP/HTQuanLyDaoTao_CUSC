@@ -31,8 +31,8 @@
                     <li class="{{ request()->routeIs('staff.*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('staff.index') }}">Quản lý cán bộ</a>
                     </li>
-                    <li class="{{ request()->routeIs('bangcapcanbo.*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('bangcapcanbo.index') }}">Quản lý bằng cấp cán bộ</a>
+                    <li class="">
+                        <a class="nav-link" href="">Quản lý bằng cấp</a>
                     </li>
                     <li class="">
                         <a class="nav-link" href="">Quản lý cơ sở vật chất</a>

@@ -55,7 +55,7 @@ Route::middleware([RoleMiddleware::class . ':admin,staff'])->group(function () {
     });
 
     Route::prefix('bangcapcanbo')->group(function () {
-        Route::get('/list', [BangCapCanBoController::class, 'index'])->name('bangcapcanbo.index');
+        Route::get('/', [BangCapCanBoController::class, 'index'])->name('bangcapcanbo.index');
         Route::get('/create', [BangCapCanBoController::class, 'create'])->name('bangcapcanbo.create');
         Route::post('/store', [BangCapCanBoController::class, 'store'])->name('bangcapcanbo.store');
         Route::get('/{maBang}', [BangCapCanBoController::class, 'show'])->name('bangcapcanbo.show');

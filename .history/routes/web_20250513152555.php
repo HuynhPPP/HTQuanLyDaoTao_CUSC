@@ -6,7 +6,6 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\CaptchaController;
 use App\Http\Controllers\SinhVienController;
 use App\Http\Controllers\CanBoController;
-use App\Http\Controllers\Staff\BangCapCanBoController;
 use App\Http\Middleware\RoleMiddleware;
 
 // Trang chủ, giới thiệu, login, logout, captcha: ai cũng truy cập được
@@ -44,7 +43,7 @@ Route::middleware([RoleMiddleware::class . ':admin,staff'])->group(function () {
     Route::get('sinhvien/{maSV}/tinhtrang', [SinhVienController::class, 'showTinhTrang'])->name('sinhvien.tinhtrang');
 
     Route::prefix('staff')->group(function () {
-        Route::get('/list', [CanBoController::class, 'index'])->name('staff.index');
+        Route::get('/', [CanBoController::class, 'index'])->name('staff.index');
         Route::get('/create', [CanBoController::class, 'create'])->name('staff.create');
         Route::post('/store', [CanBoController::class, 'store'])->name('staff.store');
         Route::get('/{maCB}', [CanBoController::class, 'show'])->name('staff.show');
@@ -52,16 +51,6 @@ Route::middleware([RoleMiddleware::class . ':admin,staff'])->group(function () {
         Route::post('/update/{maCB}', [CanBoController::class, 'update'])->name('staff.update');
         Route::delete('/destroy/{maCB}', [CanBoController::class, 'destroy'])->name('staff.destroy');
         // Route import nếu cần
-    });
-
-    Route::prefix('bangcapcanbo')->group(function () {
-        Route::get('/list', [BangCapCanBoController::class, 'index'])->name('bangcapcanbo.index');
-        Route::get('/create', [BangCapCanBoController::class, 'create'])->name('bangcapcanbo.create');
-        Route::post('/store', [BangCapCanBoController::class, 'store'])->name('bangcapcanbo.store');
-        Route::get('/{maBang}', [BangCapCanBoController::class, 'show'])->name('bangcapcanbo.show');
-        Route::get('/edit/{maBang}', [BangCapCanBoController::class, 'edit'])->name('bangcapcanbo.edit');
-        Route::post('/update/{maBang}', [BangCapCanBoController::class, 'update'])->name('bangcapcanbo.update');
-        Route::delete('/destroy/{maBang}', [BangCapCanBoController::class, 'destroy'])->name('bangcapcanbo.destroy');
     });
 });
 

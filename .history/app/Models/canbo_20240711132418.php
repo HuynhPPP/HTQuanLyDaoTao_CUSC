@@ -28,19 +28,19 @@ class canbo extends Model
         'ThoiGianKTCongTacCUSC',
     ];
     public function hocvi(){
-        return $this->belongsTo(hocvi::class,'MaHV');
+        return $this->belongsTo('Hocvi'::class,'MaHV');
     }
     public function phutrach(){
-        return $this->belongsTo(phutrach::class,'CongViecPhuTrach');
+        return $this->belongsTo('PhuTrach'::class,'CongViecPhuTrach');
     }
     public function bomon(){
-        return $this->belongsTo(donvi::class,'MaDV');
+        return $this->belongsTo('DonVi'::class,'MaDV');
     }
     public function bangcapcanbo(){
-        return $this->belongsTo(bangcapcanbo::class,'MaBang');
+        return $this->belongsTo('BangCapCanBo'::class,'MaBang');
     }
     public function taphuan(){
-        return $this->belongsTo(TapHuan::class,'MaTapHuan');
+        return $this->belongsTo('TapHuan'::class,'MaTapHuan');
     }
 
 }

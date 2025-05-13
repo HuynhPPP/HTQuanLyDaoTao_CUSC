@@ -10,7 +10,7 @@ class TapHuan extends Model
     use HasFactory;
 
     // Bảng được liên kết với model
-    protected $table = 'taphuan';
+    protected $table = 'TapHuan';
 
     // Khóa chính của bảng
     protected $primaryKey = 'MaTapHuan';
