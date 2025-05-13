@@ -182,9 +182,9 @@ main {
     }
 }
 </style> --}}
-<footer class="text-center text-lg-start text-white" style="background-color: #45526e"
+<footer class="text-center text-lg-start text-white" style="background-color: #45526e; z-index: 1000; tab-index:2; display: flex; padding: 3px; justify-content: space-between; margin: 0"
             >
-      <div class="container p-4 pb-0">
+      <div class=" p-4 pb-0">
         <section class="">
           <div class="row">
             <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
@@ -237,7 +237,7 @@ main {
               <p class="d-flex">
                 <i class="fas fa-location-dot align-top mt-1 me-2"></i> <a type="button" class="link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover ml-5" data-bs-toggle="modal" data-bs-target="#address__modal" role="button">   Khu III, Đại Học Cần Thơ, 01 Lý Tự Trọng, Q. Ninh Kiều, TP. Cần Thơ</a>
               </p>
-              <p><i class="fas fa-envelope me-2"></i><a class="link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="mailto:cusc@ctu.edu.vn">cusc@ctu.edu.vn</a></p>
+              <p><i class="fas fa-envelope me-2"></i><a class="link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="mailto:cusc@ctu.edu.vn"> cusc@ctu.edu.vn</a></p>
               <p><i class="fas fa-phone me-2"></i> <a class="link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="tel:+842923835581">+84 292 383 5581</a></p>
               <p><i class="fas fa-print add me-2"></i> <a class="link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="tel:+842923731071">+84 292 373 1071</a></p>
             </div>
@@ -248,8 +248,8 @@ main {
   
         <section class="p-3 pt-0">
           <div class="row d-flex align-items-center">
-            <div class="col-md-7 col-lg-8 text-center text-md-start">
-              <div class="p-3">
+            <div class="col-md-5 col-lg-8 text-left text-md-start">
+              <div class="p-3 text-md-start">
                 © Trung tâm Công nghệ phần mềm Đại học Cần Thơ
               </div>
             </div>

@@ -18,9 +18,9 @@ class RoleMiddleware
         $userRole = session('role');
         $rolesArray = explode(',', $roles);
 
-        if (!$userRole || !in_array($userRole, $rolesArray)) {
-            return redirect()->route('about')->with('error', 'Bạn không có quyền truy cập!');
-        }
+        // if (!$userRole || !in_array($userRole, $rolesArray)) {
+        //     return redirect()->route('about')->with('error', 'Bạn không có quyền truy cập!');
+        // }
         return $next($request);
     }
 }
