@@ -1,4 +1,4 @@
-<div class="main-sidebar sidebar-style-2">
+<div class="main-sidebar sidebar-style-2" style="position: absolute; top: 0; left: 0; height: 500px">
     <aside id="sidebar-wrapper">
         <div class="sidebar-brand">
             <a href="{{ route('about') }}">

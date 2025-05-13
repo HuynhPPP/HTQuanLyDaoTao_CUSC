@@ -83,3 +83,38 @@
   border: 2px solid white;
   box-shadow: 0 0 0 2px #007bff;
 }
+
+.h-500px { /* Đặt tên class theo quy ước của bạn */
+  height: 500px;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: auto 1fr; /* Ví dụ: sidebar rộng auto, content chiếm phần còn lại */
+  grid-template-rows: auto 1fr auto; /* Header, content, footer */
+  /* min-height: 100vh; */
+  margin-bottom: 20px;
+}
+
+.header {
+  grid-row: 1;
+  grid-column: 1 / 3;
+}
+
+.sidebar {
+  grid-row: 2;
+  grid-column: 1;
+  overflow-y: auto; 
+  padding: 2px;
+}
+
+.content {
+  grid-row: 2;
+  grid-column: 2;
+  display: flex;
+}
+
+.footer {
+  grid-row: 3;
+  grid-column: 1 / 3;
+  margin-top: 10px;
+}

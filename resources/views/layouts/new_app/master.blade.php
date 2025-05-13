@@ -47,18 +47,22 @@
             <!-- Navbar Content -->
             @include('layouts.new_app.navbar')
             <!-- End navbar Content -->
-
-            <!-- Sidebar Content -->
-            @include('layouts.new_app.sidebar')
+<div class="grid-container">
+    <div class="sidebar"> @include('layouts.new_app.sidebar')</div>
+     <div class="content"> <!-- Sidebar Content -->
+           
             <!-- End Sidebar Content -->
 
             <!-- Main Content -->
             <div class="main-content">
                 @yield('main-content')
-            </div>
-            @include('layouts.new_app.new_footer')
+            </div> 
         </div>
+</div>
+        </div>
+        <div class="footer">@include('layouts.new_app.new_footer')</div>
     </div>
+    
 
     <!-- General JS Scripts -->
     <script src="{{ asset('assets/modules/jquery.min.js') }}"></script>
