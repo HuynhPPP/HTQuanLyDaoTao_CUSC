@@ -21,10 +21,7 @@
                 $dropdownActive =
                     request()->routeIs('student.list') ||
                     request()->routeIs('staff.*') ||
-                    request()->routeIs('bangcapcanbo.*') ||
-                    request()->routeIs('phonghoc.*') ||
-                    request()->routeIs('lophoc.*') ||
-                    request()->routeIs('danhsachphong.*') ;
+                    request()->routeIs('bangcapcanbo.*');
             @endphp
             <li class="dropdown {{ $dropdownActive ? 'active' : '' }}">
                 <a href="#" class="nav-link has-dropdown"><i class="far fa-file-alt"></i> <span>Dữ liệu hệ
@@ -42,13 +39,13 @@
                     <li class="{{ request()->routeIs('bangcapcanbo.*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('bangcapcanbo.index') }}">Quản lý bằng cấp cán bộ</a>
                     </li>
-                    <li class="{{ request()->routeIs('phonghoc.*') ? 'active' : '' }}">
+                    <li class="">
                         <a class="nav-link" href="{{ route('phonghoc.index') }}">Quản lý phòng học</a>
                     </li>
-                    <li class="{{ request()->routeIs('lophoc.*') ? 'active' : '' }}">
+                    <li class="">
                         <a class="nav-link" href="{{ route('lophoc.index') }}">Quản lý lớp học</a>
                     </li>
-                    <li class="{{ request()->routeIs('danhsachphong.*') ? 'active' : '' }}">
+                    <li class="">
                         <a class="nav-link" href="{{ route('danhsachphong.index') }}">Gán phòng cho lớp</a>
                     </li>
                     <li class="">

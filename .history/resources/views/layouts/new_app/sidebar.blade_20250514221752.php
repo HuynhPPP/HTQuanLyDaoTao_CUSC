@@ -21,10 +21,7 @@
                 $dropdownActive =
                     request()->routeIs('student.list') ||
                     request()->routeIs('staff.*') ||
-                    request()->routeIs('bangcapcanbo.*') ||
-                    request()->routeIs('phonghoc.*') ||
-                    request()->routeIs('lophoc.*') ||
-                    request()->routeIs('danhsachphong.*') ;
+                    request()->routeIs('bangcapcanbo.*');
             @endphp
             <li class="dropdown {{ $dropdownActive ? 'active' : '' }}">
                 <a href="#" class="nav-link has-dropdown"><i class="far fa-file-alt"></i> <span>Dữ liệu hệ

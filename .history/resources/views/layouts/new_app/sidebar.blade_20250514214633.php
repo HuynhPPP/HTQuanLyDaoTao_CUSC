@@ -18,15 +18,12 @@
                 </a>
             </li>
             @php
-                $dropdownActive =
-                    request()->routeIs('student.list') ||
-                    request()->routeIs('staff.*') ||
-                    request()->routeIs('bangcapcanbo.*') ||
-                    request()->routeIs('phonghoc.*') ||
-                    request()->routeIs('lophoc.*') ||
-                    request()->routeIs('danhsachphong.*') ;
-            @endphp
-            <li class="dropdown {{ $dropdownActive ? 'active' : '' }}">
+    $dropdownActive = request()->routeIs('student.list') || 
+                      request()->routeIs('staff.*') || 
+                      request()->routeIs('bangcapcanbo.*');
+@endphp
+            <li
+                class="dropdown {{ request()->routeIs('student.list') || request()->routeIs('staff.*') ? 'active' : '' }}">
                 <a href="#" class="nav-link has-dropdown"><i class="far fa-file-alt"></i> <span>Dữ liệu hệ
                         thống</span></a>
                 <ul class="dropdown-menu">
@@ -42,14 +39,8 @@
                     <li class="{{ request()->routeIs('bangcapcanbo.*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('bangcapcanbo.index') }}">Quản lý bằng cấp cán bộ</a>
                     </li>
-                    <li class="{{ request()->routeIs('phonghoc.*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('phonghoc.index') }}">Quản lý phòng học</a>
-                    </li>
-                    <li class="{{ request()->routeIs('lophoc.*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('lophoc.index') }}">Quản lý lớp học</a>
-                    </li>
-                    <li class="{{ request()->routeIs('danhsachphong.*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('danhsachphong.index') }}">Gán phòng cho lớp</a>
+                    <li class="">
+                        <a class="nav-link" href="">Quản lý cơ sở vật chất</a>
                     </li>
                     <li class="">
                         <a class="nav-link" href="">Danh sách phản hồi</a>

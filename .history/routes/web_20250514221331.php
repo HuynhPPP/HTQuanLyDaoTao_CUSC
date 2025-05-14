@@ -77,22 +77,22 @@ Route::middleware([RoleMiddleware::class . ':admin,staff'])->group(function () {
         Route::delete('/destroy/{tenPhong}', [PhongHocController::class, 'destroy'])->name('phonghoc.destroy');
     });
     Route::prefix('lophoc')->group(function () {
-        Route::get('/list', [LopHocController::class, 'index'])->name('lophoc.index');
-        Route::get('/create', [LopHocController::class, 'create'])->name('lophoc.create');
-        Route::post('/store', [LopHocController::class, 'store'])->name('lophoc.store');
-        Route::get('/{maLop}', [LopHocController::class, 'show'])->name('lophoc.show');
-        Route::get('/edit/{maLop}', [LopHocController::class, 'edit'])->name('lophoc.edit');
-        Route::post('/update/{maLop}', [LopHocController::class, 'update'])->name('lophoc.update');
-        Route::delete('/destroy/{maLop}', [LopHocController::class, 'destroy'])->name('lophoc.destroy');
+        Route::get('/list', [\App\Http\Controllers\LopHocController::class, 'index'])->name('lophoc.index');
+        Route::get('/create', [\App\Http\Controllers\LopHocController::class, 'create'])->name('lophoc.create');
+        Route::post('/store', [\App\Http\Controllers\LopHocController::class, 'store'])->name('lophoc.store');
+        Route::get('/{maLop}', [\App\Http\Controllers\LopHocController::class, 'show'])->name('lophoc.show');
+        Route::get('/edit/{maLop}', [\App\Http\Controllers\LopHocController::class, 'edit'])->name('lophoc.edit');
+        Route::post('/update/{maLop}', [\App\Http\Controllers\LopHocController::class, 'update'])->name('lophoc.update');
+        Route::delete('/destroy/{maLop}', [\App\Http\Controllers\LopHocController::class, 'destroy'])->name('lophoc.destroy');
     });
     Route::prefix('danhsachphong')->group(function () {
-        Route::get('/list', [DanhSachPhongController::class, 'index'])->name('danhsachphong.index');
-        Route::get('/create', [DanhSachPhongController::class, 'create'])->name('danhsachphong.create');
-        Route::post('/store', [DanhSachPhongController::class, 'store'])->name('danhsachphong.store');
-        Route::get('/{maLop}', [DanhSachPhongController::class, 'show'])->name('danhsachphong.show');
-        Route::get('/edit/{maLop}', [DanhSachPhongController::class, 'edit'])->name('danhsachphong.edit');
-        Route::post('/update/{maLop}', [DanhSachPhongController::class, 'update'])->name('danhsachphong.update');
-        Route::delete('/destroy/{maLop}', [DanhSachPhongController::class, 'destroy'])->name('danhsachphong.destroy');
+        Route::get('/list', [\App\Http\Controllers\DanhSachPhongController::class, 'index'])->name('danhsachphong.index');
+        Route::get('/create', [\App\Http\Controllers\DanhSachPhongController::class, 'create'])->name('danhsachphong.create');
+        Route::post('/store', [\App\Http\Controllers\DanhSachPhongController::class, 'store'])->name('danhsachphong.store');
+        Route::get('/{maLop}', [\App\Http\Controllers\DanhSachPhongController::class, 'show'])->name('danhsachphong.show');
+        Route::get('/edit/{maLop}', [\App\Http\Controllers\DanhSachPhongController::class, 'edit'])->name('danhsachphong.edit');
+        Route::post('/update/{maLop}', [\App\Http\Controllers\DanhSachPhongController::class, 'update'])->name('danhsachphong.update');
+        Route::delete('/destroy/{maLop}', [\App\Http\Controllers\DanhSachPhongController::class, 'destroy'])->name('danhsachphong.destroy');
     });
 });
 
