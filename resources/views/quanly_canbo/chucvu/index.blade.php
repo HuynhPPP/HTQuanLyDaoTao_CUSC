@@ -1,0 +1,89 @@
+@extends('layouts.new_app.master')
+
+@section('main-content')
+    <section class="section">
+        <div class="section-header">
+            <h1>Quản Lý Chức Vụ</h1>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Danh Sách Chức Vụ</h4>
+                            <div class="card-header-action">
+                                <a href="{{ route('chucvu.create') }}" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Thêm Chức Vụ Mới
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="table-1">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên Chức Vụ</th>
+                                            <th>Thời Gian Bắt Đầu</th>
+                                            <th>Thời Gian Kết Thúc</th>
+                                            <th>Hành Động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($chucVus as $chucVu)
+                                            <tr>
+                                                <td>{{ $chucVu->TenChucVu }}</td>
+                                                <td>{{ $chucVu->ThoiGianBatDauCV }}</td>
+                                                <td>{{ $chucVu->ThoiGianKTCV }}</td>
+                                                <td>
+                                                    <a href="{{ route('chucvu.edit', $chucVu->TenChucVu) }}"
+                                                        class="btn btn-warning btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <form action="{{ route('chucvu.destroy', $chucVu->TenChucVu) }}" method="POST"
+                                                        style="display:inline-block;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm delete-chucvu">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                {{ $chucVus->links() }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+@endsection
+
+@section('custom-js')
+    <script>
+        $(document).ready(function() {
+            $('.delete-chucvu').click(function(e) {
+                e.preventDefault();
+                const form = $(this).closest('form');
+
+                swal({
+                    title: 'Bạn có chắc chắn muốn xóa chức vụ này?',
+                    text: 'Dữ liệu đã xóa sẽ không thể khôi phục!',
+                    icon: 'warning',
+                    buttons: ['Hủy', 'Xóa'],
+                    dangerMode: true,
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        form.submit();
+                    } else {
+                        swal('Thao tác đã bị hủy.');
+                    }
+                });
+            });
+        });
+    </script>
+@endsection

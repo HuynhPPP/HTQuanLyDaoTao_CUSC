@@ -24,12 +24,7 @@
                     request()->routeIs('bangcapcanbo.*') ||
                     request()->routeIs('phonghoc.*') ||
                     request()->routeIs('lophoc.*') ||
-                    request()->routeIs('danhsachphong.*') ||
-                    request()->routeIs('chucvu.*') ||
-                    request()->routeIs('donvi.*') ||
-                    request()->routeIs('hocvi.*') ||
-                    request()->routeIs('phutrach.*') ||
-                    request()->routeIs('taphuan.*');
+                    request()->routeIs('danhsachphong.*') ;
             @endphp
             <li class="dropdown {{ $dropdownActive ? 'active' : '' }}">
                 <a href="#" class="nav-link has-dropdown"><i class="far fa-file-alt"></i> <span>Dữ liệu hệ
