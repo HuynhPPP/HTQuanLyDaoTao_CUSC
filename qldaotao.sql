@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 13, 2025 at 07:27 AM
+-- Generation Time: May 16, 2025 at 01:06 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -33,8 +33,22 @@ CREATE TABLE `bangcapcanbo` (
   `ThoiGianCap` date DEFAULT NULL,
   `DonViCap` varchar(255) DEFAULT NULL,
   `SoHieu` varchar(30) DEFAULT NULL,
-  `SoVaoSo` varchar(30) DEFAULT NULL
+  `SoVaoSo` varchar(30) DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `bangcapcanbo`
+--
+
+INSERT INTO `bangcapcanbo` (`MaBang`, `TenBang`, `ThoiGianCap`, `DonViCap`, `SoHieu`, `SoVaoSo`, `created_at`, `updated_at`) VALUES
+('B001', 'Cử nhân Công nghệ thông tin', '2015-06-20', 'Đại học Cần Thơ', 'CN-2015-001', 'VS-001', '2025-05-15 23:35:16', '2025-05-15 23:35:16'),
+('B002', 'Thạc sĩ Quản trị kinh doanh', '2018-09-15', 'Đại học Kinh tế TP.HCM', 'TS-2018-002', 'VS-002', '2025-05-15 23:35:16', '2025-05-15 23:35:16'),
+('B003', 'Tiến sĩ Giáo dục học', '2022-12-10', 'Đại học Sư phạm Hà Nội', 'TS-2022-003', 'VS-003', '2025-05-15 23:35:16', '2025-05-15 23:35:16'),
+('BC001', 'Bằng TSKH', NULL, NULL, NULL, NULL, '2025-05-16 09:50:25', '2025-05-16 09:50:25'),
+('BC002', 'Bằng ThS', NULL, NULL, NULL, NULL, '2025-05-16 09:50:25', '2025-05-16 09:50:25'),
+('BC003', 'Bằng ĐH', NULL, NULL, NULL, NULL, '2025-05-16 09:50:25', '2025-05-16 09:50:25');
 
 -- --------------------------------------------------------
 
@@ -71,7 +85,7 @@ CREATE TABLE `canbo` (
   `HoTenCB` varchar(30) DEFAULT NULL,
   `GioiTinh` tinyint(1) DEFAULT NULL,
   `Email` varchar(40) DEFAULT NULL,
-  `Sdt` int DEFAULT NULL,
+  `Sdt` varchar(15) DEFAULT NULL,
   `MaHV` varchar(12) DEFAULT NULL,
   `TenChucVu` varchar(30) DEFAULT NULL,
   `CongViecPhuTrach` varchar(255) DEFAULT NULL,
@@ -79,7 +93,9 @@ CREATE TABLE `canbo` (
   `MaBang` varchar(12) DEFAULT NULL,
   `MaTapHuan` varchar(12) DEFAULT NULL,
   `ThoiGianBDCongTacCUSC` date DEFAULT NULL,
-  `ThoiGianKTCongTacCUSC` date DEFAULT NULL
+  `ThoiGianKTCongTacCUSC` date DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -91,8 +107,19 @@ CREATE TABLE `canbo` (
 CREATE TABLE `chucvu` (
   `TenChucVu` varchar(30) NOT NULL,
   `ThoiGianBatDauCV` varchar(50) DEFAULT NULL,
-  `ThoiGianKTCV` varchar(50) DEFAULT NULL
+  `ThoiGianKTCV` varchar(50) DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `chucvu`
+--
+
+INSERT INTO `chucvu` (`TenChucVu`, `ThoiGianBatDauCV`, `ThoiGianKTCV`, `created_at`, `updated_at`) VALUES
+('Chuyên viên', NULL, NULL, '2025-05-16 02:50:25', '2025-05-16 02:50:25'),
+('Giảng viên', NULL, NULL, '2025-05-15 16:36:26', '2025-05-15 16:36:26'),
+('Trưởng khoa', NULL, NULL, '2025-05-16 02:50:25', '2025-05-16 02:50:25');
 
 -- --------------------------------------------------------
 
@@ -189,9 +216,9 @@ CREATE TABLE `danhsachphong` (
 --
 
 INSERT INTO `danhsachphong` (`MaLop`, `TenPhong`) VALUES
-('CP2296H07', 'Class1'),
+('CP2396G11', 'Class1'),
+('CP2296H07', 'Class2'),
 ('CP2396M02', 'Class2'),
-('CP2296H07', 'Lab1'),
 ('CP2396M02', 'Lab2');
 
 -- --------------------------------------------------------
@@ -214,8 +241,20 @@ CREATE TABLE `danhsachsv` (
 CREATE TABLE `donvi` (
   `MaDV` varchar(12) NOT NULL,
   `TenDVHienTai` varchar(255) DEFAULT NULL,
-  `TenDVTungCongTac` varchar(255) DEFAULT NULL
+  `TenDVTungCongTac` varchar(255) DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `donvi`
+--
+
+INSERT INTO `donvi` (`MaDV`, `TenDVHienTai`, `TenDVTungCongTac`, `created_at`, `updated_at`) VALUES
+('CNTT', 'Khoa CNTT', NULL, '2025-05-15 16:36:26', '2025-05-15 16:36:26'),
+('DV001', 'Khoa CNTT', NULL, '2025-05-16 02:50:25', '2025-05-16 02:50:25'),
+('DV002', 'Khoa Kinh tế', NULL, '2025-05-16 02:50:25', '2025-05-16 02:50:25'),
+('DV003', 'Phòng CNTT', NULL, '2025-05-16 02:50:25', '2025-05-16 02:50:25');
 
 -- --------------------------------------------------------
 
@@ -282,8 +321,19 @@ CREATE TABLE `hocvi` (
   `ChuyenNganh` varchar(255) DEFAULT NULL,
   `CoSoDaoTao` varchar(255) DEFAULT NULL,
   `NamCap` date DEFAULT NULL,
-  `HinhThucDaoTao` varchar(255) DEFAULT NULL
+  `HinhThucDaoTao` varchar(255) DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `hocvi`
+--
+
+INSERT INTO `hocvi` (`MaHV`, `TenHocVi`, `NganhHoc`, `ChuyenNganh`, `CoSoDaoTao`, `NamCap`, `HinhThucDaoTao`, `created_at`, `updated_at`) VALUES
+('HV001', 'Tiến sĩ', NULL, NULL, NULL, NULL, NULL, '2025-05-15 16:36:26', '2025-05-15 16:36:26'),
+('HV002', 'Thạc sĩ', NULL, NULL, NULL, NULL, NULL, '2025-05-16 02:50:25', '2025-05-16 02:50:25'),
+('HV003', 'Cử nhân', NULL, NULL, NULL, NULL, NULL, '2025-05-16 02:50:25', '2025-05-16 02:50:25');
 
 -- --------------------------------------------------------
 
@@ -580,7 +630,9 @@ INSERT INTO `phonghoc` (`TenPhong`, `LoaiPhong`, `SucChua`) VALUES
 
 CREATE TABLE `phutrach` (
   `CongViecPhuTrach` varchar(255) NOT NULL,
-  `MieuTaChiTiet` varchar(255) DEFAULT NULL
+  `MieuTaChiTiet` varchar(255) DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -603,7 +655,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('wWuOSdBLNEEVGGUujHQIxWdcSYLWAktmiIMzrVvk', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoiRjVFY1kzaVFMV01wNFBSZERrcU1tdUNScm85Ym4yaXcxeHJPT05vYSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTY3OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvbWluaXN0cnkvc2NoZWR1bGVzL3NjaGVkdWxlL1RIJUUxJUJCJTlDSSUyMEtIJUMzJTkzQSUyMEJJJUUxJUJCJTgyVSUyMEwlRTElQkIlOUFQJTIwQ1AyMzk2TTAyJTIwLSUyMEglRTElQkIlOERjJTIwSyVFMSVCQiVCMyUyMElJJTIwJTI4T1YtNzAyMyUyOSI7fXM6MTQ6ImNhcHRjaGFfcGhyYXNlIjtzOjU6IkZNTDlJIjtzOjQ6InVzZXIiO3M6MTI6ImFkbWluLmtodW9uZyI7czoxMToiZGlzcGxheW5hbWUiO3M6MTA6IlRhbiBLaHVvbmciO3M6NDoicm9sZSI7czo1OiJhZG1pbiI7fQ==', 1747064536);
+('0j3WX3OICwBslba6h0re67vpZfPm1dTJcCZCWLU7', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoiUGd5Z1loQTl2YlNnM1B4enZ4TERFc3Ayd0IxVVd2d01TYVh3a29qYiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzQ6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9zdGFmZi9jcmVhdGUiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJ3Znl6aCI7czo0OiJ1c2VyIjtzOjEyOiJhZG1pbi5raHVvbmciO3M6MTE6ImRpc3BsYXluYW1lIjtzOjEwOiJUYW4gS2h1b25nIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO30=', 1747383479),
+('a5heaLur4pfdEXKsN0WsHKawplBM9rI48MmQTq0D', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoidWdTMFdqWEYzeERXaFFCS2xZeGI2eWVMdkJka0hlYjZTdzRzNTVNZyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYW5oc2FjaHBob25nL2xpc3QiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJxQzliQyI7czo0OiJ1c2VyIjtzOjEyOiJhZG1pbi5raHVvbmciO3M6MTE6ImRpc3BsYXluYW1lIjtzOjEwOiJUYW4gS2h1b25nIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO30=', 1747367897);
 
 -- --------------------------------------------------------
 
@@ -666,8 +719,19 @@ CREATE TABLE `taphuan` (
   `TenKhoaTapHuan` varchar(30) DEFAULT NULL,
   `ThoiGianBatDau` date DEFAULT NULL,
   `ThoiGianKetThuc` date DEFAULT NULL,
-  `DiaDiem` varchar(20) DEFAULT NULL
+  `DiaDiem` varchar(20) DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `taphuan`
+--
+
+INSERT INTO `taphuan` (`MaTapHuan`, `TenKhoaTapHuan`, `ThoiGianBatDau`, `ThoiGianKetThuc`, `DiaDiem`, `created_at`, `updated_at`) VALUES
+('TH001', 'Khoá đào tạo GV', NULL, NULL, NULL, '2025-05-15 23:36:26', '2025-05-15 23:36:26'),
+('TH002', 'Khóa QLNN', NULL, NULL, NULL, '2025-05-16 09:50:25', '2025-05-16 09:50:25'),
+('TH003', 'Khóa ATTT', NULL, NULL, NULL, '2025-05-16 09:50:25', '2025-05-16 09:50:25');
 
 -- --------------------------------------------------------
 
