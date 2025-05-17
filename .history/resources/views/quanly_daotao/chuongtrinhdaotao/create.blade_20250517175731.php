@@ -59,8 +59,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <label for="MaLop" class="form-label">Khoá Đào Tạo <span
-                                        class="text-danger">*</span></label>
+                                <label for="MaLop" class="form-label">Khoá Đào Tạo</label>
                                 <select class="form-control @error('TenKhoaDaoTao') is-invalid @enderror" id="TenKhoaDaoTao"
                                     name="MaLop">
                                     <option value="">-- Chọn Khoá Đào Tạo --</option>

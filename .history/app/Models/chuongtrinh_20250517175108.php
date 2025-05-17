@@ -12,7 +12,6 @@ class ChuongTrinh extends Model
     protected $primaryKey = 'MaChuongTrinh';
     public $incrementing = false;
     protected $keyType = 'string';
-    public $timestamps = true;
 
     protected $fillable = [
         'MaChuongTrinh', 

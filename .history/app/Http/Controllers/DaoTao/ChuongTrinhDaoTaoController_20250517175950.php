@@ -64,13 +64,17 @@ class ChuongTrinhDaoTaoController extends Controller
     public function update(Request $request, $maChuongTrinh)
     {
         $validator = Validator::make($request->all(), [
+            'MaChuongTrinh' => 'required|unique:chuongtrinh|max:12',
             'TenChuongTrinh' => 'required',
             'PhienBan' => 'nullable|max:12',
             'NgayTrienKhaiPB' => 'nullable|date',
             'TenKhoaDaoTao' => 'required',
-        ],[
+        ], [
+            'MaChuongTrinh.required' => 'Mã chương trình không được để trống',
             'TenKhoaDaoTao.required' => 'Tên khoá đào tạo không được để trống',
-            'TenChuongTrinh.required' => 'Tên chương trình đào tạo không được để trống'
+            'TenChuongTrinh.required' => 'Tên chương trình đào tạo không được để trống',
+            'MaChuongTrinh.unique' => 'Mã chương trình đã tồn tại',
+            'MaChuongTrinh.max' => 'Mã chương trình không được vượt quá 12 ký tự'
         ]);
 
         if ($validator->fails()) {

@@ -18,22 +18,21 @@ class ChuongTrinhDaoTaoController extends Controller
 
     public function create()
     {
-        $khoadaotaos = khoadaotao::all();
-        return view('quanly_daotao.chuongtrinhdaotao.create', compact('khoadaotaos'));
+        $lophocs = lophoc::all();
+        return view('quanly_daotao.chuongtrinhdaotao.create');
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'MaChuongTrinh' => 'required|unique:chuongtrinh|max:12',
-            'TenChuongTrinh' => 'required',
+            'TenChuongTrinh' => 'nullable|max:30',
             'PhienBan' => 'nullable|max:12',
             'NgayTrienKhaiPB' => 'nullable|date',
-            'TenKhoaDaoTao' => 'required',
+            'TenKhoaDaoTao' => 'nullable|max:20',
+            'ThoiGianDaoTao' => 'nullable|max:10'
         ], [
             'MaChuongTrinh.required' => 'Mã chương trình không được để trống',
-            'TenKhoaDaoTao.required' => 'Tên khoá đào tạo không được để trống',
-            'TenChuongTrinh.required' => 'Tên chương trình đào tạo không được để trống',
             'MaChuongTrinh.unique' => 'Mã chương trình đã tồn tại',
             'MaChuongTrinh.max' => 'Mã chương trình không được vượt quá 12 ký tự'
         ]);
@@ -57,20 +56,17 @@ class ChuongTrinhDaoTaoController extends Controller
     public function edit($maChuongTrinh)
     {
         $chuongTrinh = ChuongTrinh::findOrFail($maChuongTrinh);
-        $khoadaotaos = khoadaotao::all();
-        return view('quanly_daotao.chuongtrinhdaotao.edit', compact('chuongTrinh', 'khoadaotaos'));
+        return view('quanly_daotao.chuongtrinhdaotao.edit', compact('chuongTrinh'));
     }
 
     public function update(Request $request, $maChuongTrinh)
     {
         $validator = Validator::make($request->all(), [
-            'TenChuongTrinh' => 'required',
+            'TenChuongTrinh' => 'nullable|max:30',
             'PhienBan' => 'nullable|max:12',
             'NgayTrienKhaiPB' => 'nullable|date',
-            'TenKhoaDaoTao' => 'required',
-        ],[
-            'TenKhoaDaoTao.required' => 'Tên khoá đào tạo không được để trống',
-            'TenChuongTrinh.required' => 'Tên chương trình đào tạo không được để trống'
+            'TenKhoaDaoTao' => 'nullable|max:20',
+            'ThoiGianDaoTao' => 'nullable|max:10'
         ]);
 
         if ($validator->fails()) {
@@ -82,7 +78,6 @@ class ChuongTrinhDaoTaoController extends Controller
         try {
             $chuongTrinh = ChuongTrinh::findOrFail($maChuongTrinh);
             $chuongTrinh->update($request->all());
-
             return redirect()->route('chuongtrinh.index')
                 ->with('success', 'Cập nhật chương trình đào tạo thành công');
         } catch (\Exception $e) {

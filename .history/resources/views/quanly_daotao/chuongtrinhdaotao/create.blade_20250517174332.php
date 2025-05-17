@@ -27,7 +27,7 @@
                                     <label>Mã Chương Trình <span class="text-danger">*</span></label>
                                     <input type="text" name="MaChuongTrinh"
                                         class="form-control @error('MaChuongTrinh') is-invalid @enderror"
-                                        value="{{ old('MaChuongTrinh') }}">
+                                        value="{{ old('MaChuongTrinh') }}" required>
                                     @error('MaChuongTrinh')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -35,7 +35,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Tên Chương Trình <span class="text-danger">*</span></label>
+                                    <label>Tên Chương Trình</label>
                                     <input type="text" name="TenChuongTrinh" class="form-control"
                                         value="{{ old('TenChuongTrinh') }}">
                                 </div>
@@ -59,8 +59,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <label for="MaLop" class="form-label">Khoá Đào Tạo <span
-                                        class="text-danger">*</span></label>
+                                <label for="MaLop" class="form-label">Chọn Khoá Đào Tạo</label>
                                 <select class="form-control @error('TenKhoaDaoTao') is-invalid @enderror" id="TenKhoaDaoTao"
                                     name="MaLop">
                                     <option value="">-- Chọn Khoá Đào Tạo --</option>

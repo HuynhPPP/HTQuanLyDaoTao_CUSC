@@ -68,9 +68,6 @@ class ChuongTrinhDaoTaoController extends Controller
             'PhienBan' => 'nullable|max:12',
             'NgayTrienKhaiPB' => 'nullable|date',
             'TenKhoaDaoTao' => 'required',
-        ],[
-            'TenKhoaDaoTao.required' => 'Tên khoá đào tạo không được để trống',
-            'TenChuongTrinh.required' => 'Tên chương trình đào tạo không được để trống'
         ]);
 
         if ($validator->fails()) {
@@ -82,7 +79,6 @@ class ChuongTrinhDaoTaoController extends Controller
         try {
             $chuongTrinh = ChuongTrinh::findOrFail($maChuongTrinh);
             $chuongTrinh->update($request->all());
-
             return redirect()->route('chuongtrinh.index')
                 ->with('success', 'Cập nhật chương trình đào tạo thành công');
         } catch (\Exception $e) {

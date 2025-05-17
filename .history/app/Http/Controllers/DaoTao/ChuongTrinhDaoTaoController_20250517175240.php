@@ -70,7 +70,9 @@ class ChuongTrinhDaoTaoController extends Controller
             'TenKhoaDaoTao' => 'required',
         ],[
             'TenKhoaDaoTao.required' => 'Tên khoá đào tạo không được để trống',
-            'TenChuongTrinh.required' => 'Tên chương trình đào tạo không được để trống'
+            'TenChuongTrinh.required' => 'Tên chương trình đào tạo không được để trống',
+            'MaChuongTrinh.unique' => 'Mã chương trình đã tồn tại',
+            'MaChuongTrinh.max' => 'Mã chương trình không được vượt quá 12 ký tự'
         ]);
 
         if ($validator->fails()) {
@@ -82,7 +84,6 @@ class ChuongTrinhDaoTaoController extends Controller
         try {
             $chuongTrinh = ChuongTrinh::findOrFail($maChuongTrinh);
             $chuongTrinh->update($request->all());
-
             return redirect()->route('chuongtrinh.index')
                 ->with('success', 'Cập nhật chương trình đào tạo thành công');
         } catch (\Exception $e) {

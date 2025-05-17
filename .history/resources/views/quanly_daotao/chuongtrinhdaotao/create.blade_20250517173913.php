@@ -25,9 +25,8 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Mã Chương Trình <span class="text-danger">*</span></label>
-                                    <input type="text" name="MaChuongTrinh"
-                                        class="form-control @error('MaChuongTrinh') is-invalid @enderror"
-                                        value="{{ old('MaChuongTrinh') }}">
+                                    <input type="text" name="MaChuongTrinh" class="form-control @error('MaChuongTrinh') is-invalid @enderror" 
+                                           value="{{ old('MaChuongTrinh') }}" required>
                                     @error('MaChuongTrinh')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -35,9 +34,9 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Tên Chương Trình <span class="text-danger">*</span></label>
-                                    <input type="text" name="TenChuongTrinh" class="form-control"
-                                        value="{{ old('TenChuongTrinh') }}">
+                                    <label>Tên Chương Trình</label>
+                                    <input type="text" name="TenChuongTrinh" class="form-control" 
+                                           value="{{ old('TenChuongTrinh') }}">
                                 </div>
                             </div>
                         </div>
@@ -45,29 +44,25 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Phiên Bản</label>
-                                    <input type="text" name="PhienBan" class="form-control"
-                                        value="{{ old('PhienBan') }}">
+                                    <input type="text" name="PhienBan" class="form-control" 
+                                           value="{{ old('PhienBan') }}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Ngày Triển Khai</label>
-                                    <input type="date" name="NgayTrienKhaiPB" class="form-control"
-                                        value="{{ old('NgayTrienKhaiPB') }}">
+                                    <input type="date" name="NgayTrienKhaiPB" class="form-control" 
+                                           value="{{ old('NgayTrienKhaiPB') }}">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <label for="MaLop" class="form-label">Khoá Đào Tạo <span
-                                        class="text-danger">*</span></label>
-                                <select class="form-control @error('TenKhoaDaoTao') is-invalid @enderror" id="TenKhoaDaoTao"
-                                    name="MaLop">
-                                    <option value="">-- Chọn Khoá Đào Tạo --</option>
+                                <label for="MaLop" class="form-label">Chọn Tên Khoá Đào Tạo</label>
+                                <select class="form-control @error('TenKhoaDaoTao') is-invalid @enderror" id="TenKhoaDaoTao" name="MaLop">
+                                    <option value="">-- Chọn lớp --</option>
                                     @foreach ($khoadaotaos as $khoadaotao)
-                                        <option value="{{ $khoadaotao->TenKhoaDaoTao }}"
-                                            {{ old('TenKhoaDaoTao') == $khoadaotao->TenKhoaDaoTao ? 'selected' : '' }}>
-                                            {{ $khoadaotao->TenKhoaDaoTao }}</option>
+                                        <option value="{{ $khoadaotao->MaLop }}" {{ old('TenKhoaDaoTao') == $khoadaotao->MaLop ? 'selected' : '' }}>{{ $khoadaotao->TenLop }} ({{ $khoadaotao->MaLop }})</option>
                                     @endforeach
                                 </select>
                                 @error('TenKhoaDaoTao')
@@ -84,4 +79,4 @@
             </div>
         </div>
     </section>
-@endsection
+@endsection 

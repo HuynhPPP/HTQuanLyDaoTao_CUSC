@@ -45,7 +45,7 @@
                                         <td>{{ $chuongTrinh->NgayTrienKhaiPB ? date('d/m/Y', strtotime($chuongTrinh->NgayTrienKhaiPB)) : 'Chưa xác định' }}
                                         </td>
                                         <td>{{ $chuongTrinh->TenKhoaDaoTao }}</td>
-                                        <td>{{ $chuongTrinh->khoadaotao->ThoiGianDaoTao }}</td>
+                                        <td>{{ $chuongTrinh->khoadaotaos->ThoiGianDaoTao }}</td>
                                         <td>
                                             <a href="{{ route('chuongtrinh.edit', $chuongTrinh->MaChuongTrinh) }}"
                                                 class="btn btn-warning btn-sm">

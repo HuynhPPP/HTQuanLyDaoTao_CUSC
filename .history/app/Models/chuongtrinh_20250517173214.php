@@ -12,7 +12,6 @@ class ChuongTrinh extends Model
     protected $primaryKey = 'MaChuongTrinh';
     public $incrementing = false;
     protected $keyType = 'string';
-    public $timestamps = true;
 
     protected $fillable = [
         'MaChuongTrinh', 
@@ -22,6 +21,11 @@ class ChuongTrinh extends Model
         'TenKhoaDaoTao', 
     ];
 
+    protected $dates = [
+        'NgayTrienKhaiPB',
+        'create_at',
+        'update_at'
+    ];
     public function khoadaotao(){
         return $this->belongsTo(khoadaotao::class,'TenKhoaDaoTao');
     }
