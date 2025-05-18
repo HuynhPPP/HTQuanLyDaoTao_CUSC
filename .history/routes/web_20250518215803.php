@@ -183,7 +183,7 @@ Route::middleware([RoleMiddleware::class . ':admin,staff'])->group(function () {
         Route::delete('/{maTS}', [TuyenSinhController::class, 'destroy'])->name('tuyensinh.destroy');
         Route::get('/dot/{maTS}', [TuyenSinhController::class, 'danhSachHoSo'])->name('tuyensinh.danhsach_hoso');
         Route::post('/hoso', [TuyenSinhController::class, 'taoHoSo'])->name('tuyensinh.tao_hoso');
-        Route::post('/hoso/{maHoSo}', [TuyenSinhController::class, 'capNhatTrangThai'])->name('tuyensinh.capnhat_trangthai');
+        Route::put('/hoso/{maHoSo}', [TuyenSinhController::class, 'capNhatTrangThai'])->name('tuyensinh.capnhat_trangthai');
     });
 });
 

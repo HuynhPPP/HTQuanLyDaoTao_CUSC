@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class monhoc extends Model
 {
     use HasFactory;
-    protected $table = 'MonHoc';
-    protected $primaryKey = 'TenMH';
-    protected $keyType = 'string';
-    protected $fillable = [
+    protected $table='MonHoc';
+    protected $primaryKey='TenMH';
+    protected $keyType='string';
+    protected  $fillable=[
         'TenMH',
         'MaMH',
         'GioGoc',
@@ -21,9 +21,8 @@ class monhoc extends Model
         'TietLTvaTH',
         'MaHTDanhGia',
     ];
-    public function loaidaotao()
-    {
-        return $this->belongsTo('ChuongTrinh'::class, 'MaChuongTrinh');
+    public function loaidaotao(){
+        return $this->belongsTo('ChuongTrinh'::class,'MaChuongTrinh');
     }
     public function hinhthucdanhgia()
     {

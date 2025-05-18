@@ -179,11 +179,9 @@ Route::middleware([RoleMiddleware::class . ':admin,staff'])->group(function () {
     });
     Route::prefix('tuyensinh')->group(function () {
         Route::get('/', [TuyenSinhController::class, 'index'])->name('tuyensinh.index');
-        Route::post('/store', [TuyenSinhController::class, 'store'])->name('tuyensinh.store');
-        Route::delete('/{maTS}', [TuyenSinhController::class, 'destroy'])->name('tuyensinh.destroy');
         Route::get('/dot/{maTS}', [TuyenSinhController::class, 'danhSachHoSo'])->name('tuyensinh.danhsach_hoso');
         Route::post('/hoso', [TuyenSinhController::class, 'taoHoSo'])->name('tuyensinh.tao_hoso');
-        Route::post('/hoso/{maHoSo}', [TuyenSinhController::class, 'capNhatTrangThai'])->name('tuyensinh.capnhat_trangthai');
+        Route::put('/hoso/{maHoSo}', [TuyenSinhController::class, 'capNhatTrangThai'])->name('tuyensinh.capnhat_trangthai');
     });
 });
 
@@ -197,6 +195,6 @@ Route::middleware([RoleMiddleware::class . ':admin,staff,teacher'])->group(funct
     Route::post('/saveSelfStudy/{TenTKB}', [PagesController::class, 'saveSelfStudy'])->name('saveSelfStudy');
     Route::post('/EditTKB/{TenTKB}', [PagesController::class, 'EditTKB'])->name('EditTKB');
 
-
+    
 });
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 16, 2025 at 01:06 PM
+-- Generation Time: May 18, 2025 at 04:20 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -98,6 +98,14 @@ CREATE TABLE `canbo` (
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `canbo`
+--
+
+INSERT INTO `canbo` (`MaCB`, `HoTenCB`, `GioiTinh`, `Email`, `Sdt`, `MaHV`, `TenChucVu`, `CongViecPhuTrach`, `MaDV`, `MaBang`, `MaTapHuan`, `ThoiGianBDCongTacCUSC`, `ThoiGianKTCongTacCUSC`, `created_at`, `updated_at`) VALUES
+('CB001', 'Nguyễn Văn An', 1, 'ngvanan@gmail.com', '0912345678', 'HV001', 'Giảng viên', 'Giảng dạy', 'DV001', 'BC001', 'TH001', '2020-01-01', NULL, '2025-05-16 13:36:49', '2025-05-16 13:36:49'),
+('CB003', 'Lê Văn Cường', 1, 'levcuong@gmail.com', '0934567890', 'HV003', 'Chuyên viên', 'Quản trị hệ thống', 'DV003', 'BC003', 'TH003', '2019-08-20', '2022-12-31', '2025-05-16 13:36:49', '2025-05-16 13:36:49');
+
 -- --------------------------------------------------------
 
 --
@@ -132,17 +140,18 @@ CREATE TABLE `chuongtrinh` (
   `TenChuongTrinh` varchar(30) DEFAULT NULL,
   `PhienBan` varchar(12) DEFAULT NULL,
   `NgayTrienKhaiPB` date DEFAULT NULL,
-  `TenKhoaDaoTao` varchar(20) DEFAULT NULL
+  `TenKhoaDaoTao` varchar(20) DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `chuongtrinh`
 --
 
-INSERT INTO `chuongtrinh` (`MaChuongTrinh`, `TenChuongTrinh`, `PhienBan`, `NgayTrienKhaiPB`, `TenKhoaDaoTao`) VALUES
-('AT7096', 'My thuat da phuong tien', '3.0', NULL, 'Ngắn hạn'),
-('OV-7023', 'Lap trinh vien quoc te', '1.0', NULL, 'Dài hạn'),
-('OV9001', 'lap trinh vien arena', '2.0', NULL, 'Dài hạn');
+INSERT INTO `chuongtrinh` (`MaChuongTrinh`, `TenChuongTrinh`, `PhienBan`, `NgayTrienKhaiPB`, `TenKhoaDaoTao`, `created_at`, `updated_at`) VALUES
+('OV-7023', 'Lap trinh vien quoc te', '1.0', NULL, 'Dài hạn', '2025-05-17 13:48:56', '2025-05-17 13:48:56'),
+('OV9001', 'lap trinh vien arena', '2.0', '2025-05-01', 'Ngắn hạn', '2025-05-17 13:48:56', '2025-05-17 11:01:49');
 
 -- --------------------------------------------------------
 
@@ -275,6 +284,39 @@ CREATE TABLE `failed_jobs` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `giaovien`
+--
+
+CREATE TABLE `giaovien` (
+  `MaGV` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `HoTenGV` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `GioiTinh` tinyint(1) DEFAULT NULL,
+  `Email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `Sdt` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `MaHV` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `TenChucVu` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `MaDV` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `MaBang` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `LoaiGV` enum('CoHuu','MoiGiang') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CoHuu',
+  `ChuyenNganh` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `GhiChu` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `NgayBatDauCongTac` date DEFAULT NULL,
+  `NgayKetThucCongTac` date DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `giaovien`
+--
+
+INSERT INTO `giaovien` (`MaGV`, `HoTenGV`, `GioiTinh`, `Email`, `Sdt`, `MaHV`, `TenChucVu`, `MaDV`, `MaBang`, `LoaiGV`, `ChuyenNganh`, `GhiChu`, `NgayBatDauCongTac`, `NgayKetThucCongTac`, `created_at`, `updated_at`) VALUES
+('GV001', 'Nguyễn Văn An', 1, 'ngvanan@gmail.com', '0912345678', 'HV001', 'Giảng viên', 'DV001', 'BC001', 'CoHuu', 'Khoa học máy tính', 'Giảng viên chính', '2020-01-01', NULL, '2025-05-16 07:53:41', '2025-05-16 07:53:41'),
+('GV002', 'Trần Thị Bình', 0, 'tranthib@gmail.com', '0923456789', 'HV002', 'Trưởng khoa', 'DV002', 'BC002', 'MoiGiang', 'Kinh tế học', 'Giảng viên thỉnh giảng', '2018-05-15', NULL, '2025-05-16 07:53:41', '2025-05-16 07:53:41');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `hinhthucdanhgia`
 --
 
@@ -351,6 +393,31 @@ CREATE TABLE `hoso` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `hosotuyensinh`
+--
+
+CREATE TABLE `hosotuyensinh` (
+  `MaHoSo` varchar(12) NOT NULL,
+  `MaSV` varchar(12) DEFAULT NULL,
+  `MaTS` varchar(12) NOT NULL,
+  `NgayNopHS` date DEFAULT NULL,
+  `TrangThaiHS` enum('DaNop','DaXet','DaTrungTuyen','KhongTrungTuyen') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `hosotuyensinh`
+--
+
+INSERT INTO `hosotuyensinh` (`MaHoSo`, `MaSV`, `MaTS`, `NgayNopHS`, `TrangThaiHS`, `created_at`, `updated_at`) VALUES
+('HS1747584061', '21010001', 'TS20251', '2025-05-18', 'DaNop', '2025-05-18 16:01:01', '2025-05-18 16:01:01'),
+('HS1747585057', '21010002', 'TS20251', '2025-05-18', 'DaNop', '2025-05-18 16:17:37', '2025-05-18 16:17:37'),
+('HS1747585066', '21010003', 'TS20251', '2025-05-18', 'DaNop', '2025-05-18 16:17:46', '2025-05-18 16:17:46');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `jobs`
 --
 
@@ -391,16 +458,18 @@ CREATE TABLE `job_batches` (
 
 CREATE TABLE `khoadaotao` (
   `TenKhoaDaoTao` varchar(20) NOT NULL,
-  `ThoiGianDaoTao` varchar(10) DEFAULT NULL
+  `ThoiGianDaoTao` varchar(10) DEFAULT NULL,
+  `create_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `khoadaotao`
 --
 
-INSERT INTO `khoadaotao` (`TenKhoaDaoTao`, `ThoiGianDaoTao`) VALUES
-('Dài hạn', '2 năm'),
-('Ngắn hạn', '1 Học Kỳ');
+INSERT INTO `khoadaotao` (`TenKhoaDaoTao`, `ThoiGianDaoTao`, `create_at`, `update_at`) VALUES
+('Dài hạn', '2 năm', '2025-05-18 21:26:47', '2025-05-18 21:26:47'),
+('Ngắn hạn', '1 Học Kỳ', '2025-05-18 21:26:47', '2025-05-18 21:26:47');
 
 -- --------------------------------------------------------
 
@@ -464,9 +533,10 @@ CREATE TABLE `migrations` (
 --
 
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
-(1, '0001_01_01_000000_create_users_table', 1),
-(2, '0001_01_01_000001_create_cache_table', 1),
-(3, '0001_01_01_000002_create_jobs_table', 1);
+(4, '0001_01_01_000000_create_users_table', 1),
+(5, '0001_01_01_000001_create_cache_table', 1),
+(6, '0001_01_01_000002_create_jobs_table', 1),
+(7, '2025_05_16_140909_create_giaovien_table', 2);
 
 -- --------------------------------------------------------
 
@@ -635,6 +705,15 @@ CREATE TABLE `phutrach` (
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `phutrach`
+--
+
+INSERT INTO `phutrach` (`CongViecPhuTrach`, `MieuTaChiTiet`, `created_at`, `updated_at`) VALUES
+('Giảng dạy', 'Giảng dạy các bộ môn', '2025-05-16 20:21:20', '2025-05-16 20:28:49'),
+('Quản lý khoa', NULL, '2025-05-16 20:35:29', '2025-05-16 20:35:29'),
+('Quản trị hệ thống', NULL, '2025-05-16 20:35:37', '2025-05-16 20:35:37');
+
 -- --------------------------------------------------------
 
 --
@@ -655,8 +734,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('0j3WX3OICwBslba6h0re67vpZfPm1dTJcCZCWLU7', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoiUGd5Z1loQTl2YlNnM1B4enZ4TERFc3Ayd0IxVVd2d01TYVh3a29qYiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzQ6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9zdGFmZi9jcmVhdGUiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJ3Znl6aCI7czo0OiJ1c2VyIjtzOjEyOiJhZG1pbi5raHVvbmciO3M6MTE6ImRpc3BsYXluYW1lIjtzOjEwOiJUYW4gS2h1b25nIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO30=', 1747383479),
-('a5heaLur4pfdEXKsN0WsHKawplBM9rI48MmQTq0D', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoidWdTMFdqWEYzeERXaFFCS2xZeGI2eWVMdkJka0hlYjZTdzRzNTVNZyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYW5oc2FjaHBob25nL2xpc3QiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJxQzliQyI7czo0OiJ1c2VyIjtzOjEyOiJhZG1pbi5raHVvbmciO3M6MTE6ImRpc3BsYXluYW1lIjtzOjEwOiJUYW4gS2h1b25nIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO30=', 1747367897);
+('RofmrebzUprC2T2TorGJX5Q3x5FIiIdH9uMGgHPT', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoiSm8zc21ralYwSVRLWk9hWFB5dTFRN0lSZFhhNmZsRkFOc2ZlM0hTSiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MTQ6ImNhcHRjaGFfcGhyYXNlIjtzOjU6IllybnRKIjtzOjQ6InVzZXIiO3M6MTI6ImFkbWluLmtodW9uZyI7czoxMToiZGlzcGxheW5hbWUiO3M6MTA6IlRhbiBLaHVvbmciO3M6NDoicm9sZSI7czo1OiJhZG1pbiI7fQ==', 1747585225);
 
 -- --------------------------------------------------------
 
@@ -732,6 +810,30 @@ INSERT INTO `taphuan` (`MaTapHuan`, `TenKhoaTapHuan`, `ThoiGianBatDau`, `ThoiGia
 ('TH001', 'Khoá đào tạo GV', NULL, NULL, NULL, '2025-05-15 23:36:26', '2025-05-15 23:36:26'),
 ('TH002', 'Khóa QLNN', NULL, NULL, NULL, '2025-05-16 09:50:25', '2025-05-16 09:50:25'),
 ('TH003', 'Khóa ATTT', NULL, NULL, NULL, '2025-05-16 09:50:25', '2025-05-16 09:50:25');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `thongtintuyensinh`
+--
+
+CREATE TABLE `thongtintuyensinh` (
+  `MaTS` varchar(12) NOT NULL,
+  `NamTS` int DEFAULT NULL,
+  `DotTS` int DEFAULT NULL,
+  `NgayBatDau` date DEFAULT NULL,
+  `NgayKetThuc` date DEFAULT NULL,
+  `ChiTieuTS` int DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `thongtintuyensinh`
+--
+
+INSERT INTO `thongtintuyensinh` (`MaTS`, `NamTS`, `DotTS`, `NgayBatDau`, `NgayKetThuc`, `ChiTieuTS`, `created_at`, `updated_at`) VALUES
+('TS20251', 2025, 1, '2025-05-18', '2025-06-18', 100, '2025-05-18 15:02:22', '2025-05-18 15:02:22');
 
 -- --------------------------------------------------------
 
@@ -839,7 +941,7 @@ ALTER TABLE `chucvu`
 --
 ALTER TABLE `chuongtrinh`
   ADD PRIMARY KEY (`MaChuongTrinh`),
-  ADD KEY `TenKhoaDaoTao` (`TenKhoaDaoTao`);
+  ADD KEY `fk_tenkhoadaotao` (`TenKhoaDaoTao`);
 
 --
 -- Indexes for table `danhsachmh`
@@ -884,6 +986,17 @@ ALTER TABLE `failed_jobs`
   ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
 
 --
+-- Indexes for table `giaovien`
+--
+ALTER TABLE `giaovien`
+  ADD PRIMARY KEY (`MaGV`),
+  ADD UNIQUE KEY `giaovien_email_unique` (`Email`),
+  ADD KEY `giaovien_mahv_foreign` (`MaHV`),
+  ADD KEY `giaovien_tenchucvu_foreign` (`TenChucVu`),
+  ADD KEY `giaovien_madv_foreign` (`MaDV`),
+  ADD KEY `giaovien_mabang_foreign` (`MaBang`);
+
+--
 -- Indexes for table `hinhthucdanhgia`
 --
 ALTER TABLE `hinhthucdanhgia`
@@ -907,6 +1020,14 @@ ALTER TABLE `hocvi`
 --
 ALTER TABLE `hoso`
   ADD KEY `MaSV` (`MaSV`);
+
+--
+-- Indexes for table `hosotuyensinh`
+--
+ALTER TABLE `hosotuyensinh`
+  ADD PRIMARY KEY (`MaHoSo`),
+  ADD KEY `MaSV` (`MaSV`),
+  ADD KEY `fk_MaTS` (`MaTS`);
 
 --
 -- Indexes for table `jobs`
@@ -1011,6 +1132,12 @@ ALTER TABLE `taphuan`
   ADD PRIMARY KEY (`MaTapHuan`);
 
 --
+-- Indexes for table `thongtintuyensinh`
+--
+ALTER TABLE `thongtintuyensinh`
+  ADD PRIMARY KEY (`MaTS`);
+
+--
 -- Indexes for table `tinhtranghoctap`
 --
 ALTER TABLE `tinhtranghoctap`
@@ -1058,7 +1185,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `ngaynghi`
@@ -1103,7 +1230,7 @@ ALTER TABLE `canbo`
 -- Constraints for table `chuongtrinh`
 --
 ALTER TABLE `chuongtrinh`
-  ADD CONSTRAINT `chuongtrinh_ibfk_1` FOREIGN KEY (`TenKhoaDaoTao`) REFERENCES `khoadaotao` (`TenKhoaDaoTao`);
+  ADD CONSTRAINT `fk_tenkhoadaotao` FOREIGN KEY (`TenKhoaDaoTao`) REFERENCES `khoadaotao` (`TenKhoaDaoTao`);
 
 --
 -- Constraints for table `danhsachmh`
@@ -1135,6 +1262,15 @@ ALTER TABLE `danhsachsv`
   ADD CONSTRAINT `danhsachsv_ibfk_2` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`);
 
 --
+-- Constraints for table `giaovien`
+--
+ALTER TABLE `giaovien`
+  ADD CONSTRAINT `giaovien_mabang_foreign` FOREIGN KEY (`MaBang`) REFERENCES `bangcapcanbo` (`MaBang`) ON DELETE SET NULL,
+  ADD CONSTRAINT `giaovien_madv_foreign` FOREIGN KEY (`MaDV`) REFERENCES `donvi` (`MaDV`) ON DELETE SET NULL,
+  ADD CONSTRAINT `giaovien_mahv_foreign` FOREIGN KEY (`MaHV`) REFERENCES `hocvi` (`MaHV`) ON DELETE SET NULL,
+  ADD CONSTRAINT `giaovien_tenchucvu_foreign` FOREIGN KEY (`TenChucVu`) REFERENCES `chucvu` (`TenChucVu`) ON DELETE SET NULL;
+
+--
 -- Constraints for table `hocki`
 --
 ALTER TABLE `hocki`
@@ -1145,6 +1281,13 @@ ALTER TABLE `hocki`
 --
 ALTER TABLE `hoso`
   ADD CONSTRAINT `hoso_ibfk_1` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`);
+
+--
+-- Constraints for table `hosotuyensinh`
+--
+ALTER TABLE `hosotuyensinh`
+  ADD CONSTRAINT `fk_MaTS` FOREIGN KEY (`MaTS`) REFERENCES `thongtintuyensinh` (`MaTS`),
+  ADD CONSTRAINT `hosotuyensinh_ibfk_1` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`);
 
 --
 -- Constraints for table `lophoc`

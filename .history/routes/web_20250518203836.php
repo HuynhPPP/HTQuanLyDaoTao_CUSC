@@ -14,8 +14,6 @@ use App\Http\Controllers\CanBo\TapHuanController;
 use App\Http\Controllers\CanBo\DonViController;
 use App\Http\Controllers\CanBo\GiaoVienController;
 use App\Http\Controllers\DaoTao\ChuongTrinhDaoTaoController;
-use App\Http\Controllers\DaoTao\MonHocController;
-use App\Http\Controllers\TuyenSinh\TuyenSinhController;
 use App\Http\Controllers\Facilities\DanhSachPhongController;
 use App\Http\Controllers\Facilities\LopHocController;
 use App\Http\Controllers\Facilities\PhongHocController;
@@ -169,22 +167,6 @@ Route::middleware([RoleMiddleware::class . ':admin,staff'])->group(function () {
         Route::post('/update/{maChuongTrinh}', [ChuongTrinhDaoTaoController::class, 'update'])->name('chuongtrinh.update');
         Route::delete('/destroy/{maChuongTrinh}', [ChuongTrinhDaoTaoController::class, 'destroy'])->name('chuongtrinh.destroy');
     });
-    Route::prefix('monhoc')->group(function () {
-        Route::get('/list', [MonHocController::class, 'index'])->name('monhoc.index');
-        Route::get('/create', [MonHocController::class, 'create'])->name('monhoc.create');
-        Route::post('/store', [MonHocController::class, 'store'])->name('monhoc.store');
-        Route::get('/edit/{tenMH}', [MonHocController::class, 'edit'])->name('monhoc.edit');
-        Route::post('/update/{tenMH}', [MonHocController::class, 'update'])->name('monhoc.update');
-        Route::delete('/destroy/{tenMH}', [MonHocController::class, 'destroy'])->name('monhoc.destroy');
-    });
-    Route::prefix('tuyensinh')->group(function () {
-        Route::get('/', [TuyenSinhController::class, 'index'])->name('tuyensinh.index');
-        Route::post('/store', [TuyenSinhController::class, 'store'])->name('tuyensinh.store');
-        Route::delete('/{maTS}', [TuyenSinhController::class, 'destroy'])->name('tuyensinh.destroy');
-        Route::get('/dot/{maTS}', [TuyenSinhController::class, 'danhSachHoSo'])->name('tuyensinh.danhsach_hoso');
-        Route::post('/hoso', [TuyenSinhController::class, 'taoHoSo'])->name('tuyensinh.tao_hoso');
-        Route::post('/hoso/{maHoSo}', [TuyenSinhController::class, 'capNhatTrangThai'])->name('tuyensinh.capnhat_trangthai');
-    });
 });
 
 // Các route lấy dữ liệu chương trình, lớp, học kỳ: cho admin, staff, teacher
@@ -197,6 +179,6 @@ Route::middleware([RoleMiddleware::class . ':admin,staff,teacher'])->group(funct
     Route::post('/saveSelfStudy/{TenTKB}', [PagesController::class, 'saveSelfStudy'])->name('saveSelfStudy');
     Route::post('/EditTKB/{TenTKB}', [PagesController::class, 'EditTKB'])->name('EditTKB');
 
-
+    
 });
 

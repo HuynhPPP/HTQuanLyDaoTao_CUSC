@@ -108,9 +108,9 @@
                             <li class="{{ request()->routeIs('tuyensinh.*') ? 'active' : '' }}">
                                 <a class="nav-link" href="{{ route('tuyensinh.index') }}">Danh sách đợt tuyển sinh</a>
                             </li>
-                            {{-- <li class="">
+                            <li class="">
                                 <a class="nav-link" href="{{ route('tuyensinh.index') }}">Hồ sơ tuyển sinh</a>
-                            </li> --}}
+                            </li>
                         </ul>
                     </li>
                 </ul>

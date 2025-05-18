@@ -34,12 +34,9 @@
                     request()->routeIs('bangcapcanbo.*') ||
                     request()->routeIs('hocvi.*');
 
-                $TuyenSinhActive = request()->routeIs('tuyensinh.*');
-
                 $DaoTaoActive = request()->routeIs('chuongtrinh.*') || request()->routeIs('monhoc.*');
 
-                $dropdownActive =
-                    $nhanSuActive || $donViLopActive || $hanhChinhActive || $DaoTaoActive || $TuyenSinhActive;
+                $dropdownActive = $nhanSuActive || $donViLopActive || $hanhChinhActive || $DaoTaoActive;
             @endphp
             <li class="dropdown {{ $dropdownActive ? 'active' : '' }}">
                 <a href="#" class="nav-link has-dropdown"><i class="fas fa-server"></i> <span>Dữ liệu hệ
@@ -102,15 +99,15 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="dropdown {{ request()->routeIs('tuyensinh.*') ? 'active' : '' }}">
+                        <a href="{{ route('tuyensinh.index') }}" class="nav-link ">Quản lý tuyển sinh</a>
+                    </li>
                     <li class="dropdown {{ $TuyenSinhActive ? 'active' : '' }}">
                         <a href="#" class="nav-link has-dropdown">Quản lý tuyển sinh</a>
                         <ul class="dropdown-menu">
                             <li class="{{ request()->routeIs('tuyensinh.*') ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ route('tuyensinh.index') }}">Danh sách đợt tuyển sinh</a>
+                                <a class="nav-link" href="{{ route('tuyensinh.index') }}">Chương trình đào tạo</a>
                             </li>
-                            {{-- <li class="">
-                                <a class="nav-link" href="{{ route('tuyensinh.index') }}">Hồ sơ tuyển sinh</a>
-                            </li> --}}
                         </ul>
                     </li>
                 </ul>
