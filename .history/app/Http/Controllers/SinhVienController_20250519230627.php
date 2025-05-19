@@ -16,7 +16,7 @@ class SinhVienController extends Controller
 {
     public function index()
     {
-        $sinhViens = sinhvien::with(['hosotuyensinh', 'tinhTrangHocTap', 'danhSachLop'])->paginate(10);
+        $sinhViens = sinhvien::with(['hoSo', 'tinhTrangHocTap', 'danhSachLop'])->paginate(10);
         return view('sinhvien.index', compact('sinhViens'));
     }
 

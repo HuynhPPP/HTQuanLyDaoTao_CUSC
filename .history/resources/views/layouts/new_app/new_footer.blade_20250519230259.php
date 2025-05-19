@@ -113,7 +113,7 @@
                     <!-- Zalo -->
                     <a type="button" data-bs-toggle="modal" data-bs-target="#zalo__modal"
                         class="btn btn-outline-light btn-floating m-1" class="text-white" role="button"><img
-                            src="{{ asset('images/logo_zalo.png') }}" width="20" height="20" alt="logo_zalo">
+                            src="{{ asset('storage/logo_zalo.png') }}" width="20" height="20" alt="logo_zalo">
                     </a>
                 </div>
             </div>
@@ -128,7 +128,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <img src="{{ asset('images/logo_zalo.png') }}" width="465" alt="QR_CODE">
+                    <img src="{{ asset('image.png/QrCodeZalopageAptech.jpg') }}" width="465" alt="QR_CODE">
                 </div>
             </div>
         </div>
