@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 18, 2025 at 04:20 PM
+-- Generation Time: May 19, 2025 at 03:54 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -137,7 +137,7 @@ INSERT INTO `chucvu` (`TenChucVu`, `ThoiGianBatDauCV`, `ThoiGianKTCV`, `created_
 
 CREATE TABLE `chuongtrinh` (
   `MaChuongTrinh` varchar(12) NOT NULL,
-  `TenChuongTrinh` varchar(30) DEFAULT NULL,
+  `TenChuongTrinh` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `PhienBan` varchar(12) DEFAULT NULL,
   `NgayTrienKhaiPB` date DEFAULT NULL,
   `TenKhoaDaoTao` varchar(20) DEFAULT NULL,
@@ -150,8 +150,9 @@ CREATE TABLE `chuongtrinh` (
 --
 
 INSERT INTO `chuongtrinh` (`MaChuongTrinh`, `TenChuongTrinh`, `PhienBan`, `NgayTrienKhaiPB`, `TenKhoaDaoTao`, `created_at`, `updated_at`) VALUES
-('OV-7023', 'Lap trinh vien quoc te', '1.0', NULL, 'Dài hạn', '2025-05-17 13:48:56', '2025-05-17 13:48:56'),
-('OV9001', 'lap trinh vien arena', '2.0', '2025-05-01', 'Ngắn hạn', '2025-05-17 13:48:56', '2025-05-17 11:01:49');
+('OV-6060', 'Trí tuệ nhân tạo và máy học – ACN Pro', '1.0', '2025-06-30', 'Dài hạn', '2025-05-19 14:38:55', '2025-05-19 14:38:55'),
+('OV-7023', 'Lập trình viên Quốc tế – Aptech', '1.0', '2025-06-24', 'Dài hạn', '2025-05-17 13:48:56', '2025-05-19 14:30:03'),
+('OV9001', 'Mỹ thuật Đa phương tiện – Arena', '2.0', '2025-06-16', 'Dài hạn', '2025-05-17 13:48:56', '2025-05-19 14:31:16');
 
 -- --------------------------------------------------------
 
@@ -284,6 +285,22 @@ CREATE TABLE `failed_jobs` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `feedback`
+--
+
+CREATE TABLE `feedback` (
+  `MaFeedback` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `MaSV` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `MaGV` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `NoiDung` text COLLATE utf8mb4_unicode_ci,
+  `TrangThai` enum('DaXuLy','ChuaXuLy') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ChuaXuLy',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `giaovien`
 --
 
@@ -380,19 +397,6 @@ INSERT INTO `hocvi` (`MaHV`, `TenHocVi`, `NganhHoc`, `ChuyenNganh`, `CoSoDaoTao`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `hoso`
---
-
-CREATE TABLE `hoso` (
-  `Hinh3X4` tinyint(1) DEFAULT NULL,
-  `HinhCCCD` tinyint(1) DEFAULT NULL,
-  `ToDangKi` tinyint(1) DEFAULT NULL,
-  `MaSV` varchar(12) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `hosotuyensinh`
 --
 
@@ -402,6 +406,9 @@ CREATE TABLE `hosotuyensinh` (
   `MaTS` varchar(12) NOT NULL,
   `NgayNopHS` date DEFAULT NULL,
   `TrangThaiHS` enum('DaNop','DaXet','DaTrungTuyen','KhongTrungTuyen') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Hinh3X4` tinyint(1) DEFAULT NULL,
+  `HinhCCCD` tinyint(1) DEFAULT NULL,
+  `ToDangKi` tinyint(1) DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -410,10 +417,10 @@ CREATE TABLE `hosotuyensinh` (
 -- Dumping data for table `hosotuyensinh`
 --
 
-INSERT INTO `hosotuyensinh` (`MaHoSo`, `MaSV`, `MaTS`, `NgayNopHS`, `TrangThaiHS`, `created_at`, `updated_at`) VALUES
-('HS1747584061', '21010001', 'TS20251', '2025-05-18', 'DaNop', '2025-05-18 16:01:01', '2025-05-18 16:01:01'),
-('HS1747585057', '21010002', 'TS20251', '2025-05-18', 'DaNop', '2025-05-18 16:17:37', '2025-05-18 16:17:37'),
-('HS1747585066', '21010003', 'TS20251', '2025-05-18', 'DaNop', '2025-05-18 16:17:46', '2025-05-18 16:17:46');
+INSERT INTO `hosotuyensinh` (`MaHoSo`, `MaSV`, `MaTS`, `NgayNopHS`, `TrangThaiHS`, `Hinh3X4`, `HinhCCCD`, `ToDangKi`, `created_at`, `updated_at`) VALUES
+('HS1747584061', '21010001', 'TS20251', '2025-05-18', 'DaXet', NULL, NULL, NULL, '2025-05-18 16:01:01', '2025-05-19 08:22:50'),
+('HS1747585057', '21010002', 'TS20251', '2025-05-18', 'DaNop', NULL, NULL, NULL, '2025-05-18 16:17:37', '2025-05-18 16:17:37'),
+('HS1747585066', '21010003', 'TS20251', '2025-05-18', 'DaNop', NULL, NULL, NULL, '2025-05-18 16:17:46', '2025-05-18 16:17:46');
 
 -- --------------------------------------------------------
 
@@ -469,7 +476,8 @@ CREATE TABLE `khoadaotao` (
 
 INSERT INTO `khoadaotao` (`TenKhoaDaoTao`, `ThoiGianDaoTao`, `create_at`, `update_at`) VALUES
 ('Dài hạn', '2 năm', '2025-05-18 21:26:47', '2025-05-18 21:26:47'),
-('Ngắn hạn', '1 Học Kỳ', '2025-05-18 21:26:47', '2025-05-18 21:26:47');
+('Ngắn hạn', '1 Học Kỳ', '2025-05-18 21:26:47', '2025-05-18 21:26:47'),
+('Theo yêu cầu', '1 học kỳ', '2025-05-19 15:08:26', '2025-05-19 15:08:26');
 
 -- --------------------------------------------------------
 
@@ -536,7 +544,12 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (4, '0001_01_01_000000_create_users_table', 1),
 (5, '0001_01_01_000001_create_cache_table', 1),
 (6, '0001_01_01_000002_create_jobs_table', 1),
-(7, '2025_05_16_140909_create_giaovien_table', 2);
+(7, '2025_05_16_140909_create_giaovien_table', 2),
+(8, '2025_05_19_083122_add_hoso_columns_to_hosotuyensinh', 3),
+(9, '2025_05_19_134207_create_feedback_table', 4),
+(10, '2025_05_19_134626_create_thietbi_table', 4),
+(11, '2025_05_19_134816_create_tainguyen_hoctap_table', 4),
+(12, '2025_05_19_134831_create_tuvan_tuyensinh_table', 5);
 
 -- --------------------------------------------------------
 
@@ -734,7 +747,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('RofmrebzUprC2T2TorGJX5Q3x5FIiIdH9uMGgHPT', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoiSm8zc21ralYwSVRLWk9hWFB5dTFRN0lSZFhhNmZsRkFOc2ZlM0hTSiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MTQ6ImNhcHRjaGFfcGhyYXNlIjtzOjU6IllybnRKIjtzOjQ6InVzZXIiO3M6MTI6ImFkbWluLmtodW9uZyI7czoxMToiZGlzcGxheW5hbWUiO3M6MTA6IlRhbiBLaHVvbmciO3M6NDoicm9sZSI7czo1OiJhZG1pbiI7fQ==', 1747585225);
+('IHwNy68eujNX5FITKQ4osinTHLLct1xXCDUI0Ui4', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoia1JYNGpwY0FxSEhqbVVxN3drcVFjM2FMd2VxaHQ4Ujgza2lyUEg0TSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTY3OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvbWluaXN0cnkvc2NoZWR1bGVzL3NjaGVkdWxlL1RIJUUxJUJCJTlDSSUyMEtIJUMzJTkzQSUyMEJJJUUxJUJCJTgyVSUyMEwlRTElQkIlOUFQJTIwQ1AyMzk2TTAyJTIwLSUyMEglRTElQkIlOERjJTIwSyVFMSVCQiVCMyUyMElJJTIwJTI4T1YtNzAyMyUyOSI7fXM6MTQ6ImNhcHRjaGFfcGhyYXNlIjtzOjU6InhMNlJlIjtzOjQ6InVzZXIiO3M6MTI6ImFkbWluLmtodW9uZyI7czoxMToiZGlzcGxheW5hbWUiO3M6MTA6IlRhbiBLaHVvbmciO3M6NDoicm9sZSI7czo1OiJhZG1pbiI7fQ==', 1747670014);
 
 -- --------------------------------------------------------
 
@@ -789,6 +802,22 @@ INSERT INTO `sinhvien` (`MaSV`, `MaEnroll`, `HoTen`, `InDebt`, `NgaySinh`, `Gioi
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tainguyen_hoctap`
+--
+
+CREATE TABLE `tainguyen_hoctap` (
+  `MaTaiNguyen` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `TenTaiNguyen` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `LoaiTaiNguyen` enum('Sach','TaiLieu','PhanMem','ThietBiThucHanh') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `MoTa` text COLLATE utf8mb4_unicode_ci,
+  `TrangThai` enum('KhaDung','KhongKhaDung') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'KhaDung',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `taphuan`
 --
 
@@ -810,6 +839,23 @@ INSERT INTO `taphuan` (`MaTapHuan`, `TenKhoaTapHuan`, `ThoiGianBatDau`, `ThoiGia
 ('TH001', 'Khoá đào tạo GV', NULL, NULL, NULL, '2025-05-15 23:36:26', '2025-05-15 23:36:26'),
 ('TH002', 'Khóa QLNN', NULL, NULL, NULL, '2025-05-16 09:50:25', '2025-05-16 09:50:25'),
 ('TH003', 'Khóa ATTT', NULL, NULL, NULL, '2025-05-16 09:50:25', '2025-05-16 09:50:25');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `thietbi`
+--
+
+CREATE TABLE `thietbi` (
+  `MaThietBi` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `TenThietBi` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `MoTa` text COLLATE utf8mb4_unicode_ci,
+  `TinhTrang` enum('TotNhat','Tot','TrungBinh','CanSuaChua','HongHoan') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Tot',
+  `NgayNhap` date DEFAULT NULL,
+  `HanBaoHanh` date DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -878,6 +924,25 @@ CREATE TABLE `trangthaimh` (
   `MaTTMH` varchar(12) NOT NULL,
   `TrangThai` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tuvan_tuyensinh`
+--
+
+CREATE TABLE `tuvan_tuyensinh` (
+  `MaTuVan` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `HoTen` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Email` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `SoDienThoai` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `NoiDungTuVan` text COLLATE utf8mb4_unicode_ci,
+  `NgayTuVan` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `TrangThai` enum('ChuaLienHe','DaLienHe','DaHoanThanh') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ChuaLienHe',
+  `NhanVienTuVan` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -986,6 +1051,14 @@ ALTER TABLE `failed_jobs`
   ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
 
 --
+-- Indexes for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD PRIMARY KEY (`MaFeedback`),
+  ADD KEY `feedback_masv_foreign` (`MaSV`),
+  ADD KEY `feedback_magv_foreign` (`MaGV`);
+
+--
 -- Indexes for table `giaovien`
 --
 ALTER TABLE `giaovien`
@@ -1014,12 +1087,6 @@ ALTER TABLE `hocki`
 --
 ALTER TABLE `hocvi`
   ADD PRIMARY KEY (`MaHV`);
-
---
--- Indexes for table `hoso`
---
-ALTER TABLE `hoso`
-  ADD KEY `MaSV` (`MaSV`);
 
 --
 -- Indexes for table `hosotuyensinh`
@@ -1126,10 +1193,22 @@ ALTER TABLE `sinhvien`
   ADD PRIMARY KEY (`MaSV`);
 
 --
+-- Indexes for table `tainguyen_hoctap`
+--
+ALTER TABLE `tainguyen_hoctap`
+  ADD PRIMARY KEY (`MaTaiNguyen`);
+
+--
 -- Indexes for table `taphuan`
 --
 ALTER TABLE `taphuan`
   ADD PRIMARY KEY (`MaTapHuan`);
+
+--
+-- Indexes for table `thietbi`
+--
+ALTER TABLE `thietbi`
+  ADD PRIMARY KEY (`MaThietBi`);
 
 --
 -- Indexes for table `thongtintuyensinh`
@@ -1159,6 +1238,13 @@ ALTER TABLE `trangthaimh`
   ADD PRIMARY KEY (`MaTTMH`);
 
 --
+-- Indexes for table `tuvan_tuyensinh`
+--
+ALTER TABLE `tuvan_tuyensinh`
+  ADD PRIMARY KEY (`MaTuVan`),
+  ADD KEY `tuvan_tuyensinh_nhanvientuvan_foreign` (`NhanVienTuVan`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -1185,7 +1271,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `ngaynghi`
@@ -1262,6 +1348,13 @@ ALTER TABLE `danhsachsv`
   ADD CONSTRAINT `danhsachsv_ibfk_2` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`);
 
 --
+-- Constraints for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD CONSTRAINT `feedback_magv_foreign` FOREIGN KEY (`MaGV`) REFERENCES `giaovien` (`MaGV`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `feedback_masv_foreign` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
 -- Constraints for table `giaovien`
 --
 ALTER TABLE `giaovien`
@@ -1275,12 +1368,6 @@ ALTER TABLE `giaovien`
 --
 ALTER TABLE `hocki`
   ADD CONSTRAINT `hocki_ibfk_1` FOREIGN KEY (`MaChuongTrinh`) REFERENCES `chuongtrinh` (`MaChuongTrinh`);
-
---
--- Constraints for table `hoso`
---
-ALTER TABLE `hoso`
-  ADD CONSTRAINT `hoso_ibfk_1` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`);
 
 --
 -- Constraints for table `hosotuyensinh`
@@ -1319,6 +1406,12 @@ ALTER TABLE `tinhtranghoctap`
 ALTER TABLE `tkb`
   ADD CONSTRAINT `tkb_ibfk_1` FOREIGN KEY (`MaHK`) REFERENCES `hocki` (`MaHK`),
   ADD CONSTRAINT `tkb_ibfk_2` FOREIGN KEY (`MaLop`) REFERENCES `lophoc` (`MaLop`);
+
+--
+-- Constraints for table `tuvan_tuyensinh`
+--
+ALTER TABLE `tuvan_tuyensinh`
+  ADD CONSTRAINT `tuvan_tuyensinh_nhanvientuvan_foreign` FOREIGN KEY (`NhanVienTuVan`) REFERENCES `canbo` (`MaCB`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
