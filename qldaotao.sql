@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 20, 2025 at 10:35 AM
+-- Generation Time: May 21, 2025 at 05:52 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -150,7 +150,8 @@ CREATE TABLE `chuongtrinh` (
 --
 
 INSERT INTO `chuongtrinh` (`MaChuongTrinh`, `TenChuongTrinh`, `PhienBan`, `NgayTrienKhaiPB`, `TenKhoaDaoTao`, `created_at`, `updated_at`) VALUES
-('OV-6060', 'Trí tuệ nhân tạo và máy học – ACN Pro', '1.0', '2025-06-30', 'Dài hạn', '2025-05-19 14:38:55', '2025-05-19 14:38:55'),
+('OV-6060', 'Trí tuệ nhân tạo và máy học – ACN Pro', '1.0', '2025-06-30', 'Dài hạn', '2025-05-19 14:38:55', '2025-05-21 10:13:21'),
+('OV-6062', 'An toàn an ninh thông tin (Hacker mũ trắng)', NULL, NULL, 'Ngắn hạn', '2025-05-21 10:14:30', '2025-05-21 10:14:30'),
 ('OV-7023', 'Lập trình viên Quốc tế – Aptech', '1.0', '2025-06-24', 'Dài hạn', '2025-05-17 13:48:56', '2025-05-19 14:30:03'),
 ('OV9001', 'Mỹ thuật Đa phương tiện – Arena', '2.0', '2025-06-16', 'Dài hạn', '2025-05-17 13:48:56', '2025-05-19 14:31:16');
 
@@ -309,6 +310,30 @@ CREATE TABLE `feedback` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `giangday`
+--
+
+CREATE TABLE `giangday` (
+  `MaGV` varchar(12) NOT NULL,
+  `MaLop` varchar(12) NOT NULL,
+  `NgayBatDau` date DEFAULT NULL,
+  `NgayKetThuc` date DEFAULT NULL,
+  `GhiChu` text,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `giangday`
+--
+
+INSERT INTO `giangday` (`MaGV`, `MaLop`, `NgayBatDau`, `NgayKetThuc`, `GhiChu`, `created_at`, `updated_at`) VALUES
+('GV001', 'CP2296H07', '2025-05-22', '2025-07-24', NULL, '2025-05-21 17:37:57', '2025-05-21 17:37:57'),
+('GV002', 'CP2396G11', '2025-05-22', '2025-07-23', NULL, '2025-05-21 17:43:58', '2025-05-21 17:43:58');
 
 -- --------------------------------------------------------
 
@@ -759,7 +784,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('KmtOAevJNnDlGPqW1p5p5BdofBWSt51n1HLLWKOs', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoiUDdxMVdXTWgzTUVodnhJSnNNanhOZHM0SGppRXJFd3M0dnNWbVAyQiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzM6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9sb3Bob2MvbGlzdCI7fXM6MTQ6ImNhcHRjaGFfcGhyYXNlIjtzOjU6ImJadnFIIjtzOjQ6InVzZXIiO3M6MTI6ImFkbWluLmtodW9uZyI7czoxMToiZGlzcGxheW5hbWUiO3M6MTA6IlRhbiBLaHVvbmciO3M6NDoicm9sZSI7czo1OiJhZG1pbiI7fQ==', 1747737194);
+('ZAQFFnv7rFqM6tAq7bhgkPfvjVwfQmVpE4QHd8Zr', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTozOntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czoyMToiaHR0cDovLzEyNy4wLjAuMTo4MDAwIjt9czo2OiJfdG9rZW4iO3M6NDA6IlM3aFlRRHdwMFN4QWJxa2w2M2x1R1I1dmlNbDA3OXpaNmpPcUVjWXIiO30=', 1747849943);
 
 -- --------------------------------------------------------
 
@@ -1160,6 +1185,13 @@ ALTER TABLE `feedback`
   ADD KEY `feedback_magv_foreign` (`MaGV`);
 
 --
+-- Indexes for table `giangday`
+--
+ALTER TABLE `giangday`
+  ADD PRIMARY KEY (`MaGV`,`MaLop`),
+  ADD KEY `MaLop` (`MaLop`);
+
+--
 -- Indexes for table `giaovien`
 --
 ALTER TABLE `giaovien`
@@ -1447,6 +1479,13 @@ ALTER TABLE `danhsachsv`
 ALTER TABLE `feedback`
   ADD CONSTRAINT `feedback_magv_foreign` FOREIGN KEY (`MaGV`) REFERENCES `giaovien` (`MaGV`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `feedback_masv_foreign` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `giangday`
+--
+ALTER TABLE `giangday`
+  ADD CONSTRAINT `giangday_ibfk_1` FOREIGN KEY (`MaGV`) REFERENCES `giaovien` (`MaGV`),
+  ADD CONSTRAINT `giangday_ibfk_2` FOREIGN KEY (`MaLop`) REFERENCES `lophoc` (`MaLop`);
 
 --
 -- Constraints for table `giaovien`
