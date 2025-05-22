@@ -20,12 +20,12 @@
                             @csrf
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="TenPhong" class="form-label">Tên phòng <span class="text-danger">*</span></label>
+                                    <label for="TenPhong" class="form-label">Tên phòng</label>
                                     <input type="text" class="form-control" id="TenPhong" name="TenPhong"
                                         value="{{ old('TenPhong') }}">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="LoaiPhong" class="form-label">Loại phòng <span class="text-danger">*</span></label>
+                                    <label for="LoaiPhong" class="form-label">Loại phòng</label>
                                     <input type="text" class="form-control" id="LoaiPhong" name="LoaiPhong"
                                         value="{{ old('LoaiPhong') }}">
                                 </div>

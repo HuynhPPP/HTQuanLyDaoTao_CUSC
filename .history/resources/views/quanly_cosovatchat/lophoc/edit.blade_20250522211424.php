@@ -47,7 +47,7 @@
                                             class="text-danger">*</span></label>
                                     <select class="form-control @error('MaChuongTrinh') is-invalid @enderror"
                                         id="MaChuongTrinh" name="MaChuongTrinh">
-                                        <option value="">-- Chọn chương trình đào tạo --</option>
+                                        <option value="">-- Chọn phòng --</option>
                                         @foreach ($chuongtrinhs as $chuongtrinh)
                                             <option value="{{ $chuongtrinh->MaChuongTrinh }}"
                                                 {{ old('MaChuongTrinh') == $chuongtrinh->MaChuongTrinh ? 'selected' : '' }}>

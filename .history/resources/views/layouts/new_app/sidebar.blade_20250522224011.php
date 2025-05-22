@@ -39,8 +39,7 @@
                 $DaoTaoActive =
                     request()->routeIs('chuongtrinh.*') ||
                     request()->routeIs('khoadaotao.*') ||
-                    request()->routeIs('monhoc.*') || 
-                    request()->routeIs('hocki.*');
+                    request()->routeIs('monhoc.*');
 
                 $dropdownActive =
                     $nhanSuActive || $donViLopActive || $hanhChinhActive || $DaoTaoActive || $TuyenSinhActive;
@@ -107,8 +106,8 @@
                             <li class="{{ request()->routeIs('monhoc.*') ? 'active' : '' }}">
                                 <a class="nav-link" href="{{ route('monhoc.index') }}">Môn học</a>
                             </li>
-                            <li class="{{ request()->routeIs('hocki.*') ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ route('hocki.index') }}">Học kỳ</a>
+                            <li class="{{ request()->routeIs('monhoc.*') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('monhoc.index') }}">Môn học</a>
                             </li>
                         </ul>
                     </li>

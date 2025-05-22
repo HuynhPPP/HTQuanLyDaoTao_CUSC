@@ -34,10 +34,10 @@
                                             <tr>
                                                 <td>{{ $phong->TenPhong }}</td>
                                                 <td>{{ $phong->LoaiPhong }}</td>
-                                                @if ($phong->SucChua)
+                                                @if( $phong->SucChua )
                                                     <td>{{ $phong->SucChua }}</td>
                                                 @else
-                                                    <td>N/A</td>
+                                                <td>{{ $phong->SucChua }}</td>
                                                 @endif
                                                 <td>
                                                     {{-- <a href="{{ route('phonghoc.show', $phong->TenPhong) }}" class="btn btn-info btn-sm">Xem</a> --}}

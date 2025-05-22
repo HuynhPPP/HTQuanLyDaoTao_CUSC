@@ -25,7 +25,7 @@
                                         value="{{ old('TenPhong') }}">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="LoaiPhong" class="form-label">Loại phòng <span class="text-danger">*</span></label>
+                                    <label for="LoaiPhong" class="form-label">Loại phòng</label>
                                     <input type="text" class="form-control" id="LoaiPhong" name="LoaiPhong"
                                         value="{{ old('LoaiPhong') }}">
                                 </div>

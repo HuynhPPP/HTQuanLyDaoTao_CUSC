@@ -37,7 +37,7 @@
                                                 @if ($phong->SucChua)
                                                     <td>{{ $phong->SucChua }}</td>
                                                 @else
-                                                    <td>N/A</td>
+                                                    <td>Không có dữ liệu</td>
                                                 @endif
                                                 <td>
                                                     {{-- <a href="{{ route('phonghoc.show', $phong->TenPhong) }}" class="btn btn-info btn-sm">Xem</a> --}}

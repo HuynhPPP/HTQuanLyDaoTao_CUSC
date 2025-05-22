@@ -16,7 +16,6 @@ use App\Http\Controllers\CanBo\DonViController;
 use App\Http\Controllers\DaoTao\ChuongTrinhDaoTaoController;
 use App\Http\Controllers\DaoTao\MonHocController;
 use App\Http\Controllers\DaoTao\KhoaDaoTaoController;
-use App\Http\Controllers\DaoTao\HocKiController;
 use App\Http\Controllers\TuyenSinh\TuyenSinhController;
 use App\Http\Controllers\Facilities\DanhSachPhongController;
 use App\Http\Controllers\Facilities\LopHocController;

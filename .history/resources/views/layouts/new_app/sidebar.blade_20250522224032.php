@@ -39,8 +39,7 @@
                 $DaoTaoActive =
                     request()->routeIs('chuongtrinh.*') ||
                     request()->routeIs('khoadaotao.*') ||
-                    request()->routeIs('monhoc.*') || 
-                    request()->routeIs('hocki.*');
+                    request()->routeIs('monhoc.*');
 
                 $dropdownActive =
                     $nhanSuActive || $donViLopActive || $hanhChinhActive || $DaoTaoActive || $TuyenSinhActive;

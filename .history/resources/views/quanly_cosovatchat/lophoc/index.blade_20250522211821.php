@@ -48,7 +48,7 @@
                                                     @endif
                                                 </td>
                                                 <td>{{ $lop->NgayBatDau }}</td>
-                                                <td>{{ $lop->loaidaotao->TenChuongTrinh }}</td>
+                                                <td>{{ $lop->MaChuongTrinh }}</td>
                                                 <td>
                                                     <a href="{{ route('lophoc.show', $lop->MaLop) }}"
                                                         class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>

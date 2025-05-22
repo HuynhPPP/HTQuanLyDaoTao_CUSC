@@ -43,11 +43,20 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-6 mb-3">
+                                    <label for="MaChuongTrinh" class="form-label">Mã chương trình</label>
+                                    <input type="text" class="form-control @error('MaChuongTrinh') is-invalid @enderror"
+                                        id="MaChuongTrinh" name="MaChuongTrinh"
+                                        value="{{ old('MaChuongTrinh', $lophoc->MaChuongTrinh) }}">
+                                    @error('MaChuongTrinh')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6 mb-3">
                                     <label for="MaChuongTrinh" class="form-label">Chương trình đào tạo<span
                                             class="text-danger">*</span></label>
                                     <select class="form-control @error('MaChuongTrinh') is-invalid @enderror"
                                         id="MaChuongTrinh" name="MaChuongTrinh">
-                                        <option value="">-- Chọn chương trình đào tạo --</option>
+                                        <option value="">-- Chọn phòng --</option>
                                         @foreach ($chuongtrinhs as $chuongtrinh)
                                             <option value="{{ $chuongtrinh->MaChuongTrinh }}"
                                                 {{ old('MaChuongTrinh') == $chuongtrinh->MaChuongTrinh ? 'selected' : '' }}>

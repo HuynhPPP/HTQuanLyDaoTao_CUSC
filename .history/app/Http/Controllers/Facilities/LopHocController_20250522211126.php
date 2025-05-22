@@ -42,8 +42,7 @@ class LopHocController extends Controller
     public function edit($maLop)
     {
         $lophoc = lophoc::where('MaLop', $maLop)->firstOrFail();
-        $chuongtrinhs = ChuongTrinh::all();
-        return view('quanly_cosovatchat.lophoc.edit', compact('lophoc', 'chuongtrinhs'));
+        return view('quanly_cosovatchat.lophoc.edit', compact('lophoc'));
     }
 
     public function update(Request $request, $maLop)

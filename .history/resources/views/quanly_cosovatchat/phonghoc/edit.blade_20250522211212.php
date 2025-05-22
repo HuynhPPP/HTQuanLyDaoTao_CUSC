@@ -17,15 +17,6 @@
                             @method('POST')
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="TenPhong" class="form-label">Tên phòng <span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="TenPhong" name="TenPhong"
-                                        value="{{ old('TenPhong', $phonghoc->TenPhong) }}">
-                                    @error('TenPhong')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6 mb-3">
                                     <label for="LoaiPhong" class="form-label">Loại phòng <span
                                             class="text-danger">*</span></label>
                                     <input type="text" class="form-control @error('LoaiPhong') is-invalid @enderror"
