@@ -47,7 +47,7 @@
                                         <td>
                                             <a href="{{ route('chuongtrinh.monhoc', $chuongTrinh->MaChuongTrinh) }}"
                                                 class="btn btn-info btn-sm" title="Gán môn học">
-                                                <i class="fas fa-folder-plus"></i>
+                                                <i class="fas fa-book"></i>
                                             </a>
                                             <a href="{{ route('chuongtrinh.edit', $chuongTrinh->MaChuongTrinh) }}"
                                                 class="btn btn-warning btn-sm">

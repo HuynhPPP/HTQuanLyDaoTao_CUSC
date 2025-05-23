@@ -120,12 +120,10 @@ class ChuongTrinhDaoTaoController extends Controller
     public function storeMonHoc(Request $request, $maChuongTrinh)
     {
         $validator = Validator::make($request->all(), [
-            'TenMH' => 'required|array',
-            'TenMH.*' => 'exists:monhoc,TenMH'
+            'TenMH' => 'required|exists:monhoc,TenMH'
         ], [
             'TenMH.required' => 'Vui lòng chọn môn học',
-            'TenMH.array' => 'Dữ liệu môn học không hợp lệ',
-            'TenMH.*.exists' => 'Một số môn học không tồn tại trong hệ thống'
+            'TenMH.exists' => 'Môn học không tồn tại trong hệ thống'
         ]);
 
         if ($validator->fails()) {
@@ -135,15 +133,13 @@ class ChuongTrinhDaoTaoController extends Controller
         }
 
         try {
-            foreach ($request->TenMH as $tenMH) {
-                ChuongTrinhMonHoc::create([
-                    'MaChuongTrinh' => $maChuongTrinh,
-                    'TenMH' => $tenMH
-                ]);
-            }
+            ChuongTrinhMonHoc::create([
+                'MaChuongTrinh' => $maChuongTrinh,
+                'TenMH' => $request->TenMH
+            ]);
 
             return redirect()->route('chuongtrinh.monhoc', $maChuongTrinh)
-                ->with('success', 'Thêm các môn học vào chương trình thành công');
+                ->with('success', 'Thêm môn học vào chương trình thành công');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());

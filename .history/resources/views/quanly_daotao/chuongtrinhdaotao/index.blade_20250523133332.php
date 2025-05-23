@@ -17,6 +17,9 @@
                 <div class="card-header">
                     <h4>Danh sách chương trình đào tạo</h4>
                     <div class="card-header-action">
+                        <a href="{{ route('chuongtrinh.monhoc', $chuongTrinh->MaChuongTrinh) }}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Thêm môn học vào chương trình
+                        </a>
                         <a href="{{ route('chuongtrinh.create') }}" class="btn btn-primary">
                             <i class="fas fa-plus"></i> Thêm Mới
                         </a>
@@ -47,7 +50,7 @@
                                         <td>
                                             <a href="{{ route('chuongtrinh.monhoc', $chuongTrinh->MaChuongTrinh) }}"
                                                 class="btn btn-info btn-sm" title="Gán môn học">
-                                                <i class="fas fa-folder-plus"></i>
+                                                <i class="fas fa-book"></i>
                                             </a>
                                             <a href="{{ route('chuongtrinh.edit', $chuongTrinh->MaChuongTrinh) }}"
                                                 class="btn btn-warning btn-sm">

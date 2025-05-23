@@ -18,7 +18,8 @@ class MonHocController extends Controller
 
     public function create()
     {
-        return view('quanly_daotao.monhoc.create');
+        $hinhthucdanhgias = HinhThucDanhGia::all();
+        return view('quanly_daotao.monhoc.create', compact('hinhthucdanhgias'));
     }
 
     public function store(Request $request)
