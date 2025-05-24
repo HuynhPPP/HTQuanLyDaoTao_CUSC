@@ -1,0 +1,80 @@
+@extends('layouts.new_app.master')
+@section('title', 'Phân công cán bộ thi')
+
+@section('main-content')
+<div class="section">
+    <div class="section-header">
+        <h1>Phân công cán bộ thi</h1>
+    </div>
+
+    <div class="section-body">
+
+        <form method="POST" action="{{ route('phancong.store') }}">
+            @csrf
+            <div class="form-group">
+                <label for="MaLichThi">Chọn lịch thi</label>
+                <select name="MaLichThi" class="form-control">
+                    <option value="">-- Chọn lịch thi --</option>
+                    @foreach($lichThis as $lich)
+                        <option value="{{ $lich->MaLichThi }}">
+                            {{ $lich->monHoc->TenMH ?? 'N/A' }} - {{ $lich->NgayThi }} ({{ $lich->MaLop }})
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="MaCB">Chọn cán bộ</label>
+                <select name="MaCB[]" class="form-control select2" multiple="" >
+                    <option value="">-- Chọn cán bộ --</option>
+                    @foreach($canBos as $cb)
+                        <option value="{{ $cb->MaCB }}">{{ $cb->HoTenCB }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="VaiTro">Vai trò</label>
+                <select name="VaiTro" class="form-control">
+                    <option value="Cán bộ coi thi">Cán bộ coi thi</option>
+                    <option value="Giám sát">Giám sát</option>
+                    <option value="Chấm thi">Chấm thi</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Phân công</button>
+        </form>
+
+        <div class="section-body mt-5 mb-5">
+            <h4>Danh sách phân công cán bộ</h4>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Lớp</th>
+                            <th>Môn</th>
+                            <th>Ngày thi</th>
+                            <th>Khung giờ</th>
+                            <th>Cán bộ</th>
+                            <th>Vai trò</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($phanCongList as $index => $phanCong)
+                        <tr>
+                            <td>{{ $phanCong->lichThi->MaLop ?? 'N/A' }}</td>
+                            <td>{{ $phanCong->lichThi->monHoc->TenMH ?? 'N/A' }}</td>
+                            <td>{{ $phanCong->lichThi->NgayThi ?? 'N/A' }}</td>
+                            <td>{{ $phanCong->lichThi->KhungGio ?? 'N/A' }}</td>
+                            <td>{{ $phanCong->canBo->HoTenCB ?? 'N/A' }}</td>
+                            <td>{{ $phanCong->VaiTro }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+</div>
+@endsection
