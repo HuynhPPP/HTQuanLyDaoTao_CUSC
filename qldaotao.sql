@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 24, 2025 at 08:08 AM
+-- Generation Time: May 25, 2025 at 07:46 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -141,6 +141,7 @@ CREATE TABLE `chuongtrinh` (
   `PhienBan` varchar(12) DEFAULT NULL,
   `NgayTrienKhaiPB` date DEFAULT NULL,
   `TenKhoaDaoTao` varchar(20) DEFAULT NULL,
+  `HinhThucDanhGia` varchar(255) DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -149,11 +150,11 @@ CREATE TABLE `chuongtrinh` (
 -- Dumping data for table `chuongtrinh`
 --
 
-INSERT INTO `chuongtrinh` (`MaChuongTrinh`, `TenChuongTrinh`, `PhienBan`, `NgayTrienKhaiPB`, `TenKhoaDaoTao`, `created_at`, `updated_at`) VALUES
-('OV-6062', 'An toàn an ninh thông tin (Hacker mũ trắng)', NULL, NULL, 'Ngắn hạn', '2025-05-21 10:14:30', '2025-05-21 10:14:30'),
-('OV-7023', 'Lập trình viên Quốc tế – Aptech', '1.0', '2025-06-24', 'Dài hạn', '2025-05-17 13:48:56', '2025-05-19 14:30:03'),
-('OV-7096', 'ACN Pro (CPIDA) - Khóa học chuyên ngành về Khoa học Dữ liệu', '1.0', '2023-08-01', 'Dài hạn', '2025-05-19 14:38:55', '2025-05-23 05:04:35'),
-('OV9001', 'Mỹ thuật Đa phương tiện – Arena', '2.0', '2025-06-16', 'Dài hạn', '2025-05-17 13:48:56', '2025-05-19 14:31:16');
+INSERT INTO `chuongtrinh` (`MaChuongTrinh`, `TenChuongTrinh`, `PhienBan`, `NgayTrienKhaiPB`, `TenKhoaDaoTao`, `HinhThucDanhGia`, `created_at`, `updated_at`) VALUES
+('OV-6062', 'An toàn an ninh thông tin (Hacker mũ trắng)', NULL, NULL, 'Ngắn hạn', NULL, '2025-05-21 10:14:30', '2025-05-21 10:14:30'),
+('OV-7023', 'Lập trình viên Quốc tế – Aptech', '1.0', '2025-06-24', 'Dài hạn', NULL, '2025-05-17 13:48:56', '2025-05-19 14:30:03'),
+('OV-7096', 'ACN Pro (CPIDA) - Khóa học chuyên ngành về Khoa học Dữ liệu', '1.0', '2023-08-01', 'Dài hạn', NULL, '2025-05-19 14:38:55', '2025-05-23 05:04:35'),
+('OV9001', 'Mỹ thuật Đa phương tiện – Arena', '2.0', '2025-06-16', 'Dài hạn', NULL, '2025-05-17 13:48:56', '2025-05-19 14:31:16');
 
 -- --------------------------------------------------------
 
@@ -297,6 +298,15 @@ CREATE TABLE `diemthi` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `diemthi`
+--
+
+INSERT INTO `diemthi` (`MaSV`, `TenMH`, `MaLop`, `LanThi`, `Diem`, `GhiChu`, `created_at`, `updated_at`) VALUES
+('21010001', 'Phân tích Dữ liệu với MS Excel', 'CP2296H07', 1, 90, NULL, '2025-05-25 06:48:02', '2025-05-25 07:43:57'),
+('21010002', 'Phân tích Dữ liệu với MS Excel', 'CP2296H07', 1, 90, NULL, '2025-05-25 06:48:02', '2025-05-25 07:43:57'),
+('21010003', 'Phân tích Dữ liệu với MS Excel', 'CP2296H07', 1, 90, NULL, '2025-05-25 06:48:02', '2025-05-25 07:43:57');
 
 -- --------------------------------------------------------
 
@@ -593,7 +603,7 @@ CREATE TABLE `lichthi` (
   `NgayThi` date DEFAULT NULL,
   `KhungGio` varchar(100) DEFAULT NULL,
   `PhongThi` varchar(20) DEFAULT NULL,
-  `LoaiThi` enum('Lý thuyết','Thực hành','Bài tập lớn') DEFAULT 'Lý thuyết',
+  `HinhThucThi` enum('Tự luận','Trắc nghiệm','Thực hành','Bài tập lớn') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'Trắc nghiệm',
   `GhiChu` text,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -603,8 +613,8 @@ CREATE TABLE `lichthi` (
 -- Dumping data for table `lichthi`
 --
 
-INSERT INTO `lichthi` (`MaLichThi`, `MaLop`, `TenMH`, `NgayThi`, `KhungGio`, `PhongThi`, `LoaiThi`, `GhiChu`, `created_at`, `updated_at`) VALUES
-('LT2505240708', 'CP2396G11', 'Phân tích Dữ liệu với MS Excel', '2025-06-24', '13:00 - 13:40', 'Class1', 'Lý thuyết', NULL, '2025-05-24 07:08:34', '2025-05-24 07:08:34');
+INSERT INTO `lichthi` (`MaLichThi`, `MaLop`, `TenMH`, `NgayThi`, `KhungGio`, `PhongThi`, `HinhThucThi`, `GhiChu`, `created_at`, `updated_at`) VALUES
+('LT2505240708', 'CP2296H07', 'Phân tích Dữ liệu với MS Excel', '2025-06-24', '13:00 - 13:40', 'Class1', 'Trắc nghiệm', NULL, '2025-05-24 07:08:34', '2025-05-25 05:59:51');
 
 -- --------------------------------------------------------
 
@@ -626,7 +636,7 @@ CREATE TABLE `lophoc` (
 --
 
 INSERT INTO `lophoc` (`MaLop`, `TenLop`, `NgayBatDau`, `MaChuongTrinh`, `created_at`, `updated_at`) VALUES
-('CP2296H07', 'Truyền thông đa phương tiện', NULL, 'OV-7096', '2025-05-22 14:15:43', '2025-05-22 07:17:30'),
+('CP2296H07', 'Khoa học dữ liệu', NULL, 'OV-7096', '2025-05-22 14:15:43', '2025-05-25 04:25:02'),
 ('CP2396G11', 'Lập trình viên', NULL, 'OV-7023', '2025-05-22 14:15:43', '2025-05-22 14:15:43'),
 ('CP2396M02', 'Quản trị mạng', NULL, 'OV-7023', '2025-05-22 14:15:43', '2025-05-22 14:15:43');
 
@@ -671,7 +681,6 @@ CREATE TABLE `monhoc` (
   `TietLT` tinyint(1) DEFAULT NULL,
   `TietTH` tinyint(1) DEFAULT NULL,
   `TietLTvaTH` tinyint(1) DEFAULT NULL,
-  `HTDanhGia` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -680,28 +689,28 @@ CREATE TABLE `monhoc` (
 -- Dumping data for table `monhoc`
 --
 
-INSERT INTO `monhoc` (`TenMH`, `MaMH`, `GioGoc`, `GioTrienKhai`, `TietLT`, `TietTH`, `TietLTvaTH`, `HTDanhGia`, `created_at`, `updated_at`) VALUES
-('AngularJS', 'MH01', 16, 16, 0, 1, NULL, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Application Programming with C#', 'MH02', 36, 38, 0, 1, NULL, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Computer fundamentals', 'MH03', 0, 8, 0, 1, NULL, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Data Management with SQL server', 'MH04', 40, 40, 0, 1, NULL, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Database Design and Development(core)', 'MH05', 24, 16, 0, 1, NULL, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Dự án - Phân tích Dữ liệu với R', 'MH21', 24, 24, 1, NULL, NULL, NULL, '2025-05-22 23:22:44', '2025-05-22 23:22:44'),
-('eProject-Website Development', 'MH06', 2, 8, 0, 1, NULL, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('HTML5,CSS and Javascript', 'MH07', 40, 44, 0, 1, NULL, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Information Systems Analysis(Core)', 'MH08', 24, 12, 1, 0, NULL, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Java Programming - I', 'MH09', 36, 40, 0, 1, NULL, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Java Programming -II', 'MH10', 40, 42, 0, 1, NULL, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Khoa học Dữ liệu sử dụng R Programming', 'MH19', 36, 36, NULL, 1, NULL, NULL, '2025-05-22 23:22:07', '2025-05-22 23:22:07'),
-('Lập trình Ứng dụng bằng Python', 'MH20', 36, 36, NULL, 1, NULL, NULL, '2025-05-22 23:22:25', '2025-05-22 23:22:25'),
-('Logic Building and Elementary Programing', 'MH11', 40, 42, 0, 1, NULL, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Markup Language & JSON ', 'MH12', 16, 16, 0, 1, NULL, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Phân tích Dữ liệu với MS Excel', 'MH15', 16, 16, NULL, NULL, 1, NULL, '2025-05-22 23:20:18', '2025-05-22 23:20:18'),
-('Phân tích Thống kê Suy luận', 'MH18', 16, 16, 1, NULL, NULL, NULL, '2025-05-22 23:21:39', '2025-05-22 23:21:39'),
-('PHP Web Development with Laravel Framework', 'MH13', 40, 40, 0, 1, NULL, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Project-Java Application Development', 'MH14', 2, 12, 1, 0, NULL, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Quản lý Tập dữ liệu lớn với MongoDB', 'MH17', 32, 32, NULL, NULL, 1, NULL, '2025-05-22 23:21:21', '2025-05-22 23:21:21'),
-('Xử lý Dữ liệu bằng T-SQL', 'MH16', 16, 16, NULL, NULL, 1, NULL, '2025-05-22 23:20:57', '2025-05-22 23:20:57');
+INSERT INTO `monhoc` (`TenMH`, `MaMH`, `GioGoc`, `GioTrienKhai`, `TietLT`, `TietTH`, `TietLTvaTH`, `created_at`, `updated_at`) VALUES
+('AngularJS', 'MH01', 16, 16, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
+('Application Programming with C#', 'MH02', 36, 38, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
+('Computer fundamentals', 'MH03', 0, 8, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
+('Data Management with SQL server', 'MH04', 40, 40, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
+('Database Design and Development(core)', 'MH05', 24, 16, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
+('Dự án - Phân tích Dữ liệu với R', 'MH21', 24, 24, 1, NULL, NULL, '2025-05-22 23:22:44', '2025-05-22 23:22:44'),
+('eProject-Website Development', 'MH06', 2, 8, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
+('HTML5,CSS and Javascript', 'MH07', 40, 44, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
+('Information Systems Analysis(Core)', 'MH08', 24, 12, 1, 0, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
+('Java Programming - I', 'MH09', 36, 40, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
+('Java Programming -II', 'MH10', 40, 42, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
+('Khoa học Dữ liệu sử dụng R Programming', 'MH19', 36, 36, NULL, 1, NULL, '2025-05-22 23:22:07', '2025-05-22 23:22:07'),
+('Lập trình Ứng dụng bằng Python', 'MH20', 36, 36, NULL, 1, NULL, '2025-05-22 23:22:25', '2025-05-22 23:22:25'),
+('Logic Building and Elementary Programing', 'MH11', 40, 42, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
+('Markup Language & JSON ', 'MH12', 16, 16, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
+('Phân tích Dữ liệu với MS Excel', 'MH15', 16, 16, NULL, NULL, 1, '2025-05-22 23:20:18', '2025-05-22 23:20:18'),
+('Phân tích Thống kê Suy luận', 'MH18', 16, 16, 1, NULL, NULL, '2025-05-22 23:21:39', '2025-05-22 23:21:39'),
+('PHP Web Development with Laravel Framework', 'MH13', 40, 40, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
+('Project-Java Application Development', 'MH14', 2, 12, 1, 0, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
+('Quản lý Tập dữ liệu lớn với MongoDB', 'MH17', 32, 32, NULL, NULL, 1, '2025-05-22 23:21:21', '2025-05-22 23:21:21'),
+('Xử lý Dữ liệu bằng T-SQL', 'MH16', 16, 16, NULL, NULL, 1, '2025-05-22 23:20:57', '2025-05-22 23:20:57');
 
 -- --------------------------------------------------------
 
@@ -891,7 +900,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('TLo1lNLfaPio520GBfGN5qjBxWa2kjnCudNReGPg', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoiRW1tQmZHUkcyVGE1UTcya2NJZkZuSzRseW9rSVl5azgxTkQwN1pudSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC90b2NodWN0aGkvcGhhbmNvbmcvY3JlYXRlIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToiVmZ0T1kiO3M6NDoidXNlciI7czoxMjoiYWRtaW4ua2h1b25nIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxMDoiVGFuIEtodW9uZyI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjt9', 1748074059);
+('gjW9IwGmLDYyktXjoRr9AN3rVfeMrZeOT9ptayKb', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoidzNDVEY3eERMa3VaTnIxRFBqWVc1UTByT29FakF3SGt1dmxhZ29wRyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTQ1OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvdG9jaHVjdGhpL2JhbmdkaWVtL0NQMjI5NkgwNy9EJUUxJUJCJUIxJTIwJUMzJUExbiUyMC0lMjBQaCVDMyVBMm4lMjB0JUMzJUFEY2glMjBEJUUxJUJCJUFGJTIwbGklRTElQkIlODd1JTIwdiVFMSVCQiU5QmklMjBSIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToiZUJTdUMiO3M6NDoidXNlciI7czoxMjoiYWRtaW4ua2h1b25nIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxMDoiVGFuIEtodW9uZyI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjt9', 1748159158);
 
 -- --------------------------------------------------------
 
