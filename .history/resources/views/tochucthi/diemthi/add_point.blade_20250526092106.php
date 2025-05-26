@@ -78,4 +78,35 @@
         </div>
     </div>
 @endsection
+@section('custom-js')
+    <script>
+        function debugForm() {
+            // Debug: Log form data trước khi submit
+            const formData = new FormData(document.getElementById('diemForm'));
+            console.log('Form Data:');
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
 
+            // Kiểm tra dữ liệu điểm
+            const diemInputs = document.querySelectorAll('.diem-input');
+            diemInputs.forEach(input => {
+                if (input.value) {
+                    console.log(`MaSV: ${input.dataset.masv}, Diem: ${input.value}`);
+                }
+            });
+        }
+
+        // Debug: Theo dõi thay đổi input
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input[data-masv]');
+            inputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    console.log(
+                        `Changed - MaSV: ${this.dataset.masv}, Field: ${this.name}, Value: ${this.value}`
+                    );
+                });
+            });
+        });
+    </script>
+@endsection

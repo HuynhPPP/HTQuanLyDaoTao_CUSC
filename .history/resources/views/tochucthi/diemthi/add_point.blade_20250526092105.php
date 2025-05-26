@@ -78,4 +78,59 @@
         </div>
     </div>
 @endsection
+@section('custom-js')
+@section('custom-js')
+<script>
+    // Theo dõi các trường đã thay đổi
+    let changedFields = new Set();
 
+    function markAsChanged(maSV) {
+        changedFields.add(maSV);
+    }
+
+    function debugForm(e) {
+        e.preventDefault();
+        const form = document.getElementById('diemForm');
+        const formData = new FormData(form);
+
+        // Chỉ gửi dữ liệu của sinh viên có điểm được sửa
+        const newFormData = new FormData();
+        newFormData.append('maLop', formData.get('maLop'));
+        newFormData.append('tenMH', formData.get('tenMH'));
+        newFormData.append('_token', formData.get('_token'));
+
+        changedFields.forEach(maSV => {
+            const diem = formData.get(`diem[${maSV}]`);
+            const lanThi = formData.get(`lanThi[${maSV}]`);
+            const ghiChu = formData.get(`ghiChu[${maSV}]`);
+
+            if (diem !== null) newFormData.append(`diem[${maSV}]`, diem);
+            if (lanThi !== null) newFormData.append(`lanThi[${maSV}]`, lanThi);
+            if (ghiChu !== null) newFormData.append(`ghiChu[${maSV}]`, ghiChu);
+        });
+
+        // Gửi form với dữ liệu đã lọc
+        fetch(form.action, {
+            method: 'POST',
+            body: newFormData
+        }).then(response => response.text())
+          .then(html => {
+              document.documentElement.innerHTML = html;
+          });
+    }
+
+    // Thêm sự kiện theo dõi thay đổi cho tất cả input
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = document.querySelectorAll('input[data-masv]');
+        inputs.forEach(input => {
+            input.addEventListener('change', function() {
+                markAsChanged(this.dataset.masv);
+            });
+        });
+
+        // Gắn sự kiện submit form
+        document.getElementById('diemForm').addEventListener('submit', debugForm);
+    });
+</script>
+@endsection
+@endsection

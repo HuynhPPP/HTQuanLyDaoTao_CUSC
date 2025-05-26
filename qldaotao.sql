@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 25, 2025 at 07:46 AM
+-- Generation Time: May 26, 2025 at 05:10 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -304,9 +304,9 @@ CREATE TABLE `diemthi` (
 --
 
 INSERT INTO `diemthi` (`MaSV`, `TenMH`, `MaLop`, `LanThi`, `Diem`, `GhiChu`, `created_at`, `updated_at`) VALUES
-('21010001', 'Phân tích Dữ liệu với MS Excel', 'CP2296H07', 1, 90, NULL, '2025-05-25 06:48:02', '2025-05-25 07:43:57'),
-('21010002', 'Phân tích Dữ liệu với MS Excel', 'CP2296H07', 1, 90, NULL, '2025-05-25 06:48:02', '2025-05-25 07:43:57'),
-('21010003', 'Phân tích Dữ liệu với MS Excel', 'CP2296H07', 1, 90, NULL, '2025-05-25 06:48:02', '2025-05-25 07:43:57');
+('21010001', 'Phân tích Dữ liệu với MS Excel', 'CP2296H07', 2, 80, 'sai xót khi chấm bài', '2025-05-26 02:41:01', '2025-05-26 02:42:27'),
+('21010002', 'Phân tích Dữ liệu với MS Excel', 'CP2296H07', 2, 50, 'sử dụng tài liệu', '2025-05-26 02:40:31', '2025-05-26 02:40:31'),
+('21010003', 'Phân tích Dữ liệu với MS Excel', 'CP2296H07', 1, 80, NULL, '2025-05-26 02:40:31', '2025-05-26 02:40:31');
 
 -- --------------------------------------------------------
 
@@ -900,7 +900,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('gjW9IwGmLDYyktXjoRr9AN3rVfeMrZeOT9ptayKb', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoidzNDVEY3eERMa3VaTnIxRFBqWVc1UTByT29FakF3SGt1dmxhZ29wRyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTQ1OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvdG9jaHVjdGhpL2JhbmdkaWVtL0NQMjI5NkgwNy9EJUUxJUJCJUIxJTIwJUMzJUExbiUyMC0lMjBQaCVDMyVBMm4lMjB0JUMzJUFEY2glMjBEJUUxJUJCJUFGJTIwbGklRTElQkIlODd1JTIwdiVFMSVCQiU5QmklMjBSIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToiZUJTdUMiO3M6NDoidXNlciI7czoxMjoiYWRtaW4ua2h1b25nIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxMDoiVGFuIEtodW9uZyI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjt9', 1748159158);
+('YqNt9abijDJwFiMZIYaN1JkgH7BvSlrfquyymji0', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoiak9LbVVENk9RVkM3MFVQb2haa2Y0bjJtMFdiWUR2b1pLVHg5bnFDTiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ob21lIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToiTzZzd1giO3M6NDoidXNlciI7czoxMjoiYWRtaW4ua2h1b25nIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxMDoiVGFuIEtodW9uZyI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjt9', 1748227625);
 
 -- --------------------------------------------------------
 
