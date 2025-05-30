@@ -4,12 +4,45 @@ namespace App\Http\Controllers\Facilities;
 use App\Http\Controllers\Controller;
 use App\Models\phonghoc;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class PhongHocController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $phonghocs = phonghoc::paginate(10);
+        $query = phonghoc::query();
+
+        // Lọc theo ngày
+        if ($request->has('ngay')) {
+            $ngay = Carbon::parse($request->ngay);
+            $query->whereDoesntHave('danhsachphong', function($q) use ($ngay) {
+                $q->whereDate('NgaySuDung', $ngay);
+            });
+        }
+
+        // Lọc theo tuần
+        if ($request->has('tuan')) {
+            $tuan = Carbon::parse($request->tuan);
+            $startOfWeek = $tuan->startOfWeek();
+            $endOfWeek = $tuan->copy()->endOfWeek();
+            $query->whereDoesntHave('danhsachphong', function($q) use ($startOfWeek, $endOfWeek) {
+                $q->whereBetween('NgaySuDung', [$startOfWeek, $endOfWeek]);
+            });
+        }
+
+        // Lọc theo ca
+        if ($request->has('ca')) {
+            $query->whereDoesntHave('danhsachphong', function($q) use ($request) {
+                $q->where('Ca', $request->ca);
+            });
+        }
+
+        // Lọc theo trạng thái
+        if ($request->has('trang_thai')) {
+            $query->where('TrangThai', $request->trang_thai);
+        }
+
+        $phonghocs = $query->paginate(10);
         return view('quanly_cosovatchat.phonghoc.index', compact('phonghocs'));
     }
 
@@ -23,6 +56,8 @@ class PhongHocController extends Controller
         $request->validate([
             'TenPhong' => 'required|unique:phonghoc,TenPhong',
             'LoaiPhong' => 'required',
+            'SucChua' => 'nullable|integer|min:0',
+            'TrangThai' => 'required|in:Trống,Đang sử dụng,Bảo trì',
         ]);
         phonghoc::create($request->all());
         return redirect()->route('phonghoc.index')->with('success', 'Thêm phòng học thành công');
@@ -42,6 +77,12 @@ class PhongHocController extends Controller
 
     public function update(Request $request, $tenPhong)
     {
+        $request->validate([
+            'LoaiPhong' => 'required',
+            'SucChua' => 'nullable|integer|min:0',
+            'TrangThai' => 'required|in:Trống,Đang sử dụng,Bảo trì',
+        ]);
+        
         $phonghoc = phonghoc::findOrFail($tenPhong);
         $phonghoc->update($request->all());
         return redirect()->route('phonghoc.index')->with('success', 'Cập nhật phòng học thành công');

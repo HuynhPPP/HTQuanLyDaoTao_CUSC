@@ -15,5 +15,11 @@ class phonghoc extends Model
         'TenPhong' ,
         'LoaiPhong' ,
         'SucChua',
+        'TrangThai',
     ];
+
+    public function danhsachphong()
+    {
+        return $this->hasMany(danhsachphong::class, 'TenPhong', 'TenPhong');
+    }
 }

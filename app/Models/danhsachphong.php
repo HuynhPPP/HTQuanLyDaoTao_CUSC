@@ -16,6 +16,8 @@ class danhsachphong extends Model
     protected $fillable = [
         'MaLop',
         'TenPhong',
+        'NgaySuDung',
+        'Ca'
     ];
 
     public function lopHoc()

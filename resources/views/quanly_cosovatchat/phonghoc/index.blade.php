@@ -19,6 +19,62 @@
                             </a>
                         </div>
                         <div class="card-body">
+                            <!-- Filter Form -->
+                            <form action="{{ route('phonghoc.index') }}" method="GET" class="mb-4">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Ngày</label>
+                                            <input type="date" name="ngay" class="form-control"
+                                                value="{{ request('ngay') }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Tuần</label>
+                                            <input type="date" name="tuan" class="form-control"
+                                                value="{{ request('tuan') }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Ca</label>
+                                            <select name="ca" class="form-control">
+                                                <option value="">Tất cả</option>
+                                                <option value="1" {{ request('ca') == '1' ? 'selected' : '' }}>Ca 1
+                                                </option>
+                                                <option value="2" {{ request('ca') == '2' ? 'selected' : '' }}>Ca 2
+                                                </option>
+                                                <option value="3" {{ request('ca') == '3' ? 'selected' : '' }}>Ca 3
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Trạng thái</label>
+                                            <select name="trang_thai" class="form-control">
+                                                <option value="">Tất cả</option>
+                                                <option value="Trống"
+                                                    {{ request('trang_thai') == 'Trống' ? 'selected' : '' }}>Trống</option>
+                                                <option value="Đang sử dụng"
+                                                    {{ request('trang_thai') == 'Đang sử dụng' ? 'selected' : '' }}>Đang sử
+                                                    dụng</option>
+                                                <option value="Bảo trì"
+                                                    {{ request('trang_thai') == 'Bảo trì' ? 'selected' : '' }}>Bảo trì
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary">Lọc</button>
+                                        <a href="{{ route('phonghoc.index') }}" class="btn btn-secondary">Reset</a>
+                                    </div>
+                                </div>
+                            </form>
+
                             <div class="table-responsive">
                                 <table class="table table-striped" id="table-1">
                                     <thead>
@@ -26,6 +82,7 @@
                                             <th>Tên phòng</th>
                                             <th>Loại phòng</th>
                                             <th>Sức chứa</th>
+                                            <th>Trạng thái</th>
                                             <th>Thao tác</th>
                                         </tr>
                                     </thead>
@@ -39,6 +96,30 @@
                                                 @else
                                                     <td>N/A</td>
                                                 @endif
+                                                <td>
+                                                    @if ($phong->TrangThai)
+                                                        @php
+                                                            $statusClass = '';
+                                                            switch ($phong->TrangThai) {
+                                                                case 'Trống':
+                                                                    $statusClass = 'badge-success';
+                                                                    break;
+                                                                case 'Đang sử dụng':
+                                                                    $statusClass = 'badge-danger';
+                                                                    break;
+                                                                case 'Bảo trì':
+                                                                    $statusClass = 'badge-warning';
+                                                                    break;
+                                                                default:
+                                                                    $statusClass = 'badge-secondary';
+                                                            }
+                                                        @endphp
+                                                        <span
+                                                            class="badge {{ $statusClass }}">{{ $phong->TrangThai }}</span>
+                                                    @else
+                                                        <span class="badge badge-secondary">Chưa cập nhật</span>
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     {{-- <a href="{{ route('phonghoc.show', $phong->TenPhong) }}" class="btn btn-info btn-sm">Xem</a> --}}
                                                     <a href="{{ route('phonghoc.edit', $phong->TenPhong) }}"
@@ -67,8 +148,8 @@
     <script>
         $(document).ready(function() {
             $('.delete-phonghoc').click(function(e) {
-                e.preventDefault(); // Ngăn submit mặc định
-                const form = $(this).closest('form'); // Tìm form cha gần nhất
+                e.preventDefault();
+                const form = $(this).closest('form');
 
                 swal({
                     title: 'Bạn có chắc chắn muốn xóa phòng học này?',
@@ -78,7 +159,7 @@
                     dangerMode: true,
                 }).then((willDelete) => {
                     if (willDelete) {
-                        form.submit(); // Xác nhận thì submit form
+                        form.submit();
                     } else {
                         swal('Thao tác đã bị hủy.');
                     }

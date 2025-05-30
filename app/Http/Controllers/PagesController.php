@@ -224,8 +224,19 @@ class PagesController extends Controller
             ]);
 
             $hocki = hocki::where('MaHK', $request->input('HocKi'))->first();
+            $scheduleName = 'THỜI KHÓA BIỂU LỚP ' . $request->input('Lop') . ' - ' . $hocki->TenHK . ' (' . $request->input('ChuongTrinhTrienKhai') . ')';
+
+            // Kiểm tra xem thời khóa biểu với tên này đã tồn tại chưa
+            $existingSchedule = tkb::where('TenTKB', $scheduleName)->first();
+
+            if ($existingSchedule) {
+                // Nếu đã tồn tại, quay lại form với thông báo lỗi
+                return redirect()->back()->withInput()->with('error', 'Thời khóa biểu với thông tin lớp, học kỳ và chương trình này đã tồn tại!');
+            }
+
+            // Nếu chưa tồn tại, tạo và lưu bản ghi mới
             $schedule = new tkb([
-                'TenTKB' => 'THỜI KHÓA BIỂU LỚP ' . $request->input('Lop') . ' - ' . $hocki->TenHK . ' (' . $request->input('ChuongTrinhTrienKhai') . ')',
+                'TenTKB' => $scheduleName,
                 'MaLop' => $request->input('Lop'),
                 'MaHK' => $request->input('HocKi'),
                 'NgayHoc' => $request->input('NgayHoc'),
@@ -244,6 +255,11 @@ class PagesController extends Controller
     {
         if (session()->has('user')) {
             $schedule = tkb::find($TenTKB);
+
+            if ($schedule === null) {
+                return redirect()->route('schedules')->with('error', 'Không tìm thấy thời khóa biểu.');
+            }
+
             $lophoc = lophoc::find($schedule->MaLop);
             $chuongtrinh = chuongtrinh::find($lophoc->MaChuongTrinh);
             $phonglt = danhsachphong::find($lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();

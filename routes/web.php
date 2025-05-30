@@ -98,7 +98,7 @@ Route::middleware([RoleMiddleware::class . ':admin,staff'])->group(function () {
         Route::post('/store', [PhongHocController::class, 'store'])->name('phonghoc.store');
         Route::get('/{tenPhong}', [PhongHocController::class, 'show'])->name('phonghoc.show');
         Route::get('/edit/{tenPhong}', [PhongHocController::class, 'edit'])->name('phonghoc.edit');
-        Route::post('/update/{tenPhong}', [PhongHocController::class, 'update'])->name('phonghoc.update');
+        Route::put('/update/{tenPhong}', [PhongHocController::class, 'update'])->name('phonghoc.update');
         Route::delete('/destroy/{tenPhong}', [PhongHocController::class, 'destroy'])->name('phonghoc.destroy');
     });
     Route::prefix('lophoc')->group(function () {
