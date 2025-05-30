@@ -24,6 +24,7 @@ use App\Http\Controllers\Facilities\PhongHocController;
 use App\Http\Controllers\ToChucThi\LichThiController;
 use App\Http\Controllers\ToChucThi\PhanCongThiController;
 use App\Http\Controllers\ToChucThi\BangDiemController;
+use App\Http\Controllers\ToChucThi\SinhVienDuThiController;
 use App\Http\Middleware\RoleMiddleware;
 
 // Trang chủ, giới thiệu, login, logout, captcha: ai cũng truy cập được
@@ -228,6 +229,19 @@ Route::middleware([RoleMiddleware::class . ':admin,staff,teacher'])->group(funct
         Route::get('/lichthi/{maLichThi}/edit', [LichThiController::class, 'edit'])->name('lichthi.edit');
         Route::put('/lichthi/{maLichThi}', [LichThiController::class, 'update'])->name('lichthi.update');
         Route::delete('/lichthi/{maLichThi}', [LichThiController::class, 'destroy'])->name('lichthi.destroy');
+
+
+        // Danh sách sinh viên dự thi theo lịch thi
+        Route::get('/lich-thi/{maLichThi}/danh-sach-du-thi', [SinhVienDuThiController::class, 'danhSachSinhVienDuThi'])
+            ->name('sinhvien.duthi.danh-sach');
+
+        // Lưu danh sách sinh viên dự thi
+        Route::post('/lich-thi/luu-danh-sach-du-thi', [SinhVienDuThiController::class, 'luuDanhSachDuThi'])
+            ->name('sinhvien.duthi.luu');
+
+        // Xuất Excel
+        Route::get('/lich-thi/{maLichThi}/xuat-excel', [SinhVienDuThiController::class, 'xuatExcel'])
+            ->name('sinhvien.duthi.xuat-excel');
 
         Route::get('/phancong', [PhanCongThiController::class, 'index'])->name('phancong.index');
         Route::get('/phancong/{maLichThi}', [PhanCongThiController::class, 'create'])->name('phancong.create');
