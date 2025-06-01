@@ -33,7 +33,7 @@
                                     <th>Giờ thi</th>
                                     <th>Phòng thi</th>
                                     <th>Hình thức</th>
-                                    <th class="text-center">Lần thi</th>
+                                    <th>Lần thi</th>
                                     <th>Thao Tác</th>
                                 </tr>
                             </thead>

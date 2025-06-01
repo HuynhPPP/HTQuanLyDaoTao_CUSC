@@ -63,7 +63,7 @@ class DanhSachSinhVienDuThiExport implements FromCollection, WithHeadings, WithT
                 $lichThi = LichThi::with(['lopHoc', 'monHoc', 'phanCongThi'])->find($this->maLichThi);
                 $canBoList = $lichThi->canBos->map(fn($cb) => $cb->canBo->HoTenCB)->values();
 
-                $sheet->insertNewRowBefore(1, 10); // chèn 10 dòng đầu
+                $sheet->insertNewRowBefore(1, 12); // chèn 12 dòng đầu
     
                 // === Tiêu đề tổ chức ===
                 $sheet->mergeCells('A1:E1')->setCellValue('A1', 'TRUNG TÂM CÔNG NGHỆ PHẦN MỀM ĐẠI HỌC CẦN THƠ');
@@ -85,18 +85,18 @@ class DanhSachSinhVienDuThiExport implements FromCollection, WithHeadings, WithT
                 $sheet->getStyle('A5')->getFont()->setSize(14);
 
                 // === Chữ ký ===
-                // $lastDataRow = 13 + \App\Models\SinhVienDuThi::where('MaLichThi', $this->maLichThi)->count();
+                $lastDataRow = 13 + \App\Models\SinhVienDuThi::where('MaLichThi', $this->maLichThi)->count();
 
-                // $sheet->setCellValue("B{$lastDataRow}", 'CÁN BỘ COI THI 1');
-                // $sheet->setCellValue("D{$lastDataRow}", 'CÁN BỘ COI THI 2');
-                // $sheet->setCellValue("E{$lastDataRow}", 'ĐẠI DIỆN CUSC');
+                $sheet->setCellValue("B{$lastDataRow}", 'CÁN BỘ COI THI 1');
+                $sheet->setCellValue("D{$lastDataRow}", 'CÁN BỘ COI THI 2');
+                $sheet->setCellValue("E{$lastDataRow}", 'ĐẠI DIỆN CUSC');
 
-                // foreach (['B', 'D', 'E'] as $col) {
-                //     $sheet->getStyle("{$col}{$lastDataRow}")->getFont()->setBold(true);
-                //     $sheet->getStyle("{$col}{$lastDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-                // }
+                foreach (['B', 'D', 'E'] as $col) {
+                    $sheet->getStyle("{$col}{$lastDataRow}")->getFont()->setBold(true);
+                    $sheet->getStyle("{$col}{$lastDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                }
 
-                // $sheet->getRowDimension($lastDataRow)->setRowHeight(30); // tăng chiều cao dòng ký tên
+                $sheet->getRowDimension($lastDataRow)->setRowHeight(30); // tăng chiều cao dòng ký tên
             },
         ];
     }

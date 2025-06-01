@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 31, 2025 at 05:02 PM
+-- Generation Time: Jun 01, 2025 at 04:25 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -301,8 +301,12 @@ CREATE TABLE `diemthi` (
   `MaSV` varchar(12) NOT NULL,
   `TenMH` varchar(255) NOT NULL,
   `MaLop` varchar(12) DEFAULT NULL,
+  `MaLichThi` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `LanThi` tinyint NOT NULL DEFAULT '1',
   `Diem` float DEFAULT NULL,
+  `DiemThucHanh` float DEFAULT NULL,
+  `DiemLyThuyet` float DEFAULT NULL,
+  `DiemBaiTap` float DEFAULT NULL,
   `GhiChu` text,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -936,8 +940,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('3fOdjYdyrkUYajogeGS3nVL5Wr3XtGyDEWsevduU', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czo1NDoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3N0dWRlbnQvbGRhcC9kYW5oLXNhY2gtdGFpLWtob2FuIjt9czo2OiJfdG9rZW4iO3M6NDA6IkZmQnJ1OUpwV3FxWHlUcmVwbEMyUVNRNGN4eEFhTjRhNzEyeVhJSjAiO3M6MTQ6ImNhcHRjaGFfcGhyYXNlIjtzOjU6IjVEMTdyIjtzOjQ6InVzZXIiO3M6MTI6ImFkbWluLmtodW9uZyI7czoxMToiZGlzcGxheW5hbWUiO3M6MTA6IlRhbiBLaHVvbmciO3M6NDoicm9sZSI7czo1OiJhZG1pbiI7czoyMjoiUEhQREVCVUdCQVJfU1RBQ0tfREFUQSI7YTowOnt9fQ==', 1748710890),
-('cAb5nLNq5AtdMiywyjq8Q2aNtImAOBC6jnb9j7X4', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTozOntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czoyMToiaHR0cDovLzEyNy4wLjAuMTo4MDAwIjt9czo2OiJfdG9rZW4iO3M6NDA6InhmbFNvcGppZTBEUHhPeUJibkM5TTNnbDFRaTVraklOUEQ5dFhzS3ciO30=', 1748709665);
+('nNNOL84qNk3XdVV6nbmTh3gYEJmF7pQSf7rAQ0uQ', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiUlJQNjBGblhQVERicUd0Sk0yQU11bjA1MlJYbkg5ME9nRVJBaUdwdyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTI3OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvdG9jaHVjdGhpL2JhbmdkaWVtL0NQMjI5NkgwNy9QaCVDMyVBMm4lMjB0JUMzJUFEY2glMjBEJUUxJUJCJUFGJTIwbGklRTElQkIlODd1JTIwdiVFMSVCQiU5QmklMjBNUyUyMEV4Y2VsIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToiVFVRSmoiO3M6NDoidXNlciI7czoxMjoiYWRtaW4ua2h1b25nIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxMDoiVGFuIEtodW9uZyI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjtzOjIyOiJQSFBERUJVR0JBUl9TVEFDS19EQVRBIjthOjA6e319', 1748794814);
 
 -- --------------------------------------------------------
 
@@ -1366,7 +1369,8 @@ ALTER TABLE `danhsachsv`
 ALTER TABLE `diemthi`
   ADD PRIMARY KEY (`MaSV`,`TenMH`,`LanThi`),
   ADD KEY `TenMH` (`TenMH`),
-  ADD KEY `MaLop` (`MaLop`);
+  ADD KEY `MaLop` (`MaLop`),
+  ADD KEY `diemthi_ibfk_4` (`MaLichThi`);
 
 --
 -- Indexes for table `donvi`
@@ -1739,7 +1743,8 @@ ALTER TABLE `danhsachsv`
 ALTER TABLE `diemthi`
   ADD CONSTRAINT `diemthi_ibfk_1` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`),
   ADD CONSTRAINT `diemthi_ibfk_2` FOREIGN KEY (`TenMH`) REFERENCES `monhoc` (`TenMH`),
-  ADD CONSTRAINT `diemthi_ibfk_3` FOREIGN KEY (`MaLop`) REFERENCES `lophoc` (`MaLop`);
+  ADD CONSTRAINT `diemthi_ibfk_3` FOREIGN KEY (`MaLop`) REFERENCES `lophoc` (`MaLop`),
+  ADD CONSTRAINT `diemthi_ibfk_4` FOREIGN KEY (`MaLichThi`) REFERENCES `lichthi` (`MaLichThi`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `feedback`

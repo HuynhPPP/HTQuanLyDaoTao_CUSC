@@ -19,7 +19,8 @@ class SinhVienDuThiController extends Controller
     public function danhSachSinhVienDuThi($maLichThi)
     {
         // Lấy thông tin lịch thi
-        $lichThi = LichThi::with(['lopHoc', 'monHoc', 'phanCongThi'])->findOrFail($maLichThi);
+        $lichThi = LichThi::with(['lopHoc', 'monHoc', 'phanCongThi', 'canBos.canBo'])->find($this->$maLichThi);
+
         $canBos = PhieuPhanCongThi::with('canBo')
             ->where('MaLichThi', $maLichThi)
             ->get();

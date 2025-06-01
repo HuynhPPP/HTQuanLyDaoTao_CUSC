@@ -95,6 +95,6 @@ class DiemThi extends Model
 
     public function lichthi()
     {
-        return $this->belongsTo(LichThi::class, 'MaLichThi', 'MaLichThi');
+        return $this->belongsTo(LichThi::class, 'MaLop', 'MaLop');
     }
 }

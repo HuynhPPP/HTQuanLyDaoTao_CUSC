@@ -57,10 +57,11 @@
                                     <strong>Cán bộ coi thi:</strong>
                                     <span>
                                         @if ($canBos && $canBos->count())
-                                            {{ $canBos->map(fn($cb) => $cb->canBo->HoTenCB)->implode(', ') }}
-                                        @else
-                                            <em>Chưa có cán bộ coi thi</em>
-                                        @endif
+    {{ $canBos->map(fn($cb) => $cb->canBo->HoTenCB)->implode(', ') }}
+@else
+    <em>Chưa có cán bộ coi thi</em>
+@endif
+
                                     </span>
                                 </div>
                             </div>

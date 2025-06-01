@@ -20,10 +20,7 @@ class SinhVienDuThiController extends Controller
     {
         // Lấy thông tin lịch thi
         $lichThi = LichThi::with(['lopHoc', 'monHoc', 'phanCongThi'])->findOrFail($maLichThi);
-        $canBos = PhieuPhanCongThi::with('canBo')
-            ->where('MaLichThi', $maLichThi)
-            ->get();
-
+        $canBo = PhieuPhanCongThi::where('MaLichThi', $maLichThi)->first();
         // Lấy danh sách sinh viên trong lớp
         $danhSachSinhVien = sinhvien::join('danhsachsv', 'SinhVien.MaSV', '=', 'danhsachsv.MaSV')
             ->where('danhsachsv.MaLop', $lichThi->MaLop)
@@ -40,10 +37,10 @@ class SinhVienDuThiController extends Controller
                 'sinhvien_duthi.GhiChu'
             )
             ->get();
-        // dd($canBo);
+
         return view('tochucthi.lichthi.danh_sach_sinh_vien_du_thi', [
             'lichThi' => $lichThi,
-            'canBos' => $canBos,
+            'canBo' => $canBo,
             'danhSachSinhVien' => $danhSachSinhVien
         ]);
     }

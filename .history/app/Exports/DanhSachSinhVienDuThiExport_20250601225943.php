@@ -63,7 +63,7 @@ class DanhSachSinhVienDuThiExport implements FromCollection, WithHeadings, WithT
                 $lichThi = LichThi::with(['lopHoc', 'monHoc', 'phanCongThi'])->find($this->maLichThi);
                 $canBoList = $lichThi->canBos->map(fn($cb) => $cb->canBo->HoTenCB)->values();
 
-                $sheet->insertNewRowBefore(1, 10); // chèn 10 dòng đầu
+                $sheet->insertNewRowBefore(1, 10); // chèn 12 dòng đầu
     
                 // === Tiêu đề tổ chức ===
                 $sheet->mergeCells('A1:E1')->setCellValue('A1', 'TRUNG TÂM CÔNG NGHỆ PHẦN MỀM ĐẠI HỌC CẦN THƠ');

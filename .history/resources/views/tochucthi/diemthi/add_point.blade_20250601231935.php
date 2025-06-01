@@ -22,7 +22,7 @@
 
                         <!-- Nhập điểm thủ công -->
                         <div class="table-responsive">
-                            <table class="table" id="table-1">
+                            <table class="table">
                                 <thead>
                                     <tr>
                                         <th>Mã SV</th>

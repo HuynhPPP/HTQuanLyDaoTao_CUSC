@@ -55,13 +55,7 @@
                                 </div>
                                 <div class="list-group-item d-flex justify-content-between align-items-center">
                                     <strong>Cán bộ coi thi:</strong>
-                                    <span>
-                                        @if ($canBos && $canBos->count())
-                                            {{ $canBos->map(fn($cb) => $cb->canBo->HoTenCB)->implode(', ') }}
-                                        @else
-                                            <em>Chưa có cán bộ coi thi</em>
-                                        @endif
-                                    </span>
+                                    <span>{{ $canBo->MaCB }}</span>
                                 </div>
                             </div>
                         </div>
@@ -185,12 +179,21 @@
 @section('custom-js')
     <script>
         $(document).ready(function() {
+
+            // Chọn tất cả sinh viên
+            // $('#checkAll').on('change', function() {
+            //     $('.sinh-vien-checkbox').prop('checked', $(this).prop('checked'));
+            // });
+
+
             // Đặt lại form
             $('#resetForm').on('click', function() {
                 $('.sinh-vien-checkbox').prop('checked', false);
                 $('.trang-thai-select').val('DangKy');
                 $('.ghi-chu-input').val('');
             });
+
+
         });
     </script>
 @endsection

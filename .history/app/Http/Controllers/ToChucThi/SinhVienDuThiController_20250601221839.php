@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\LichThi;
 use App\Models\LopHoc;
 use App\Models\sinhvien;
-use App\Models\PhieuPhanCongThi;
 use App\Models\SinhVienDuThi;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -19,10 +18,7 @@ class SinhVienDuThiController extends Controller
     public function danhSachSinhVienDuThi($maLichThi)
     {
         // Lấy thông tin lịch thi
-        $lichThi = LichThi::with(['lopHoc', 'monHoc', 'phanCongThi'])->findOrFail($maLichThi);
-        $canBos = PhieuPhanCongThi::with('canBo')
-            ->where('MaLichThi', $maLichThi)
-            ->get();
+        $lichThi = LichThi::with(['lopHoc', 'monHoc','phanCongThi'])->findOrFail($maLichThi);
 
         // Lấy danh sách sinh viên trong lớp
         $danhSachSinhVien = sinhvien::join('danhsachsv', 'SinhVien.MaSV', '=', 'danhsachsv.MaSV')
@@ -40,10 +36,9 @@ class SinhVienDuThiController extends Controller
                 'sinhvien_duthi.GhiChu'
             )
             ->get();
-        // dd($canBo);
+
         return view('tochucthi.lichthi.danh_sach_sinh_vien_du_thi', [
             'lichThi' => $lichThi,
-            'canBos' => $canBos,
             'danhSachSinhVien' => $danhSachSinhVien
         ]);
     }

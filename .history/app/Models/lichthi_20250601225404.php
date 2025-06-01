@@ -39,8 +39,8 @@ class LichThi extends Model
     }
 
     public function canBos()
-    {
-        return $this->hasMany(PhieuPhanCongThi::class, 'MaLichThi', 'MaLichThi');
-    }
+{
+    return $this->hasMany(\App\Models\PhieuPhanCongThi::class, 'MaLichThi', 'MaLichThi');
+}
 
 }
