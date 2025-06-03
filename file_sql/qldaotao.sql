@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 01, 2025 at 04:25 PM
+-- Generation Time: Jun 03, 2025 at 02:51 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -85,6 +85,7 @@ CREATE TABLE `canbo` (
   `HoTenCB` varchar(30) DEFAULT NULL,
   `GioiTinh` tinyint(1) DEFAULT NULL,
   `Email` varchar(40) DEFAULT NULL,
+  `EmailCUSC` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `Sdt` varchar(15) DEFAULT NULL,
   `MaHV` varchar(12) DEFAULT NULL,
   `TenChucVu` varchar(30) DEFAULT NULL,
@@ -102,9 +103,9 @@ CREATE TABLE `canbo` (
 -- Dumping data for table `canbo`
 --
 
-INSERT INTO `canbo` (`MaCB`, `HoTenCB`, `GioiTinh`, `Email`, `Sdt`, `MaHV`, `TenChucVu`, `CongViecPhuTrach`, `MaDV`, `MaBang`, `MaTapHuan`, `ThoiGianBDCongTacCUSC`, `ThoiGianKTCongTacCUSC`, `created_at`, `updated_at`) VALUES
-('CB001', 'Nguyễn Văn An', 1, 'ngvanan@gmail.com', '0912345678', 'HV001', 'Giảng viên', 'Giảng dạy', 'DV001', 'BC001', 'TH001', '2020-01-01', NULL, '2025-05-16 13:36:49', '2025-05-16 13:36:49'),
-('CB003', 'Lê Văn Cường', 1, 'levcuong@gmail.com', '0934567890', 'HV003', 'Chuyên viên', 'Quản trị hệ thống', 'DV003', 'BC003', 'TH003', '2019-08-20', '2022-12-31', '2025-05-16 13:36:49', '2025-05-16 13:36:49');
+INSERT INTO `canbo` (`MaCB`, `HoTenCB`, `GioiTinh`, `Email`, `EmailCUSC`, `Sdt`, `MaHV`, `TenChucVu`, `CongViecPhuTrach`, `MaDV`, `MaBang`, `MaTapHuan`, `ThoiGianBDCongTacCUSC`, `ThoiGianKTCongTacCUSC`, `created_at`, `updated_at`) VALUES
+('CB001', 'Nguyễn Văn An', 1, 'ngvanan@gmail.com', NULL, '0912345678', 'HV001', 'Giảng viên', 'Giảng dạy', 'DV001', 'BC001', 'TH001', '2020-01-01', NULL, '2025-05-16 13:36:49', '2025-05-16 13:36:49'),
+('CB003', 'Lê Văn Cường', 1, 'levcuong@gmail.com', NULL, '0934567890', 'HV003', 'Chuyên viên', 'Quản trị hệ thống', 'DV003', 'BC003', 'TH003', '2019-08-20', '2022-12-31', '2025-05-16 13:36:49', '2025-05-16 13:36:49');
 
 -- --------------------------------------------------------
 
@@ -403,6 +404,7 @@ CREATE TABLE `giaovien` (
   `HoTenGV` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `GioiTinh` tinyint(1) DEFAULT NULL,
   `Email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `EmailCUSC` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `Sdt` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `MaHV` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `TenChucVu` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
@@ -421,15 +423,15 @@ CREATE TABLE `giaovien` (
 -- Dumping data for table `giaovien`
 --
 
-INSERT INTO `giaovien` (`MaGV`, `HoTenGV`, `GioiTinh`, `Email`, `Sdt`, `MaHV`, `TenChucVu`, `MaDV`, `MaBang`, `LoaiGV`, `ChuyenNganh`, `GhiChu`, `NgayBatDauCongTac`, `NgayKetThucCongTac`, `created_at`, `updated_at`) VALUES
-('GV001', 'Nguyễn Văn An', 1, 'ngvanan@gmail.com', '0912345678', 'HV001', 'Giảng viên', 'DV003', 'BC001', 'CoHuu', 'Khoa học máy tính', 'Giảng viên chính', '2020-01-01', NULL, '2025-05-16 07:53:41', '2025-05-30 07:33:59'),
-('GV002', 'Trần Thị Bình', 0, 'tranthib@gmail.com', '0923456789', 'HV002', 'Trưởng khoa', 'DV002', 'BC002', 'MoiGiang', 'Kinh tế học', 'Giảng viên thỉnh giảng', '2018-05-15', NULL, '2025-05-16 07:53:41', '2025-05-16 07:53:41'),
-('GV003', 'Phạm Đức Linh', 0, 'phamduclinh@cusc.vn', '0943526107', 'HV002', 'Giảng viên', 'DV003', 'BC002', 'MoiGiang', 'Hệ thống thông tin', NULL, '2018-06-04', NULL, '2025-05-22 07:40:53', '2025-05-22 07:40:53'),
-('GV004', 'Hoàng Quang Giang', 0, 'hoangquanggiang@cusc.vn', '0938554271', 'HV003', 'Giảng viên', 'DV002', 'B001', 'CoHuu', 'Mạng máy tính', NULL, '2018-06-06', NULL, '2025-05-22 07:40:53', '2025-05-22 07:40:53'),
-('GV005', 'Hoàng Công Nam', 0, 'hoangcongnam@cusc.vn', '0915354646', 'HV003', 'Giảng viên', 'DV003', 'BC003', 'MoiGiang', 'Khoa học dữ liệu', NULL, '2019-05-09', NULL, '2025-05-22 07:40:53', '2025-05-30 07:33:34'),
-('GV006', 'Phan Hữu Giang', 1, 'phanhuugiang@cusc.vn', '0987506679', 'HV001', 'Giảng viên', 'DV001', 'B001', 'CoHuu', 'Trí tuệ nhân tạo', NULL, '2021-12-19', NULL, '2025-05-22 07:40:53', '2025-05-22 07:40:53'),
-('GV007', 'Phan Đức Phúc', 1, 'phanducphuc@cusc.vn', '0982049005', 'HV002', 'Giảng viên', 'DV001', 'B002', 'CoHuu', 'Trí tuệ nhân tạo', NULL, '2018-12-11', NULL, '2025-05-22 07:40:53', '2025-05-22 07:40:53'),
-('GV008', 'Đặng Hoàng Giang', 1, 'danghoanggiang@cusc.vn', '0981259529', 'HV002', 'Giảng viên', 'CNTT', 'B003', 'MoiGiang', 'Trí tuệ nhân tạo', NULL, '2020-06-14', NULL, '2025-05-22 07:40:53', '2025-05-22 07:40:53');
+INSERT INTO `giaovien` (`MaGV`, `HoTenGV`, `GioiTinh`, `Email`, `EmailCUSC`, `Sdt`, `MaHV`, `TenChucVu`, `MaDV`, `MaBang`, `LoaiGV`, `ChuyenNganh`, `GhiChu`, `NgayBatDauCongTac`, `NgayKetThucCongTac`, `created_at`, `updated_at`) VALUES
+('GV001', 'Nguyễn Văn An', 1, 'ngvanan@gmail.com', 'gv001nguyenvanan@cusc.ctu.vn', '0912345678', 'HV001', 'Giảng viên', 'DV003', 'BC001', 'CoHuu', 'Khoa học máy tính', 'Giảng viên chính', '2020-01-01', NULL, '2025-05-16 07:53:41', '2025-06-03 06:13:21'),
+('GV002', 'Trần Thị Bình', 0, 'tranthib@gmail.com', 'gv002tranthibinh@cusc.ctu.vn', '0923456789', 'HV002', 'Trưởng khoa', 'DV002', 'BC002', 'MoiGiang', 'Kinh tế học', 'Giảng viên thỉnh giảng', '2018-05-15', NULL, '2025-05-16 07:53:41', '2025-06-03 06:13:21'),
+('GV003', 'Phạm Đức Linh', 0, 'phamduclinh@cusc.vn', 'gv003phamduclinh@cusc.ctu.vn', '0943526107', 'HV002', 'Giảng viên', 'DV003', 'BC002', 'MoiGiang', 'Hệ thống thông tin', NULL, '2018-06-04', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:21'),
+('GV004', 'Hoàng Quang Giang', 0, 'hoangquanggiang@cusc.vn', 'gv004hoangquanggiang@cusc.ctu.vn', '0938554271', 'HV003', 'Giảng viên', 'DV002', 'B001', 'CoHuu', 'Mạng máy tính', NULL, '2018-06-06', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:21'),
+('GV005', 'Hoàng Công Nam', 0, 'hoangcongnam@cusc.vn', 'gv005hoangcongnam@cusc.ctu.vn', '0915354646', 'HV003', 'Giảng viên', 'DV003', 'BC003', 'MoiGiang', 'Khoa học dữ liệu', NULL, '2019-05-09', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:22'),
+('GV006', 'Phan Hữu Giang', 1, 'phanhuugiang@cusc.vn', 'gv006phanhuugiang@cusc.ctu.vn', '0987506679', 'HV001', 'Giảng viên', 'DV001', 'B001', 'CoHuu', 'Trí tuệ nhân tạo', NULL, '2021-12-19', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:22'),
+('GV007', 'Phan Đức Phúc', 1, 'phanducphuc@cusc.vn', 'gv007phanducphuc@cusc.ctu.vn', '0982049005', 'HV002', 'Giảng viên', 'DV001', 'B002', 'CoHuu', 'Trí tuệ nhân tạo', NULL, '2018-12-11', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:22'),
+('GV008', 'Đặng Hoàng Giang', 1, 'danghoanggiang@cusc.vn', 'gv008danghoanggiang@cusc.ctu.vn', '0981259529', 'HV002', 'Giảng viên', 'CNTT', 'B003', 'MoiGiang', 'Trí tuệ nhân tạo', NULL, '2020-06-14', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:22');
 
 -- --------------------------------------------------------
 
@@ -602,11 +604,12 @@ INSERT INTO `khunggio` (`TenKhungGio`, `ThoiGian`) VALUES
 
 CREATE TABLE `ldap_accounts` (
   `id` bigint UNSIGNED NOT NULL,
-  `MaSV` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `MaTaiKhoan` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `full_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `initial_password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` enum('student','teacher','staff') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'student',
   `is_sent` tinyint(1) NOT NULL DEFAULT '0',
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
@@ -617,10 +620,18 @@ CREATE TABLE `ldap_accounts` (
 -- Dumping data for table `ldap_accounts`
 --
 
-INSERT INTO `ldap_accounts` (`id`, `MaSV`, `username`, `email`, `full_name`, `initial_password`, `is_sent`, `is_active`, `created_at`, `updated_at`) VALUES
-(10, '21010001', '21010001nguyenva', '21010001nguyenva@cusc.ctu.vn', 'Nguyễn Văn A', 'B}%Zl1Mj]]aB', 1, 1, '2025-05-31 09:14:19', '2025-05-31 09:40:18'),
-(11, '21010002', '21010002tranthib', '21010002tranthib@cusc.ctu.vn', 'Trần Thị B', 'sU(0MGif|V[x', 0, 1, '2025-05-31 09:14:19', '2025-05-31 09:14:19'),
-(12, '21010003', '21010003levanc', '21010003levanc@cusc.ctu.vn', 'Lê Văn C', '[Uqn61|<<jJ>', 0, 1, '2025-05-31 09:14:19', '2025-05-31 09:14:19');
+INSERT INTO `ldap_accounts` (`id`, `MaTaiKhoan`, `username`, `email`, `full_name`, `initial_password`, `role`, `is_sent`, `is_active`, `created_at`, `updated_at`) VALUES
+(13, '21010003', '21010003levanc', '21010003levanc@cusc.ctu.vn', 'Lê Văn C', '$[bLwc:0S4sv', 'student', 1, 1, '2025-06-02 23:55:48', '2025-06-03 06:34:49'),
+(14, '23000001', '23000001ovanan', '23000001ovanan@cusc.ctu.vn', 'Đỗ Văn An', '7@lwrYtMzb4@', 'student', 0, 1, '2025-06-02 23:55:48', '2025-06-02 23:55:48'),
+(15, '23000002', '23000002ohuuhung', '23000002ohuuhung@cusc.ctu.vn', 'Đỗ Hữu Hùng', 'PkP++4z;lh(Z', 'student', 0, 1, '2025-06-02 23:55:48', '2025-06-02 23:55:48'),
+(32, 'GV001', 'gv001nguyenvanan', 'gv001nguyenvanan@cusc.ctu.vn', 'Nguyễn Văn An', '81.$bp6t,FS)', 'teacher', 1, 1, '2025-06-03 06:13:21', '2025-06-03 06:33:24'),
+(33, 'GV002', 'gv002tranthibinh', 'gv002tranthibinh@cusc.ctu.vn', 'Trần Thị Bình', '6#u&ev4.Yxt#', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
+(34, 'GV003', 'gv003phamduclinh', 'gv003phamduclinh@cusc.ctu.vn', 'Phạm Đức Linh', '7S>1#:Y7E4En', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
+(35, 'GV004', 'gv004hoangquanggiang', 'gv004hoangquanggiang@cusc.ctu.vn', 'Hoàng Quang Giang', '|L}D@4oq4}wZ', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
+(36, 'GV005', 'gv005hoangcongnam', 'gv005hoangcongnam@cusc.ctu.vn', 'Hoàng Công Nam', '20qr(=f,&6Lo', 'teacher', 0, 1, '2025-06-03 06:13:22', '2025-06-03 06:13:22'),
+(37, 'GV006', 'gv006phanhuugiang', 'gv006phanhuugiang@cusc.ctu.vn', 'Phan Hữu Giang', 'Pa)T2^bTR{E?', 'teacher', 0, 1, '2025-06-03 06:13:22', '2025-06-03 06:13:22'),
+(38, 'GV007', 'gv007phanducphuc', 'gv007phanducphuc@cusc.ctu.vn', 'Phan Đức Phúc', '^%Ag80SPSQFf', 'teacher', 0, 1, '2025-06-03 06:13:22', '2025-06-03 06:13:22'),
+(39, 'GV008', 'gv008danghoanggiang', 'gv008danghoanggiang@cusc.ctu.vn', 'Đặng Hoàng Giang', ';6+399Oxc@4i', 'teacher', 0, 1, '2025-06-03 06:13:22', '2025-06-03 06:13:22');
 
 -- --------------------------------------------------------
 
@@ -940,7 +951,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('nNNOL84qNk3XdVV6nbmTh3gYEJmF7pQSf7rAQ0uQ', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiUlJQNjBGblhQVERicUd0Sk0yQU11bjA1MlJYbkg5ME9nRVJBaUdwdyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTI3OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvdG9jaHVjdGhpL2JhbmdkaWVtL0NQMjI5NkgwNy9QaCVDMyVBMm4lMjB0JUMzJUFEY2glMjBEJUUxJUJCJUFGJTIwbGklRTElQkIlODd1JTIwdiVFMSVCQiU5QmklMjBNUyUyMEV4Y2VsIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToiVFVRSmoiO3M6NDoidXNlciI7czoxMjoiYWRtaW4ua2h1b25nIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxMDoiVGFuIEtodW9uZyI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjtzOjIyOiJQSFBERUJVR0JBUl9TVEFDS19EQVRBIjthOjA6e319', 1748794814);
+('8IdhjbEW83nHfU5qusnLklpWZbjNvukv25T14mJL', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiVGcwZVBPdXdhSll2ekNKYzVmTmtiNndpY1FCSndSV3hrVVNyUUNpciI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzQ6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9zdHVkZW50L2xpc3QiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJ2MTZGRCI7czo0OiJ1c2VyIjtzOjEyOiJhZG1pbi5raHVvbmciO3M6MTE6ImRpc3BsYXluYW1lIjtzOjEwOiJUYW4gS2h1b25nIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO3M6MjI6IlBIUERFQlVHQkFSX1NUQUNLX0RBVEEiO2E6MDp7fX0=', 1748962274),
+('AwHlB54PT5Q3a2YDYH1LN5ajrUVjEBvcxXGfFtmQ', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czozNzoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2dpYW8tdmllbi9oby1zbyI7fXM6NjoiX3Rva2VuIjtzOjQwOiJHSGJaY0tHcXFOb1VIWVFJYU12eHdCOGxRZGNONFFxeHhKdzZPeUxqIjtzOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJBcmRFbCI7czoyOiJpZCI7czo1OiJHVjAwMSI7czo0OiJ1c2VyIjtzOjE2OiJndjAwMW5ndXllbnZhbmFuIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxNjoiTmd1eeG7hW4gVsSDbiBBbiI7czo0OiJyb2xlIjtzOjc6InRlYWNoZXIiO3M6MjI6IlBIUERFQlVHQkFSX1NUQUNLX0RBVEEiO2E6MDp7fX0=', 1748962265);
 
 -- --------------------------------------------------------
 
@@ -992,9 +1004,9 @@ CREATE TABLE `sinhvien` (
 INSERT INTO `sinhvien` (`MaSV`, `MaEnroll`, `HoTen`, `InDebt`, `NgaySinh`, `GioiTinh`, `SoCCCD`, `NgayCap`, `NoiCap`, `Sdt`, `NoiSinh`, `DiaChi`, `Zalo`, `Receipt`, `Invoice`, `Billing`, `Coll`, `Billing(VND)`, `Coll(VND)`, `Discount`, `LiDo`, `NgayDangKi`, `HoTenNguoiThan`, `MoiQuanHe`, `SdtNguoiThan`, `ZaloNguoiThan`, `EmailNguoiThan`, `Email`, `EmailCUSC`, `password_CUSC`, `Size`, `TinhTrangHocTap`, `created_at`, `updated_at`) VALUES
 ('21010001', NULL, 'Nguyễn Văn A', NULL, '2003-06-12', 1, 12345678, NULL, NULL, '0944902423', NULL, 'Ninh Kiều', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'nva1@gmail.com', '21010001nguyenva@cusc.ctu.vn', NULL, NULL, NULL, '2025-05-11 06:31:03', '2025-05-31 16:14:19'),
 ('21010002', NULL, 'Trần Thị B', NULL, '1970-01-01', 0, 12345679, NULL, NULL, '0912345679', NULL, 'Bình Thủy', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ttb2@gmail.com', '21010002tranthib@cusc.ctu.vn', NULL, NULL, NULL, '2025-05-11 06:31:03', '2025-05-31 16:14:19'),
-('21010003', NULL, 'Lê Văn C', NULL, '1970-01-01', 1, 12345680, NULL, NULL, '0912345680', NULL, 'Cái Răng', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'lvc3@gmail.com', '21010003levanc@cusc.ctu.vn', NULL, NULL, NULL, '2025-05-11 06:31:03', '2025-05-31 16:14:19'),
-('23000001', NULL, 'Đỗ Văn An', NULL, '2005-07-12', 1, 222742174, '2023-09-05', 'Công an Tiền Giang', '0862455565', 'Vĩnh Long', '989 Nguyễn Văn Cừ, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Minh Giang', 'Chị', 823642868, NULL, 'rosalinda41@zulauf.net', 'dỗvănan@gmail.com', '23000001ovanan@cusc.ctu.vn', NULL, NULL, NULL, NULL, '2025-05-31 15:10:09'),
-('23000002', NULL, 'Đỗ Hữu Hùng', NULL, '2006-08-19', 1, 218008983, '2023-06-30', 'Công an Trà Vinh', '0705117568', 'Cà Mau', '976 3/2, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Hữu Mai', 'Em', 886874835, NULL, 'monte.casper@hotmail.com', 'dohuudung@gmail.com', '23000002ohuuhung@cusc.ctu.vn', NULL, NULL, NULL, NULL, '2025-05-31 07:32:22'),
+('21010003', NULL, 'Lê Văn C', NULL, '1970-01-01', 1, 12345680, NULL, NULL, '0912345680', NULL, 'Cái Răng', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'lvc3@gmail.com', '21010003levanc@cusc.ctu.vn', NULL, NULL, NULL, '2025-05-11 06:31:03', '2025-06-03 06:55:48'),
+('23000001', NULL, 'Đỗ Văn An', NULL, '2005-07-12', 1, 222742174, '2023-09-05', 'Công an Tiền Giang', '0862455565', 'Vĩnh Long', '989 Nguyễn Văn Cừ, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Minh Giang', 'Chị', 823642868, NULL, 'rosalinda41@zulauf.net', 'dovanan@gmail.com', '23000001ovanan@cusc.ctu.vn', NULL, NULL, NULL, NULL, '2025-06-03 06:55:48'),
+('23000002', NULL, 'Đỗ Hữu Hùng', NULL, '2006-08-19', 1, 218008983, '2023-06-30', 'Công an Trà Vinh', '0705117568', 'Cà Mau', '976 3/2, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Hữu Mai', 'Em', 886874835, NULL, 'monte.casper@hotmail.com', 'dohuudung@gmail.com', '23000002ohuuhung@cusc.ctu.vn', NULL, NULL, NULL, NULL, '2025-06-03 06:55:48'),
 ('23000003', NULL, 'Huỳnh Đức Bình', NULL, '2003-10-31', 0, 613326769, '2023-09-18', 'Công an Hậu Giang', '0332699777', 'Sóc Trăng', '835 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Đức An', 'Chị', 841161800, NULL, 'pearline.pfeffer@yahoo.com', 'huỳnhdứcbình@gmail.com', '23000003@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
 ('23000004', NULL, 'Phan Đức Em', NULL, '2003-08-25', 1, 211193627, '2024-12-19', 'Công an Sóc Trăng', '0868728484', 'Bạc Liêu', '354 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Quang Mai', 'Chị', 349820726, NULL, 'wiegand.mariam@reichert.com', 'phandứcem@gmail.com', '23000004@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
 ('23000005', NULL, 'Võ Quang Phúc', NULL, '2003-12-03', 1, 139868417, '2025-04-03', 'Công an Hậu Giang', '0398780304', 'Hậu Giang', '864 Nguyễn Văn Linh, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Văn Giang', 'Chị', 706580553, NULL, 'esperanza50@hotmail.com', 'võquangphúc@gmail.com', '23000005@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
@@ -1464,7 +1476,7 @@ ALTER TABLE `ldap_accounts`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `ldap_accounts_username_unique` (`username`),
   ADD UNIQUE KEY `ldap_accounts_email_unique` (`email`),
-  ADD KEY `ldap_accounts_masv_index` (`MaSV`),
+  ADD KEY `ldap_accounts_masv_index` (`MaTaiKhoan`),
   ADD KEY `ldap_accounts_username_index` (`username`),
   ADD KEY `ldap_accounts_email_index` (`email`);
 
@@ -1636,7 +1648,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `ldap_accounts`
 --
 ALTER TABLE `ldap_accounts`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -1781,12 +1793,6 @@ ALTER TABLE `hocki`
 ALTER TABLE `hosotuyensinh`
   ADD CONSTRAINT `fk_MaTS` FOREIGN KEY (`MaTS`) REFERENCES `thongtintuyensinh` (`MaTS`),
   ADD CONSTRAINT `hosotuyensinh_ibfk_1` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`);
-
---
--- Constraints for table `ldap_accounts`
---
-ALTER TABLE `ldap_accounts`
-  ADD CONSTRAINT `ldap_accounts_masv_foreign` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `lichthi`
