@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 03, 2025 at 02:28 PM
+-- Generation Time: Jun 04, 2025 at 09:08 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -46,10 +46,10 @@ CREATE TABLE `ldap_accounts` (
 --
 
 INSERT INTO `ldap_accounts` (`id`, `MaTaiKhoan`, `username`, `email`, `full_name`, `initial_password`, `role`, `is_sent`, `is_active`, `created_at`, `updated_at`) VALUES
-(13, '21010003', '21010003levanc', '21010003levanc@cusc.ctu.vn', 'Lê Văn C', '$[bLwc:0S4sv', 'student', 1, 1, '2025-06-02 23:55:48', '2025-06-03 06:34:49'),
+(13, '21010003', '21010003levanc', '21010003levanc@cusc.ctu.vn', 'Lê Văn C', '$2y$12$MfIGAS.bEtBUYiEl.VEI1u.wYdnrLHWcmnyrjYOWkZrL0ptFEroTK', 'student', 1, 1, '2025-06-02 23:55:48', '2025-06-03 20:03:15'),
 (14, '23000001', '23000001ovanan', '23000001ovanan@cusc.ctu.vn', 'Đỗ Văn An', '7@lwrYtMzb4@', 'student', 0, 1, '2025-06-02 23:55:48', '2025-06-02 23:55:48'),
 (15, '23000002', '23000002ohuuhung', '23000002ohuuhung@cusc.ctu.vn', 'Đỗ Hữu Hùng', 'PkP++4z;lh(Z', 'student', 0, 1, '2025-06-02 23:55:48', '2025-06-02 23:55:48'),
-(32, 'GV001', 'gv001nguyenvanan', 'gv001nguyenvanan@cusc.ctu.vn', 'Nguyễn Văn An', '81.$bp6t,FS)', 'teacher', 1, 1, '2025-06-03 06:13:21', '2025-06-03 06:33:24'),
+(32, 'GV001', 'gv001nguyenvanan', 'gv001nguyenvanan@cusc.ctu.vn', 'Nguyễn Văn An', '$2y$12$k99GuVyQPJ5khWkfUWLE8.SIyeddGhB4qqnSaYrXaH0UgeStCQLG6', 'teacher', 1, 1, '2025-06-03 06:13:21', '2025-06-03 19:32:06'),
 (33, 'GV002', 'gv002tranthibinh', 'gv002tranthibinh@cusc.ctu.vn', 'Trần Thị Bình', '6#u&ev4.Yxt#', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
 (34, 'GV003', 'gv003phamduclinh', 'gv003phamduclinh@cusc.ctu.vn', 'Phạm Đức Linh', '7S>1#:Y7E4En', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
 (35, 'GV004', 'gv004hoangquanggiang', 'gv004hoangquanggiang@cusc.ctu.vn', 'Hoàng Quang Giang', '|L}D@4oq4}wZ', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),

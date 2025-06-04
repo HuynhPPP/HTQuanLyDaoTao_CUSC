@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 03, 2025 at 02:51 PM
+-- Generation Time: Jun 04, 2025 at 09:08 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -621,10 +621,10 @@ CREATE TABLE `ldap_accounts` (
 --
 
 INSERT INTO `ldap_accounts` (`id`, `MaTaiKhoan`, `username`, `email`, `full_name`, `initial_password`, `role`, `is_sent`, `is_active`, `created_at`, `updated_at`) VALUES
-(13, '21010003', '21010003levanc', '21010003levanc@cusc.ctu.vn', 'Lê Văn C', '$[bLwc:0S4sv', 'student', 1, 1, '2025-06-02 23:55:48', '2025-06-03 06:34:49'),
+(13, '21010003', '21010003levanc', '21010003levanc@cusc.ctu.vn', 'Lê Văn C', '$2y$12$MfIGAS.bEtBUYiEl.VEI1u.wYdnrLHWcmnyrjYOWkZrL0ptFEroTK', 'student', 1, 1, '2025-06-02 23:55:48', '2025-06-03 20:03:15'),
 (14, '23000001', '23000001ovanan', '23000001ovanan@cusc.ctu.vn', 'Đỗ Văn An', '7@lwrYtMzb4@', 'student', 0, 1, '2025-06-02 23:55:48', '2025-06-02 23:55:48'),
 (15, '23000002', '23000002ohuuhung', '23000002ohuuhung@cusc.ctu.vn', 'Đỗ Hữu Hùng', 'PkP++4z;lh(Z', 'student', 0, 1, '2025-06-02 23:55:48', '2025-06-02 23:55:48'),
-(32, 'GV001', 'gv001nguyenvanan', 'gv001nguyenvanan@cusc.ctu.vn', 'Nguyễn Văn An', '81.$bp6t,FS)', 'teacher', 1, 1, '2025-06-03 06:13:21', '2025-06-03 06:33:24'),
+(32, 'GV001', 'gv001nguyenvanan', 'gv001nguyenvanan@cusc.ctu.vn', 'Nguyễn Văn An', '$2y$12$k99GuVyQPJ5khWkfUWLE8.SIyeddGhB4qqnSaYrXaH0UgeStCQLG6', 'teacher', 1, 1, '2025-06-03 06:13:21', '2025-06-03 19:32:06'),
 (33, 'GV002', 'gv002tranthibinh', 'gv002tranthibinh@cusc.ctu.vn', 'Trần Thị Bình', '6#u&ev4.Yxt#', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
 (34, 'GV003', 'gv003phamduclinh', 'gv003phamduclinh@cusc.ctu.vn', 'Phạm Đức Linh', '7S>1#:Y7E4En', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
 (35, 'GV004', 'gv004hoangquanggiang', 'gv004hoangquanggiang@cusc.ctu.vn', 'Hoàng Quang Giang', '|L}D@4oq4}wZ', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
@@ -658,7 +658,9 @@ CREATE TABLE `lichthi` (
 --
 
 INSERT INTO `lichthi` (`MaLichThi`, `MaLop`, `TenMH`, `NgayThi`, `KhungGio`, `PhongThi`, `HinhThucThi`, `LanThi`, `GhiChu`, `created_at`, `updated_at`) VALUES
-('LT2505240708', 'CP2296H07', 'Phân tích Dữ liệu với MS Excel', '2025-06-24', '13:00 - 13:40', 'Class1', 'Trắc nghiệm', 1, NULL, '2025-05-24 07:08:34', '2025-05-29 07:51:16');
+('LT2505240708', 'CP2296H07', 'Phân tích Dữ liệu với MS Excel', '2025-06-24', '13:00 - 13:40', 'Class1', 'Trắc nghiệm', 1, NULL, '2025-05-24 07:08:34', '2025-05-29 07:51:16'),
+('LT2506040812', 'CP2296H07', 'Dự án - Phân tích Dữ liệu với R', '2025-06-25', '08:00 - 08:30', 'Lab4', 'Thực hành', 1, NULL, '2025-06-04 08:12:17', '2025-06-04 08:12:35'),
+('LT2506040813', 'CP2296H07', 'Phân tích Dữ liệu với MS Excel', '2025-06-24', '16:00 - 16:30', 'Lab1', 'Thực hành', 1, NULL, '2025-06-04 08:13:42', '2025-06-04 08:13:42');
 
 -- --------------------------------------------------------
 
@@ -951,8 +953,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('8IdhjbEW83nHfU5qusnLklpWZbjNvukv25T14mJL', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiVGcwZVBPdXdhSll2ekNKYzVmTmtiNndpY1FCSndSV3hrVVNyUUNpciI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzQ6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9zdHVkZW50L2xpc3QiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJ2MTZGRCI7czo0OiJ1c2VyIjtzOjEyOiJhZG1pbi5raHVvbmciO3M6MTE6ImRpc3BsYXluYW1lIjtzOjEwOiJUYW4gS2h1b25nIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO3M6MjI6IlBIUERFQlVHQkFSX1NUQUNLX0RBVEEiO2E6MDp7fX0=', 1748962274),
-('AwHlB54PT5Q3a2YDYH1LN5ajrUVjEBvcxXGfFtmQ', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czozNzoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2dpYW8tdmllbi9oby1zbyI7fXM6NjoiX3Rva2VuIjtzOjQwOiJHSGJaY0tHcXFOb1VIWVFJYU12eHdCOGxRZGNONFFxeHhKdzZPeUxqIjtzOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJBcmRFbCI7czoyOiJpZCI7czo1OiJHVjAwMSI7czo0OiJ1c2VyIjtzOjE2OiJndjAwMW5ndXllbnZhbmFuIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxNjoiTmd1eeG7hW4gVsSDbiBBbiI7czo0OiJyb2xlIjtzOjc6InRlYWNoZXIiO3M6MjI6IlBIUERFQlVHQkFSX1NUQUNLX0RBVEEiO2E6MDp7fX0=', 1748962265);
+('vnUtTSHDqE1phmSgYbkT1LpnRpDmIkzyEMU8xsIP', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiNElYVWRkRzNwNVMwMXpmZHRBekpraHlUbU9WUXNCSE95dDBwQjVwTSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzk6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC90b2NodWN0aGkvbGljaHRoaSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MTQ6ImNhcHRjaGFfcGhyYXNlIjtzOjU6Ilhkdlo3IjtzOjQ6InVzZXIiO3M6MTI6ImFkbWluLmtodW9uZyI7czoxMToiZGlzcGxheW5hbWUiO3M6MTA6IlRhbiBLaHVvbmciO3M6NDoicm9sZSI7czo1OiJhZG1pbiI7czoyMjoiUEhQREVCVUdCQVJfU1RBQ0tfREFUQSI7YTowOnt9fQ==', 1749024937),
+('Y4lW60tr9PMfLK8l9rMJz2W75dYKEUJEw1gEaBXy', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czo1MDoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2NhbGVuZGFyL2dldC1jYWxlbmRhci1ldmVudHMiO31zOjY6Il90b2tlbiI7czo0MDoiZXFkRE9RcFVMV0JpV2kyNkQ3ckVna1IwUFh1VGhBclJuRllYaHdJdiI7czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToieWdFUTMiO3M6MjoiaWQiO3M6ODoiMjEwMTAwMDMiO3M6NDoidXNlciI7czoxNDoiMjEwMTAwMDNsZXZhbmMiO3M6MTE6ImRpc3BsYXluYW1lIjtzOjEwOiJMw6ogVsSDbiBDIjtzOjQ6InJvbGUiO3M6Nzoic3R1ZGVudCI7czoyMjoiUEhQREVCVUdCQVJfU1RBQ0tfREFUQSI7YTowOnt9fQ==', 1749028028);
 
 -- --------------------------------------------------------
 
