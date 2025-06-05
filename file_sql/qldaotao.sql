@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 04, 2025 at 09:08 AM
+-- Generation Time: Jun 05, 2025 at 02:51 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -377,7 +377,8 @@ CREATE TABLE `feedback` (
 
 CREATE TABLE `giangday` (
   `MaGV` varchar(12) NOT NULL,
-  `MaLop` varchar(12) NOT NULL,
+  `MaLop` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `MaMH` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `NgayBatDau` date DEFAULT NULL,
   `NgayKetThuc` date DEFAULT NULL,
   `GhiChu` text,
@@ -389,9 +390,11 @@ CREATE TABLE `giangday` (
 -- Dumping data for table `giangday`
 --
 
-INSERT INTO `giangday` (`MaGV`, `MaLop`, `NgayBatDau`, `NgayKetThuc`, `GhiChu`, `created_at`, `updated_at`) VALUES
-('GV001', 'CP2296H07', '2025-05-22', '2025-07-24', NULL, '2025-05-21 17:37:57', '2025-05-21 17:37:57'),
-('GV002', 'CP2396G11', '2025-05-22', '2025-07-23', NULL, '2025-05-21 17:43:58', '2025-05-21 17:43:58');
+INSERT INTO `giangday` (`MaGV`, `MaLop`, `MaMH`, `NgayBatDau`, `NgayKetThuc`, `GhiChu`, `created_at`, `updated_at`) VALUES
+('GV001', NULL, 'MH01', NULL, NULL, NULL, '2025-06-05 02:34:25', '2025-06-05 02:34:25'),
+('GV002', NULL, 'MH03', NULL, NULL, NULL, '2025-06-05 02:48:09', '2025-06-05 02:48:09'),
+('GV003', NULL, 'MH02', NULL, NULL, 'Giảng viên thỉnh giảng', '2025-06-05 02:47:56', '2025-06-05 02:47:56'),
+('GV006', NULL, 'MH01', NULL, NULL, NULL, '2025-06-05 02:51:29', '2025-06-05 02:51:29');
 
 -- --------------------------------------------------------
 
@@ -747,22 +750,22 @@ INSERT INTO `monhoc` (`TenMH`, `MaMH`, `GioGoc`, `GioTrienKhai`, `TietLT`, `Tiet
 ('Computer fundamentals', 'MH03', 0, 8, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
 ('Data Management with SQL server', 'MH04', 40, 40, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
 ('Database Design and Development(core)', 'MH05', 24, 16, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Dự án - Phân tích Dữ liệu với R', 'MH21', 24, 24, 1, NULL, NULL, '2025-05-22 23:22:44', '2025-05-22 23:22:44'),
 ('eProject-Website Development', 'MH06', 2, 8, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
 ('HTML5,CSS and Javascript', 'MH07', 40, 44, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
 ('Information Systems Analysis(Core)', 'MH08', 24, 12, 1, 0, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
 ('Java Programming - I', 'MH09', 36, 40, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
 ('Java Programming -II', 'MH10', 40, 42, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Khoa học Dữ liệu sử dụng R Programming', 'MH19', 36, 36, NULL, 1, NULL, '2025-05-22 23:22:07', '2025-05-22 23:22:07'),
-('Lập trình Ứng dụng bằng Python', 'MH20', 36, 36, NULL, 1, NULL, '2025-05-22 23:22:25', '2025-05-22 23:22:25'),
 ('Logic Building and Elementary Programing', 'MH11', 40, 42, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
 ('Markup Language & JSON ', 'MH12', 16, 16, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Phân tích Dữ liệu với MS Excel', 'MH15', 16, 16, NULL, NULL, 1, '2025-05-22 23:20:18', '2025-05-22 23:20:18'),
-('Phân tích Thống kê Suy luận', 'MH18', 16, 16, 1, NULL, NULL, '2025-05-22 23:21:39', '2025-05-22 23:21:39'),
 ('PHP Web Development with Laravel Framework', 'MH13', 40, 40, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
 ('Project-Java Application Development', 'MH14', 2, 12, 1, 0, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
+('Phân tích Dữ liệu với MS Excel', 'MH15', 16, 16, NULL, NULL, 1, '2025-05-22 23:20:18', '2025-05-22 23:20:18'),
+('Xử lý Dữ liệu bằng T-SQL', 'MH16', 16, 16, NULL, NULL, 1, '2025-05-22 23:20:57', '2025-05-22 23:20:57'),
 ('Quản lý Tập dữ liệu lớn với MongoDB', 'MH17', 32, 32, NULL, NULL, 1, '2025-05-22 23:21:21', '2025-05-22 23:21:21'),
-('Xử lý Dữ liệu bằng T-SQL', 'MH16', 16, 16, NULL, NULL, 1, '2025-05-22 23:20:57', '2025-05-22 23:20:57');
+('Phân tích Thống kê Suy luận', 'MH18', 16, 16, 1, NULL, NULL, '2025-05-22 23:21:39', '2025-05-22 23:21:39'),
+('Khoa học Dữ liệu sử dụng R Programming', 'MH19', 36, 36, NULL, 1, NULL, '2025-05-22 23:22:07', '2025-05-22 23:22:07'),
+('Lập trình Ứng dụng bằng Python', 'MH20', 36, 36, NULL, 1, NULL, '2025-05-22 23:22:25', '2025-05-22 23:22:25'),
+('Dự án - Phân tích Dữ liệu với R', 'MH21', 24, 24, 1, NULL, NULL, '2025-05-22 23:22:44', '2025-05-22 23:22:44');
 
 -- --------------------------------------------------------
 
@@ -953,8 +956,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('vnUtTSHDqE1phmSgYbkT1LpnRpDmIkzyEMU8xsIP', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiNElYVWRkRzNwNVMwMXpmZHRBekpraHlUbU9WUXNCSE95dDBwQjVwTSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzk6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC90b2NodWN0aGkvbGljaHRoaSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MTQ6ImNhcHRjaGFfcGhyYXNlIjtzOjU6Ilhkdlo3IjtzOjQ6InVzZXIiO3M6MTI6ImFkbWluLmtodW9uZyI7czoxMToiZGlzcGxheW5hbWUiO3M6MTA6IlRhbiBLaHVvbmciO3M6NDoicm9sZSI7czo1OiJhZG1pbiI7czoyMjoiUEhQREVCVUdCQVJfU1RBQ0tfREFUQSI7YTowOnt9fQ==', 1749024937),
-('Y4lW60tr9PMfLK8l9rMJz2W75dYKEUJEw1gEaBXy', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czo1MDoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2NhbGVuZGFyL2dldC1jYWxlbmRhci1ldmVudHMiO31zOjY6Il90b2tlbiI7czo0MDoiZXFkRE9RcFVMV0JpV2kyNkQ3ckVna1IwUFh1VGhBclJuRllYaHdJdiI7czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToieWdFUTMiO3M6MjoiaWQiO3M6ODoiMjEwMTAwMDMiO3M6NDoidXNlciI7czoxNDoiMjEwMTAwMDNsZXZhbmMiO3M6MTE6ImRpc3BsYXluYW1lIjtzOjEwOiJMw6ogVsSDbiBDIjtzOjQ6InJvbGUiO3M6Nzoic3R1ZGVudCI7czoyMjoiUEhQREVCVUdCQVJfU1RBQ0tfREFUQSI7YTowOnt9fQ==', 1749028028);
+('ZtcwCapVzepx87MLbcv2MjlU3TiKkLpwqYqOD94C', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiMWwwbnVuZmdIVWliQ1QyTGJ4bzRRTEdlclpoMWlFb05ROGw0MGVzVCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzM6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9tb25ob2MvbGlzdCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MTQ6ImNhcHRjaGFfcGhyYXNlIjtzOjU6InBXU1I4IjtzOjQ6InVzZXIiO3M6MTI6ImFkbWluLmtodW9uZyI7czoxMToiZGlzcGxheW5hbWUiO3M6MTA6IlRhbiBLaHVvbmciO3M6NDoicm9sZSI7czo1OiJhZG1pbiI7czoyMjoiUEhQREVCVUdCQVJfU1RBQ0tfREFUQSI7YTowOnt9fQ==', 1749091896);
 
 -- --------------------------------------------------------
 
@@ -1411,8 +1413,8 @@ ALTER TABLE `feedback`
 -- Indexes for table `giangday`
 --
 ALTER TABLE `giangday`
-  ADD PRIMARY KEY (`MaGV`,`MaLop`),
-  ADD KEY `MaLop` (`MaLop`);
+  ADD PRIMARY KEY (`MaGV`) USING BTREE,
+  ADD KEY `giangday_ibfk_2` (`MaMH`);
 
 --
 -- Indexes for table `giaovien`
@@ -1508,7 +1510,8 @@ ALTER TABLE `migrations`
 -- Indexes for table `monhoc`
 --
 ALTER TABLE `monhoc`
-  ADD PRIMARY KEY (`TenMH`);
+  ADD PRIMARY KEY (`MaMH`) USING BTREE,
+  ADD KEY `TenMH` (`TenMH`) USING BTREE;
 
 --
 -- Indexes for table `ngaynghi`
@@ -1772,7 +1775,7 @@ ALTER TABLE `feedback`
 --
 ALTER TABLE `giangday`
   ADD CONSTRAINT `giangday_ibfk_1` FOREIGN KEY (`MaGV`) REFERENCES `giaovien` (`MaGV`),
-  ADD CONSTRAINT `giangday_ibfk_2` FOREIGN KEY (`MaLop`) REFERENCES `lophoc` (`MaLop`);
+  ADD CONSTRAINT `giangday_ibfk_2` FOREIGN KEY (`MaMH`) REFERENCES `monhoc` (`MaMH`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `giaovien`
