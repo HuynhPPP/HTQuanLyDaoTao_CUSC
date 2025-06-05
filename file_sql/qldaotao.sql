@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 05, 2025 at 02:51 AM
+-- Generation Time: Jun 05, 2025 at 04:44 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -104,7 +104,6 @@ CREATE TABLE `canbo` (
 --
 
 INSERT INTO `canbo` (`MaCB`, `HoTenCB`, `GioiTinh`, `Email`, `EmailCUSC`, `Sdt`, `MaHV`, `TenChucVu`, `CongViecPhuTrach`, `MaDV`, `MaBang`, `MaTapHuan`, `ThoiGianBDCongTacCUSC`, `ThoiGianKTCongTacCUSC`, `created_at`, `updated_at`) VALUES
-('CB001', 'Nguyễn Văn An', 1, 'ngvanan@gmail.com', NULL, '0912345678', 'HV001', 'Giảng viên', 'Giảng dạy', 'DV001', 'BC001', 'TH001', '2020-01-01', NULL, '2025-05-16 13:36:49', '2025-05-16 13:36:49'),
 ('CB003', 'Lê Văn Cường', 1, 'levcuong@gmail.com', NULL, '0934567890', 'HV003', 'Chuyên viên', 'Quản trị hệ thống', 'DV003', 'BC003', 'TH003', '2019-08-20', '2022-12-31', '2025-05-16 13:36:49', '2025-05-16 13:36:49');
 
 -- --------------------------------------------------------
@@ -391,10 +390,8 @@ CREATE TABLE `giangday` (
 --
 
 INSERT INTO `giangday` (`MaGV`, `MaLop`, `MaMH`, `NgayBatDau`, `NgayKetThuc`, `GhiChu`, `created_at`, `updated_at`) VALUES
-('GV001', NULL, 'MH01', NULL, NULL, NULL, '2025-06-05 02:34:25', '2025-06-05 02:34:25'),
-('GV002', NULL, 'MH03', NULL, NULL, NULL, '2025-06-05 02:48:09', '2025-06-05 02:48:09'),
-('GV003', NULL, 'MH02', NULL, NULL, 'Giảng viên thỉnh giảng', '2025-06-05 02:47:56', '2025-06-05 02:47:56'),
-('GV006', NULL, 'MH01', NULL, NULL, NULL, '2025-06-05 02:51:29', '2025-06-05 02:51:29');
+('GV001', 'CP2296H07', 'MH21', NULL, NULL, 'Giảng viên chính', '2025-06-05 16:03:21', '2025-06-05 16:09:23'),
+('GV001', 'CP2396G11', 'MH21', NULL, NULL, 'Giảng viên chính', '2025-06-05 16:09:23', '2025-06-05 16:09:23');
 
 -- --------------------------------------------------------
 
@@ -882,8 +879,8 @@ CREATE TABLE `phieuphancongthi` (
 --
 
 INSERT INTO `phieuphancongthi` (`MaPhanCong`, `MaLichThi`, `MaCB`, `VaiTro`, `created_at`, `updated_at`) VALUES
-(1, 'LT2505240708', 'CB001', 'Cán bộ coi thi', '2025-05-24 08:01:47', '2025-05-24 08:01:47'),
-(2, 'LT2505240708', 'CB003', 'Cán bộ coi thi', '2025-05-24 08:01:47', '2025-05-24 08:01:47');
+(3, 'LT2505240708', 'CB003', 'Cán bộ coi thi', '2025-06-05 13:38:02', '2025-06-05 13:38:02'),
+(4, 'LT2505240708', 'GV001', 'Cán bộ coi thi', '2025-06-05 13:38:02', '2025-06-05 13:38:02');
 
 -- --------------------------------------------------------
 
@@ -956,7 +953,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('ZtcwCapVzepx87MLbcv2MjlU3TiKkLpwqYqOD94C', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiMWwwbnVuZmdIVWliQ1QyTGJ4bzRRTEdlclpoMWlFb05ROGw0MGVzVCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzM6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9tb25ob2MvbGlzdCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MTQ6ImNhcHRjaGFfcGhyYXNlIjtzOjU6InBXU1I4IjtzOjQ6InVzZXIiO3M6MTI6ImFkbWluLmtodW9uZyI7czoxMToiZGlzcGxheW5hbWUiO3M6MTA6IlRhbiBLaHVvbmciO3M6NDoicm9sZSI7czo1OiJhZG1pbiI7czoyMjoiUEhQREVCVUdCQVJfU1RBQ0tfREFUQSI7YTowOnt9fQ==', 1749091896);
+('eLpmvAQBqbAGYHz8Ptaewyamf9ig9kMMs4yJQGxm', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoieEJwZHdOSEdlenpJZXNtTDQ0c0RXOVkzMnZUS1NqdENoQUViRVg1MCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NjI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9tb25ob2MvbW9uLWhvYy9waGFuLWNvbmctZ2lhbmctdmllbi9NSDIxIjt9czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToiSlFnVEoiO3M6NDoidXNlciI7czoxMjoiYWRtaW4ua2h1b25nIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxMDoiVGFuIEtodW9uZyI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjtzOjIyOiJQSFBERUJVR0JBUl9TVEFDS19EQVRBIjthOjA6e319', 1749141832),
+('ZwNQ2dNWGLhjPPNIyGg2WHJybOtL5fB6BbCA5vDd', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il90b2tlbiI7czo0MDoiTVNxQ09OSjY2cU91aEtTZ25BRjVHemVwYnNFZklidWU1UW5DY1dCciI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9naWFvLXZpZW4vbGljaC10aGkiO31zOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJmdFA3eiI7czoyOiJpZCI7czo1OiJHVjAwMSI7czo0OiJ1c2VyIjtzOjE2OiJndjAwMW5ndXllbnZhbmFuIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxNjoiTmd1eeG7hW4gVsSDbiBBbiI7czo0OiJyb2xlIjtzOjc6InRlYWNoZXIiO3M6MjI6IlBIUERFQlVHQkFSX1NUQUNLX0RBVEEiO2E6MDp7fX0=', 1749141589);
 
 -- --------------------------------------------------------
 
@@ -1413,7 +1411,6 @@ ALTER TABLE `feedback`
 -- Indexes for table `giangday`
 --
 ALTER TABLE `giangday`
-  ADD PRIMARY KEY (`MaGV`) USING BTREE,
   ADD KEY `giangday_ibfk_2` (`MaMH`);
 
 --
@@ -1543,8 +1540,7 @@ ALTER TABLE `phieulido`
 --
 ALTER TABLE `phieuphancongthi`
   ADD PRIMARY KEY (`MaPhanCong`),
-  ADD KEY `phieuphancongthi_ibfk_1` (`MaLichThi`),
-  ADD KEY `phieuphancongthi_ibfk_2` (`MaCB`);
+  ADD KEY `phieuphancongthi_ibfk_1` (`MaLichThi`);
 
 --
 -- Indexes for table `phonghoc`
@@ -1683,7 +1679,7 @@ ALTER TABLE `phieulido`
 -- AUTO_INCREMENT for table `phieuphancongthi`
 --
 ALTER TABLE `phieuphancongthi`
-  MODIFY `MaPhanCong` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `MaPhanCong` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `sinhvien_duthi`
@@ -1774,7 +1770,6 @@ ALTER TABLE `feedback`
 -- Constraints for table `giangday`
 --
 ALTER TABLE `giangday`
-  ADD CONSTRAINT `giangday_ibfk_1` FOREIGN KEY (`MaGV`) REFERENCES `giaovien` (`MaGV`),
   ADD CONSTRAINT `giangday_ibfk_2` FOREIGN KEY (`MaMH`) REFERENCES `monhoc` (`MaMH`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
@@ -1823,8 +1818,7 @@ ALTER TABLE `ngaytuhoc`
 -- Constraints for table `phieuphancongthi`
 --
 ALTER TABLE `phieuphancongthi`
-  ADD CONSTRAINT `phieuphancongthi_ibfk_1` FOREIGN KEY (`MaLichThi`) REFERENCES `lichthi` (`MaLichThi`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `phieuphancongthi_ibfk_2` FOREIGN KEY (`MaCB`) REFERENCES `canbo` (`MaCB`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `phieuphancongthi_ibfk_1` FOREIGN KEY (`MaLichThi`) REFERENCES `lichthi` (`MaLichThi`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `sinhvien_duthi`
