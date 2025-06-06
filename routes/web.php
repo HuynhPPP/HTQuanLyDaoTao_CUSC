@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LDAPConnection;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\CaptchaController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\NhanSu\SinhVienController;
 use App\Http\Controllers\NhanSu\CanBoController;
 use App\Http\Controllers\NhanSu\GiaoVienController;
@@ -18,6 +19,8 @@ use App\Http\Controllers\DaoTao\MonHocController;
 use App\Http\Controllers\DaoTao\KhoaDaoTaoController;
 use App\Http\Controllers\DaoTao\HocKiController;
 use App\Http\Controllers\TuyenSinh\TuyenSinhController;
+use App\Http\Controllers\GiaoVien\LichCoiThiController;
+use App\Http\Controllers\GiaoVien\NhapDiemController;
 use App\Http\Controllers\Facilities\DanhSachPhongController;
 use App\Http\Controllers\Facilities\LopHocController;
 use App\Http\Controllers\Facilities\PhongHocController;
@@ -67,11 +70,38 @@ Route::middleware([RoleMiddleware::class . ':admin,staff'])->group(function () {
         // Các route đặc biệt của sinh viên (không chuẩn REST nhưng vẫn nên nhóm tại đây)
         Route::get('/{maSV}/hoso', [SinhVienController::class, 'showHoSo'])->name('student.hoso');
         Route::get('/{maSV}/tinhtrang', [SinhVienController::class, 'showTinhTrang'])->name('student.tinhtrang');
+
+
+        Route::get('/dong-bo-tai-khoan-ldap', [SinhVienController::class, 'dongBoTaiKhoanLDAP'])
+            ->name('dongbo.taikhoan.ldap');
+
+        Route::get('/kiem-tra-dong-bo-ldap', [SinhVienController::class, 'kiemTraDongBoLDAP'])
+            ->name('ldap.kiem-tra-dong-bo');
+
+        Route::get('/ldap/danh-sach-tai-khoan', [SinhVienController::class, 'xuatDanhSachTaiKhoanMoi'])
+            ->name('ldap.account.list');
+
+        Route::post('/ldap/gui-thong-tin/{id}', [SinhVienController::class, 'guiThongTinTaiKhoan'])
+            ->name('ldap.account.send');
     });
     Route::prefix('staff')->group(function () {
         Route::get('/list', [CanBoController::class, 'index'])->name('staff.index');
         Route::get('/create', [CanBoController::class, 'create'])->name('staff.create');
         Route::post('/store', [CanBoController::class, 'store'])->name('staff.store');
+
+        // Route đặc biệt phải đặt trước route {maGV}
+        Route::get('/dong-bo-tai-khoan-canbo-ldap', [CanBoController::class, 'dongBoTaiKhoanLDAP'])
+            ->name('staff.dongbo.taikhoan.ldap');
+
+        Route::get('/kiem-tra-dong-bo-canbo-ldap', [CanBoController::class, 'kiemTraDongBoLDAP'])
+            ->name('staff.ldap.kiem-tra-dong-bo');
+
+        Route::get('/ldap/danh-sach-tai-khoan-canbo', [CanBoController::class, 'xuatDanhSachTaiKhoanMoi'])
+            ->name('staff.ldap.account.list');
+
+        Route::post('/ldap/gui-thong-tin-gv/{id}', [CanBoController::class, 'guiThongTinTaiKhoan'])
+            ->name('staff.ldap.account.send');
+
         Route::get('/{maCB}', [CanBoController::class, 'show'])->name('staff.show');
         Route::get('/edit/{maCB}', [CanBoController::class, 'edit'])->name('staff.edit');
         Route::post('/update/{maCB}', [CanBoController::class, 'update'])->name('staff.update');
@@ -82,11 +112,26 @@ Route::middleware([RoleMiddleware::class . ':admin,staff'])->group(function () {
         Route::get('/list', [GiaoVienController::class, 'index'])->name('giaovien.index');
         Route::get('/create', [GiaoVienController::class, 'create'])->name('giaovien.create');
         Route::post('/store', [GiaoVienController::class, 'store'])->name('giaovien.store');
+        Route::post('/import', [GiaoVienController::class, 'import'])->name('giaovien.import');
+
+        // Route đặc biệt phải đặt trước route {maGV}
+        Route::get('/dong-bo-tai-khoan-gv-ldap', [GiaoVienController::class, 'dongBoTaiKhoanGVLDAP'])
+            ->name('giaovien.dongbo.taikhoan.ldap');
+
+        Route::get('/kiem-tra-dong-bo-gv-ldap', [GiaoVienController::class, 'kiemTraDongBoGVLDAP'])
+            ->name('giaovien.ldap.kiem-tra-dong-bo');
+
+        Route::get('/ldap/danh-sach-tai-khoan-gv', [GiaoVienController::class, 'xuatDanhSachTaiKhoanMoi'])
+            ->name('giaovien.ldap.account.list');
+
+        Route::post('/ldap/gui-thong-tin-gv/{id}', [GiaoVienController::class, 'guiThongTinTaiKhoan'])
+            ->name('giaovien.ldap.account.send');
+
+        // Cuối cùng mới đến các route động
         Route::get('/{maGV}', [GiaoVienController::class, 'show'])->name('giaovien.show');
         Route::get('/edit/{maGV}', [GiaoVienController::class, 'edit'])->name('giaovien.edit');
         Route::post('/update/{maGV}', [GiaoVienController::class, 'update'])->name('giaovien.update');
         Route::delete('/destroy/{maGV}', [GiaoVienController::class, 'destroy'])->name('giaovien.destroy');
-        Route::post('/import', [GiaoVienController::class, 'import'])->name('giaovien.import');
     });
     Route::prefix('bangcapcanbo')->group(function () {
         Route::get('/list', [BangCapCanBoController::class, 'index'])->name('bangcapcanbo.index');
@@ -188,6 +233,19 @@ Route::middleware([RoleMiddleware::class . ':admin,staff'])->group(function () {
         Route::get('/edit/{tenMH}', [MonHocController::class, 'edit'])->name('monhoc.edit');
         Route::post('/update/{tenMH}', [MonHocController::class, 'update'])->name('monhoc.update');
         Route::delete('/destroy/{tenMH}', [MonHocController::class, 'destroy'])->name('monhoc.destroy');
+        Route::get('/mon-hoc/phan-cong-giang-vien/{maMH}', [MonHocController::class, 'addTeacherForm'])
+            ->name('monhoc.add-teacher');
+
+        Route::post('/mon-hoc/phan-cong-giang-vien/{maMH}', [MonHocController::class, 'storeTeacher'])->name('monhoc.store-teacher');
+        // Xoá giảng viên khỏi môn học
+        Route::delete('/mon-hoc/{MaMH}/remove-teacher/{maGV}', [MonHocController::class, 'removeTeacher'])
+            ->name('monhoc.remove-teacher');
+
+        // Chỉnh sửa phân công giảng viên
+        Route::get('/mon-hoc/{MaMH}/edit-teacher/{maGV}', [MonHocController::class, 'editTeacherAssignment'])
+            ->name('monhoc.edit-teacher');
+        Route::put('/mon-hoc/{MaMH}/update-teacher/{maGV}', [MonHocController::class, 'updateTeacherAssignment'])
+            ->name('monhoc.update-teacher');
     });
     Route::prefix('tuyensinh')->group(function () {
         Route::get('/', [TuyenSinhController::class, 'index'])->name('tuyensinh.index');
@@ -217,6 +275,7 @@ Route::middleware([RoleMiddleware::class . ':admin,staff'])->group(function () {
 
 // Các route lấy dữ liệu chương trình, lớp, học kỳ: cho admin, staff, teacher
 Route::middleware([RoleMiddleware::class . ':admin,staff,teacher'])->group(function () {
+
     Route::get('/getChuongTrinh/{TenKhoaDaoTao}', [PagesController::class, 'getChuongTrinh']);
     Route::get('/getLop/{MaChuongTrinh}', [PagesController::class, 'getLop']);
     Route::get('/getHK/{MaChuongTrinh}', [PagesController::class, 'getHK']);
@@ -256,6 +315,48 @@ Route::middleware([RoleMiddleware::class . ':admin,staff,teacher'])->group(funct
         Route::get('/bangdiem/{maLop}/{tenMH}', [BangDiemController::class, 'show'])->name('bangdiem.show');
         Route::post('/bangdiem/import', [BangDiemController::class, 'import'])->name('bangdiem.import');
         Route::get('/bangdiem/export/{maLop}/{tenMH}', [BangDiemController::class, 'export'])->name('bangdiem.export');
+    });
+});
+
+Route::middleware([RoleMiddleware::class . ':teacher'])->group(function () {
+    Route::get('/giao-vien/ho-so', [GiaoVienController::class, 'profile'])->name('giaovien.profile');
+    Route::post('/giao-vien/ho-so/cap-nhat', [GiaoVienController::class, 'updateProfile'])
+        ->name('giaovien.profile.update');
+    Route::post('/giao-vien/doi-mat-khau', [GiaoVienController::class, 'changePassword'])
+        ->name('giaovien.change.password');
+
+    // Lịch coi thi
+    Route::prefix('giao-vien/lich-thi')->group(function () {
+        Route::get('/', [LichCoiThiController::class, 'index'])
+            ->name('giaovien.lichthi.index');
+        Route::get('/{maLichThi}', [LichCoiThiController::class, 'chiTietLichThi'])
+            ->name('giaovien.lichthi.chi-tiet');
+    });
+
+    // Nhập điểm thi
+    Route::prefix('giao-vien/nhap-diem-thi')->group(function () {
+        Route::get('/', [NhapDiemController::class, 'danhSachLopDay'])
+            ->name('giaovien.nhapdiemthi.danh-sach-mon');
+        Route::get('/mon-hoc/{tenMH}', [NhapDiemController::class, 'danhSachLichThi'])
+            ->name('giaovien.nhapdiemthi.danh-sach-lichthi');
+        Route::get('/{maLichThi}', [NhapDiemController::class, 'nhapDiem'])
+            ->name('giaovien.nhapdiemthi.nhap-diem');
+        Route::post('/{maLichThi}', [NhapDiemController::class, 'luuDiem'])
+            ->name('giaovien.nhapdiemthi.luu-diem');
+    });
+});
+
+Route::middleware([RoleMiddleware::class . ':student'])->group(function () {
+    Route::get('/sinh-vien/ho-so', [SinhVienController::class, 'profile'])->name('student.profile');
+    Route::post('/sinh-vien/ho-so/cap-nhat', [SinhVienController::class, 'updateProfile'])
+        ->name('student.profile.update');
+    Route::post('/sinh-vien/doi-mat-khau', [SinhVienController::class, 'changePassword'])
+        ->name('student.change.password');
+
+    Route::prefix('calendar')->group(function () {
+        Route::get('/student/list', [SinhVienController::class, 'StudentCalendar'])->name('student.calendar.list');
+        // routes/web.php
+        Route::get('/get-calendar-events', [CalendarController::class, 'getEvents']);
     });
 });
 

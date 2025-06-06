@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 29, 2025 at 09:29 AM
+-- Generation Time: Jun 05, 2025 at 04:44 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -85,6 +85,7 @@ CREATE TABLE `canbo` (
   `HoTenCB` varchar(30) DEFAULT NULL,
   `GioiTinh` tinyint(1) DEFAULT NULL,
   `Email` varchar(40) DEFAULT NULL,
+  `EmailCUSC` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `Sdt` varchar(15) DEFAULT NULL,
   `MaHV` varchar(12) DEFAULT NULL,
   `TenChucVu` varchar(30) DEFAULT NULL,
@@ -102,9 +103,8 @@ CREATE TABLE `canbo` (
 -- Dumping data for table `canbo`
 --
 
-INSERT INTO `canbo` (`MaCB`, `HoTenCB`, `GioiTinh`, `Email`, `Sdt`, `MaHV`, `TenChucVu`, `CongViecPhuTrach`, `MaDV`, `MaBang`, `MaTapHuan`, `ThoiGianBDCongTacCUSC`, `ThoiGianKTCongTacCUSC`, `created_at`, `updated_at`) VALUES
-('CB001', 'Nguyễn Văn An', 1, 'ngvanan@gmail.com', '0912345678', 'HV001', 'Giảng viên', 'Giảng dạy', 'DV001', 'BC001', 'TH001', '2020-01-01', NULL, '2025-05-16 13:36:49', '2025-05-16 13:36:49'),
-('CB003', 'Lê Văn Cường', 1, 'levcuong@gmail.com', '0934567890', 'HV003', 'Chuyên viên', 'Quản trị hệ thống', 'DV003', 'BC003', 'TH003', '2019-08-20', '2022-12-31', '2025-05-16 13:36:49', '2025-05-16 13:36:49');
+INSERT INTO `canbo` (`MaCB`, `HoTenCB`, `GioiTinh`, `Email`, `EmailCUSC`, `Sdt`, `MaHV`, `TenChucVu`, `CongViecPhuTrach`, `MaDV`, `MaBang`, `MaTapHuan`, `ThoiGianBDCongTacCUSC`, `ThoiGianKTCongTacCUSC`, `created_at`, `updated_at`) VALUES
+('CB003', 'Lê Văn Cường', 1, 'levcuong@gmail.com', NULL, '0934567890', 'HV003', 'Chuyên viên', 'Quản trị hệ thống', 'DV003', 'BC003', 'TH003', '2019-08-20', '2022-12-31', '2025-05-16 13:36:49', '2025-05-16 13:36:49');
 
 -- --------------------------------------------------------
 
@@ -246,18 +246,20 @@ INSERT INTO `danhsachngaynghi` (`TenTKB`, `MaNgayNghi`) VALUES
 
 CREATE TABLE `danhsachphong` (
   `MaLop` varchar(12) NOT NULL,
-  `TenPhong` varchar(20) NOT NULL
+  `TenPhong` varchar(20) NOT NULL,
+  `NgaySuDung` date DEFAULT NULL,
+  `Ca` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `danhsachphong`
 --
 
-INSERT INTO `danhsachphong` (`MaLop`, `TenPhong`) VALUES
-('CP2396G11', 'Class1'),
-('CP2296H07', 'Class2'),
-('CP2396M02', 'Class2'),
-('CP2396M02', 'Lab2');
+INSERT INTO `danhsachphong` (`MaLop`, `TenPhong`, `NgaySuDung`, `Ca`) VALUES
+('CP2296H07', 'Class2', NULL, NULL),
+('CP2396G11', 'Class1', NULL, NULL),
+('CP2396M02', 'Class2', NULL, NULL),
+('CP2396M02', 'Lab2', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -283,7 +285,11 @@ INSERT INTO `danhsachsv` (`MaLop`, `MaSV`) VALUES
 ('CP2396G11', '23000047'),
 ('CP2296H07', '23000054'),
 ('CP2296H07', '23000055'),
-('CP2296H07', '23000057');
+('CP2296H07', '23000057'),
+('CP2296H07', '23000096'),
+('CP2296H07', '23000097'),
+('CP2296H07', '23000098'),
+('CP2296H07', '23000099');
 
 -- --------------------------------------------------------
 
@@ -295,8 +301,12 @@ CREATE TABLE `diemthi` (
   `MaSV` varchar(12) NOT NULL,
   `TenMH` varchar(255) NOT NULL,
   `MaLop` varchar(12) DEFAULT NULL,
+  `MaLichThi` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `LanThi` tinyint NOT NULL DEFAULT '1',
   `Diem` float DEFAULT NULL,
+  `DiemThucHanh` float DEFAULT NULL,
+  `DiemLyThuyet` float DEFAULT NULL,
+  `DiemBaiTap` float DEFAULT NULL,
   `GhiChu` text,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -366,7 +376,8 @@ CREATE TABLE `feedback` (
 
 CREATE TABLE `giangday` (
   `MaGV` varchar(12) NOT NULL,
-  `MaLop` varchar(12) NOT NULL,
+  `MaLop` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `MaMH` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `NgayBatDau` date DEFAULT NULL,
   `NgayKetThuc` date DEFAULT NULL,
   `GhiChu` text,
@@ -378,9 +389,9 @@ CREATE TABLE `giangday` (
 -- Dumping data for table `giangday`
 --
 
-INSERT INTO `giangday` (`MaGV`, `MaLop`, `NgayBatDau`, `NgayKetThuc`, `GhiChu`, `created_at`, `updated_at`) VALUES
-('GV001', 'CP2296H07', '2025-05-22', '2025-07-24', NULL, '2025-05-21 17:37:57', '2025-05-21 17:37:57'),
-('GV002', 'CP2396G11', '2025-05-22', '2025-07-23', NULL, '2025-05-21 17:43:58', '2025-05-21 17:43:58');
+INSERT INTO `giangday` (`MaGV`, `MaLop`, `MaMH`, `NgayBatDau`, `NgayKetThuc`, `GhiChu`, `created_at`, `updated_at`) VALUES
+('GV001', 'CP2296H07', 'MH21', NULL, NULL, 'Giảng viên chính', '2025-06-05 16:03:21', '2025-06-05 16:09:23'),
+('GV001', 'CP2396G11', 'MH21', NULL, NULL, 'Giảng viên chính', '2025-06-05 16:09:23', '2025-06-05 16:09:23');
 
 -- --------------------------------------------------------
 
@@ -393,6 +404,7 @@ CREATE TABLE `giaovien` (
   `HoTenGV` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `GioiTinh` tinyint(1) DEFAULT NULL,
   `Email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `EmailCUSC` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `Sdt` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `MaHV` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `TenChucVu` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
@@ -411,15 +423,15 @@ CREATE TABLE `giaovien` (
 -- Dumping data for table `giaovien`
 --
 
-INSERT INTO `giaovien` (`MaGV`, `HoTenGV`, `GioiTinh`, `Email`, `Sdt`, `MaHV`, `TenChucVu`, `MaDV`, `MaBang`, `LoaiGV`, `ChuyenNganh`, `GhiChu`, `NgayBatDauCongTac`, `NgayKetThucCongTac`, `created_at`, `updated_at`) VALUES
-('GV001', 'Nguyễn Văn An', 1, 'ngvanan@gmail.com', '0912345678', 'HV001', 'Giảng viên', 'DV001', 'BC001', 'CoHuu', 'Khoa học máy tính', 'Giảng viên chính', '2020-01-01', NULL, '2025-05-16 07:53:41', '2025-05-16 07:53:41'),
-('GV002', 'Trần Thị Bình', 0, 'tranthib@gmail.com', '0923456789', 'HV002', 'Trưởng khoa', 'DV002', 'BC002', 'MoiGiang', 'Kinh tế học', 'Giảng viên thỉnh giảng', '2018-05-15', NULL, '2025-05-16 07:53:41', '2025-05-16 07:53:41'),
-('GV003', 'Phạm Đức Linh', 0, 'phamduclinh@cusc.vn', '0943526107', 'HV002', 'Giảng viên', 'DV003', 'BC002', 'MoiGiang', 'Hệ thống thông tin', NULL, '2018-06-04', NULL, '2025-05-22 07:40:53', '2025-05-22 07:40:53'),
-('GV004', 'Hoàng Quang Giang', 0, 'hoangquanggiang@cusc.vn', '0938554271', 'HV003', 'Giảng viên', 'DV002', 'B001', 'CoHuu', 'Mạng máy tính', NULL, '2018-06-06', NULL, '2025-05-22 07:40:53', '2025-05-22 07:40:53'),
-('GV005', 'Hoàng Công Nam', 0, 'hoangcongnam@cusc.vn', '0915354646', 'HV003', 'Giảng viên', 'DV003', 'BC003', 'MoiGiang', 'Trí tuệ nhân tạo', NULL, '2019-05-09', NULL, '2025-05-22 07:40:53', '2025-05-22 07:40:53'),
-('GV006', 'Phan Hữu Giang', 1, 'phanhuugiang@cusc.vn', '0987506679', 'HV001', 'Giảng viên', 'DV001', 'B001', 'CoHuu', 'Trí tuệ nhân tạo', NULL, '2021-12-19', NULL, '2025-05-22 07:40:53', '2025-05-22 07:40:53'),
-('GV007', 'Phan Đức Phúc', 1, 'phanducphuc@cusc.vn', '0982049005', 'HV002', 'Giảng viên', 'DV001', 'B002', 'CoHuu', 'Trí tuệ nhân tạo', NULL, '2018-12-11', NULL, '2025-05-22 07:40:53', '2025-05-22 07:40:53'),
-('GV008', 'Đặng Hoàng Giang', 1, 'danghoanggiang@cusc.vn', '0981259529', 'HV002', 'Giảng viên', 'CNTT', 'B003', 'MoiGiang', 'Trí tuệ nhân tạo', NULL, '2020-06-14', NULL, '2025-05-22 07:40:53', '2025-05-22 07:40:53');
+INSERT INTO `giaovien` (`MaGV`, `HoTenGV`, `GioiTinh`, `Email`, `EmailCUSC`, `Sdt`, `MaHV`, `TenChucVu`, `MaDV`, `MaBang`, `LoaiGV`, `ChuyenNganh`, `GhiChu`, `NgayBatDauCongTac`, `NgayKetThucCongTac`, `created_at`, `updated_at`) VALUES
+('GV001', 'Nguyễn Văn An', 1, 'ngvanan@gmail.com', 'gv001nguyenvanan@cusc.ctu.vn', '0912345678', 'HV001', 'Giảng viên', 'DV003', 'BC001', 'CoHuu', 'Khoa học máy tính', 'Giảng viên chính', '2020-01-01', NULL, '2025-05-16 07:53:41', '2025-06-03 06:13:21'),
+('GV002', 'Trần Thị Bình', 0, 'tranthib@gmail.com', 'gv002tranthibinh@cusc.ctu.vn', '0923456789', 'HV002', 'Trưởng khoa', 'DV002', 'BC002', 'MoiGiang', 'Kinh tế học', 'Giảng viên thỉnh giảng', '2018-05-15', NULL, '2025-05-16 07:53:41', '2025-06-03 06:13:21'),
+('GV003', 'Phạm Đức Linh', 0, 'phamduclinh@cusc.vn', 'gv003phamduclinh@cusc.ctu.vn', '0943526107', 'HV002', 'Giảng viên', 'DV003', 'BC002', 'MoiGiang', 'Hệ thống thông tin', NULL, '2018-06-04', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:21'),
+('GV004', 'Hoàng Quang Giang', 0, 'hoangquanggiang@cusc.vn', 'gv004hoangquanggiang@cusc.ctu.vn', '0938554271', 'HV003', 'Giảng viên', 'DV002', 'B001', 'CoHuu', 'Mạng máy tính', NULL, '2018-06-06', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:21'),
+('GV005', 'Hoàng Công Nam', 0, 'hoangcongnam@cusc.vn', 'gv005hoangcongnam@cusc.ctu.vn', '0915354646', 'HV003', 'Giảng viên', 'DV003', 'BC003', 'MoiGiang', 'Khoa học dữ liệu', NULL, '2019-05-09', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:22'),
+('GV006', 'Phan Hữu Giang', 1, 'phanhuugiang@cusc.vn', 'gv006phanhuugiang@cusc.ctu.vn', '0987506679', 'HV001', 'Giảng viên', 'DV001', 'B001', 'CoHuu', 'Trí tuệ nhân tạo', NULL, '2021-12-19', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:22'),
+('GV007', 'Phan Đức Phúc', 1, 'phanducphuc@cusc.vn', 'gv007phanducphuc@cusc.ctu.vn', '0982049005', 'HV002', 'Giảng viên', 'DV001', 'B002', 'CoHuu', 'Trí tuệ nhân tạo', NULL, '2018-12-11', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:22'),
+('GV008', 'Đặng Hoàng Giang', 1, 'danghoanggiang@cusc.vn', 'gv008danghoanggiang@cusc.ctu.vn', '0981259529', 'HV002', 'Giảng viên', 'CNTT', 'B003', 'MoiGiang', 'Trí tuệ nhân tạo', NULL, '2020-06-14', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:22');
 
 -- --------------------------------------------------------
 
@@ -587,6 +599,43 @@ INSERT INTO `khunggio` (`TenKhungGio`, `ThoiGian`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `ldap_accounts`
+--
+
+CREATE TABLE `ldap_accounts` (
+  `id` bigint UNSIGNED NOT NULL,
+  `MaTaiKhoan` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `full_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `initial_password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` enum('student','teacher','staff') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'student',
+  `is_sent` tinyint(1) NOT NULL DEFAULT '0',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `ldap_accounts`
+--
+
+INSERT INTO `ldap_accounts` (`id`, `MaTaiKhoan`, `username`, `email`, `full_name`, `initial_password`, `role`, `is_sent`, `is_active`, `created_at`, `updated_at`) VALUES
+(13, '21010003', '21010003levanc', '21010003levanc@cusc.ctu.vn', 'Lê Văn C', '$2y$12$MfIGAS.bEtBUYiEl.VEI1u.wYdnrLHWcmnyrjYOWkZrL0ptFEroTK', 'student', 1, 1, '2025-06-02 23:55:48', '2025-06-03 20:03:15'),
+(14, '23000001', '23000001ovanan', '23000001ovanan@cusc.ctu.vn', 'Đỗ Văn An', '7@lwrYtMzb4@', 'student', 0, 1, '2025-06-02 23:55:48', '2025-06-02 23:55:48'),
+(15, '23000002', '23000002ohuuhung', '23000002ohuuhung@cusc.ctu.vn', 'Đỗ Hữu Hùng', 'PkP++4z;lh(Z', 'student', 0, 1, '2025-06-02 23:55:48', '2025-06-02 23:55:48'),
+(32, 'GV001', 'gv001nguyenvanan', 'gv001nguyenvanan@cusc.ctu.vn', 'Nguyễn Văn An', '$2y$12$k99GuVyQPJ5khWkfUWLE8.SIyeddGhB4qqnSaYrXaH0UgeStCQLG6', 'teacher', 1, 1, '2025-06-03 06:13:21', '2025-06-03 19:32:06'),
+(33, 'GV002', 'gv002tranthibinh', 'gv002tranthibinh@cusc.ctu.vn', 'Trần Thị Bình', '6#u&ev4.Yxt#', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
+(34, 'GV003', 'gv003phamduclinh', 'gv003phamduclinh@cusc.ctu.vn', 'Phạm Đức Linh', '7S>1#:Y7E4En', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
+(35, 'GV004', 'gv004hoangquanggiang', 'gv004hoangquanggiang@cusc.ctu.vn', 'Hoàng Quang Giang', '|L}D@4oq4}wZ', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
+(36, 'GV005', 'gv005hoangcongnam', 'gv005hoangcongnam@cusc.ctu.vn', 'Hoàng Công Nam', '20qr(=f,&6Lo', 'teacher', 0, 1, '2025-06-03 06:13:22', '2025-06-03 06:13:22'),
+(37, 'GV006', 'gv006phanhuugiang', 'gv006phanhuugiang@cusc.ctu.vn', 'Phan Hữu Giang', 'Pa)T2^bTR{E?', 'teacher', 0, 1, '2025-06-03 06:13:22', '2025-06-03 06:13:22'),
+(38, 'GV007', 'gv007phanducphuc', 'gv007phanducphuc@cusc.ctu.vn', 'Phan Đức Phúc', '^%Ag80SPSQFf', 'teacher', 0, 1, '2025-06-03 06:13:22', '2025-06-03 06:13:22'),
+(39, 'GV008', 'gv008danghoanggiang', 'gv008danghoanggiang@cusc.ctu.vn', 'Đặng Hoàng Giang', ';6+399Oxc@4i', 'teacher', 0, 1, '2025-06-03 06:13:22', '2025-06-03 06:13:22');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `lichthi`
 --
 
@@ -609,7 +658,9 @@ CREATE TABLE `lichthi` (
 --
 
 INSERT INTO `lichthi` (`MaLichThi`, `MaLop`, `TenMH`, `NgayThi`, `KhungGio`, `PhongThi`, `HinhThucThi`, `LanThi`, `GhiChu`, `created_at`, `updated_at`) VALUES
-('LT2505240708', 'CP2296H07', 'Phân tích Dữ liệu với MS Excel', '2025-06-24', '13:00 - 13:40', 'Class1', 'Trắc nghiệm', 1, NULL, '2025-05-24 07:08:34', '2025-05-29 07:51:16');
+('LT2505240708', 'CP2296H07', 'Phân tích Dữ liệu với MS Excel', '2025-06-24', '13:00 - 13:40', 'Class1', 'Trắc nghiệm', 1, NULL, '2025-05-24 07:08:34', '2025-05-29 07:51:16'),
+('LT2506040812', 'CP2296H07', 'Dự án - Phân tích Dữ liệu với R', '2025-06-25', '08:00 - 08:30', 'Lab4', 'Thực hành', 1, NULL, '2025-06-04 08:12:17', '2025-06-04 08:12:35'),
+('LT2506040813', 'CP2296H07', 'Phân tích Dữ liệu với MS Excel', '2025-06-24', '16:00 - 16:30', 'Lab1', 'Thực hành', 1, NULL, '2025-06-04 08:13:42', '2025-06-04 08:13:42');
 
 -- --------------------------------------------------------
 
@@ -662,7 +713,11 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (11, '2025_05_19_134816_create_tainguyen_hoctap_table', 4),
 (12, '2025_05_19_134831_create_tuvan_tuyensinh_table', 5),
 (13, '2025_05_28_082349_update_diemthi_table_with_detailed_scoring', 6),
-(14, '2025_05_29_063302_create_sinh_vien_du_this_table', 7);
+(14, '2025_05_29_063302_create_sinh_vien_du_this_table', 7),
+(15, '2025_05_30_092315_create_call_records_table', 8),
+(16, '2024_03_21_000000_add_status_to_phonghoc_table', 9),
+(17, '2025_05_30_075534_add_columns_to_danh_sach_phong_table', 9),
+(18, '2025_05_31_060619_create_ldap_accounts_table', 9);
 
 -- --------------------------------------------------------
 
@@ -692,22 +747,22 @@ INSERT INTO `monhoc` (`TenMH`, `MaMH`, `GioGoc`, `GioTrienKhai`, `TietLT`, `Tiet
 ('Computer fundamentals', 'MH03', 0, 8, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
 ('Data Management with SQL server', 'MH04', 40, 40, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
 ('Database Design and Development(core)', 'MH05', 24, 16, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Dự án - Phân tích Dữ liệu với R', 'MH21', 24, 24, 1, NULL, NULL, '2025-05-22 23:22:44', '2025-05-22 23:22:44'),
 ('eProject-Website Development', 'MH06', 2, 8, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
 ('HTML5,CSS and Javascript', 'MH07', 40, 44, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
 ('Information Systems Analysis(Core)', 'MH08', 24, 12, 1, 0, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
 ('Java Programming - I', 'MH09', 36, 40, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
 ('Java Programming -II', 'MH10', 40, 42, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Khoa học Dữ liệu sử dụng R Programming', 'MH19', 36, 36, NULL, 1, NULL, '2025-05-22 23:22:07', '2025-05-22 23:22:07'),
-('Lập trình Ứng dụng bằng Python', 'MH20', 36, 36, NULL, 1, NULL, '2025-05-22 23:22:25', '2025-05-22 23:22:25'),
 ('Logic Building and Elementary Programing', 'MH11', 40, 42, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
 ('Markup Language & JSON ', 'MH12', 16, 16, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
-('Phân tích Dữ liệu với MS Excel', 'MH15', 16, 16, NULL, NULL, 1, '2025-05-22 23:20:18', '2025-05-22 23:20:18'),
-('Phân tích Thống kê Suy luận', 'MH18', 16, 16, 1, NULL, NULL, '2025-05-22 23:21:39', '2025-05-22 23:21:39'),
 ('PHP Web Development with Laravel Framework', 'MH13', 40, 40, 0, 1, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
 ('Project-Java Application Development', 'MH14', 2, 12, 1, 0, NULL, '2025-05-23 06:20:04', '2025-05-23 06:20:04'),
+('Phân tích Dữ liệu với MS Excel', 'MH15', 16, 16, NULL, NULL, 1, '2025-05-22 23:20:18', '2025-05-22 23:20:18'),
+('Xử lý Dữ liệu bằng T-SQL', 'MH16', 16, 16, NULL, NULL, 1, '2025-05-22 23:20:57', '2025-05-22 23:20:57'),
 ('Quản lý Tập dữ liệu lớn với MongoDB', 'MH17', 32, 32, NULL, NULL, 1, '2025-05-22 23:21:21', '2025-05-22 23:21:21'),
-('Xử lý Dữ liệu bằng T-SQL', 'MH16', 16, 16, NULL, NULL, 1, '2025-05-22 23:20:57', '2025-05-22 23:20:57');
+('Phân tích Thống kê Suy luận', 'MH18', 16, 16, 1, NULL, NULL, '2025-05-22 23:21:39', '2025-05-22 23:21:39'),
+('Khoa học Dữ liệu sử dụng R Programming', 'MH19', 36, 36, NULL, 1, NULL, '2025-05-22 23:22:07', '2025-05-22 23:22:07'),
+('Lập trình Ứng dụng bằng Python', 'MH20', 36, 36, NULL, 1, NULL, '2025-05-22 23:22:25', '2025-05-22 23:22:25'),
+('Dự án - Phân tích Dữ liệu với R', 'MH21', 24, 24, 1, NULL, NULL, '2025-05-22 23:22:44', '2025-05-22 23:22:44');
 
 -- --------------------------------------------------------
 
@@ -824,8 +879,8 @@ CREATE TABLE `phieuphancongthi` (
 --
 
 INSERT INTO `phieuphancongthi` (`MaPhanCong`, `MaLichThi`, `MaCB`, `VaiTro`, `created_at`, `updated_at`) VALUES
-(1, 'LT2505240708', 'CB001', 'Cán bộ coi thi', '2025-05-24 08:01:47', '2025-05-24 08:01:47'),
-(2, 'LT2505240708', 'CB003', 'Cán bộ coi thi', '2025-05-24 08:01:47', '2025-05-24 08:01:47');
+(3, 'LT2505240708', 'CB003', 'Cán bộ coi thi', '2025-06-05 13:38:02', '2025-06-05 13:38:02'),
+(4, 'LT2505240708', 'GV001', 'Cán bộ coi thi', '2025-06-05 13:38:02', '2025-06-05 13:38:02');
 
 -- --------------------------------------------------------
 
@@ -838,22 +893,23 @@ CREATE TABLE `phonghoc` (
   `LoaiPhong` varchar(255) DEFAULT NULL,
   `SucChua` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `TrangThai` enum('Trống','Đang sử dụng','Bảo trì') NOT NULL DEFAULT 'Trống'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `phonghoc`
 --
 
-INSERT INTO `phonghoc` (`TenPhong`, `LoaiPhong`, `SucChua`, `created_at`, `updated_at`) VALUES
-('Class1', 'Phòng lý thuyết 1', NULL, '2025-05-22 09:28:21', '2025-05-22 06:55:12'),
-('Class2', 'Phòng lý thuyết 2', NULL, '2025-05-22 09:28:21', '2025-05-22 06:55:20'),
-('Class3', 'Phòng lý thuyết 3', NULL, '2025-05-22 02:28:29', '2025-05-22 06:55:30'),
-('Class4', 'Phòng lý thuyết 4', NULL, '2025-05-22 06:55:45', '2025-05-22 06:55:45'),
-('Lab1', 'Phòng thực hành 1', NULL, '2025-05-22 09:28:21', '2025-05-22 06:55:53'),
-('Lab2', 'Phòng thực hành 2', NULL, '2025-05-22 09:28:21', '2025-05-22 06:56:01'),
-('Lab3', 'Phòng thực hành 3', NULL, '2025-05-22 06:56:10', '2025-05-22 06:56:10'),
-('Lab4', 'Phòng thực hành 4', NULL, '2025-05-22 06:56:20', '2025-05-22 06:56:20');
+INSERT INTO `phonghoc` (`TenPhong`, `LoaiPhong`, `SucChua`, `created_at`, `updated_at`, `TrangThai`) VALUES
+('Class1', 'Phòng lý thuyết 1', NULL, '2025-05-22 09:28:21', '2025-05-22 06:55:12', 'Trống'),
+('Class2', 'Phòng lý thuyết 2', NULL, '2025-05-22 09:28:21', '2025-05-22 06:55:20', 'Trống'),
+('Class3', 'Phòng lý thuyết 3', NULL, '2025-05-22 02:28:29', '2025-05-22 06:55:30', 'Trống'),
+('Class4', 'Phòng lý thuyết 4', NULL, '2025-05-22 06:55:45', '2025-05-22 06:55:45', 'Trống'),
+('Lab1', 'Phòng thực hành 1', NULL, '2025-05-22 09:28:21', '2025-05-22 06:55:53', 'Trống'),
+('Lab2', 'Phòng thực hành 2', NULL, '2025-05-22 09:28:21', '2025-05-22 06:56:01', 'Trống'),
+('Lab3', 'Phòng thực hành 3', NULL, '2025-05-22 06:56:10', '2025-05-22 06:56:10', 'Trống'),
+('Lab4', 'Phòng thực hành 4', NULL, '2025-05-22 06:56:20', '2025-05-22 06:56:20', 'Trống');
 
 -- --------------------------------------------------------
 
@@ -897,7 +953,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('cwBbuLqxm9U80CXgKWaF5Ybb7Euf0PktNxUCZ2Er', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoia09HTEViclJ3RGw5TzlJNVpMV01HWUlBY2FpQzFNNk9oTG83QWhkMyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTI3OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvdG9jaHVjdGhpL2JhbmdkaWVtL0NQMjI5NkgwNy9QaCVDMyVBMm4lMjB0JUMzJUFEY2glMjBEJUUxJUJCJUFGJTIwbGklRTElQkIlODd1JTIwdiVFMSVCQiU5QmklMjBNUyUyMEV4Y2VsIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToiVWhtRk4iO3M6NDoidXNlciI7czoxMjoiYWRtaW4ua2h1b25nIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxMDoiVGFuIEtodW9uZyI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjt9', 1748510697);
+('eLpmvAQBqbAGYHz8Ptaewyamf9ig9kMMs4yJQGxm', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoieEJwZHdOSEdlenpJZXNtTDQ0c0RXOVkzMnZUS1NqdENoQUViRVg1MCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NjI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9tb25ob2MvbW9uLWhvYy9waGFuLWNvbmctZ2lhbmctdmllbi9NSDIxIjt9czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToiSlFnVEoiO3M6NDoidXNlciI7czoxMjoiYWRtaW4ua2h1b25nIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxMDoiVGFuIEtodW9uZyI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjtzOjIyOiJQSFBERUJVR0JBUl9TVEFDS19EQVRBIjthOjA6e319', 1749141832),
+('ZwNQ2dNWGLhjPPNIyGg2WHJybOtL5fB6BbCA5vDd', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il90b2tlbiI7czo0MDoiTVNxQ09OSjY2cU91aEtTZ25BRjVHemVwYnNFZklidWU1UW5DY1dCciI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9naWFvLXZpZW4vbGljaC10aGkiO31zOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJmdFA3eiI7czoyOiJpZCI7czo1OiJHVjAwMSI7czo0OiJ1c2VyIjtzOjE2OiJndjAwMW5ndXllbnZhbmFuIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxNjoiTmd1eeG7hW4gVsSDbiBBbiI7czo0OiJyb2xlIjtzOjc6InRlYWNoZXIiO3M6MjI6IlBIUERFQlVHQkFSX1NUQUNLX0RBVEEiO2E6MDp7fX0=', 1749141589);
 
 -- --------------------------------------------------------
 
@@ -934,7 +991,8 @@ CREATE TABLE `sinhvien` (
   `ZaloNguoiThan` int DEFAULT NULL,
   `EmailNguoiThan` varchar(40) DEFAULT NULL,
   `Email` varchar(40) DEFAULT NULL,
-  `EmailCUSC` varchar(40) DEFAULT NULL,
+  `EmailCUSC` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `password_CUSC` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `Size` varchar(12) DEFAULT NULL,
   `TinhTrangHocTap` enum('DangHoc','DaTotNghiep','DaNghiHoc') DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
@@ -945,110 +1003,110 @@ CREATE TABLE `sinhvien` (
 -- Dumping data for table `sinhvien`
 --
 
-INSERT INTO `sinhvien` (`MaSV`, `MaEnroll`, `HoTen`, `InDebt`, `NgaySinh`, `GioiTinh`, `SoCCCD`, `NgayCap`, `NoiCap`, `Sdt`, `NoiSinh`, `DiaChi`, `Zalo`, `Receipt`, `Invoice`, `Billing`, `Coll`, `Billing(VND)`, `Coll(VND)`, `Discount`, `LiDo`, `NgayDangKi`, `HoTenNguoiThan`, `MoiQuanHe`, `SdtNguoiThan`, `ZaloNguoiThan`, `EmailNguoiThan`, `Email`, `EmailCUSC`, `Size`, `TinhTrangHocTap`, `created_at`, `updated_at`) VALUES
-('21010001', NULL, 'Nguyễn Văn A', NULL, '2003-06-12', 1, 12345678, NULL, NULL, '0944902423', NULL, 'Ninh Kiều', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'nva1@gmail.com', NULL, NULL, NULL, '2025-05-11 06:31:03', '2025-05-12 14:07:51'),
-('21010002', NULL, 'Trần Thị B', NULL, '1970-01-01', 0, 12345679, NULL, NULL, '0912345679', NULL, 'Bình Thủy', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ttb2@gmail.com', NULL, NULL, NULL, '2025-05-11 06:31:03', '2025-05-12 14:07:57'),
-('21010003', NULL, 'Lê Văn C', NULL, '1970-01-01', 1, 12345680, NULL, NULL, '0912345680', NULL, 'Cái Răng', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'lvc3@gmail.com', NULL, NULL, NULL, '2025-05-11 06:31:03', '2025-05-12 14:08:03'),
-('23000001', NULL, 'Đỗ Văn An', NULL, '2005-07-12', 1, 222742174, '2023-09-05', 'Công an Tiền Giang', '0862455565', 'Vĩnh Long', '989 Nguyễn Văn Cừ, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Minh Giang', 'Chị', 823642868, NULL, 'rosalinda41@zulauf.net', 'dỗvănan@gmail.com', '23000001@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000002', NULL, 'Đỗ Hữu Hùng', NULL, '2006-08-19', 1, 218008983, '2023-06-30', 'Công an Trà Vinh', '0705117568', 'Cà Mau', '976 3/2, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Hữu Mai', 'Em', 886874835, NULL, 'monte.casper@hotmail.com', 'dohuudung@gmail.com', 'dohuudung23000002@student.cusc.vn', NULL, NULL, NULL, '2025-05-20 09:56:00'),
-('23000003', NULL, 'Huỳnh Đức Bình', NULL, '2003-10-31', 0, 613326769, '2023-09-18', 'Công an Hậu Giang', '0332699777', 'Sóc Trăng', '835 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Đức An', 'Chị', 841161800, NULL, 'pearline.pfeffer@yahoo.com', 'huỳnhdứcbình@gmail.com', '23000003@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000004', NULL, 'Phan Đức Em', NULL, '2003-08-25', 1, 211193627, '2024-12-19', 'Công an Sóc Trăng', '0868728484', 'Bạc Liêu', '354 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Quang Mai', 'Chị', 349820726, NULL, 'wiegand.mariam@reichert.com', 'phandứcem@gmail.com', '23000004@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000005', NULL, 'Võ Quang Phúc', NULL, '2003-12-03', 1, 139868417, '2025-04-03', 'Công an Hậu Giang', '0398780304', 'Hậu Giang', '864 Nguyễn Văn Linh, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Văn Giang', 'Chị', 706580553, NULL, 'esperanza50@hotmail.com', 'võquangphúc@gmail.com', '23000005@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000006', NULL, 'Đỗ Công An', NULL, '2006-10-31', 1, 631494395, '2024-05-13', 'Công an Hậu Giang', '0825018724', 'Tiền Giang', '641 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đỗ Công Bình', 'Mẹ', 815752896, NULL, 'frami.gabriella@hotmail.com', 'dỗcôngan@gmail.com', '23000006@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000007', NULL, 'Vũ Quang Hùng', NULL, '2006-12-22', 1, 432494396, '2025-02-17', 'Công an Vĩnh Long', '0783434137', 'Sóc Trăng', '548 3/2, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Công An', 'Em', 930534705, NULL, 'klein.marjorie@hotmail.com', 'vũquanghùng@gmail.com', '23000007@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000008', NULL, 'Phạm Thành Linh', NULL, '2006-06-09', 1, 231601113, '2025-05-19', 'Công an Đồng Tháp', '0989362414', 'Tiền Giang', '505 Mậu Thân, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phạm Hoàng Em', 'Cha', 386533654, NULL, 'ryan41@gmail.com', 'phạmthànhlinh@gmail.com', '23000008@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000009', NULL, 'Phạm Thành Phúc', NULL, '2004-06-16', 0, 219171756, '2023-09-01', 'Công an An Giang', '0970190165', 'Long An', '91 Nguyễn Văn Linh, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đỗ Hữu Mai', 'Anh', 868472800, NULL, 'tremblay.ethyl@dare.net', 'phạmthànhphúc@gmail.com', '23000009@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000010', NULL, 'Huỳnh Công Mai', NULL, '2007-04-20', 1, 139271516, '2023-07-16', 'Công an Bạc Liêu', '0969550111', 'Trà Vinh', '991 Mậu Thân, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Nguyễn Văn Khang', 'Mẹ', 766768869, NULL, 'mireille.mayert@gmail.com', 'huỳnhcôngmai@gmail.com', '23000010@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000011', NULL, 'Vũ Quang Giang', NULL, '2003-10-27', 1, 528350724, '2023-11-11', 'Công an Trà Vinh', '0379431176', 'Bạc Liêu', '66 30/4, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phạm Quang Linh', 'Anh', 350173268, NULL, 'qkuvalis@crist.com', 'vũquanggiang@gmail.com', '23000011@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000012', NULL, 'Võ Hữu Hùng', NULL, '2006-07-24', 1, 415935900, '2024-06-05', 'Công an Đồng Tháp', '0963756323', 'An Giang', '318 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Minh Giang', 'Em', 966881236, NULL, 'breanne.leannon@gmail.com', 'võhữuhùng@gmail.com', '23000012@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000013', NULL, 'Hoàng Văn Em', NULL, '2003-11-30', 1, 530020089, '2024-08-16', 'Công an Bến Tre', '0855812605', 'Bạc Liêu', '810 30/4, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Hoàng Em', 'Em', 971394841, NULL, 'edonnelly@yahoo.com', 'hoàngvănem@gmail.com', '23000013@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000014', NULL, 'Hoàng Minh Giang', NULL, '2005-06-02', 0, 435243208, '2023-07-31', 'Công an Sóc Trăng', '0372717995', 'Vĩnh Long', '963 Nguyễn Văn Linh, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Hữu Linh', 'Mẹ', 333336310, NULL, 'sblick@yahoo.com', 'hoàngminhgiang@gmail.com', '23000014@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000015', NULL, 'Nguyễn Hoàng Em', NULL, '2006-01-15', 1, 538959364, '2023-09-17', 'Công an Cà Mau', '0779341262', 'An Giang', '696 3/2, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Hoàng Nam', 'Chị', 324822475, NULL, 'ptowne@stroman.info', 'nguyễnhoàngem@gmail.com', '23000015@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000016', NULL, 'Bùi Minh Mai', NULL, '2005-05-22', 0, 612424890, '2024-11-25', 'Công an Cà Mau', '0892988536', 'Hậu Giang', '90 30/4, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Minh Em', 'Chị', 986597018, NULL, 'zlang@bartell.com', 'bùiminhmai@gmail.com', '23000016@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000017', NULL, 'Bùi Thị Bình', NULL, '2005-11-02', 0, 218121998, '2025-04-05', 'Công an Tiền Giang', '0344592343', 'Tiền Giang', '489 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Minh Khang', 'Mẹ', 995573785, NULL, 'dibbert.jettie@parisian.com', 'bùithịbình@gmail.com', '23000017@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000018', NULL, 'Phan Đức Dũng', NULL, '2004-08-27', 0, 628585995, '2023-05-20', 'Công an Sóc Trăng', '0848054031', 'Đồng Tháp', '572 Nguyễn Văn Linh, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Quang Linh', 'Mẹ', 974912627, NULL, 'lamont18@becker.net', 'phandứcdũng@gmail.com', '23000018@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000019', NULL, 'Vũ Quang Giang', NULL, '2006-10-26', 1, 513491111, '2024-05-11', 'Công an Vĩnh Long', '0774567812', 'Cần Thơ', '433 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Quang Em', 'Chị', 777464114, NULL, 'marion.weimann@gmail.com', 'vũquanggiang@gmail.com', '23000019@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000020', NULL, 'Trần Thành Mai', NULL, '2003-12-23', 1, 229447939, '2025-03-24', 'Công an Bến Tre', '0326426298', 'Bạc Liêu', '534 Nguyễn Văn Linh, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Công Phúc', 'Em', 935915054, NULL, 'gregoria30@gmail.com', 'trầnthànhmai@gmail.com', '23000020@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000021', NULL, 'Phan Hữu Hùng', NULL, '2007-01-29', 0, 315625960, '2024-05-09', 'Công an Long An', '0370436666', 'Vĩnh Long', '485 Mậu Thân, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Hữu Khang', 'Mẹ', 779106851, NULL, 'isom.bartoletti@mitchell.biz', 'phanhữuhùng@gmail.com', '23000021@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000022', NULL, 'Đặng Minh Giang', NULL, '2003-08-06', 1, 611151177, '2024-10-17', 'Công an Cần Thơ', '0325114720', 'Vĩnh Long', '556 Nguyễn Văn Linh, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Văn An', 'Anh', 706761372, NULL, 'maida.hegmann@russel.com', 'dặngminhgiang@gmail.com', '23000022@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000023', NULL, 'Bùi Đức Mai', NULL, '2005-01-11', 1, 238128340, '2023-06-18', 'Công an Vĩnh Long', '0795312964', 'An Giang', '582 Nguyễn Văn Linh, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Quang Linh', 'Em', 828114347, NULL, 'jeanie.doyle@hotmail.com', 'bùidứcmai@gmail.com', '23000023@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000024', NULL, 'Đặng Đức Nam', NULL, '2003-05-23', 0, 627996487, '2024-04-06', 'Công an Vĩnh Long', '0331566911', 'Hậu Giang', '904 Mậu Thân, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Minh Dũng', 'Cha', 795962272, NULL, 'edmond84@luettgen.com', 'dặngdứcnam@gmail.com', '23000024@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000025', NULL, 'Võ Hữu Nam', NULL, '2004-09-09', 0, 314880664, '2023-09-10', 'Công an An Giang', '0337461276', 'Đồng Tháp', '867 30/4, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Công Em', 'Anh', 386478829, NULL, 'tblanda@hotmail.com', 'võhữunam@gmail.com', '23000025@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000026', NULL, 'Phan Hữu Dũng', NULL, '2006-12-05', 1, 334917817, '2024-03-26', 'Công an Vĩnh Long', '0816445344', 'Sóc Trăng', '380 Mậu Thân, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Minh Phúc', 'Chị', 862980452, NULL, 'addie70@hotmail.com', 'phanhữudũng@gmail.com', '23000026@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000027', NULL, 'Huỳnh Văn Phúc', NULL, '2006-08-07', 1, 122416011, '2025-04-20', 'Công an Tiền Giang', '0393291190', 'Long An', '76 Nguyễn Văn Cừ, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phạm Quang An', 'Cha', 860208830, NULL, 'broderick.johnston@hotmail.com', 'huỳnhvănphúc@gmail.com', '23000027@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000028', NULL, 'Đỗ Thị Nam', NULL, '2005-02-24', 0, 229420630, '2025-04-01', 'Công an Sóc Trăng', '0358356921', 'Kiên Giang', '37 3/2, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phạm Văn Nam', 'Cha', 362668106, NULL, 'uhoeger@nolan.com', 'dỗthịnam@gmail.com', '23000028@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000029', NULL, 'Đỗ Công Khang', NULL, '2005-07-26', 0, 629933286, '2025-01-21', 'Công an Sóc Trăng', '0342250181', 'Vĩnh Long', '344 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Hoàng Hùng', 'Anh', 965122310, NULL, 'tremblay.kirk@terry.com', 'dỗcôngkhang@gmail.com', '23000029@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000030', NULL, 'Trần Văn Nam', NULL, '2006-12-10', 0, 221735165, '2023-05-23', 'Công an Đồng Tháp', '0862981501', 'Kiên Giang', '297 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Minh Bình', 'Mẹ', 373410491, NULL, 'sterling.dickens@schmitt.info', 'trầnvănnam@gmail.com', '23000030@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000031', NULL, 'Đỗ Công Linh', NULL, '2005-09-18', 0, 612856019, '2024-04-22', 'Công an An Giang', '0880490891', 'Bạc Liêu', '62 Nguyễn Văn Linh, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Nguyễn Thành Phúc', 'Chị', 868938133, NULL, 'slegros@yahoo.com', 'dỗcônglinh@gmail.com', '23000031@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000032', NULL, 'Lê Công Linh', NULL, '2005-08-02', 1, 336375902, '2023-08-31', 'Công an Bạc Liêu', '0884832090', 'Bạc Liêu', '536 Mậu Thân, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Thành Bình', 'Em', 818247185, NULL, 'rashawn48@schimmel.com', 'lêcônglinh@gmail.com', '23000032@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000033', NULL, 'Trần Quang Cường', NULL, '2003-07-13', 0, 213303281, '2025-05-11', 'Công an Cà Mau', '0937281055', 'Tiền Giang', '723 Mậu Thân, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Thành Em', 'Mẹ', 347403800, NULL, 'benton.walter@hotmail.com', 'trầnquangcường@gmail.com', '23000033@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000034', NULL, 'Nguyễn Thành Linh', NULL, '2005-11-05', 1, 215790808, '2023-07-17', 'Công an Kiên Giang', '0369710389', 'Đồng Tháp', '528 Mậu Thân, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Đức Hùng', 'Em', 381356201, NULL, 'jones.darlene@stoltenberg.com', 'nguyễnthànhlinh@gmail.com', '23000034@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000035', NULL, 'Vũ Công Hùng', NULL, '2005-04-29', 1, 130301974, '2023-08-15', 'Công an Hậu Giang', '0837022546', 'Trà Vinh', '368 Nguyễn Văn Cừ, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Hữu Cường', 'Em', 770271581, NULL, 'alejandrin.jast@yahoo.com', 'vũcônghùng@gmail.com', '23000035@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000036', NULL, 'Trần Hoàng Khang', NULL, '2006-03-17', 1, 221502787, '2024-11-24', 'Công an Kiên Giang', '0896079962', 'Sóc Trăng', '635 3/2, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Hoàng Phúc', 'Cha', 996104338, NULL, 'nola30@bradtke.org', 'trầnhoàngkhang@gmail.com', '23000036@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000037', NULL, 'Vũ Thành Cường', NULL, '2003-06-13', 1, 339145156, '2023-10-18', 'Công an Cần Thơ', '0773029160', 'Kiên Giang', '83 3/2, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Thị Bình', 'Chị', 764682357, NULL, 'ayla69@morar.com', 'vũthànhcường@gmail.com', '23000037@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000038', NULL, 'Vũ Hoàng Hùng', NULL, '2004-02-12', 1, 129453558, '2024-11-24', 'Công an Bạc Liêu', '0771852519', 'An Giang', '773 Nguyễn Văn Cừ, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Thành Mai', 'Mẹ', 784351467, NULL, 'electa42@hotmail.com', 'vũhoànghùng@gmail.com', '23000038@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000039', NULL, 'Võ Minh Mai', NULL, '2005-08-08', 1, 129487516, '2024-08-03', 'Công an Hậu Giang', '0332489345', 'Tiền Giang', '136 30/4, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Hoàng Bình', 'Anh', 346774698, NULL, 'julius.gislason@schmitt.net', 'võminhmai@gmail.com', '23000039@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000040', NULL, 'Phan Hữu Phúc', NULL, '2007-01-21', 1, 518827139, '2025-04-24', 'Công an Cần Thơ', '0840027653', 'Sóc Trăng', '770 Nguyễn Văn Cừ, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Thị Khang', 'Cha', 383512078, NULL, 'streich.waino@raynor.com', 'phanhữuphúc@gmail.com', '23000040@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000041', NULL, 'Đỗ Đức Linh', NULL, '2004-12-28', 0, 415723949, '2025-03-10', 'Công an Bạc Liêu', '0901534038', 'Hậu Giang', '485 Nguyễn Văn Cừ, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Minh Linh', 'Mẹ', 357814492, NULL, 'goreilly@gmail.com', 'dỗdứclinh@gmail.com', '23000041@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000042', NULL, 'Nguyễn Hữu Bình', NULL, '2004-04-03', 0, 533609104, '2025-04-20', 'Công an Bạc Liêu', '0355102213', 'Cần Thơ', '487 30/4, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đỗ Văn Giang', 'Cha', 865189101, NULL, 'ferne.haag@hilpert.com', 'nguyễnhữubình@gmail.com', '23000042@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000043', NULL, 'Phạm Hữu Khang', NULL, '2003-12-06', 0, 139377617, '2024-01-27', 'Công an Hậu Giang', '0843539393', 'Vĩnh Long', '148 Nguyễn Văn Cừ, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Văn Phúc', 'Anh', 901700850, NULL, 'garnet07@hotmail.com', 'phạmhữukhang@gmail.com', '23000043@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000044', NULL, 'Phan Văn Mai', NULL, '2003-09-29', 1, 333628781, '2023-09-25', 'Công an Sóc Trăng', '0700470647', 'Bạc Liêu', '321 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Công Em', 'Em', 811746137, NULL, 'liza.huels@sipes.com', 'phanvănmai@gmail.com', '23000044@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000045', NULL, 'Lê Văn Bình', NULL, '2004-02-18', 1, 228945302, '2024-03-16', 'Công an Hậu Giang', '0814008345', 'Tiền Giang', '496 Nguyễn Văn Linh, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Thành Nam', 'Chị', 998880801, NULL, 'tconn@yahoo.com', 'lêvănbình@gmail.com', '23000045@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000046', NULL, 'Lê Thành Hùng', NULL, '2004-10-12', 1, 424361386, '2024-04-25', 'Công an Sóc Trăng', '0333752925', 'Bạc Liêu', '918 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Văn Mai', 'Em', 964384784, NULL, 'rosella.hauck@collins.com', 'lêthànhhùng@gmail.com', '23000046@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000047', NULL, 'Phạm Văn An', NULL, '2004-05-05', 1, 631214545, '2023-05-27', 'Công an Vĩnh Long', '0821675324', 'Cà Mau', '291 Mậu Thân, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Minh Linh', 'Chị', 359788377, NULL, 'pedro14@hotmail.com', 'phạmvănan@gmail.com', '23000047@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000048', NULL, 'Bùi Minh Linh', NULL, '2006-11-20', 0, 138441154, '2024-02-08', 'Công an Hậu Giang', '0838612275', 'Sóc Trăng', '163 Nguyễn Văn Cừ, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Đức An', 'Cha', 817297042, NULL, 'koepp.oma@gmail.com', 'bùiminhlinh@gmail.com', '23000048@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000049', NULL, 'Hoàng Hoàng Linh', NULL, '2003-10-18', 0, 338370166, '2024-06-17', 'Công an Hậu Giang', '0373069092', 'Vĩnh Long', '608 Nguyễn Văn Linh, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Thị Phúc', 'Cha', 785797144, NULL, 'jast.hershel@gmail.com', 'hoànghoànglinh@gmail.com', '23000049@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000050', NULL, 'Vũ Minh Cường', NULL, '2006-09-08', 0, 117147994, '2024-06-01', 'Công an Cần Thơ', '0391778133', 'An Giang', '84 Mậu Thân, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Võ Quang Nam', 'Chị', 781584475, NULL, 'harvey.darby@larson.com', 'vũminhcường@gmail.com', '23000050@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000051', NULL, 'Hoàng Hoàng An', NULL, '2003-06-14', 0, 613913392, '2024-07-21', 'Công an Trà Vinh', '0984041095', 'Bạc Liêu', '653 Mậu Thân, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Văn Cường', 'Chị', 901495468, NULL, 'ressie34@kilback.com', 'hoànghoàngan@gmail.com', '23000051@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000052', NULL, 'Huỳnh Minh Phúc', NULL, '2006-03-01', 1, 519810376, '2025-03-08', 'Công an Kiên Giang', '0354131244', 'Hậu Giang', '259 Nguyễn Văn Cừ, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Văn Linh', 'Mẹ', 989738792, NULL, 'cummerata.brooks@medhurst.com', 'huỳnhminhphúc@gmail.com', '23000052@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000053', NULL, 'Nguyễn Hữu Mai', NULL, '2004-06-25', 1, 210645569, '2024-12-20', 'Công an Bạc Liêu', '0898545357', 'An Giang', '920 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đỗ Công Bình', 'Cha', 382763987, NULL, 'terry.forrest@powlowski.com', 'nguyễnhữumai@gmail.com', '23000053@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000054', NULL, 'Huỳnh Đức Linh', NULL, '2003-12-29', 0, 637280264, '2025-03-11', 'Công an Cà Mau', '0838363698', 'Trà Vinh', '367 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Võ Đức Nam', 'Chị', 397565383, NULL, 'cristopher.donnelly@ratke.com', 'huỳnhdứclinh@gmail.com', '23000054@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000055', NULL, 'Phạm Công Mai', NULL, '2004-03-28', 0, 624824391, '2025-03-21', 'Công an Bạc Liêu', '0885807146', 'Cà Mau', '860 Nguyễn Văn Linh, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Quang An', 'Em', 937037237, NULL, 'ldeckow@wolf.com', 'phạmcôngmai@gmail.com', '23000055@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000056', NULL, 'Hoàng Đức Em', NULL, '2004-10-18', 0, 410890725, '2023-05-24', 'Công an Kiên Giang', '0882721526', 'Trà Vinh', '491 3/2, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Hoàng An', 'Cha', 844199100, NULL, 'anibal.gottlieb@yahoo.com', 'hoàngdứcem@gmail.com', '23000056@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000057', NULL, 'Huỳnh Thị Linh', NULL, '2004-11-17', 1, 139125985, '2024-07-31', 'Công an Đồng Tháp', '0903539508', 'Kiên Giang', '646 Mậu Thân, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Thị Dũng', 'Anh', 775022692, NULL, 'stark.cara@hotmail.com', 'huỳnhthịlinh@gmail.com', '23000057@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000058', NULL, 'Huỳnh Quang Phúc', NULL, '2003-09-15', 0, 418518946, '2024-03-14', 'Công an Kiên Giang', '0363313073', 'An Giang', '893 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Thị Bình', 'Em', 899078860, NULL, 'brain51@yahoo.com', 'huỳnhquangphúc@gmail.com', '23000058@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000059', NULL, 'Võ Thị Nam', NULL, '2004-12-19', 0, 113493714, '2024-07-24', 'Công an Vĩnh Long', '0899583529', 'An Giang', '343 Nguyễn Văn Linh, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Đức Giang', 'Em', 846560644, NULL, 'filiberto90@hotmail.com', 'võthịnam@gmail.com', '23000059@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000060', NULL, 'Bùi Công Khang', NULL, '2006-01-18', 1, 117925110, '2024-01-27', 'Công an Kiên Giang', '0972654688', 'Cần Thơ', '33 3/2, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Công Giang', 'Chị', 975686836, NULL, 'magnus41@hotmail.com', 'bùicôngkhang@gmail.com', '23000060@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000061', NULL, 'Huỳnh Hữu Hùng', NULL, '2003-09-15', 0, 217960251, '2025-04-30', 'Công an Hậu Giang', '0834761254', 'Cà Mau', '793 Nguyễn Văn Linh, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Minh Khang', 'Anh', 975025518, NULL, 'mckayla.moen@hotmail.com', 'huỳnhhữuhùng@gmail.com', '23000061@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000062', NULL, 'Đỗ Văn Mai', NULL, '2003-12-30', 0, 532179938, '2024-04-02', 'Công an Vĩnh Long', '0795505503', 'Bến Tre', '812 Nguyễn Văn Cừ, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Công Dũng', 'Anh', 338123968, NULL, 'dooley.ozella@hotmail.com', 'dỗvănmai@gmail.com', '23000062@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000063', NULL, 'Hoàng Đức Phúc', NULL, '2006-06-27', 1, 225326480, '2025-05-06', 'Công an Vĩnh Long', '0848828056', 'Cà Mau', '439 Mậu Thân, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Đức Giang', 'Mẹ', 792471159, NULL, 'keeling.alexandro@hotmail.com', 'hoàngdứcphúc@gmail.com', '23000063@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000064', NULL, 'Bùi Hữu Khang', NULL, '2007-01-09', 0, 621802533, '2024-11-11', 'Công an Cần Thơ', '0356610877', 'Cần Thơ', '767 3/2, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Minh Phúc', 'Cha', 344231009, NULL, 'mrodriguez@gleason.com', 'bùihữukhang@gmail.com', '23000064@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000065', NULL, 'Đỗ Văn Hùng', NULL, '2007-03-22', 1, 630610723, '2023-09-14', 'Công an Kiên Giang', '0855909387', 'An Giang', '453 Mậu Thân, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Công Phúc', 'Mẹ', 982156889, NULL, 'korbin.mayert@gmail.com', 'dỗvănhùng@gmail.com', '23000065@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000066', NULL, 'Lê Hoàng Giang', NULL, '2005-04-26', 1, 634254463, '2023-07-23', 'Công an Trà Vinh', '0839659754', 'Trà Vinh', '243 30/4, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Công An', 'Mẹ', 793747464, NULL, 'britney.rice@hotmail.com', 'lêhoànggiang@gmail.com', '23000066@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000067', NULL, 'Hoàng Hoàng Em', NULL, '2004-01-03', 0, 420467573, '2023-07-31', 'Công an An Giang', '0841618932', 'Hậu Giang', '720 3/2, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Thành Dũng', 'Mẹ', 889939914, NULL, 'leslie68@gmail.com', 'hoànghoàngem@gmail.com', '23000067@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000068', NULL, 'Huỳnh Hữu Hùng', NULL, '2007-03-29', 1, 512765926, '2024-11-22', 'Công an Trà Vinh', '0975521711', 'Sóc Trăng', '664 30/4, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Quang Phúc', 'Chị', 368077982, NULL, 'ivah.cremin@yahoo.com', 'huỳnhhữuhùng@gmail.com', '23000068@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000069', NULL, 'Lê Hữu Phúc', NULL, '2006-04-17', 1, 231550325, '2025-01-04', 'Công an An Giang', '0838583683', 'Hậu Giang', '827 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Văn An', 'Em', 817781923, NULL, 'stephen74@hotmail.com', 'lêhữuphúc@gmail.com', '23000069@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000070', NULL, 'Lê Đức Cường', NULL, '2005-07-24', 0, 635617180, '2024-02-03', 'Công an Bạc Liêu', '0322054803', 'Bến Tre', '709 Nguyễn Văn Linh, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Thành Em', 'Em', 814549358, NULL, 'muriel.murphy@boyer.com', 'lêdứccường@gmail.com', '23000070@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000071', NULL, 'Lê Đức Khang', NULL, '2003-09-28', 0, 337569956, '2024-02-24', 'Công an Hậu Giang', '0328269953', 'Sóc Trăng', '176 3/2, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Hữu Mai', 'Mẹ', 838480576, NULL, 'jrippin@halvorson.com', 'lêdứckhang@gmail.com', '23000071@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000072', NULL, 'Đỗ Văn Khang', NULL, '2004-08-01', 1, 136518232, '2023-06-03', 'Công an Vĩnh Long', '0866806545', 'Trà Vinh', '912 3/2, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Quang Mai', 'Mẹ', 865286041, NULL, 'bailee.sipes@fadel.com', 'dỗvănkhang@gmail.com', '23000072@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000073', NULL, 'Nguyễn Đức Linh', NULL, '2007-01-18', 1, 217465832, '2025-01-07', 'Công an Sóc Trăng', '0891662809', 'Tiền Giang', '264 Nguyễn Văn Linh, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Quang Em', 'Mẹ', 790073502, NULL, 'olen.stanton@gmail.com', 'nguyễndứclinh@gmail.com', '23000073@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000074', NULL, 'Nguyễn Văn Em', NULL, '2005-11-30', 0, 222319580, '2023-08-26', 'Công an Sóc Trăng', '0345023556', 'Bến Tre', '755 30/4, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đỗ Hoàng Giang', 'Em', 882320593, NULL, 'pollich.susanna@yahoo.com', 'nguyễnvănem@gmail.com', '23000074@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000075', NULL, 'Trần Công Cường', NULL, '2006-07-28', 1, 633479443, '2024-05-09', 'Công an Kiên Giang', '0868004431', 'Kiên Giang', '221 Mậu Thân, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Võ Thành Mai', 'Chị', 898817611, NULL, 'jesus.feil@yahoo.com', 'trầncôngcường@gmail.com', '23000075@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000076', NULL, 'Phạm Hoàng Mai', NULL, '2004-09-23', 1, 124237399, '2024-05-07', 'Công an Bạc Liêu', '0848639924', 'An Giang', '233 3/2, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Hoàng Giang', 'Anh', 843470222, NULL, 'murphy.edythe@walsh.com', 'phạmhoàngmai@gmail.com', '23000076@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000077', NULL, 'Hoàng Quang Dũng', NULL, '2004-11-25', 0, 323009306, '2024-06-01', 'Công an Đồng Tháp', '0936232959', 'Cần Thơ', '532 Nguyễn Văn Linh, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Hoàng An', 'Mẹ', 889981948, NULL, 'pmayert@hotmail.com', 'hoàngquangdũng@gmail.com', '23000077@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000078', NULL, 'Lê Đức Bình', NULL, '2006-08-13', 1, 229579046, '2025-04-23', 'Công an Bến Tre', '0320571416', 'Trà Vinh', '644 3/2, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Thành Khang', 'Cha', 340150752, NULL, 'tromp.darrin@gmail.com', 'lêdứcbình@gmail.com', '23000078@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000079', NULL, 'Phan Công Dũng', NULL, '2006-10-11', 1, 628346257, '2023-07-11', 'Công an An Giang', '0352200861', 'Bạc Liêu', '289 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Công Mai', 'Em', 880598764, NULL, 'mitchell.lexie@dach.org', 'phancôngdũng@gmail.com', '23000079@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000080', NULL, 'Nguyễn Thành Hùng', NULL, '2006-02-24', 1, 336635923, '2024-06-03', 'Công an Vĩnh Long', '0794848934', 'Cà Mau', '446 Mậu Thân, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Công Giang', 'Mẹ', 356207086, NULL, 'lorena.rolfson@parisian.com', 'nguyễnthànhhùng@gmail.com', '23000080@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000081', NULL, 'Bùi Quang Giang', NULL, '2004-04-19', 0, 419416609, '2024-12-13', 'Công an An Giang', '0374463797', 'Tiền Giang', '155 Nguyễn Văn Cừ, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đỗ Thị Giang', 'Em', 860210552, NULL, 'lockman.fredrick@gmail.com', 'bùiquanggiang@gmail.com', '23000081@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000082', NULL, 'Huỳnh Hữu An', NULL, '2006-05-13', 1, 130639051, '2024-12-11', 'Công an Cà Mau', '0391795573', 'Cà Mau', '396 3/2, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Đức Dũng', 'Anh', 702514622, NULL, 'rylan.kautzer@zboncak.com', 'huỳnhhữuan@gmail.com', '23000082@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000083', NULL, 'Phạm Thành Hùng', NULL, '2003-07-27', 1, 525665616, '2024-08-06', 'Công an Vĩnh Long', '0931119943', 'Tiền Giang', '638 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Hoàng Khang', 'Cha', 782383434, NULL, 'elena.gorczany@hotmail.com', 'phạmthànhhùng@gmail.com', '23000083@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000084', NULL, 'Đặng Thành Mai', NULL, '2006-03-10', 1, 212418191, '2024-08-14', 'Công an Sóc Trăng', '0764426300', 'Cà Mau', '646 3/2, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Quang Linh', 'Cha', 324627684, NULL, 'misael36@schmidt.biz', 'dặngthànhmai@gmail.com', '23000084@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000085', NULL, 'Đỗ Hoàng Bình', NULL, '2005-04-09', 1, 432849557, '2024-03-23', 'Công an Trà Vinh', '0367417520', 'Vĩnh Long', '953 3/2, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phạm Văn Dũng', 'Cha', 931343135, NULL, 'anais.cummings@yahoo.com', 'dỗhoàngbình@gmail.com', '23000085@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000086', NULL, 'Phạm Công An', NULL, '2006-07-04', 0, 315941084, '2024-03-05', 'Công an Tiền Giang', '0772490922', 'Tiền Giang', '171 30/4, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Võ Hữu Giang', 'Mẹ', 883317726, NULL, 'mark66@yahoo.com', 'phạmcôngan@gmail.com', '23000086@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000087', NULL, 'Phạm Hoàng Linh', NULL, '2005-03-31', 1, 532764901, '2023-06-06', 'Công an Kiên Giang', '0968509543', 'Trà Vinh', '899 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Hoàng Em', 'Cha', 868032557, NULL, 'upton.arely@green.biz', 'phạmhoànglinh@gmail.com', '23000087@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000088', NULL, 'Trần Công Cường', NULL, '2007-02-27', 1, 236032348, '2023-06-25', 'Công an Sóc Trăng', '0371594250', 'Cần Thơ', '381 Mậu Thân, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Công An', 'Mẹ', 869866587, NULL, 'zena87@gmail.com', 'trầncôngcường@gmail.com', '23000088@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000089', NULL, 'Phan Đức Linh', NULL, '2004-07-18', 1, 531602009, '2024-05-28', 'Công an Cần Thơ', '0771107439', 'An Giang', '417 3/2, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Thị Cường', 'Em', 368327156, NULL, 'cierra78@krajcik.net', 'phandứclinh@gmail.com', '23000089@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000090', NULL, 'Phạm Thành Dũng', NULL, '2005-03-21', 0, 327999049, '2024-06-14', 'Công an Sóc Trăng', '0885597664', 'Bạc Liêu', '810 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Đức Em', 'Anh', 973002244, NULL, 'raegan70@osinski.com', 'phạmthànhdũng@gmail.com', '23000090@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000091', NULL, 'Võ Hữu Mai', NULL, '2005-05-07', 0, 533907493, '2024-04-06', 'Công an Vĩnh Long', '0810857494', 'Bến Tre', '389 30/4, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Võ Thị Em', 'Anh', 932188375, NULL, 'coleman20@stokes.com', 'võhữumai@gmail.com', '23000091@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000092', NULL, 'Vũ Đức An', NULL, '2006-06-12', 1, 316644441, '2025-04-18', 'Công an Vĩnh Long', '0789039355', 'An Giang', '790 3/2, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Thành Dũng', 'Anh', 792109706, NULL, 'lockman.leonard@gleichner.com', 'vũdứcan@gmail.com', '23000092@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000093', NULL, 'Nguyễn Thành Cường', NULL, '2004-10-28', 1, 210521149, '2024-11-20', 'Công an Trà Vinh', '0780079367', 'Kiên Giang', '705 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Văn An', 'Mẹ', 867561655, NULL, 'kris63@nitzsche.com', 'nguyễnthànhcường@gmail.com', '23000093@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000094', NULL, 'Phan Minh Khang', NULL, '2004-04-04', 1, 114053507, '2024-01-08', 'Công an Vĩnh Long', '0704721922', 'Vĩnh Long', '602 Nguyễn Văn Linh, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Võ Quang Hùng', 'Anh', 844001099, NULL, 'isenger@hotmail.com', 'phanminhkhang@gmail.com', '23000094@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000095', NULL, 'Vũ Văn An', NULL, '2005-01-27', 0, 514276556, '2024-06-19', 'Công an Tiền Giang', '0828370685', 'Vĩnh Long', '526 Mậu Thân, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Hoàng Phúc', 'Mẹ', 369739964, NULL, 'buford98@hotmail.com', 'vũvănan@gmail.com', '23000095@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000096', NULL, 'Đỗ Hữu An', NULL, '2003-09-11', 1, 523619722, '2023-05-26', 'Công an Long An', '0972035892', 'Kiên Giang', '720 Nguyễn Văn Linh, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Minh Cường', 'Chị', 780548664, NULL, 'boyd93@hotmail.com', 'dỗhữuan@gmail.com', '23000096@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000097', NULL, 'Hoàng Thành Bình', NULL, '2005-09-17', 0, 229959399, '2025-05-07', 'Công an Bạc Liêu', '0827266190', 'Cà Mau', '368 30/4, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đỗ Đức An', 'Cha', 969182505, NULL, 'cremin.myra@gmail.com', 'hoàngthànhbình@gmail.com', '23000097@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000098', NULL, 'Bùi Đức Khang', NULL, '2005-07-11', 0, 239642676, '2024-04-15', 'Công an Vĩnh Long', '0895108298', 'Trà Vinh', '414 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đỗ Văn Mai', 'Em', 821110077, NULL, 'arvid12@mann.info', 'bùidứckhang@gmail.com', '23000098@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000099', NULL, 'Vũ Công Linh', NULL, '2007-04-06', 0, 437802714, '2024-08-23', 'Công an Bến Tre', '0766180647', 'Bến Tre', '541 Mậu Thân, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phạm Thành An', 'Chị', 783225818, NULL, 'milan03@gmail.com', 'vũcônglinh@gmail.com', '23000099@student.cusc.vn', NULL, NULL, NULL, NULL),
-('23000100', NULL, 'Bùi Thị Hùng', NULL, '2004-11-17', 0, 323372439, '2025-03-01', 'Công an Vĩnh Long', '0788330434', 'Đồng Tháp', '885 30/4, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Quang Nam', 'Cha', 335441984, NULL, 'odeckow@witting.com', 'bùithịhùng@gmail.com', '23000100@student.cusc.vn', NULL, NULL, NULL, NULL);
+INSERT INTO `sinhvien` (`MaSV`, `MaEnroll`, `HoTen`, `InDebt`, `NgaySinh`, `GioiTinh`, `SoCCCD`, `NgayCap`, `NoiCap`, `Sdt`, `NoiSinh`, `DiaChi`, `Zalo`, `Receipt`, `Invoice`, `Billing`, `Coll`, `Billing(VND)`, `Coll(VND)`, `Discount`, `LiDo`, `NgayDangKi`, `HoTenNguoiThan`, `MoiQuanHe`, `SdtNguoiThan`, `ZaloNguoiThan`, `EmailNguoiThan`, `Email`, `EmailCUSC`, `password_CUSC`, `Size`, `TinhTrangHocTap`, `created_at`, `updated_at`) VALUES
+('21010001', NULL, 'Nguyễn Văn A', NULL, '2003-06-12', 1, 12345678, NULL, NULL, '0944902423', NULL, 'Ninh Kiều', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'nva1@gmail.com', '21010001nguyenva@cusc.ctu.vn', NULL, NULL, NULL, '2025-05-11 06:31:03', '2025-05-31 16:14:19'),
+('21010002', NULL, 'Trần Thị B', NULL, '1970-01-01', 0, 12345679, NULL, NULL, '0912345679', NULL, 'Bình Thủy', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ttb2@gmail.com', '21010002tranthib@cusc.ctu.vn', NULL, NULL, NULL, '2025-05-11 06:31:03', '2025-05-31 16:14:19'),
+('21010003', NULL, 'Lê Văn C', NULL, '1970-01-01', 1, 12345680, NULL, NULL, '0912345680', NULL, 'Cái Răng', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'lvc3@gmail.com', '21010003levanc@cusc.ctu.vn', NULL, NULL, NULL, '2025-05-11 06:31:03', '2025-06-03 06:55:48'),
+('23000001', NULL, 'Đỗ Văn An', NULL, '2005-07-12', 1, 222742174, '2023-09-05', 'Công an Tiền Giang', '0862455565', 'Vĩnh Long', '989 Nguyễn Văn Cừ, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Minh Giang', 'Chị', 823642868, NULL, 'rosalinda41@zulauf.net', 'dovanan@gmail.com', '23000001ovanan@cusc.ctu.vn', NULL, NULL, NULL, NULL, '2025-06-03 06:55:48'),
+('23000002', NULL, 'Đỗ Hữu Hùng', NULL, '2006-08-19', 1, 218008983, '2023-06-30', 'Công an Trà Vinh', '0705117568', 'Cà Mau', '976 3/2, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Hữu Mai', 'Em', 886874835, NULL, 'monte.casper@hotmail.com', 'dohuudung@gmail.com', '23000002ohuuhung@cusc.ctu.vn', NULL, NULL, NULL, NULL, '2025-06-03 06:55:48'),
+('23000003', NULL, 'Huỳnh Đức Bình', NULL, '2003-10-31', 0, 613326769, '2023-09-18', 'Công an Hậu Giang', '0332699777', 'Sóc Trăng', '835 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Đức An', 'Chị', 841161800, NULL, 'pearline.pfeffer@yahoo.com', 'huỳnhdứcbình@gmail.com', '23000003@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000004', NULL, 'Phan Đức Em', NULL, '2003-08-25', 1, 211193627, '2024-12-19', 'Công an Sóc Trăng', '0868728484', 'Bạc Liêu', '354 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Quang Mai', 'Chị', 349820726, NULL, 'wiegand.mariam@reichert.com', 'phandứcem@gmail.com', '23000004@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000005', NULL, 'Võ Quang Phúc', NULL, '2003-12-03', 1, 139868417, '2025-04-03', 'Công an Hậu Giang', '0398780304', 'Hậu Giang', '864 Nguyễn Văn Linh, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Văn Giang', 'Chị', 706580553, NULL, 'esperanza50@hotmail.com', 'võquangphúc@gmail.com', '23000005@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000006', NULL, 'Đỗ Công An', NULL, '2006-10-31', 1, 631494395, '2024-05-13', 'Công an Hậu Giang', '0825018724', 'Tiền Giang', '641 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đỗ Công Bình', 'Mẹ', 815752896, NULL, 'frami.gabriella@hotmail.com', 'dỗcôngan@gmail.com', '23000006@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000007', NULL, 'Vũ Quang Hùng', NULL, '2006-12-22', 1, 432494396, '2025-02-17', 'Công an Vĩnh Long', '0783434137', 'Sóc Trăng', '548 3/2, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Công An', 'Em', 930534705, NULL, 'klein.marjorie@hotmail.com', 'vũquanghùng@gmail.com', '23000007@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000008', NULL, 'Phạm Thành Linh', NULL, '2006-06-09', 1, 231601113, '2025-05-19', 'Công an Đồng Tháp', '0989362414', 'Tiền Giang', '505 Mậu Thân, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phạm Hoàng Em', 'Cha', 386533654, NULL, 'ryan41@gmail.com', 'phạmthànhlinh@gmail.com', '23000008@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000009', NULL, 'Phạm Thành Phúc', NULL, '2004-06-16', 0, 219171756, '2023-09-01', 'Công an An Giang', '0970190165', 'Long An', '91 Nguyễn Văn Linh, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đỗ Hữu Mai', 'Anh', 868472800, NULL, 'tremblay.ethyl@dare.net', 'phạmthànhphúc@gmail.com', '23000009@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000010', NULL, 'Huỳnh Công Mai', NULL, '2007-04-20', 1, 139271516, '2023-07-16', 'Công an Bạc Liêu', '0969550111', 'Trà Vinh', '991 Mậu Thân, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Nguyễn Văn Khang', 'Mẹ', 766768869, NULL, 'mireille.mayert@gmail.com', 'huỳnhcôngmai@gmail.com', '23000010@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000011', NULL, 'Vũ Quang Giang', NULL, '2003-10-27', 1, 528350724, '2023-11-11', 'Công an Trà Vinh', '0379431176', 'Bạc Liêu', '66 30/4, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phạm Quang Linh', 'Anh', 350173268, NULL, 'qkuvalis@crist.com', 'vũquanggiang@gmail.com', '23000011@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000012', NULL, 'Võ Hữu Hùng', NULL, '2006-07-24', 1, 415935900, '2024-06-05', 'Công an Đồng Tháp', '0963756323', 'An Giang', '318 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Minh Giang', 'Em', 966881236, NULL, 'breanne.leannon@gmail.com', 'võhữuhùng@gmail.com', '23000012@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000013', NULL, 'Hoàng Văn Em', NULL, '2003-11-30', 1, 530020089, '2024-08-16', 'Công an Bến Tre', '0855812605', 'Bạc Liêu', '810 30/4, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Hoàng Em', 'Em', 971394841, NULL, 'edonnelly@yahoo.com', 'hoàngvănem@gmail.com', '23000013@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000014', NULL, 'Hoàng Minh Giang', NULL, '2005-06-02', 0, 435243208, '2023-07-31', 'Công an Sóc Trăng', '0372717995', 'Vĩnh Long', '963 Nguyễn Văn Linh, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Hữu Linh', 'Mẹ', 333336310, NULL, 'sblick@yahoo.com', 'hoàngminhgiang@gmail.com', '23000014@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000015', NULL, 'Nguyễn Hoàng Em', NULL, '2006-01-15', 1, 538959364, '2023-09-17', 'Công an Cà Mau', '0779341262', 'An Giang', '696 3/2, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Hoàng Nam', 'Chị', 324822475, NULL, 'ptowne@stroman.info', 'nguyễnhoàngem@gmail.com', '23000015@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000016', NULL, 'Bùi Minh Mai', NULL, '2005-05-22', 0, 612424890, '2024-11-25', 'Công an Cà Mau', '0892988536', 'Hậu Giang', '90 30/4, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Minh Em', 'Chị', 986597018, NULL, 'zlang@bartell.com', 'bùiminhmai@gmail.com', '23000016@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000017', NULL, 'Bùi Thị Bình', NULL, '2005-11-02', 0, 218121998, '2025-04-05', 'Công an Tiền Giang', '0344592343', 'Tiền Giang', '489 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Minh Khang', 'Mẹ', 995573785, NULL, 'dibbert.jettie@parisian.com', 'bùithịbình@gmail.com', '23000017@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000018', NULL, 'Phan Đức Dũng', NULL, '2004-08-27', 0, 628585995, '2023-05-20', 'Công an Sóc Trăng', '0848054031', 'Đồng Tháp', '572 Nguyễn Văn Linh, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Quang Linh', 'Mẹ', 974912627, NULL, 'lamont18@becker.net', 'phandứcdũng@gmail.com', '23000018@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000019', NULL, 'Vũ Quang Giang', NULL, '2006-10-26', 1, 513491111, '2024-05-11', 'Công an Vĩnh Long', '0774567812', 'Cần Thơ', '433 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Quang Em', 'Chị', 777464114, NULL, 'marion.weimann@gmail.com', 'vũquanggiang@gmail.com', '23000019@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000020', NULL, 'Trần Thành Mai', NULL, '2003-12-23', 1, 229447939, '2025-03-24', 'Công an Bến Tre', '0326426298', 'Bạc Liêu', '534 Nguyễn Văn Linh, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Công Phúc', 'Em', 935915054, NULL, 'gregoria30@gmail.com', 'trầnthànhmai@gmail.com', '23000020@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000021', NULL, 'Phan Hữu Hùng', NULL, '2007-01-29', 0, 315625960, '2024-05-09', 'Công an Long An', '0370436666', 'Vĩnh Long', '485 Mậu Thân, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Hữu Khang', 'Mẹ', 779106851, NULL, 'isom.bartoletti@mitchell.biz', 'phanhữuhùng@gmail.com', '23000021@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000022', NULL, 'Đặng Minh Giang', NULL, '2003-08-06', 1, 611151177, '2024-10-17', 'Công an Cần Thơ', '0325114720', 'Vĩnh Long', '556 Nguyễn Văn Linh, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Văn An', 'Anh', 706761372, NULL, 'maida.hegmann@russel.com', 'dặngminhgiang@gmail.com', '23000022@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000023', NULL, 'Bùi Đức Mai', NULL, '2005-01-11', 1, 238128340, '2023-06-18', 'Công an Vĩnh Long', '0795312964', 'An Giang', '582 Nguyễn Văn Linh, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Quang Linh', 'Em', 828114347, NULL, 'jeanie.doyle@hotmail.com', 'bùidứcmai@gmail.com', '23000023@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000024', NULL, 'Đặng Đức Nam', NULL, '2003-05-23', 0, 627996487, '2024-04-06', 'Công an Vĩnh Long', '0331566911', 'Hậu Giang', '904 Mậu Thân, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Minh Dũng', 'Cha', 795962272, NULL, 'edmond84@luettgen.com', 'dặngdứcnam@gmail.com', '23000024@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000025', NULL, 'Võ Hữu Nam', NULL, '2004-09-09', 0, 314880664, '2023-09-10', 'Công an An Giang', '0337461276', 'Đồng Tháp', '867 30/4, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Công Em', 'Anh', 386478829, NULL, 'tblanda@hotmail.com', 'võhữunam@gmail.com', '23000025@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000026', NULL, 'Phan Hữu Dũng', NULL, '2006-12-05', 1, 334917817, '2024-03-26', 'Công an Vĩnh Long', '0816445344', 'Sóc Trăng', '380 Mậu Thân, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Minh Phúc', 'Chị', 862980452, NULL, 'addie70@hotmail.com', 'phanhữudũng@gmail.com', '23000026@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000027', NULL, 'Huỳnh Văn Phúc', NULL, '2006-08-07', 1, 122416011, '2025-04-20', 'Công an Tiền Giang', '0393291190', 'Long An', '76 Nguyễn Văn Cừ, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phạm Quang An', 'Cha', 860208830, NULL, 'broderick.johnston@hotmail.com', 'huỳnhvănphúc@gmail.com', '23000027@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000028', NULL, 'Đỗ Thị Nam', NULL, '2005-02-24', 0, 229420630, '2025-04-01', 'Công an Sóc Trăng', '0358356921', 'Kiên Giang', '37 3/2, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phạm Văn Nam', 'Cha', 362668106, NULL, 'uhoeger@nolan.com', 'dỗthịnam@gmail.com', '23000028@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000029', NULL, 'Đỗ Công Khang', NULL, '2005-07-26', 0, 629933286, '2025-01-21', 'Công an Sóc Trăng', '0342250181', 'Vĩnh Long', '344 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Hoàng Hùng', 'Anh', 965122310, NULL, 'tremblay.kirk@terry.com', 'dỗcôngkhang@gmail.com', '23000029@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000030', NULL, 'Trần Văn Nam', NULL, '2006-12-10', 0, 221735165, '2023-05-23', 'Công an Đồng Tháp', '0862981501', 'Kiên Giang', '297 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Minh Bình', 'Mẹ', 373410491, NULL, 'sterling.dickens@schmitt.info', 'trầnvănnam@gmail.com', '23000030@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000031', NULL, 'Đỗ Công Linh', NULL, '2005-09-18', 0, 612856019, '2024-04-22', 'Công an An Giang', '0880490891', 'Bạc Liêu', '62 Nguyễn Văn Linh, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Nguyễn Thành Phúc', 'Chị', 868938133, NULL, 'slegros@yahoo.com', 'dỗcônglinh@gmail.com', '23000031@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000032', NULL, 'Lê Công Linh', NULL, '2005-08-02', 1, 336375902, '2023-08-31', 'Công an Bạc Liêu', '0884832090', 'Bạc Liêu', '536 Mậu Thân, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Thành Bình', 'Em', 818247185, NULL, 'rashawn48@schimmel.com', 'lêcônglinh@gmail.com', '23000032@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000033', NULL, 'Trần Quang Cường', NULL, '2003-07-13', 0, 213303281, '2025-05-11', 'Công an Cà Mau', '0937281055', 'Tiền Giang', '723 Mậu Thân, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Thành Em', 'Mẹ', 347403800, NULL, 'benton.walter@hotmail.com', 'trầnquangcường@gmail.com', '23000033@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000034', NULL, 'Nguyễn Thành Linh', NULL, '2005-11-05', 1, 215790808, '2023-07-17', 'Công an Kiên Giang', '0369710389', 'Đồng Tháp', '528 Mậu Thân, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Đức Hùng', 'Em', 381356201, NULL, 'jones.darlene@stoltenberg.com', 'nguyễnthànhlinh@gmail.com', '23000034@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000035', NULL, 'Vũ Công Hùng', NULL, '2005-04-29', 1, 130301974, '2023-08-15', 'Công an Hậu Giang', '0837022546', 'Trà Vinh', '368 Nguyễn Văn Cừ, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Hữu Cường', 'Em', 770271581, NULL, 'alejandrin.jast@yahoo.com', 'vũcônghùng@gmail.com', '23000035@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000036', NULL, 'Trần Hoàng Khang', NULL, '2006-03-17', 1, 221502787, '2024-11-24', 'Công an Kiên Giang', '0896079962', 'Sóc Trăng', '635 3/2, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Hoàng Phúc', 'Cha', 996104338, NULL, 'nola30@bradtke.org', 'trầnhoàngkhang@gmail.com', '23000036@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000037', NULL, 'Vũ Thành Cường', NULL, '2003-06-13', 1, 339145156, '2023-10-18', 'Công an Cần Thơ', '0773029160', 'Kiên Giang', '83 3/2, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Thị Bình', 'Chị', 764682357, NULL, 'ayla69@morar.com', 'vũthànhcường@gmail.com', '23000037@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000038', NULL, 'Vũ Hoàng Hùng', NULL, '2004-02-12', 1, 129453558, '2024-11-24', 'Công an Bạc Liêu', '0771852519', 'An Giang', '773 Nguyễn Văn Cừ, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Thành Mai', 'Mẹ', 784351467, NULL, 'electa42@hotmail.com', 'vũhoànghùng@gmail.com', '23000038@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000039', NULL, 'Võ Minh Mai', NULL, '2005-08-08', 1, 129487516, '2024-08-03', 'Công an Hậu Giang', '0332489345', 'Tiền Giang', '136 30/4, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Hoàng Bình', 'Anh', 346774698, NULL, 'julius.gislason@schmitt.net', 'võminhmai@gmail.com', '23000039@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000040', NULL, 'Phan Hữu Phúc', NULL, '2007-01-21', 1, 518827139, '2025-04-24', 'Công an Cần Thơ', '0840027653', 'Sóc Trăng', '770 Nguyễn Văn Cừ, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Thị Khang', 'Cha', 383512078, NULL, 'streich.waino@raynor.com', 'phanhữuphúc@gmail.com', '23000040@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000041', NULL, 'Đỗ Đức Linh', NULL, '2004-12-28', 0, 415723949, '2025-03-10', 'Công an Bạc Liêu', '0901534038', 'Hậu Giang', '485 Nguyễn Văn Cừ, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Minh Linh', 'Mẹ', 357814492, NULL, 'goreilly@gmail.com', 'dỗdứclinh@gmail.com', '23000041@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000042', NULL, 'Nguyễn Hữu Bình', NULL, '2004-04-03', 0, 533609104, '2025-04-20', 'Công an Bạc Liêu', '0355102213', 'Cần Thơ', '487 30/4, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đỗ Văn Giang', 'Cha', 865189101, NULL, 'ferne.haag@hilpert.com', 'nguyễnhữubình@gmail.com', '23000042@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000043', NULL, 'Phạm Hữu Khang', NULL, '2003-12-06', 0, 139377617, '2024-01-27', 'Công an Hậu Giang', '0843539393', 'Vĩnh Long', '148 Nguyễn Văn Cừ, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Văn Phúc', 'Anh', 901700850, NULL, 'garnet07@hotmail.com', 'phạmhữukhang@gmail.com', '23000043@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000044', NULL, 'Phan Văn Mai', NULL, '2003-09-29', 1, 333628781, '2023-09-25', 'Công an Sóc Trăng', '0700470647', 'Bạc Liêu', '321 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Công Em', 'Em', 811746137, NULL, 'liza.huels@sipes.com', 'phanvănmai@gmail.com', '23000044@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000045', NULL, 'Lê Văn Bình', NULL, '2004-02-18', 1, 228945302, '2024-03-16', 'Công an Hậu Giang', '0814008345', 'Tiền Giang', '496 Nguyễn Văn Linh, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Thành Nam', 'Chị', 998880801, NULL, 'tconn@yahoo.com', 'lêvănbình@gmail.com', '23000045@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000046', NULL, 'Lê Thành Hùng', NULL, '2004-10-12', 1, 424361386, '2024-04-25', 'Công an Sóc Trăng', '0333752925', 'Bạc Liêu', '918 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Văn Mai', 'Em', 964384784, NULL, 'rosella.hauck@collins.com', 'lêthànhhùng@gmail.com', '23000046@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000047', NULL, 'Phạm Văn An', NULL, '2004-05-05', 1, 631214545, '2023-05-27', 'Công an Vĩnh Long', '0821675324', 'Cà Mau', '291 Mậu Thân, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Minh Linh', 'Chị', 359788377, NULL, 'pedro14@hotmail.com', 'phạmvănan@gmail.com', '23000047@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000048', NULL, 'Bùi Minh Linh', NULL, '2006-11-20', 0, 138441154, '2024-02-08', 'Công an Hậu Giang', '0838612275', 'Sóc Trăng', '163 Nguyễn Văn Cừ, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Đức An', 'Cha', 817297042, NULL, 'koepp.oma@gmail.com', 'bùiminhlinh@gmail.com', '23000048@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000049', NULL, 'Hoàng Hoàng Linh', NULL, '2003-10-18', 0, 338370166, '2024-06-17', 'Công an Hậu Giang', '0373069092', 'Vĩnh Long', '608 Nguyễn Văn Linh, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Thị Phúc', 'Cha', 785797144, NULL, 'jast.hershel@gmail.com', 'hoànghoànglinh@gmail.com', '23000049@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000050', NULL, 'Vũ Minh Cường', NULL, '2006-09-08', 0, 117147994, '2024-06-01', 'Công an Cần Thơ', '0391778133', 'An Giang', '84 Mậu Thân, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Võ Quang Nam', 'Chị', 781584475, NULL, 'harvey.darby@larson.com', 'vũminhcường@gmail.com', '23000050@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000051', NULL, 'Hoàng Hoàng An', NULL, '2003-06-14', 0, 613913392, '2024-07-21', 'Công an Trà Vinh', '0984041095', 'Bạc Liêu', '653 Mậu Thân, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Văn Cường', 'Chị', 901495468, NULL, 'ressie34@kilback.com', 'hoànghoàngan@gmail.com', '23000051@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000052', NULL, 'Huỳnh Minh Phúc', NULL, '2006-03-01', 1, 519810376, '2025-03-08', 'Công an Kiên Giang', '0354131244', 'Hậu Giang', '259 Nguyễn Văn Cừ, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Văn Linh', 'Mẹ', 989738792, NULL, 'cummerata.brooks@medhurst.com', 'huỳnhminhphúc@gmail.com', '23000052@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000053', NULL, 'Nguyễn Hữu Mai', NULL, '2004-06-25', 1, 210645569, '2024-12-20', 'Công an Bạc Liêu', '0898545357', 'An Giang', '920 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đỗ Công Bình', 'Cha', 382763987, NULL, 'terry.forrest@powlowski.com', 'nguyễnhữumai@gmail.com', '23000053@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000054', NULL, 'Huỳnh Đức Linh', NULL, '2003-12-29', 0, 637280264, '2025-03-11', 'Công an Cà Mau', '0838363698', 'Trà Vinh', '367 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Võ Đức Nam', 'Chị', 397565383, NULL, 'cristopher.donnelly@ratke.com', 'huỳnhdứclinh@gmail.com', '23000054@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000055', NULL, 'Phạm Công Mai', NULL, '2004-03-28', 0, 624824391, '2025-03-21', 'Công an Bạc Liêu', '0885807146', 'Cà Mau', '860 Nguyễn Văn Linh, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Quang An', 'Em', 937037237, NULL, 'ldeckow@wolf.com', 'phạmcôngmai@gmail.com', '23000055@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000056', NULL, 'Hoàng Đức Em', NULL, '2004-10-18', 0, 410890725, '2023-05-24', 'Công an Kiên Giang', '0882721526', 'Trà Vinh', '491 3/2, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Hoàng An', 'Cha', 844199100, NULL, 'anibal.gottlieb@yahoo.com', 'hoàngdứcem@gmail.com', '23000056@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000057', NULL, 'Huỳnh Thị Linh', NULL, '2004-11-17', 1, 139125985, '2024-07-31', 'Công an Đồng Tháp', '0903539508', 'Kiên Giang', '646 Mậu Thân, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Thị Dũng', 'Anh', 775022692, NULL, 'stark.cara@hotmail.com', 'huỳnhthịlinh@gmail.com', '23000057@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000058', NULL, 'Huỳnh Quang Phúc', NULL, '2003-09-15', 0, 418518946, '2024-03-14', 'Công an Kiên Giang', '0363313073', 'An Giang', '893 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Thị Bình', 'Em', 899078860, NULL, 'brain51@yahoo.com', 'huỳnhquangphúc@gmail.com', '23000058@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000059', NULL, 'Võ Thị Nam', NULL, '2004-12-19', 0, 113493714, '2024-07-24', 'Công an Vĩnh Long', '0899583529', 'An Giang', '343 Nguyễn Văn Linh, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Đức Giang', 'Em', 846560644, NULL, 'filiberto90@hotmail.com', 'võthịnam@gmail.com', '23000059@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000060', NULL, 'Bùi Công Khang', NULL, '2006-01-18', 1, 117925110, '2024-01-27', 'Công an Kiên Giang', '0972654688', 'Cần Thơ', '33 3/2, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Công Giang', 'Chị', 975686836, NULL, 'magnus41@hotmail.com', 'bùicôngkhang@gmail.com', '23000060@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000061', NULL, 'Huỳnh Hữu Hùng', NULL, '2003-09-15', 0, 217960251, '2025-04-30', 'Công an Hậu Giang', '0834761254', 'Cà Mau', '793 Nguyễn Văn Linh, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Minh Khang', 'Anh', 975025518, NULL, 'mckayla.moen@hotmail.com', 'huỳnhhữuhùng@gmail.com', '23000061@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000062', NULL, 'Đỗ Văn Mai', NULL, '2003-12-30', 0, 532179938, '2024-04-02', 'Công an Vĩnh Long', '0795505503', 'Bến Tre', '812 Nguyễn Văn Cừ, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Công Dũng', 'Anh', 338123968, NULL, 'dooley.ozella@hotmail.com', 'dỗvănmai@gmail.com', '23000062@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000063', NULL, 'Hoàng Đức Phúc', NULL, '2006-06-27', 1, 225326480, '2025-05-06', 'Công an Vĩnh Long', '0848828056', 'Cà Mau', '439 Mậu Thân, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Đức Giang', 'Mẹ', 792471159, NULL, 'keeling.alexandro@hotmail.com', 'hoàngdứcphúc@gmail.com', '23000063@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000064', NULL, 'Bùi Hữu Khang', NULL, '2007-01-09', 0, 621802533, '2024-11-11', 'Công an Cần Thơ', '0356610877', 'Cần Thơ', '767 3/2, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Minh Phúc', 'Cha', 344231009, NULL, 'mrodriguez@gleason.com', 'bùihữukhang@gmail.com', '23000064@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000065', NULL, 'Đỗ Văn Hùng', NULL, '2007-03-22', 1, 630610723, '2023-09-14', 'Công an Kiên Giang', '0855909387', 'An Giang', '453 Mậu Thân, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Công Phúc', 'Mẹ', 982156889, NULL, 'korbin.mayert@gmail.com', 'dỗvănhùng@gmail.com', '23000065@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000066', NULL, 'Lê Hoàng Giang', NULL, '2005-04-26', 1, 634254463, '2023-07-23', 'Công an Trà Vinh', '0839659754', 'Trà Vinh', '243 30/4, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Công An', 'Mẹ', 793747464, NULL, 'britney.rice@hotmail.com', 'lêhoànggiang@gmail.com', '23000066@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000067', NULL, 'Hoàng Hoàng Em', NULL, '2004-01-03', 0, 420467573, '2023-07-31', 'Công an An Giang', '0841618932', 'Hậu Giang', '720 3/2, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Thành Dũng', 'Mẹ', 889939914, NULL, 'leslie68@gmail.com', 'hoànghoàngem@gmail.com', '23000067@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000068', NULL, 'Huỳnh Hữu Hùng', NULL, '2007-03-29', 1, 512765926, '2024-11-22', 'Công an Trà Vinh', '0975521711', 'Sóc Trăng', '664 30/4, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Quang Phúc', 'Chị', 368077982, NULL, 'ivah.cremin@yahoo.com', 'huỳnhhữuhùng@gmail.com', '23000068@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000069', NULL, 'Lê Hữu Phúc', NULL, '2006-04-17', 1, 231550325, '2025-01-04', 'Công an An Giang', '0838583683', 'Hậu Giang', '827 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Văn An', 'Em', 817781923, NULL, 'stephen74@hotmail.com', 'lêhữuphúc@gmail.com', '23000069@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000070', NULL, 'Lê Đức Cường', NULL, '2005-07-24', 0, 635617180, '2024-02-03', 'Công an Bạc Liêu', '0322054803', 'Bến Tre', '709 Nguyễn Văn Linh, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Thành Em', 'Em', 814549358, NULL, 'muriel.murphy@boyer.com', 'lêdứccường@gmail.com', '23000070@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000071', NULL, 'Lê Đức Khang', NULL, '2003-09-28', 0, 337569956, '2024-02-24', 'Công an Hậu Giang', '0328269953', 'Sóc Trăng', '176 3/2, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Hữu Mai', 'Mẹ', 838480576, NULL, 'jrippin@halvorson.com', 'lêdứckhang@gmail.com', '23000071@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000072', NULL, 'Đỗ Văn Khang', NULL, '2004-08-01', 1, 136518232, '2023-06-03', 'Công an Vĩnh Long', '0866806545', 'Trà Vinh', '912 3/2, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Quang Mai', 'Mẹ', 865286041, NULL, 'bailee.sipes@fadel.com', 'dỗvănkhang@gmail.com', '23000072@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000073', NULL, 'Nguyễn Đức Linh', NULL, '2007-01-18', 1, 217465832, '2025-01-07', 'Công an Sóc Trăng', '0891662809', 'Tiền Giang', '264 Nguyễn Văn Linh, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Quang Em', 'Mẹ', 790073502, NULL, 'olen.stanton@gmail.com', 'nguyễndứclinh@gmail.com', '23000073@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000074', NULL, 'Nguyễn Văn Em', NULL, '2005-11-30', 0, 222319580, '2023-08-26', 'Công an Sóc Trăng', '0345023556', 'Bến Tre', '755 30/4, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đỗ Hoàng Giang', 'Em', 882320593, NULL, 'pollich.susanna@yahoo.com', 'nguyễnvănem@gmail.com', '23000074@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000075', NULL, 'Trần Công Cường', NULL, '2006-07-28', 1, 633479443, '2024-05-09', 'Công an Kiên Giang', '0868004431', 'Kiên Giang', '221 Mậu Thân, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Võ Thành Mai', 'Chị', 898817611, NULL, 'jesus.feil@yahoo.com', 'trầncôngcường@gmail.com', '23000075@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000076', NULL, 'Phạm Hoàng Mai', NULL, '2004-09-23', 1, 124237399, '2024-05-07', 'Công an Bạc Liêu', '0848639924', 'An Giang', '233 3/2, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Hoàng Giang', 'Anh', 843470222, NULL, 'murphy.edythe@walsh.com', 'phạmhoàngmai@gmail.com', '23000076@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000077', NULL, 'Hoàng Quang Dũng', NULL, '2004-11-25', 0, 323009306, '2024-06-01', 'Công an Đồng Tháp', '0936232959', 'Cần Thơ', '532 Nguyễn Văn Linh, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Hoàng An', 'Mẹ', 889981948, NULL, 'pmayert@hotmail.com', 'hoàngquangdũng@gmail.com', '23000077@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000078', NULL, 'Lê Đức Bình', NULL, '2006-08-13', 1, 229579046, '2025-04-23', 'Công an Bến Tre', '0320571416', 'Trà Vinh', '644 3/2, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Thành Khang', 'Cha', 340150752, NULL, 'tromp.darrin@gmail.com', 'lêdứcbình@gmail.com', '23000078@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000079', NULL, 'Phan Công Dũng', NULL, '2006-10-11', 1, 628346257, '2023-07-11', 'Công an An Giang', '0352200861', 'Bạc Liêu', '289 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Công Mai', 'Em', 880598764, NULL, 'mitchell.lexie@dach.org', 'phancôngdũng@gmail.com', '23000079@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000080', NULL, 'Nguyễn Thành Hùng', NULL, '2006-02-24', 1, 336635923, '2024-06-03', 'Công an Vĩnh Long', '0794848934', 'Cà Mau', '446 Mậu Thân, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Công Giang', 'Mẹ', 356207086, NULL, 'lorena.rolfson@parisian.com', 'nguyễnthànhhùng@gmail.com', '23000080@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000081', NULL, 'Bùi Quang Giang', NULL, '2004-04-19', 0, 419416609, '2024-12-13', 'Công an An Giang', '0374463797', 'Tiền Giang', '155 Nguyễn Văn Cừ, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đỗ Thị Giang', 'Em', 860210552, NULL, 'lockman.fredrick@gmail.com', 'bùiquanggiang@gmail.com', '23000081@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000082', NULL, 'Huỳnh Hữu An', NULL, '2006-05-13', 1, 130639051, '2024-12-11', 'Công an Cà Mau', '0391795573', 'Cà Mau', '396 3/2, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Vũ Đức Dũng', 'Anh', 702514622, NULL, 'rylan.kautzer@zboncak.com', 'huỳnhhữuan@gmail.com', '23000082@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000083', NULL, 'Phạm Thành Hùng', NULL, '2003-07-27', 1, 525665616, '2024-08-06', 'Công an Vĩnh Long', '0931119943', 'Tiền Giang', '638 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Hoàng Khang', 'Cha', 782383434, NULL, 'elena.gorczany@hotmail.com', 'phạmthànhhùng@gmail.com', '23000083@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000084', NULL, 'Đặng Thành Mai', NULL, '2006-03-10', 1, 212418191, '2024-08-14', 'Công an Sóc Trăng', '0764426300', 'Cà Mau', '646 3/2, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Quang Linh', 'Cha', 324627684, NULL, 'misael36@schmidt.biz', 'dặngthànhmai@gmail.com', '23000084@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000085', NULL, 'Đỗ Hoàng Bình', NULL, '2005-04-09', 1, 432849557, '2024-03-23', 'Công an Trà Vinh', '0367417520', 'Vĩnh Long', '953 3/2, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phạm Văn Dũng', 'Cha', 931343135, NULL, 'anais.cummings@yahoo.com', 'dỗhoàngbình@gmail.com', '23000085@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000086', NULL, 'Phạm Công An', NULL, '2006-07-04', 0, 315941084, '2024-03-05', 'Công an Tiền Giang', '0772490922', 'Tiền Giang', '171 30/4, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Võ Hữu Giang', 'Mẹ', 883317726, NULL, 'mark66@yahoo.com', 'phạmcôngan@gmail.com', '23000086@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000087', NULL, 'Phạm Hoàng Linh', NULL, '2005-03-31', 1, 532764901, '2023-06-06', 'Công an Kiên Giang', '0968509543', 'Trà Vinh', '899 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Hoàng Em', 'Cha', 868032557, NULL, 'upton.arely@green.biz', 'phạmhoànglinh@gmail.com', '23000087@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000088', NULL, 'Trần Công Cường', NULL, '2007-02-27', 1, 236032348, '2023-06-25', 'Công an Sóc Trăng', '0371594250', 'Cần Thơ', '381 Mậu Thân, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Công An', 'Mẹ', 869866587, NULL, 'zena87@gmail.com', 'trầncôngcường@gmail.com', '23000088@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000089', NULL, 'Phan Đức Linh', NULL, '2004-07-18', 1, 531602009, '2024-05-28', 'Công an Cần Thơ', '0771107439', 'An Giang', '417 3/2, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Thị Cường', 'Em', 368327156, NULL, 'cierra78@krajcik.net', 'phandứclinh@gmail.com', '23000089@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000090', NULL, 'Phạm Thành Dũng', NULL, '2005-03-21', 0, 327999049, '2024-06-14', 'Công an Sóc Trăng', '0885597664', 'Bạc Liêu', '810 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Đức Em', 'Anh', 973002244, NULL, 'raegan70@osinski.com', 'phạmthànhdũng@gmail.com', '23000090@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000091', NULL, 'Võ Hữu Mai', NULL, '2005-05-07', 0, 533907493, '2024-04-06', 'Công an Vĩnh Long', '0810857494', 'Bến Tre', '389 30/4, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Võ Thị Em', 'Anh', 932188375, NULL, 'coleman20@stokes.com', 'võhữumai@gmail.com', '23000091@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000092', NULL, 'Vũ Đức An', NULL, '2006-06-12', 1, 316644441, '2025-04-18', 'Công an Vĩnh Long', '0789039355', 'An Giang', '790 3/2, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Thành Dũng', 'Anh', 792109706, NULL, 'lockman.leonard@gleichner.com', 'vũdứcan@gmail.com', '23000092@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000093', NULL, 'Nguyễn Thành Cường', NULL, '2004-10-28', 1, 210521149, '2024-11-20', 'Công an Trà Vinh', '0780079367', 'Kiên Giang', '705 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Văn An', 'Mẹ', 867561655, NULL, 'kris63@nitzsche.com', 'nguyễnthànhcường@gmail.com', '23000093@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000094', NULL, 'Phan Minh Khang', NULL, '2004-04-04', 1, 114053507, '2024-01-08', 'Công an Vĩnh Long', '0704721922', 'Vĩnh Long', '602 Nguyễn Văn Linh, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Võ Quang Hùng', 'Anh', 844001099, NULL, 'isenger@hotmail.com', 'phanminhkhang@gmail.com', '23000094@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000095', NULL, 'Vũ Văn An', NULL, '2005-01-27', 0, 514276556, '2024-06-19', 'Công an Tiền Giang', '0828370685', 'Vĩnh Long', '526 Mậu Thân, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Hoàng Phúc', 'Mẹ', 369739964, NULL, 'buford98@hotmail.com', 'vũvănan@gmail.com', '23000095@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000096', NULL, 'Đỗ Hữu An', NULL, '2003-09-11', 1, 523619722, '2023-05-26', 'Công an Long An', '0972035892', 'Kiên Giang', '720 Nguyễn Văn Linh, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Minh Cường', 'Chị', 780548664, NULL, 'boyd93@hotmail.com', 'dỗhữuan@gmail.com', '23000096@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000097', NULL, 'Hoàng Thành Bình', NULL, '2005-09-17', 0, 229959399, '2025-05-07', 'Công an Bạc Liêu', '0827266190', 'Cà Mau', '368 30/4, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đỗ Đức An', 'Cha', 969182505, NULL, 'cremin.myra@gmail.com', 'hoàngthànhbình@gmail.com', '23000097@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000098', NULL, 'Bùi Đức Khang', NULL, '2005-07-11', 0, 239642676, '2024-04-15', 'Công an Vĩnh Long', '0895108298', 'Trà Vinh', '414 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đỗ Văn Mai', 'Em', 821110077, NULL, 'arvid12@mann.info', 'bùidứckhang@gmail.com', '23000098@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000099', NULL, 'Vũ Công Linh', NULL, '2007-04-06', 0, 437802714, '2024-08-23', 'Công an Bến Tre', '0766180647', 'Bến Tre', '541 Mậu Thân, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phạm Thành An', 'Chị', 783225818, NULL, 'milan03@gmail.com', 'vũcônglinh@gmail.com', '23000099@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000100', NULL, 'Bùi Thị Hùng', NULL, '2004-11-17', 0, 323372439, '2025-03-01', 'Công an Vĩnh Long', '0788330434', 'Đồng Tháp', '885 30/4, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Quang Nam', 'Cha', 335441984, NULL, 'odeckow@witting.com', 'bùithịhùng@gmail.com', '23000100@student.cusc.vn', NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1072,12 +1130,16 @@ CREATE TABLE `sinhvien_duthi` (
 --
 
 INSERT INTO `sinhvien_duthi` (`id`, `MaSV`, `MaLichThi`, `MaLop`, `TrangThaiDuThi`, `GhiChu`, `created_at`, `updated_at`) VALUES
-(25, '21010001', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-29 02:24:50', '2025-05-29 02:24:50'),
-(26, '21010002', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-29 02:24:50', '2025-05-29 02:24:50'),
-(27, '21010003', 'LT2505240708', 'CP2296H07', 'KhongDuThi', 'Đã thôi học', '2025-05-29 02:24:50', '2025-05-29 02:24:50'),
-(28, '23000054', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-29 02:24:50', '2025-05-29 02:24:50'),
-(29, '23000055', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-29 02:24:50', '2025-05-29 02:24:50'),
-(30, '23000057', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-29 02:24:50', '2025-05-29 02:24:50');
+(31, '21010001', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
+(32, '21010002', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
+(33, '21010003', 'LT2505240708', 'CP2296H07', 'KhongDuThi', 'Đã thôi học', '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
+(34, '23000054', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
+(35, '23000055', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
+(36, '23000057', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
+(37, '23000096', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
+(38, '23000097', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
+(39, '23000098', 'LT2505240708', 'CP2296H07', 'KhongDuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
+(40, '23000099', 'LT2505240708', 'CP2296H07', 'KhongDuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03');
 
 -- --------------------------------------------------------
 
@@ -1321,7 +1383,8 @@ ALTER TABLE `danhsachsv`
 ALTER TABLE `diemthi`
   ADD PRIMARY KEY (`MaSV`,`TenMH`,`LanThi`),
   ADD KEY `TenMH` (`TenMH`),
-  ADD KEY `MaLop` (`MaLop`);
+  ADD KEY `MaLop` (`MaLop`),
+  ADD KEY `diemthi_ibfk_4` (`MaLichThi`);
 
 --
 -- Indexes for table `donvi`
@@ -1348,8 +1411,7 @@ ALTER TABLE `feedback`
 -- Indexes for table `giangday`
 --
 ALTER TABLE `giangday`
-  ADD PRIMARY KEY (`MaGV`,`MaLop`),
-  ADD KEY `MaLop` (`MaLop`);
+  ADD KEY `giangday_ibfk_2` (`MaMH`);
 
 --
 -- Indexes for table `giaovien`
@@ -1409,6 +1471,17 @@ ALTER TABLE `khunggio`
   ADD PRIMARY KEY (`TenKhungGio`);
 
 --
+-- Indexes for table `ldap_accounts`
+--
+ALTER TABLE `ldap_accounts`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `ldap_accounts_username_unique` (`username`),
+  ADD UNIQUE KEY `ldap_accounts_email_unique` (`email`),
+  ADD KEY `ldap_accounts_masv_index` (`MaTaiKhoan`),
+  ADD KEY `ldap_accounts_username_index` (`username`),
+  ADD KEY `ldap_accounts_email_index` (`email`);
+
+--
 -- Indexes for table `lichthi`
 --
 ALTER TABLE `lichthi`
@@ -1434,7 +1507,8 @@ ALTER TABLE `migrations`
 -- Indexes for table `monhoc`
 --
 ALTER TABLE `monhoc`
-  ADD PRIMARY KEY (`TenMH`);
+  ADD PRIMARY KEY (`MaMH`) USING BTREE,
+  ADD KEY `TenMH` (`TenMH`) USING BTREE;
 
 --
 -- Indexes for table `ngaynghi`
@@ -1466,8 +1540,7 @@ ALTER TABLE `phieulido`
 --
 ALTER TABLE `phieuphancongthi`
   ADD PRIMARY KEY (`MaPhanCong`),
-  ADD KEY `phieuphancongthi_ibfk_1` (`MaLichThi`),
-  ADD KEY `phieuphancongthi_ibfk_2` (`MaCB`);
+  ADD KEY `phieuphancongthi_ibfk_1` (`MaLichThi`);
 
 --
 -- Indexes for table `phonghoc`
@@ -1573,10 +1646,16 @@ ALTER TABLE `jobs`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `ldap_accounts`
+--
+ALTER TABLE `ldap_accounts`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+
+--
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `ngaynghi`
@@ -1600,13 +1679,13 @@ ALTER TABLE `phieulido`
 -- AUTO_INCREMENT for table `phieuphancongthi`
 --
 ALTER TABLE `phieuphancongthi`
-  MODIFY `MaPhanCong` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `MaPhanCong` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `sinhvien_duthi`
 --
 ALTER TABLE `sinhvien_duthi`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -1677,7 +1756,8 @@ ALTER TABLE `danhsachsv`
 ALTER TABLE `diemthi`
   ADD CONSTRAINT `diemthi_ibfk_1` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`),
   ADD CONSTRAINT `diemthi_ibfk_2` FOREIGN KEY (`TenMH`) REFERENCES `monhoc` (`TenMH`),
-  ADD CONSTRAINT `diemthi_ibfk_3` FOREIGN KEY (`MaLop`) REFERENCES `lophoc` (`MaLop`);
+  ADD CONSTRAINT `diemthi_ibfk_3` FOREIGN KEY (`MaLop`) REFERENCES `lophoc` (`MaLop`),
+  ADD CONSTRAINT `diemthi_ibfk_4` FOREIGN KEY (`MaLichThi`) REFERENCES `lichthi` (`MaLichThi`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `feedback`
@@ -1690,8 +1770,7 @@ ALTER TABLE `feedback`
 -- Constraints for table `giangday`
 --
 ALTER TABLE `giangday`
-  ADD CONSTRAINT `giangday_ibfk_1` FOREIGN KEY (`MaGV`) REFERENCES `giaovien` (`MaGV`),
-  ADD CONSTRAINT `giangday_ibfk_2` FOREIGN KEY (`MaLop`) REFERENCES `lophoc` (`MaLop`);
+  ADD CONSTRAINT `giangday_ibfk_2` FOREIGN KEY (`MaMH`) REFERENCES `monhoc` (`MaMH`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `giaovien`
@@ -1739,8 +1818,7 @@ ALTER TABLE `ngaytuhoc`
 -- Constraints for table `phieuphancongthi`
 --
 ALTER TABLE `phieuphancongthi`
-  ADD CONSTRAINT `phieuphancongthi_ibfk_1` FOREIGN KEY (`MaLichThi`) REFERENCES `lichthi` (`MaLichThi`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `phieuphancongthi_ibfk_2` FOREIGN KEY (`MaCB`) REFERENCES `canbo` (`MaCB`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `phieuphancongthi_ibfk_1` FOREIGN KEY (`MaLichThi`) REFERENCES `lichthi` (`MaLichThi`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `sinhvien_duthi`

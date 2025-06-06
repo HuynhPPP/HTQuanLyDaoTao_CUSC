@@ -19,7 +19,7 @@
                     <h4>Cập nhật thông tin môn học</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('monhoc.update', $monhoc->TenMH) }}" method="POST">
+                    <form action="{{ route('monhoc.update', $monhoc->MaMH) }}" method="POST">
                         @csrf
                         <div class="row">
                             <div class="col-md-6">

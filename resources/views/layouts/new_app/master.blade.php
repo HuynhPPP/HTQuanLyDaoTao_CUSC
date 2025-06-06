@@ -104,6 +104,7 @@
 
     <!-- Page Specific JS File -->
     <script src="{{ asset('assets/js/page/modules-calendar.js') }}"></script>
+    <script src="{{ asset('assets/modules/fullcalendar/locale/vi.js') }}"></script>
 
     <!-- Template JS File -->
     <script src="{{ asset('assets/js/scripts.js') }}"></script>
@@ -131,6 +132,7 @@
     @endif
 
     @yield('custom-js')
+
 </body>
 
 </html>

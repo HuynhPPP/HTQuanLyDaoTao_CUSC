@@ -56,7 +56,7 @@ class PagesController extends Controller
             ],
             [
                 'icon' => 'far fa-newspaper',
-                'text' => 'Lập lịch thi',
+                'text' => 'Lập lịch thi theo lớp',
                 'link' => route('lichthi.index'),
                 'color' => 'bg-info',
             ],
