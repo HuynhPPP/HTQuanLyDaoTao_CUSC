@@ -43,9 +43,13 @@ Route::middleware([RoleMiddleware::class . ':admin,staff'])->group(function () {
     Route::get('/ministry/schedules/schedule/{TenTKB}', [PagesController::class, 'schedule'])->name('schedule');
     Route::delete('/ministry/schedules/schedule/{TenTKB}', [PagesController::class, 'deleteSchedule'])->name('deleteSchedule');
     Route::get('/ministry/schedules/export-excel/{TenTKB}', [PagesController::class, 'exportExcel'])->name('exportExcel');
+    Route::post('/saveholiday/{TenTKB}', [PagesController::class, 'saveholiday'])->name('saveholiday');
     Route::get('/ministry/monitorClassroom', [PagesController::class, 'monitorClassroom'])->name('monitorClassroom');
     Route::get('/ministry/monitorSubject', [PagesController::class, 'monitorSubject'])->name('monitorSubject');
     Route::get('/ministry/rollCall', [PagesController::class, 'rollCall'])->name('rollCall');
+    Route::get('/get-subjects', [PagesController::class, 'getSubjects'])->name('getSubjects');
+    Route::post('/ministry/schedules/update-subjects/{TenTKB}', [PagesController::class, 'updateScheduleSubjects'])->name('updateScheduleSubjects');
+    Route::post('/saveSelfStudy/{TenTKB}', [PagesController::class, 'saveSelfStudy'])->name('saveSelfStudy');
 
     Route::prefix('student')->group(function () {
         Route::get('/list', [SinhVienController::class, 'index'])->name('student.list');
@@ -217,8 +221,6 @@ Route::middleware([RoleMiddleware::class . ':admin,staff,teacher'])->group(funct
     Route::get('/getLop/{MaChuongTrinh}', [PagesController::class, 'getLop']);
     Route::get('/getHK/{MaChuongTrinh}', [PagesController::class, 'getHK']);
     Route::post('/saveTimeSlot/{TenTKB}', [PagesController::class, 'saveTimeSlot'])->name('saveTimeSlot');
-    Route::post('/saveholiday/{TenTKB}', [PagesController::class, 'saveholiday'])->name('saveholiday');
-    Route::post('/saveSelfStudy/{TenTKB}', [PagesController::class, 'saveSelfStudy'])->name('saveSelfStudy');
     Route::post('/EditTKB/{TenTKB}', [PagesController::class, 'EditTKB'])->name('EditTKB');
 
     Route::prefix('tochucthi')->group(function () {

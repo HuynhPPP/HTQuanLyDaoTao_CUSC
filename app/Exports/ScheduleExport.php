@@ -280,7 +280,7 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $sheet->setCellValue('I7', 'Học Lý thuyết tại phòng: ');
         $sheet->setCellValue('J7', $this->phonglt->TenPhong);
         $sheet->setCellValue('I8', 'Học Thực hành tại phòng: ');
-        $sheet->setCellValue('J8', $this->phongth->TenPhong);
+        $sheet->setCellValue('J8', $this->phongth ? $this->phongth->TenPhong : '');
         $sheet->setCellValue('D8', 'Ver ' . $this->chuongtrinh->PhienBan);
         $sheet->setCellValue('E8', Carbon::parse($this->chuongtrinh->NgayTrienKhaiPB)->format('d/m/Y'));
 

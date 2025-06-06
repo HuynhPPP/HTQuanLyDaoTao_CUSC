@@ -89,7 +89,7 @@
             </div>
         </div>
     </section>
-    
+
     @if (session('success'))
         <script>
             iziToast.success({
@@ -172,6 +172,18 @@
 
                 HocKiSelect.innerHTML = '<option value="">----- Mã Học Kỳ -----</option>';
                 HocKiSelect.disabled = true;
+            }
+        });
+
+        document.getElementById('Lop').addEventListener('change', function() {
+            var maLop = this.value;
+
+            if (maLop && maLop !== "") {
+                fetch(`/getPhongThucHanh/${maLop}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Handle the response to update the PhongThucHanh select
+                    });
             }
         });
 

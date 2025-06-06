@@ -103,7 +103,6 @@
     <script src="{{ asset('assets/modules/jquery-selectric/jquery.selectric.min.js') }}"></script>
 
     <!-- Page Specific JS File -->
-    <script src="{{ asset('assets/js/page/index.js') }}"></script>
     <script src="{{ asset('assets/js/page/modules-calendar.js') }}"></script>
 
     <!-- Template JS File -->

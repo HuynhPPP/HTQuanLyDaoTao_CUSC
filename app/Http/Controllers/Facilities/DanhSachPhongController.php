@@ -39,6 +39,14 @@ class DanhSachPhongController extends Controller
         }
 
         danhsachphong::create($request->all());
+        
+        // Cập nhật trạng thái phòng học
+        $phonghoc = phonghoc::where('TenPhong', $request->TenPhong)->first();
+        if ($phonghoc) {
+            $phonghoc->TrangThai = 'Đang sử dụng';
+            $phonghoc->save();
+        }
+
         return redirect()->route('danhsachphong.index')->with('success', 'Gán phòng cho lớp thành công');
     }
 
@@ -72,6 +80,9 @@ class DanhSachPhongController extends Controller
             return redirect()->back()->withInput()->with('error', 'Lớp và phòng này đã được gán trước đó!');
         }
 
+        // Lấy phòng cũ được gán trước khi xóa
+        $oldDanhSachPhong = danhsachphong::where('MaLop', $maLop)->first();
+        
         // Xóa bản ghi cũ
         danhsachphong::where('MaLop', $maLop)->delete();
 
@@ -80,6 +91,29 @@ class DanhSachPhongController extends Controller
             'MaLop' => $request->MaLop,
             'TenPhong' => $request->TenPhong,
         ]);
+
+        // Cập nhật trạng thái phòng học cũ (nếu có)
+        if ($oldDanhSachPhong) {
+            $oldPhongHoc = phonghoc::where('TenPhong', $oldDanhSachPhong->TenPhong)->first();
+            if ($oldPhongHoc) {
+                // Kiểm tra xem phòng cũ còn được sử dụng bởi lớp khác không
+                $isOldRoomStillUsed = danhsachphong::where('TenPhong', $oldPhongHoc->TenPhong)
+                                                    ->where('MaLop', '!=', $maLop) // Kiểm tra với các lớp khác
+                                                    ->exists();
+
+                if (!$isOldRoomStillUsed) {
+                    $oldPhongHoc->TrangThai = 'Trống';
+                    $oldPhongHoc->save();
+                }
+            }
+        }
+
+        // Cập nhật trạng thái phòng học mới
+        $newPhongHoc = phonghoc::where('TenPhong', $request->TenPhong)->first();
+        if ($newPhongHoc) {
+            $newPhongHoc->TrangThai = 'Đang sử dụng';
+            $newPhongHoc->save();
+        }
 
         return redirect()->route('danhsachphong.index')->with('success', 'Cập nhật gán phòng thành công');
     }
