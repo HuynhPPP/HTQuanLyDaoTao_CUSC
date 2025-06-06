@@ -147,7 +147,7 @@
                         <span>Lịch coi thi</span>
                     </a>
                 </li>
-                <li class="dropdown {{ request()->routeIs('giaovien.nhapdiemthi.danh-sach-mon') ? 'active' : '' }}">
+                <li class="dropdown">
                     <a href="{{ route('giaovien.nhapdiemthi.danh-sach-mon') }}" class="nav-link">
                         <i class="fas fa-chalkboard"></i>
                         <span>Nhập điểm thi</span>
@@ -161,7 +161,7 @@
                         <span>Lịch học theo tuần</span>
                     </a>
                 </li>
-                <li class="dropdown">
+                <li class="dropdown {{ request()->routeIs('about') ? 'active' : '' }}">
                     <a href="{{ route('about') }}" class="nav-link">
                         <i class="fas fa-laptop-code"></i>
                         <span>Tra cứu điểm thi</span>

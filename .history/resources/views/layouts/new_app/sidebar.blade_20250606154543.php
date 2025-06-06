@@ -161,7 +161,7 @@
                         <span>Lịch học theo tuần</span>
                     </a>
                 </li>
-                <li class="dropdown">
+                <li class="dropdown ">
                     <a href="{{ route('about') }}" class="nav-link">
                         <i class="fas fa-laptop-code"></i>
                         <span>Tra cứu điểm thi</span>
