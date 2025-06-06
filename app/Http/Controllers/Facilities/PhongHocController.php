@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\phonghoc;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Models\danhsachphong;
 
 class PhongHocController extends Controller
 {
@@ -42,7 +43,9 @@ class PhongHocController extends Controller
             $query->where('TrangThai', $request->trang_thai);
         }
 
-        $phonghocs = $query->paginate(10);
+        // Eager load mối quan hệ danhsachphong để kiểm tra trạng thái sử dụng
+        $phonghocs = $query->with('danhsachphong')->paginate(10);
+
         return view('quanly_cosovatchat.phonghoc.index', compact('phonghocs'));
     }
 

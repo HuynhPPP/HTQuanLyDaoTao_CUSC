@@ -11,6 +11,7 @@ class khunggio extends Model
     protected $table='KhungGio';
     protected $primaryKey='TenKhungGio';
     protected $keyType='string';
+    public $timestamps = false;
     protected $fillable = [
         'TenKhungGio',
 	    'ThoiGian',

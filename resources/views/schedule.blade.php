@@ -3,6 +3,8 @@
 @section('main-content')
     @php
         use Carbon\Carbon;
+        use App\Models\danhsachngaynghi;
+        use App\Models\ngaytuhoc;
         // Ngày bắt đầu học
         $startDate = Carbon::parse($schedule->NgayHoc);
         $totalHours = $hocki->TongGioTrienKhai;
@@ -42,7 +44,7 @@
             }
         }
         // Các ngày trong tuần
-        $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU'];
+        $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU', 'THỨ BẢY'];
         // Hàm thêm ngày bỏ qua cuối tuần
         $addDaysSkippingWeekends = function ($date, $days) {
             while ($days > 0) {
@@ -183,17 +185,17 @@
                 if ($currentDate->gte($startDate)) {
                     if (isset($examDays[$currentDate->format('Y-m-d')])) {
                         $subject = $examDays[$currentDate->format('Y-m-d')];
-                        $style = 'color: blue; font-weight: bold;';
+                        $style = 'color: blue; font-weight: bold; filter-bg-exam'; // Added a temporary class prefix
                         if ($subject === 'self-study') {
-                            $style = 'text-dark';
+                            $style = 'text-dark filter-bg-self-study'; // Added a temporary class prefix
                         }
                     } elseif (isset($selfStudyDays[$currentDate->format('Y-m-d')])) {
                         $subject = $selfStudyDays[$currentDate->format('Y-m-d')];
-                        $style = 'color: green; font-weight: bold;';
+                        $style = 'color: green; font-weight: bold; filter-bg-self-study'; // Added a temporary class prefix
                     } else {
                         if (isset($holidayDates[$currentDate->format('Y-m-d')])) {
                             $subject = $holidayDates[$currentDate->format('Y-m-d')];
-                            $style = 'background-color: yellow;';
+                            $style = 'background-color: yellow; filter-bg-holiday'; // Added a temporary class prefix
                         } else {
                             $subject = $getSubjectForDay(
                                 $subjectOccurrences,
@@ -214,6 +216,10 @@
                             }
                         }
                     }
+                } else {
+                    // Ngày trước ngày bắt đầu học
+                    $subject = '';
+                    $style = '';
                 }
                 $totalWeeks = ceil($totalHours / 10);
                 $scheduleMatrix[$week][$day] = [
@@ -240,25 +246,30 @@
                                 0292.3731072 & Fax: 0292.3731071 – Email: cusc@ctu.edu.vn</p>
                         </div>
                         <div class="text-center mb-4">
-                            <h2 class="fw-bold text-success">{{ $schedule->TenTKB }}</h2>
+                            <h2 class="fw-bold">
+                                THỜI KHÓA BIỂU LỚP {{ $schedule->MaLop }} - {{ $chuongTrinhName }}<br>
+                                HỌC KỲ {{ $hocki->TenHK }}: {{ $chuongTrinhName }} (CPIDA)
+                            </h2>
                         </div>
                         <div class="row justify-content-between mb-4">
-                            <div class="col-md-4 text-start">
-                                <p class="mb-1"><strong>Mã lớp:</strong> {{ $schedule->MaLop }}</p>
-                                <div class="small text-muted">
-                                    <span>Ver: {{ $chuongtrinh->PhienBan }}</span> |
-                                    <span>{{ \Carbon\Carbon::parse($chuongtrinh->NgayTrienKhaiPB)->format('d/m/Y') }}</span>
-                                </div>
+                            <div class="col-md-6 text-start">
+                                <p class="mb-1"><strong>Thời gian:</strong> <span
+                                        style="color: red;">{{ $dsmh && $dsmh->khungGio ? $dsmh->khungGio->ThoiGian : $dsmh->TenKhungGio ?? 'Chưa có' }}</span>
+                                </p>
+                                <p class="mb-1"><strong>Mã lớp:</strong> <span
+                                        style="color: red;">{{ $schedule->MaLop }}</span></p>
+                                <p class="mb-1"><strong>Ver:</strong> {{ $chuongtrinh->PhienBan ?? 'N/A' }}
+                                    &nbsp;&nbsp;&nbsp;
+                                    {{ $chuongtrinh && $chuongtrinh->NgayTrienKhaiPB ? \Carbon\Carbon::parse($chuongtrinh->NgayTrienKhaiPB)->format('d/m/Y') : 'N/A' }}
+                                </p>
                             </div>
                             <div class="col-md-6 text-start">
-                                <p class="mb-1">Bắt đầu học từ ngày:
-                                    <strong>{{ \Carbon\Carbon::parse($schedule->NgayHoc)->format('d/m/Y') }}</strong>
+                                <p class="mb-1"><strong>Bắt đầu học từ ngày:</strong>
+                                    <span
+                                        style="color: red;">{{ \Carbon\Carbon::parse($schedule->NgayHoc)->format('d/m/Y') }}</span>
                                 </p>
-                                <p class="mb-1">Học Lý thuyết tại phòng:
-                                    <strong>{{ $phonglt->TenPhong ?? ' Chưa có ' }}</strong>
-                                </p>
-                                <p class="mb-1">Học Thực hành tại phòng:
-                                    <strong>{{ $phongth->TenPhong ?? ' Chưa có ' }}</strong>
+                                <p class="mb-1"><strong>Học Thực hành tại phòng:</strong>
+                                    <span style="color: red;">{{ $phongth->TenPhong ?? ' Chưa có ' }}</span>
                                 </p>
                             </div>
                         </div>
@@ -266,28 +277,34 @@
                             <table class="table table-bordered table-hover rounded shadow-sm bg-white">
                                 <thead class="table-primary">
                                     <tr>
-                                        <th>Ngày</th>
-                                        <th>Tuần</th>
-                                        <th>Giờ học</th>
-                                        <th>THỨ HAI</th>
-                                        <th>THỨ BA</th>
-                                        <th>THỨ TƯ</th>
-                                        <th>THỨ NĂM</th>
-                                        <th>THỨ SÁU</th>
+                                        <th class="text-center">NGÀY</th>
+                                        <th class="text-center">TUẦN</th>
+                                        <th class="text-center">THỨ HAI</th>
+                                        <th class="text-center">THỨ BA</th>
+                                        <th class="text-center">THỨ TƯ</th>
+                                        <th class="text-center">THỨ NĂM</th>
+                                        <th class="text-center">THỨ SÁU</th>
+                                        <th class="text-center">THỨ BẢY</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($scheduleMatrix as $week => $days)
-                                        @php $weekDates = collect($days)->pluck('date')->toArray(); @endphp
+                                        @php
+                                            $weekDates = collect($days)->pluck('date')->toArray();
+                                        @endphp
                                         <tr>
-                                            <th>{{ implode(' - ', [$weekDates[0], end($weekDates)]) }}</th>
-                                            <th class="text-wrap align-middle">{{ $week }}</th>
-                                            <th class="text-wrap align-middle" style="width: 12rem;">
-                                                {{ $dsmh->TenKhungGio ?? '' }}</th>
+                                            <td class="text-wrap align-middle text-center" style="width: 12rem;">
+                                                {{ implode(' - ', [reset($weekDates), end($weekDates)]) }}</td>
+                                            <td class="text-wrap align-middle text-center">{{ $week }}</td>
                                             @foreach ($days as $dayData)
-                                                <td class="text-wrap align-middle"
+                                                {{-- Loop through all 7 days --}}
+                                                <td class="text-wrap align-middle text-center"
                                                     style="width: 12rem; {{ $dayData['style'] }}">
-                                                    {{ $dayData['subject'] }}
+                                                    @if ($dayData['subject'])
+                                                        {{ $dayData['subject'] }}
+                                                    @else
+                                                        -
+                                                    @endif
                                                 </td>
                                             @endforeach
                                         </tr>
@@ -318,13 +335,20 @@
                             </button>
 
                             <!-- Nút Tự học -->
-                            <button type="button" class="btn btn-warning text-white" data-toggle="modal" data-target="#SelfStudyModal">
+                            <button type="button" class="btn btn-warning text-white" data-toggle="modal"
+                                data-target="#SelfStudyModal">
                                 <i class="fa-brands fa-leanpub"></i> Tự học
                             </button>
 
                             <!-- Nút Chỉnh sửa -->
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#EditTKBModal">
                                 <i class="fa-regular fa-calendar"></i> Chỉnh sửa
+                            </button>
+
+                            <!-- Nút Chọn Môn Học -->
+                            <button type="button" class="btn btn-secondary" data-toggle="modal"
+                                data-target="#selectSubjectModal">
+                                <i class="fas fa-plus"></i> Chọn Môn Học
                             </button>
                         </div>
                     </div>
@@ -467,6 +491,43 @@
                         <button type="submit" class="btn btn-primary">Lưu</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Chọn Môn Học -->
+    <div class="modal fade" id="selectSubjectModal" tabindex="-1" role="dialog"
+        aria-labelledby="selectSubjectModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="selectSubjectModalLabel">Chọn Môn Học</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="subjectsTable">
+                            <thead>
+                                <tr>
+                                    <th>Mã Môn Học</th>
+                                    <th>Tên Môn Học</th>
+                                    <th>Giờ Gốc</th>
+                                    <th>Giờ Triển Khai</th>
+                                    <th>Loại Tiết Học</th>
+                                    <th>Chọn</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="confirmSubjectSelection">Xác nhận</button>
+                </div>
             </div>
         </div>
     </div>
@@ -662,6 +723,7 @@
 </style>
 
 @section('custom-js')
+    <script src="{{ asset('assets/js/page/index.js') }}"></script>
     <script>
         $(document).ready(function() {
             // Xử lý xóa lịch học
@@ -698,6 +760,8 @@
                 }).then((willAdd) => {
                     if (willAdd) {
                         form.off('submit').submit();
+                    } else {
+                        swal('Thao tác đã bị hủy.');
                     }
                 });
             });
@@ -716,6 +780,8 @@
                 }).then((willAdd) => {
                     if (willAdd) {
                         form.off('submit').submit();
+                    } else {
+                        swal('Thao tác đã bị hủy.');
                     }
                 });
             });
@@ -734,6 +800,8 @@
                 }).then((willEdit) => {
                     if (willEdit) {
                         form.off('submit').submit();
+                    } else {
+                        swal('Thao tác đã bị hủy.');
                     }
                 });
             });
@@ -763,6 +831,8 @@
                 }).then((willAdd) => {
                     if (willAdd) {
                         form.off('submit').submit();
+                    } else {
+                        swal('Thao tác đã bị hủy.');
                     }
                 });
             });
@@ -779,6 +849,117 @@
                         icon: 'error'
                     });
                 }
+            });
+
+            // Load danh sách môn học
+            function loadSubjects() {
+                console.log('Fetching subjects...');
+                $.get('/get-subjects', function(subjects) {
+                    console.log('Subjects received:', subjects);
+                    const tbody = $('#subjectsTable tbody');
+                    tbody.empty();
+
+                    if (subjects && subjects.length > 0) {
+                        subjects.forEach(function(subject) {
+                            let lessonType = [];
+                            if (subject.TietLT) lessonType.push('Lý thuyết');
+                            if (subject.TietTH) lessonType.push('Thực hành');
+                            if (subject.TietLTvaTH) lessonType.push('LT và TH');
+
+                            const row = `
+                                <tr>
+                                    <td>${subject.MaMH}</td>
+                                    <td>${subject.TenMH}</td>
+                                    <td>${subject.GioGoc}</td>
+                                    <td>${subject.GioTrienKhai}</td>
+                                    <td>${lessonType.join(', ')}</td>
+                                    <td>
+                                        <input type="checkbox" class="subject-checkbox" 
+                                               data-mamh="${subject.MaMH}"
+                                               data-tenmh="${subject.TenMH}"
+                                               data-giotrienkhai="${subject.GioTrienKhai}">
+                                    </td>
+                                </tr>
+                            `;
+                            tbody.append(row);
+                        });
+                    } else {
+                        console.log('No subjects received or data is empty.');
+                        tbody.append(
+                            '<tr><td colspan="6" class="text-center">Không có môn học nào trong database.</td></tr>'
+                        );
+                    }
+
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error fetching subjects:', textStatus, errorThrown, jqXHR);
+                    const tbody = $('#subjectsTable tbody');
+                    tbody.empty();
+                    tbody.append(
+                        '<tr><td colspan="6" class="text-center text-danger">Lỗi khi tải danh sách môn học. Vui lòng kiểm tra console để biết thêm chi tiết.</td></tr>'
+                    );
+                });
+            }
+
+            // Mở modal chọn môn học
+            $('#selectSubjectModal').on('show.bs.modal', function() {
+                loadSubjects();
+            });
+
+            // Xử lý xác nhận chọn môn học
+            $('#confirmSubjectSelection').click(function() {
+                const selectedSubjects = [];
+                $('.subject-checkbox:checked').each(function() {
+                    selectedSubjects.push({
+                        MaMH: $(this).data('mamh'),
+                        TenMH: $(this).data('tenmh'),
+                        GioTrienKhai: $(this).data('giotrienkhai')
+                    });
+                });
+
+                if (selectedSubjects.length === 0) {
+                    swal({
+                        title: 'Cảnh báo!',
+                        text: 'Vui lòng chọn ít nhất một môn học',
+                        icon: 'warning'
+                    });
+                    return;
+                }
+
+                // Gửi dữ liệu môn học đã chọn đến server
+                $.ajax({
+                    url: '{{ route('updateScheduleSubjects', ['TenTKB' => $schedule->TenTKB]) }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        subjects: selectedSubjects
+                    },
+                    success: function(response) {
+                        // Xử lý phản hồi từ server (ví dụ: thông báo thành công và tải lại trang)
+                        swal({
+                            title: 'Thành công!',
+                            text: response.message || 'Đã cập nhật môn học thành công.',
+                            icon: 'success'
+                        }).then(() => {
+                            location
+                                .reload(); // Tải lại trang để hiển thị thời khóa biểu mới
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi)
+                        swal({
+                            title: 'Lỗi!',
+                            text: 'Có lỗi xảy ra khi cập nhật môn học.' + (jqXHR
+                                .responseJSON && jqXHR.responseJSON.message ? ' ' +
+                                jqXHR.responseJSON.message : ''),
+                            icon: 'error'
+                        });
+                        console.error('Error updating subjects:', textStatus, errorThrown,
+                            jqXHR);
+                    }
+                });
+
+                // Đóng modal ngay lập tức sau khi gửi dữ liệu
+                $('#selectSubjectModal').modal('hide');
             });
         });
     </script>
