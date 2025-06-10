@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 08, 2025 at 02:05 AM
+-- Generation Time: Jun 10, 2025 at 07:01 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -38,6 +38,15 @@ CREATE TABLE `tieu_chi_xep_loai` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
+-- Dumping data for table `tieu_chi_xep_loai`
+--
+
+INSERT INTO `tieu_chi_xep_loai` (`id`, `MaChuongTrinh`, `XepLoai`, `DiemTu`, `DiemDen`, `created_at`, `updated_at`) VALUES
+(1, 'OV-7096', 'Đạt', 40, 60, '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
+(2, 'OV-7096', 'Khá', 60, 75, '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
+(3, 'OV-7096', 'Giỏi', 75, 100, '2025-06-08 02:57:57', '2025-06-08 02:57:57');
+
+--
 -- Indexes for dumped tables
 --
 
@@ -56,7 +65,7 @@ ALTER TABLE `tieu_chi_xep_loai`
 -- AUTO_INCREMENT for table `tieu_chi_xep_loai`
 --
 ALTER TABLE `tieu_chi_xep_loai`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables

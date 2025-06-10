@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 08, 2025 at 02:04 AM
+-- Generation Time: Jun 10, 2025 at 07:01 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -41,6 +41,15 @@ CREATE TABLE `hinh_thuc_danh_gia` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
+-- Dumping data for table `hinh_thuc_danh_gia`
+--
+
+INSERT INTO `hinh_thuc_danh_gia` (`id`, `MaChuongTrinh`, `HinhThuc`, `TiLePhanTram`, `SoBaiThi`, `DiemMoiBai`, `ThoiGian`, `DonViThoiGian`, `created_at`, `updated_at`) VALUES
+(1, 'OV-7096', 'Lý thuyết trắc nghiệm', 50, 6, 20, 40, 'phút', '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
+(2, 'OV-7096', 'Thực hành', 30, 5, 20, 60, 'phút', '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
+(3, 'OV-7096', 'Dự án', 20, 1, 100, 24, 'giờ', '2025-06-08 02:57:57', '2025-06-08 02:57:57');
+
+--
 -- Indexes for dumped tables
 --
 
@@ -59,7 +68,7 @@ ALTER TABLE `hinh_thuc_danh_gia`
 -- AUTO_INCREMENT for table `hinh_thuc_danh_gia`
 --
 ALTER TABLE `hinh_thuc_danh_gia`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
