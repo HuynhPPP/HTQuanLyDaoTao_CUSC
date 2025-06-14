@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 12, 2025 at 06:53 AM
+-- Generation Time: Jun 14, 2025 at 07:20 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -669,16 +669,16 @@ CREATE TABLE `ldap_accounts` (
 
 INSERT INTO `ldap_accounts` (`id`, `MaTaiKhoan`, `username`, `email`, `full_name`, `initial_password`, `role`, `is_sent`, `is_active`, `created_at`, `updated_at`) VALUES
 (13, '21010003', '21010003levanc', '21010003levanc@cusc.ctu.vn', 'Lê Văn C', '$2y$12$MfIGAS.bEtBUYiEl.VEI1u.wYdnrLHWcmnyrjYOWkZrL0ptFEroTK', 'student', 1, 1, '2025-06-02 23:55:48', '2025-06-03 20:03:15'),
-(14, '23000001', '23000001ovanan', '23000001ovanan@cusc.ctu.vn', 'Đỗ Văn An', '7@lwrYtMzb4@', 'student', 0, 1, '2025-06-02 23:55:48', '2025-06-02 23:55:48'),
-(15, '23000002', '23000002ohuuhung', '23000002ohuuhung@cusc.ctu.vn', 'Đỗ Hữu Hùng', 'PkP++4z;lh(Z', 'student', 0, 1, '2025-06-02 23:55:48', '2025-06-02 23:55:48'),
+(14, '23000001', '23000001ovanan', '23000001ovanan@cusc.ctu.vn', 'Đỗ Văn An', '7@lwrYtMzb4@', 'student', 1, 1, '2025-06-02 23:55:48', '2025-06-14 00:08:50'),
+(15, '23000002', '23000002ohuuhung', '23000002ohuuhung@cusc.ctu.vn', 'Đỗ Hữu Hùng', 'PkP++4z;lh(Z', 'student', 1, 1, '2025-06-02 23:55:48', '2025-06-14 00:08:51'),
 (32, 'GV001', 'gv001nguyenvanan', 'gv001nguyenvanan@cusc.ctu.vn', 'Nguyễn Văn An', '$2y$12$k99GuVyQPJ5khWkfUWLE8.SIyeddGhB4qqnSaYrXaH0UgeStCQLG6', 'teacher', 1, 1, '2025-06-03 06:13:21', '2025-06-03 19:32:06'),
-(33, 'GV002', 'gv002tranthibinh', 'gv002tranthibinh@cusc.ctu.vn', 'Trần Thị Bình', '6#u&ev4.Yxt#', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
+(33, 'GV002', 'gv002tranthibinh', 'gv002tranthibinh@cusc.ctu.vn', 'Trần Thị Bình', '6#u&ev4.Yxt#', 'teacher', 1, 1, '2025-06-03 06:13:21', '2025-06-14 00:15:39'),
 (34, 'GV003', 'gv003phamduclinh', 'gv003phamduclinh@cusc.ctu.vn', 'Phạm Đức Linh', '7S>1#:Y7E4En', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
 (35, 'GV004', 'gv004hoangquanggiang', 'gv004hoangquanggiang@cusc.ctu.vn', 'Hoàng Quang Giang', '|L}D@4oq4}wZ', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
-(36, 'GV005', 'gv005hoangcongnam', 'gv005hoangcongnam@cusc.ctu.vn', 'Hoàng Công Nam', '20qr(=f,&6Lo', 'teacher', 0, 1, '2025-06-03 06:13:22', '2025-06-03 06:13:22'),
-(37, 'GV006', 'gv006phanhuugiang', 'gv006phanhuugiang@cusc.ctu.vn', 'Phan Hữu Giang', 'Pa)T2^bTR{E?', 'teacher', 0, 1, '2025-06-03 06:13:22', '2025-06-03 06:13:22'),
-(38, 'GV007', 'gv007phanducphuc', 'gv007phanducphuc@cusc.ctu.vn', 'Phan Đức Phúc', '^%Ag80SPSQFf', 'teacher', 0, 1, '2025-06-03 06:13:22', '2025-06-03 06:13:22'),
-(39, 'GV008', 'gv008danghoanggiang', 'gv008danghoanggiang@cusc.ctu.vn', 'Đặng Hoàng Giang', ';6+399Oxc@4i', 'teacher', 0, 1, '2025-06-03 06:13:22', '2025-06-03 06:13:22');
+(36, 'GV005', 'gv005hoangcongnam', 'gv005hoangcongnam@cusc.ctu.vn', 'Hoàng Công Nam', '20qr(=f,&6Lo', 'teacher', 1, 1, '2025-06-03 06:13:22', '2025-06-14 00:15:34'),
+(37, 'GV006', 'gv006phanhuugiang', 'gv006phanhuugiang@cusc.ctu.vn', 'Phan Hữu Giang', 'Pa)T2^bTR{E?', 'teacher', 1, 1, '2025-06-03 06:13:22', '2025-06-14 00:15:36'),
+(38, 'GV007', 'gv007phanducphuc', 'gv007phanducphuc@cusc.ctu.vn', 'Phan Đức Phúc', '^%Ag80SPSQFf', 'teacher', 1, 1, '2025-06-03 06:13:22', '2025-06-14 00:15:37'),
+(39, 'GV008', 'gv008danghoanggiang', 'gv008danghoanggiang@cusc.ctu.vn', 'Đặng Hoàng Giang', ';6+399Oxc@4i', 'teacher', 1, 1, '2025-06-03 06:13:22', '2025-06-14 00:15:38');
 
 -- --------------------------------------------------------
 
@@ -993,8 +993,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('GgzXxQ5LsP0hGqPzS9Y8nmHJ5w7UFtiRrTt3y2DB', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiSzNaUkR5Y1JCYTVDazltdnV4V1VGemxjaDUwcGx0T01PYzg1dWcxNSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ob21lIjt9czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToiWldjRTciO3M6NDoidXNlciI7czoxMjoiYWRtaW4ua2h1b25nIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxMDoiVGFuIEtodW9uZyI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjtzOjIyOiJQSFBERUJVR0JBUl9TVEFDS19EQVRBIjthOjA6e319', 1749708891),
-('QuZ8y86P1gCADmQ8IoLJddZwoTUofKDo5rANxJ2K', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czozNDoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3RyYS1jdXUtZGllbSI7fXM6NjoiX3Rva2VuIjtzOjQwOiJ1SHlVaDBlcHplNkpsY0k5TmROdXFRV2IxRW5FVFR2ZnZtbWVNOEFoIjtzOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJma0ZPdyI7czoyOiJpZCI7czo4OiIyMTAxMDAwMyI7czo0OiJ1c2VyIjtzOjE0OiIyMTAxMDAwM2xldmFuYyI7czoxMToiZGlzcGxheW5hbWUiO3M6MTA6IkzDqiBWxINuIEMiO3M6NDoicm9sZSI7czo3OiJzdHVkZW50IjtzOjIyOiJQSFBERUJVR0JBUl9TVEFDS19EQVRBIjthOjA6e319', 1749710718);
+('fHTkFfX3nuVtBGo9kFysDvlaH3ax37ASjwUu9qWu', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiU3ZwNkNEQnAwMUR2dEJuT2xOQ0hiZXZxNm9SN0xua2R0OUdDMTBKbiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6ODg6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC90b2NodWN0aGkvdGhvbmcta2Utc2luaC12aWVuLWRhdC1tb24vT1YtNzA5Nj9tYUNodW9uZ1RyaW5oPU9WLTcwOTYiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJPOFl1TiI7czo0OiJ1c2VyIjtzOjEyOiJhZG1pbi5raHVvbmciO3M6MTE6ImRpc3BsYXluYW1lIjtzOjEwOiJUYW4gS2h1b25nIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO3M6MjI6IlBIUERFQlVHQkFSX1NUQUNLX0RBVEEiO2E6MDp7fX0=', 1749885512);
 
 -- --------------------------------------------------------
 
