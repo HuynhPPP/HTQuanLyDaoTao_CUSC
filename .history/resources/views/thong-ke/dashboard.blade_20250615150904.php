@@ -69,7 +69,7 @@
                 </div>
 
                 {{-- Tình Trạng Sinh Viên --}}
-                {{-- <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-12">
                     <div class="card card-statistic-1">
                         <div class="card-icon bg-success">
                             <i class="fas fa-chart-pie"></i>
@@ -79,6 +79,7 @@
                                 <h4>Tình Trạng</h4>
                             </div>
                             <div class="card-body">
+                                {{ $tongSinhVien }}
                                 <small class="text-muted d-block">
                                     @foreach($tinhTrangSinhVien as $tinhTrang)
                                         {{ $tinhTrang->ten_tinh_trang }}: {{ $tinhTrang->so_luong }} 
@@ -87,7 +88,7 @@
                             </div>
                         </div>
                     </div>
-                </div> --}}
+                </div>
             </div>
 
             {{-- Biểu đồ thống kê --}}

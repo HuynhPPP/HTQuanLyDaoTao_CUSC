@@ -55,10 +55,12 @@ class ThongKeService
     public function thongKeChuongTrinhDaoTao()
     {
         return ChuongTrinh::select(
-            'MaChuongTrinh',
-            DB::raw('COUNT(DISTINCT chuongtrinh.MaChuongTrinh ) as tong_so_luong'),
+            'MaGV',
+            DB::raw('COUNT(DISTINCT giaovien.MaGV) as tong_so_luong'),
+            DB::raw('SUM(CASE WHEN giaovien.GioiTinh = 1 THEN 1 ELSE 0 END) as nam'),
+            DB::raw('SUM(CASE WHEN giaovien.GioiTinh = 0 THEN 1 ELSE 0 END) as nu')
         )
-            ->groupBy('chuongtrinh.MaChuongTrinh')
+            ->groupBy('giaovien.MaGV')
             ->get();
     }
 
@@ -115,7 +117,7 @@ class ThongKeService
                         WHEN TinhTrangHocTap = "DangHoc" THEN "Đang Học" 
                         WHEN TinhTrangHocTap = "DaNghiHoc" THEN "Thôi Học" 
                         WHEN TinhTrangHocTap = "DaTotNghiep" THEN "Tốt Nghiệp" 
-                        ELSE "Chưa cập nhật" 
+                        ELSE "Khác" 
                     END as ten_tinh_trang
                 ')
             )

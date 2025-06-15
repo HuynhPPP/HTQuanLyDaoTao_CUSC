@@ -115,7 +115,7 @@ class ThongKeService
                         WHEN TinhTrangHocTap = "DangHoc" THEN "Đang Học" 
                         WHEN TinhTrangHocTap = "DaNghiHoc" THEN "Thôi Học" 
                         WHEN TinhTrangHocTap = "DaTotNghiep" THEN "Tốt Nghiệp" 
-                        ELSE "Chưa cập nhật" 
+                        ELSE "Khác" 
                     END as ten_tinh_trang
                 ')
             )

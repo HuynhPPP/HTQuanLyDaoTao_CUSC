@@ -288,7 +288,7 @@ class PagesController extends Controller
             $phonglt = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
             $phongth = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
             $hocki = hocki::find($schedule->MaHK);
-
+            
             $dsmh = danhsachmonhoc::where('MaHK', $hocki->MaHK)->first();
             // Retrieve danhsachngaynghi records and load the related ngaynghi objects
             $danhsachngaynghiRecords = danhsachngaynghi::with('ngayNghi')->where('TenTKB', $TenTKB)->get();
@@ -370,16 +370,16 @@ class PagesController extends Controller
 
             try {
                 DB::beginTransaction();
-
+                
                 $schedule = tkb::where('TenTKB', $TenTKB)->first();
-
+                
                 if (!$schedule) {
                     return redirect()->back()->with('error', 'Không tìm thấy thời khóa biểu.');
                 }
 
                 // Chuyển đổi ngày từ request thành định dạng Y-m-d
                 $newDate = date('Y-m-d', strtotime($request->input('NgayHoc')));
-
+                
                 // Cập nhật ngày học
                 $schedule->NgayHoc = $newDate;
                 $schedule->save();
@@ -573,7 +573,7 @@ class PagesController extends Controller
                         'TenMH' => $subject['TenMH'],
                         'GioTrienKhai' => $subject['GioTrienKhai'],
                     ]);
-
+                    
                     \Log::info('Đã tạo bản ghi môn học', [
                         'subject' => $created->toArray()
                     ]);
