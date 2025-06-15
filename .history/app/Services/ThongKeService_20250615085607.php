@@ -97,18 +97,7 @@ class ThongKeService
     public function thongKeTinhTrangSinhVien()
     {
         return DB::table('sinhvien')
-            ->select(
-                'TinhTrangHocTap', 
-                DB::raw('COUNT(*) as so_luong'),
-                DB::raw('
-                    CASE 
-                        WHEN TinhTrangHocTap = "DangHoc" THEN "Đang Học" 
-                        WHEN TinhTrangHocTap = "DaNghiHoc" THEN "Thôi Học" 
-                        WHEN TinhTrangHocTap = "DaTotNghiep" THEN "Tốt Nghiệp" 
-                        ELSE "Khác" 
-                    END as ten_tinh_trang
-                ')
-            )
+            ->select('TinhTrangHocTap', DB::raw('COUNT(*) as so_luong'))
             ->groupBy('TinhTrangHocTap')
             ->get();
     }

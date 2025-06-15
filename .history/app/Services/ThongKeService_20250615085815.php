@@ -103,6 +103,7 @@ class ThongKeService
                 DB::raw('
                     CASE 
                         WHEN TinhTrangHocTap = "DangHoc" THEN "Đang Học" 
+                        WHEN TinhTrangHocTap = 2 THEN "Bảo Lưu" 
                         WHEN TinhTrangHocTap = "DaNghiHoc" THEN "Thôi Học" 
                         WHEN TinhTrangHocTap = "DaTotNghiep" THEN "Tốt Nghiệp" 
                         ELSE "Khác" 

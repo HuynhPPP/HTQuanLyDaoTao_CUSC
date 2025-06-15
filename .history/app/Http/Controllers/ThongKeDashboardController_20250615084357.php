@@ -28,17 +28,6 @@ class ThongKeDashboardController extends Controller
         $tongNamGV = $thongKeGiaoVien->sum('nam');
         $tongNuGV = $thongKeGiaoVien->sum('nu');
 
-        // Thống kê sinh viên theo chương trình đào tạo
-        $sinhVienTheoChuongTrinh = $this->thongKeService->thongKeSinhVienTheoChuongTrinh();
-
-        // Thống kê sinh viên theo lớp học
-        $sinhVienTheoLop = $this->thongKeService->thongKeSinhVienTheoLop();
-
-        // Thống kê môn học theo chương trình
-        $monHocTheoChuongTrinh = $this->thongKeService->thongKeMonHocTheoChuongTrinh();
-
-        // Thống kê tình trạng sinh viên
-        $tinhTrangSinhVien = $this->thongKeService->thongKeTinhTrangSinhVien();
 
         return view('thong-ke.dashboard', [
             'title' => 'Bảng Điều Khiển Thống Kê',
@@ -48,10 +37,6 @@ class ThongKeDashboardController extends Controller
             'tongGiaoVien' => $tongGiaoVien,
             'tongNamGV' => $tongNamGV,
             'tongNuGV' => $tongNuGV,
-            'sinhVienTheoChuongTrinh' => $sinhVienTheoChuongTrinh,
-            'sinhVienTheoLop' => $sinhVienTheoLop,
-            'monHocTheoChuongTrinh' => $monHocTheoChuongTrinh,
-            'tinhTrangSinhVien' => $tinhTrangSinhVien
         ]);
     }
 }

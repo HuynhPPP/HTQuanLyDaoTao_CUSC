@@ -75,9 +75,9 @@
                         <li class="dropdown {{ $donViLopActive ? 'active' : '' }}">
                             <a href="#" class="nav-link has-dropdown">Phòng học & Lớp</a>
                             <ul class="dropdown-menu">
-                                {{-- <li class="{{ request()->routeIs('donvi.*') ? 'active' : '' }}">
+                                <li class="{{ request()->routeIs('donvi.*') ? 'active' : '' }}">
                                     <a class="nav-link" href="{{ route('donvi.index') }}">Đơn vị</a>
-                                </li> --}}
+                                </li>
                                 <li class="{{ request()->routeIs('phonghoc.*') ? 'active' : '' }}">
                                     <a class="nav-link" href="{{ route('phonghoc.index') }}">Phòng học</a>
                                 </li>

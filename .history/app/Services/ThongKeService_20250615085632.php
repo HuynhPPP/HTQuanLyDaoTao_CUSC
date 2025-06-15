@@ -102,9 +102,10 @@ class ThongKeService
                 DB::raw('COUNT(*) as so_luong'),
                 DB::raw('
                     CASE 
-                        WHEN TinhTrangHocTap = "DangHoc" THEN "Đang Học" 
-                        WHEN TinhTrangHocTap = "DaNghiHoc" THEN "Thôi Học" 
-                        WHEN TinhTrangHocTap = "DaTotNghiep" THEN "Tốt Nghiệp" 
+                        WHEN TinhTrangHocTap = 1 THEN "Đang Học" 
+                        WHEN TinhTrangHocTap = 2 THEN "Bảo Lưu" 
+                        WHEN TinhTrangHocTap = 3 THEN "Thôi Học" 
+                        WHEN TinhTrangHocTap = 4 THEN "Tốt Nghiệp" 
                         ELSE "Khác" 
                     END as ten_tinh_trang
                 ')
