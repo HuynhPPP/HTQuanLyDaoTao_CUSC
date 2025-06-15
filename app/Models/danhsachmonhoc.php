@@ -12,12 +12,13 @@ class danhsachmonhoc extends Model
 
     public $timestamps = false; // Disable timestamp columns if not used
     protected $keyType='string';
-    protected $primaryKey='MaHK';
     protected $fillable=[
         'TenKhungGio',
         'MaHK',
         'SttMH' ,
 	    'TenMH' ,
+        'MaMH',
+        'GioTrienKhai',
     ];
 
     public function khungGio()
@@ -31,6 +32,6 @@ class danhsachmonhoc extends Model
     }
 
     public function monhoc(){
-        return $this->belongsTo(monhoc::class,'TenMH');
+        return $this->belongsTo(monhoc::class,'MaMH');
     }
 }

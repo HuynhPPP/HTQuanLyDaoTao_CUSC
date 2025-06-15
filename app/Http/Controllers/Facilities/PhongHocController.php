@@ -6,6 +6,7 @@ use App\Models\phonghoc;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\danhsachphong;
+use App\Models\khunggio;
 
 class PhongHocController extends Controller
 {
@@ -13,40 +14,50 @@ class PhongHocController extends Controller
     {
         $query = phonghoc::query();
 
-        // Lọc theo ngày
-        if ($request->has('ngay')) {
-            $ngay = Carbon::parse($request->ngay);
-            $query->whereDoesntHave('danhsachphong', function($q) use ($ngay) {
-                $q->whereDate('NgaySuDung', $ngay);
-            });
+        // Determine the selected date and time slot
+        $selectedDate = $request->input('ngay') ? Carbon::parse($request->input('ngay')) : Carbon::now();
+        $selectedKhungGioTen = $request->input('khung_gio'); // Tên khung giờ được chọn từ bộ lọc
+        $selectedKhungGioMaCa = null;
+
+        // Đảm bảo các khung giờ mặc định luôn tồn tại
+        $defaultTimeSlots = [
+            ['TenKhungGio' => 'Sáng', 'ThoiGian' => '08:00 - 11:00'],
+            ['TenKhungGio' => 'Chiều', 'ThoiGian' => '13:00 - 16:00'],
+            ['TenKhungGio' => 'Tối', 'ThoiGian' => '18:00 - 21:00']
+        ];
+
+        foreach ($defaultTimeSlots as $slot) {
+            khunggio::firstOrCreate(
+                ['TenKhungGio' => $slot['TenKhungGio']],
+                ['ThoiGian' => $slot['ThoiGian']]
+            );
         }
 
-        // Lọc theo tuần
-        if ($request->has('tuan')) {
-            $tuan = Carbon::parse($request->tuan);
-            $startOfWeek = $tuan->startOfWeek();
-            $endOfWeek = $tuan->copy()->endOfWeek();
-            $query->whereDoesntHave('danhsachphong', function($q) use ($startOfWeek, $endOfWeek) {
-                $q->whereBetween('NgaySuDung', [$startOfWeek, $endOfWeek]);
-            });
+        if ($selectedKhungGioTen) {
+            $khungGioObj = khunggio::where('TenKhungGio', $selectedKhungGioTen)->first();
+            if ($khungGioObj) {
+                $selectedKhungGioMaCa = $khungGioObj->TenKhungGio;
+            }
         }
 
-        // Lọc theo ca
-        if ($request->has('ca')) {
-            $query->whereDoesntHave('danhsachphong', function($q) use ($request) {
-                $q->where('Ca', $request->ca);
-            });
-        }
+        // Build the query for phonghocs, eagerly loading danhsachphong with relevant filters
+        $phonghocs = $query->with(['danhsachphong' => function($q) use ($selectedDate, $selectedKhungGioMaCa) {
+            $q->whereDate('NgaySuDung', $selectedDate->format('Y-m-d'));
+            if ($selectedKhungGioMaCa) {
+                $q->where('Ca', $selectedKhungGioMaCa);
+            }
+            // Eager load nested relationships for danhsachphong
+            $q->with(['lopHoc.tkb.hocki.danhsachmonhoc.monhoc']);
+        }])
+        ->when($request->has('trang_thai'), function ($q) use ($request) {
+            $q->where('TrangThai', $request->trang_thai);
+        })
+        ->paginate(10);
 
-        // Lọc theo trạng thái
-        if ($request->has('trang_thai')) {
-            $query->where('TrangThai', $request->trang_thai);
-        }
+        // Get all time slots (for the dropdown)
+        $khunggios = khunggio::whereIn('TenKhungGio', ['Sáng', 'Chiều', 'Tối'])->get();
 
-        // Eager load mối quan hệ danhsachphong để kiểm tra trạng thái sử dụng
-        $phonghocs = $query->with('danhsachphong')->paginate(10);
-
-        return view('quanly_cosovatchat.phonghoc.index', compact('phonghocs'));
+        return view('quanly_cosovatchat.phonghoc.index', compact('phonghocs', 'khunggios', 'selectedDate', 'selectedKhungGioTen'));
     }
 
     public function create()
@@ -101,13 +112,8 @@ class PhongHocController extends Controller
             $phonghoc->delete();
 
             return redirect()->route('phonghoc.index')->with('success', 'Xóa phòng học thành công');
-        } catch (\Illuminate\Database\QueryException $e) {
-            // Kiểm tra mã lỗi 1451 (ràng buộc khoá ngoại)
-            if ($e->getCode() == 23000) {
-                return redirect()->route('phonghoc.index')->with('error', 'Không thể xóa phòng học vì đang được gán cho lớp. Vui lòng xóa các gán phòng trước.');
-            }
-            // Lỗi khác
-            return redirect()->route('phonghoc.index')->with('error', 'Đã xảy ra lỗi khi xóa phòng học.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa phòng học: ' . $e->getMessage());
         }
     }
 }

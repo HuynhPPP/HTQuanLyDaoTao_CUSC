@@ -23,4 +23,9 @@ class hocki extends Model
     {
         return $this->belongsTo(ChuongTrinh::class, 'MaChuongTrinh', 'MaChuongTrinh');
     }
+
+    public function danhsachmonhoc()
+    {
+        return $this->hasMany(danhsachmonhoc::class, 'MaHK', 'MaHK');
+    }
 }

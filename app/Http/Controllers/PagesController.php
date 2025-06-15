@@ -24,6 +24,7 @@ use App\Models\{
     ngaytuhoc
 };
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PagesController extends Controller
 {
@@ -246,20 +247,20 @@ class PagesController extends Controller
 
             // Sau khi lưu thời khóa biểu thành công
             // Tìm phòng thực hành được gán cho lớp này trong danhsachphong
-            $phongThucHanhDaGan = danhsachphong::where('MaLop', $schedule->MaLop)->first();
+            // $phongThucHanhDaGan = danhsachphong::where('MaLop', $schedule->MaLop)->first();
 
-            if ($phongThucHanhDaGan) {
-                // Lấy tên phòng thực hành
-                $tenPhongThucHanh = $phongThucHanhDaGan->TenPhong;
+            // if ($phongThucHanhDaGan) {
+            //     // Lấy tên phòng thực hành
+            //     $tenPhongThucHanh = $phongThucHanhDaGan->TenPhong;
 
-                // Cập nhật trạng thái của phòng thực hành trong bảng phonghoc
-                $phongHoc = phonghoc::where('TenPhong', $tenPhongThucHanh)->first();
+            //     // Cập nhật trạng thái của phòng thực hành trong bảng phonghoc
+            //     $phongHoc = phonghoc::where('TenPhong', $tenPhongThucHanh)->first();
 
-                if ($phongHoc) {
-                    $phongHoc->TrangThai = 'Đang sử dụng';
-                    $phongHoc->save();
-                }
-            }
+            //     if ($phongHoc) {
+            //         $phongHoc->TrangThai = 'Đang sử dụng';
+            //         $phongHoc->save();
+            //     }
+            // }
 
             return redirect()->route('schedule', ['TenTKB' => $schedule->TenTKB]);
         }
@@ -453,6 +454,36 @@ class PagesController extends Controller
                     ['TenKhungGio' => $tenKhungGio]
                 );
 
+                // Lấy thông tin lớp học, phòng lý thuyết và phòng thực hành từ bảng lophoc và tkb
+                $lophoc = lophoc::find($schedule->MaLop);
+                $ngayHoc = $schedule->NgayHoc; // Ngày học của thời khóa biểu
+
+                // Tìm và cập nhật phòng lý thuyết
+                $phongltRecord = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
+                if ($phongltRecord) {
+                    $phongltRecord->update([
+                        'NgaySuDung' => $ngayHoc,
+                        'Ca' => $khungGio->TenKhungGio, // Sử dụng TenKhungGio làm Ca
+                        'TrangThai' => 'Đang sử dụng'
+                    ]);
+                    Log::info('Updated danhsachphong for phonglt', ['MaLop' => $lophoc->MaLop, 'TenPhong' => $phongltRecord->TenPhong, 'NgaySuDung' => $ngayHoc, 'Ca' => $khungGio->TenKhungGio]);
+                } else {
+                    Log::warning('Phong ly thuyet not found for MaLop', ['MaLop' => $lophoc->MaLop]);
+                }
+
+                // Tìm và cập nhật phòng thực hành
+                $phongthRecord = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
+                if ($phongthRecord) {
+                    $phongthRecord->update([
+                        'NgaySuDung' => $ngayHoc,
+                        'Ca' => $khungGio->TenKhungGio, // Sử dụng TenKhungGio làm Ca
+                        'TrangThai' => 'Đang sử dụng'
+                    ]);
+                    Log::info('Updated danhsachphong for phongth', ['MaLop' => $lophoc->MaLop, 'TenPhong' => $phongthRecord->TenPhong, 'NgaySuDung' => $ngayHoc, 'Ca' => $khungGio->TenKhungGio]);
+                } else {
+                    Log::warning('Phong thuc hanh not found for MaLop', ['MaLop' => $lophoc->MaLop]);
+                }
+
                 return redirect()->route('schedule', ['TenTKB' => $TenTKB])
                     ->with('success', 'Cập nhật khung giờ thành công!');
 
@@ -520,38 +551,37 @@ class PagesController extends Controller
     {
         if (session()->has('user')) {
             $selectedSubjects = $request->input('subjects');
-
-            // 1. Find the schedule and get the MaHK
             $schedule = tkb::where('TenTKB', $TenTKB)->first();
-
-            if (!$schedule) {
-                return redirect()->back()->with('error', 'Không tìm thấy thời khóa biểu.');
-            }
-
             $maHK = $schedule->MaHK;
 
-            // 2. Delete existing subjects for this MaHK in danhsachmonhoc
-            // This assumes danhsachmonhoc links hocki and monhoc, and we replace the list for the hocki.
-            // If the link is TKB -> Monhoc directly, the logic might need adjustment.
+            // Ghi log để debug
+            \Log::info('Đang cập nhật môn học cho lịch', [
+                'TenTKB' => $TenTKB,
+                'MaHK' => $maHK,
+                'selectedSubjects' => $selectedSubjects
+            ]);
+
+            // Xóa các môn học cũ
             \App\Models\danhsachmonhoc::where('MaHK', $maHK)->delete();
 
-            // 3. Save the new selected subjects to danhsachmonhoc
+            // Lưu môn học mới
             if (!empty($selectedSubjects)) {
                 foreach ($selectedSubjects as $subject) {
-                    // Assuming danhsachmonhoc has 'MaHK' and 'MaMH' columns
-                    // You might need to adjust this based on your actual model/table structure for danhsachmonhoc
-                    \App\Models\danhsachmonhoc::create([
+                    $created = \App\Models\danhsachmonhoc::create([
                         'MaHK' => $maHK,
-                        'MaMH' => $subject['MaMH'], // Use MaMH from the selected subject data
-                        // Add other fields for danhsachmonhoc if necessary (e.g., 'TenMH', 'GioTrienKhai' - although these can be looked up from the monhoc table)
-                         'TenMH' => $subject['TenMH'], // Assuming danhsachmonhoc also stores TenMH
-                         'GioTrienKhai' => $subject['GioTrienKhai'], // Assuming danhsachmonhoc also stores GioTrienKhai
+                        'MaMH' => $subject['MaMH'],
+                        'TenMH' => $subject['TenMH'],
+                        'GioTrienKhai' => $subject['GioTrienKhai'],
+                    ]);
+                    
+                    \Log::info('Đã tạo bản ghi môn học', [
+                        'subject' => $created->toArray()
                     ]);
                 }
             }
 
-            return redirect()->route('schedule', ['TenTKB' => $TenTKB])->with('success', 'Môn học đã được cập nhật cho thời khóa biểu.');
-
+            return redirect()->route('schedule', ['TenTKB' => $TenTKB])
+                ->with('success', 'Môn học đã được cập nhật cho thời khóa biểu.');
         }
         return Redirect::to('')->with([
             'error' => 'Truy cập bị từ chối',
