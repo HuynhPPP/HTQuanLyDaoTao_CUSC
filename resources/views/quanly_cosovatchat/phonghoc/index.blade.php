@@ -22,35 +22,28 @@
                             <!-- Filter Form -->
                             <form action="{{ route('phonghoc.index') }}" method="GET" class="mb-4">
                                 <div class="row">
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Ngày</label>
                                             <input type="date" name="ngay" class="form-control"
-                                                value="{{ request('ngay') }}">
+                                                value="{{ request('ngay', $selectedDate->format('Y-m-d')) }}">
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Tuần</label>
-                                            <input type="date" name="tuan" class="form-control"
-                                                value="{{ request('tuan') }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Ca</label>
-                                            <select name="ca" class="form-control">
+                                            <label>Khung giờ</label>
+                                            <select name="khung_gio" class="form-control">
                                                 <option value="">Tất cả</option>
-                                                <option value="1" {{ request('ca') == '1' ? 'selected' : '' }}>Ca 1
-                                                </option>
-                                                <option value="2" {{ request('ca') == '2' ? 'selected' : '' }}>Ca 2
-                                                </option>
-                                                <option value="3" {{ request('ca') == '3' ? 'selected' : '' }}>Ca 3
-                                                </option>
+                                                @foreach ($khunggios as $khunggio)
+                                                    <option value="{{ $khunggio->TenKhungGio }}"
+                                                        {{ request('khung_gio') == $khunggio->TenKhungGio ? 'selected' : '' }}>
+                                                        {{ $khunggio->TenKhungGio }} ({{ $khunggio->ThoiGian }})
+                                                    </option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Trạng thái</label>
                                             <select name="trang_thai" class="form-control">
@@ -82,7 +75,7 @@
                                             <th>Tên phòng</th>
                                             <th>Loại phòng</th>
                                             <th>Sức chứa</th>
-                                            <th>Trạng thái</th>
+                                            <th>Trạng thái tại {{ $selectedKhungGioTen ?? 'Hiện tại' }}</th>
                                             <th>Thao tác</th>
                                         </tr>
                                     </thead>
@@ -96,32 +89,59 @@
                                                 @else
                                                     <td>N/A</td>
                                                 @endif
-                                                <td>
-                                                    @if ($phong->TrangThai)
-                                                        @php
-                                                            $statusClass = '';
-                                                            switch ($phong->TrangThai) {
-                                                                case 'Trống':
-                                                                    $statusClass = 'badge-success';
-                                                                    break;
-                                                                case 'Đang sử dụng':
-                                                                    $statusClass = 'badge-danger';
-                                                                    break;
-                                                                case 'Bảo trì':
-                                                                    $statusClass = 'badge-warning';
-                                                                    break;
-                                                                default:
-                                                                    $statusClass = 'badge-secondary';
+                                                @php
+                                                    $status = '🟢 Trống';
+                                                    $maLop = null;
+                                                    $tenMH = null;
+
+                                                    if ($phong->TrangThai == 'Bảo trì') {
+                                                        $status = '🟡 Bảo trì';
+                                                    } else {
+                                                        $found = false;
+                                                        foreach ($phong->danhsachphong as $dsphong) {
+                                                            // Check if the current danhsachphong record matches the selected date and time slot
+                                                            if (
+                                                                Carbon::parse($dsphong->NgaySuDung)->format('Y-m-d') ==
+                                                                    $selectedDate->format('Y-m-d') &&
+                                                                ($selectedKhungGioMaCa === null ||
+                                                                    $dsphong->Ca == $selectedKhungGioMaCa)
+                                                            ) {
+                                                                $status = '🔴 Đang sử dụng';
+                                                                $maLop = $dsphong->MaLop;
+
+                                                                // Access eager-loaded data
+                                                                if (
+                                                                    $dsphong->lopHoc &&
+                                                                    $dsphong->lopHoc->tkb &&
+                                                                    $dsphong->lopHoc->tkb->hocki &&
+                                                                    $dsphong->lopHoc->tkb->hocki->danhsachmonhoc->isNotEmpty()
+                                                                ) {
+                                                                    // Assuming there's only one danhsachmonhoc per hocki for simplicity in this context
+                                                                    $danhsachmonhoc = $dsphong->lopHoc->tkb->hocki->danhsachmonhoc->first();
+                                                                    if ($danhsachmonhoc && $danhsachmonhoc->monhoc) {
+                                                                        $tenMH = $danhsachmonhoc->monhoc->TenMH;
+                                                                    }
+                                                                }
+
+                                                                $found = true;
+                                                                break; // Found matching record, no need to check further danhsachphong records for this room
                                                             }
-                                                        @endphp
-                                                        <span
-                                                            class="badge {{ $statusClass }}">{{ $phong->TrangThai }}</span>
-                                                    @else
-                                                        <span class="badge badge-secondary">Chưa cập nhật</span>
+                                                        }
+                                                    }
+                                                @endphp
+                                                <td>
+                                                    {!! $status !!}
+                                                    @if ($status === '🔴 Đang sử dụng')
+                                                        <br />
+                                                        @if ($tenMH)
+                                                            Môn: {{ $tenMH }}<br />
+                                                        @endif
+                                                        @if ($maLop)
+                                                            Lớp: {{ $maLop }}
+                                                        @endif
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    {{-- <a href="{{ route('phonghoc.show', $phong->TenPhong) }}" class="btn btn-info btn-sm">Xem</a> --}}
                                                     <a href="{{ route('phonghoc.edit', $phong->TenPhong) }}"
                                                         class="btn btn-warning btn-sm" title="Sửa"><i
                                                             class="fas fa-edit"></i></a>

@@ -5,6 +5,8 @@
         use Carbon\Carbon;
         use App\Models\danhsachngaynghi;
         use App\Models\ngaytuhoc;
+        use App\Models\GiangDay;
+        use App\Models\giaovien;
         // Ngày bắt đầu học
         $startDate = Carbon::parse($schedule->NgayHoc);
         $totalHours = $hocki->TongGioTrienKhai;
@@ -20,12 +22,12 @@
         // Cộng số ngày trống vào tổng thời gian (2 giờ cho mỗi ngày trống)
         $totalHours += $emptyDays * 2;
         // Tính tổng số giờ học và tổng số tuần
-        $totalWeeks = ceil($totalHours / 10);
+        $totalWeeks = ceil($totalHours / 20);
         //lọc môn học có giờ triển khai nhiều hơn 0
         $filteredMonHocs = [];
         $subjectCount = count($monhocs);
         foreach ($monhocs as $index => $monhoc) {
-            if ($monhoc->GioTrienKhai > 0) {
+            if ($monhoc && $monhoc->GioTrienKhai > 0) {
                 $filteredMonHocs[] = $monhoc;
             }
         }
@@ -33,14 +35,14 @@
         $subjectOccurrences = [];
         $subjectCount = count($filteredMonHocs);
         foreach ($filteredMonHocs as $index => $monhoc) {
-            $subjectOccurrences[$monhoc->TenMH] = [
+            $subjectOccurrences[$monhoc->MaMH] = [
+                'TenMH' => $monhoc->TenMH,
                 'first' => null,
                 'last' => null,
                 'remaining' => $monhoc->GioTrienKhai,
             ];
-            // Nếu là môn học cuối cùng, đánh dấu bằng chỉ số
             if ($index === $subjectCount - 1) {
-                $subjectOccurrences[$monhoc->TenMH]['lastSubject'] = true;
+                $subjectOccurrences[$monhoc->MaMH]['lastSubject'] = true;
             }
         }
         // Các ngày trong tuần
@@ -81,6 +83,20 @@
                 $holidayStart->addDay();
             }
         }
+        // Hàm lấy thông tin giảng viên cho môn học
+        $getTeacherInfo = function ($maMH) use ($schedule) {
+            if (!isset($schedule) || !$schedule) {
+                return ' [NO SCHEDULE]';
+            }
+            $giangDay = \App\Models\GiangDay::where('MaMH', $maMH)->where('MaLop', $schedule->MaLop)->first();
+            if (!$giangDay) {
+                return ' [NO GIANGDAY]';
+            }
+            $giangVien = \App\Models\giaovien::where('MaGV', $giangDay->MaGV)->first();
+            return $giangVien ? ' - GV: ' . $giangVien->HoTenGV : ' [NO GIANGVIEN]';
+        };
+        // Debug thử
+        // dd(\App\Models\GiangDay::where('MaMH', 'MÃ_MÔN_HỌC')->where('MaLop', 'MÃ_LỚP')->first());
         // Hàm lấy môn học cho ngày hiện tại
         $getSubjectForDay = function (
             &$subjectOccurrences,
@@ -91,13 +107,13 @@
             $addDaysSkippingWeekends,
             $holidayDates,
             &$examCounter,
-        ) {
+        ) use ($getTeacherInfo) {
             foreach ($subjectOccurrences as $subject => &$details) {
                 if ($details['remaining'] > 0) {
                     if (is_null($details['first'])) {
                         $details['first'] = $currentDate;
                     }
-                    $details['remaining'] -= 2;
+                    $details['remaining'] -= 4;
                     if ($details['remaining'] <= 0) {
                         $details['last'] = $currentDate;
                         if (isset($details['lastSubject']) && $details['lastSubject']) {
@@ -159,7 +175,8 @@
                             }
                         }
                         $examCounter++;
-                        $examDays[$examDate->format('Y-m-d')] = "Thi $subject (E$examCounter) - L";
+                        $examDays[$examDate->format('Y-m-d')] =
+                            'Thi ' . $subjectOccurrences[$subject]['TenMH'] . " ($subject, E$examCounter) - L";
                         $totalHours += 2;
                     }
                     return $subject;
@@ -195,7 +212,7 @@
                     } else {
                         if (isset($holidayDates[$currentDate->format('Y-m-d')])) {
                             $subject = $holidayDates[$currentDate->format('Y-m-d')];
-                            $style = 'background-color: yellow; filter-bg-holiday'; // Added a temporary class prefix
+                            $style = 'background-color: yellow; filter-bg-holiday';
                         } else {
                             $subject = $getSubjectForDay(
                                 $subjectOccurrences,
@@ -221,7 +238,7 @@
                     $subject = '';
                     $style = '';
                 }
-                $totalWeeks = ceil($totalHours / 10);
+                $totalWeeks = ceil($totalHours / 20);
                 $scheduleMatrix[$week][$day] = [
                     'date' => $currentDate->format('d/m/Y'),
                     'subject' => $subject,
@@ -268,6 +285,9 @@
                                     <span
                                         style="color: red;">{{ \Carbon\Carbon::parse($schedule->NgayHoc)->format('d/m/Y') }}</span>
                                 </p>
+                                <p class="mb-1"><strong>Học Lý thuyết tại phòng:</strong>
+                                    <span style="color: red;">{{ $phonglt->TenPhong ?? 'Chưa có' }}</span>
+                                </p>
                                 <p class="mb-1"><strong>Học Thực hành tại phòng:</strong>
                                     <span style="color: red;">{{ $phongth->TenPhong ?? ' Chưa có ' }}</span>
                                 </p>
@@ -301,7 +321,11 @@
                                                 <td class="text-wrap align-middle text-center"
                                                     style="width: 12rem; {{ $dayData['style'] }}">
                                                     @if ($dayData['subject'])
-                                                        {{ $dayData['subject'] }}
+                                                        @if (isset($subjectOccurrences[$dayData['subject']]))
+                                                            {{ $subjectOccurrences[$dayData['subject']]['TenMH'] }}{!! $getTeacherInfo($dayData['subject']) !!}
+                                                        @else
+                                                            {{ $dayData['subject'] }}
+                                                        @endif
                                                     @else
                                                         -
                                                     @endif
@@ -723,7 +747,6 @@
 </style>
 
 @section('custom-js')
-    <script src="{{ asset('assets/js/page/index.js') }}"></script>
     <script>
         $(document).ready(function() {
             // Xử lý xóa lịch học
@@ -909,10 +932,14 @@
             $('#confirmSubjectSelection').click(function() {
                 const selectedSubjects = [];
                 $('.subject-checkbox:checked').each(function() {
+                    const tenMH = $(this).data('tenmh');
+                    const gioTrienKhai = $(this).data('giotrienkhai');
+                    const mamh = $(this).data('mamh');
+                    const tenMHTrim = tenMH.trim();
                     selectedSubjects.push({
-                        MaMH: $(this).data('mamh'),
-                        TenMH: $(this).data('tenmh'),
-                        GioTrienKhai: $(this).data('giotrienkhai')
+                        MaMH: mamh,
+                        TenMH: tenMHTrim,
+                        GioTrienKhai: gioTrienKhai
                     });
                 });
 
@@ -934,14 +961,14 @@
                         subjects: selectedSubjects
                     },
                     success: function(response) {
-                        // Xử lý phản hồi từ server (ví dụ: thông báo thành công và tải lại trang)
+                        // Xử lý phản hồi từ server
                         swal({
                             title: 'Thành công!',
-                            text: response.message || 'Đã cập nhật môn học thành công.',
+                            text: 'Đã cập nhật môn học thành công.',
                             icon: 'success'
                         }).then(() => {
-                            location
-                                .reload(); // Tải lại trang để hiển thị thời khóa biểu mới
+                            window.location.href =
+                                '{{ route('schedule', ['TenTKB' => $schedule->TenTKB]) }}';
                         });
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
