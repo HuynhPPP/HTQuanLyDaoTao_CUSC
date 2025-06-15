@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 05, 2025 at 04:44 PM
+-- Generation Time: Jun 14, 2025 at 07:20 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -141,7 +141,6 @@ CREATE TABLE `chuongtrinh` (
   `PhienBan` varchar(12) DEFAULT NULL,
   `NgayTrienKhaiPB` date DEFAULT NULL,
   `TenKhoaDaoTao` varchar(20) DEFAULT NULL,
-  `HinhThucDanhGia` varchar(255) DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -150,11 +149,11 @@ CREATE TABLE `chuongtrinh` (
 -- Dumping data for table `chuongtrinh`
 --
 
-INSERT INTO `chuongtrinh` (`MaChuongTrinh`, `TenChuongTrinh`, `PhienBan`, `NgayTrienKhaiPB`, `TenKhoaDaoTao`, `HinhThucDanhGia`, `created_at`, `updated_at`) VALUES
-('OV-6062', 'An toàn an ninh thông tin (Hacker mũ trắng)', NULL, NULL, 'Ngắn hạn', NULL, '2025-05-21 10:14:30', '2025-05-21 10:14:30'),
-('OV-7023', 'Lập trình viên Quốc tế – Aptech', '1.0', '2025-06-24', 'Dài hạn', NULL, '2025-05-17 13:48:56', '2025-05-19 14:30:03'),
-('OV-7096', 'ACN Pro (CPIDA) - Khóa học chuyên ngành về Khoa học Dữ liệu', '1.0', '2023-08-01', 'Dài hạn', NULL, '2025-05-19 14:38:55', '2025-05-23 05:04:35'),
-('OV9001', 'Mỹ thuật Đa phương tiện – Arena', '2.0', '2025-06-16', 'Dài hạn', NULL, '2025-05-17 13:48:56', '2025-05-19 14:31:16');
+INSERT INTO `chuongtrinh` (`MaChuongTrinh`, `TenChuongTrinh`, `PhienBan`, `NgayTrienKhaiPB`, `TenKhoaDaoTao`, `created_at`, `updated_at`) VALUES
+('OV-6062', 'An toàn an ninh thông tin (Hacker mũ trắng)', NULL, NULL, 'Ngắn hạn', '2025-05-21 10:14:30', '2025-05-21 10:14:30'),
+('OV-7023', 'Lập trình viên Quốc tế – Aptech', '1.0', '2025-06-24', 'Dài hạn', '2025-05-17 13:48:56', '2025-05-19 14:30:03'),
+('OV-7096', 'ACN Pro (CPIDA) - Khóa học chuyên ngành về Khoa học Dữ liệu', '1.0', '2023-08-01', 'Ngắn hạn', '2025-05-19 14:38:55', '2025-06-07 06:20:47'),
+('OV9001', 'Mỹ thuật Đa phương tiện – Arena', '2.0', '2025-06-16', 'Dài hạn', '2025-05-17 13:48:56', '2025-05-19 14:31:16');
 
 -- --------------------------------------------------------
 
@@ -164,7 +163,7 @@ INSERT INTO `chuongtrinh` (`MaChuongTrinh`, `TenChuongTrinh`, `PhienBan`, `NgayT
 
 CREATE TABLE `chuongtrinh_monhoc` (
   `MaChuongTrinh` varchar(12) NOT NULL,
-  `TenMH` varchar(255) NOT NULL,
+  `MaMH` varchar(12) NOT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -173,14 +172,14 @@ CREATE TABLE `chuongtrinh_monhoc` (
 -- Dumping data for table `chuongtrinh_monhoc`
 --
 
-INSERT INTO `chuongtrinh_monhoc` (`MaChuongTrinh`, `TenMH`, `created_at`, `updated_at`) VALUES
-('OV-7096', 'Dự án - Phân tích Dữ liệu với R', '2025-05-23 13:31:40', '2025-05-23 13:31:40'),
-('OV-7096', 'Khoa học Dữ liệu sử dụng R Programming', '2025-05-23 13:31:40', '2025-05-23 13:31:40'),
-('OV-7096', 'Lập trình Ứng dụng bằng Python', '2025-05-23 13:31:40', '2025-05-23 13:31:40'),
-('OV-7096', 'Phân tích Dữ liệu với MS Excel', '2025-05-23 13:28:54', '2025-05-23 13:28:54'),
-('OV-7096', 'Phân tích Thống kê Suy luận', '2025-05-23 13:31:40', '2025-05-23 13:31:40'),
-('OV-7096', 'Quản lý Tập dữ liệu lớn với MongoDB', '2025-05-23 13:31:40', '2025-05-23 13:31:40'),
-('OV-7096', 'Xử lý Dữ liệu bằng T-SQL', '2025-05-23 13:28:54', '2025-05-23 13:28:54');
+INSERT INTO `chuongtrinh_monhoc` (`MaChuongTrinh`, `MaMH`, `created_at`, `updated_at`) VALUES
+('OV-7096', 'MH15', '2025-06-12 13:03:41', '2025-06-12 13:03:41'),
+('OV-7096', 'MH16', '2025-06-12 13:03:41', '2025-06-12 13:03:41'),
+('OV-7096', 'MH17', '2025-06-12 13:03:41', '2025-06-12 13:03:41'),
+('OV-7096', 'MH18', '2025-06-12 13:03:41', '2025-06-12 13:03:41'),
+('OV-7096', 'MH19', '2025-06-12 13:03:41', '2025-06-12 13:03:41'),
+('OV-7096', 'MH20', '2025-06-12 13:03:41', '2025-06-12 13:03:41'),
+('OV-7096', 'MH21', '2025-06-12 13:03:41', '2025-06-12 13:03:41');
 
 -- --------------------------------------------------------
 
@@ -213,7 +212,8 @@ INSERT INTO `danhsachmh` (`MaHK`, `TenKhungGio`, `SttMH`, `TenMH`) VALUES
 ('OV-7023-HK II', '15:00-17:00', 11, 'Information Systems Analysis(Core)'),
 ('OV-7023-HK II', '15:00-17:00', 12, 'Project-Java Application Development'),
 ('OV-7023-HK II', '15:00-17:00', 13, 'Application Programming with C#'),
-('OV-7023-HK II', '15:00-17:00', 14, 'PHP Web Development with Laravel Framework');
+('OV-7023-HK II', '15:00-17:00', 14, 'PHP Web Development with Laravel Framework'),
+('OV-7023-HK IV', NULL, NULL, 'Dự án - Phân tích Dữ liệu với R');
 
 -- --------------------------------------------------------
 
@@ -286,6 +286,10 @@ INSERT INTO `danhsachsv` (`MaLop`, `MaSV`) VALUES
 ('CP2296H07', '23000054'),
 ('CP2296H07', '23000055'),
 ('CP2296H07', '23000057'),
+('CP2396G11', '23000082'),
+('CP2396G11', '23000086'),
+('CP2396G11', '23000092'),
+('CP2396G11', '23000094'),
 ('CP2296H07', '23000096'),
 ('CP2296H07', '23000097'),
 ('CP2296H07', '23000098'),
@@ -299,18 +303,31 @@ INSERT INTO `danhsachsv` (`MaLop`, `MaSV`) VALUES
 
 CREATE TABLE `diemthi` (
   `MaSV` varchar(12) NOT NULL,
-  `TenMH` varchar(255) NOT NULL,
-  `MaLop` varchar(12) DEFAULT NULL,
-  `MaLichThi` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `LanThi` tinyint NOT NULL DEFAULT '1',
-  `Diem` float DEFAULT NULL,
+  `MaMH` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `MaLop` varchar(12) NOT NULL,
+  `DiemTong` float DEFAULT NULL,
   `DiemThucHanh` float DEFAULT NULL,
   `DiemLyThuyet` float DEFAULT NULL,
-  `DiemBaiTap` float DEFAULT NULL,
+  `DiemDuAn` float DEFAULT NULL,
   `GhiChu` text,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `diemthi`
+--
+
+INSERT INTO `diemthi` (`MaSV`, `MaMH`, `MaLop`, `DiemTong`, `DiemThucHanh`, `DiemLyThuyet`, `DiemDuAn`, `GhiChu`, `created_at`, `updated_at`) VALUES
+('21010001', 'MH21', 'CP2296H07', 93.33, 95, 95, 90, NULL, '2025-06-09 11:23:17', '2025-06-10 05:40:35'),
+('21010002', 'MH21', 'CP2296H07', 86.67, 90, 90, 80, NULL, '2025-06-09 11:23:17', '2025-06-09 11:23:17'),
+('21010003', 'MH21', 'CP2296H07', 95, 100, 95, 90, NULL, '2025-06-09 11:23:17', '2025-06-09 11:23:17'),
+('23000054', 'MH21', 'CP2296H07', 85, 100, 95, 60, NULL, '2025-06-09 11:23:17', '2025-06-09 11:23:17'),
+('23000055', 'MH21', 'CP2296H07', 66.67, 70, 60, 70, NULL, '2025-06-09 11:23:17', '2025-06-09 11:23:17'),
+('23000057', 'MH21', 'CP2296H07', 80, 75, 80, 85, NULL, '2025-06-09 11:23:17', '2025-06-09 11:23:17'),
+('23000096', 'MH21', 'CP2296H07', 86.67, 80, 90, 90, NULL, '2025-06-09 11:23:17', '2025-06-09 11:23:17'),
+('23000097', 'MH21', 'CP2296H07', 26.67, 0, 0, 80, 'Gian lận thi cử', '2025-06-09 11:23:17', '2025-06-10 05:40:35'),
+('23000098', 'MH21', 'CP2296H07', 96.67, 90, 100, 100, NULL, '2025-06-09 11:23:17', '2025-06-10 05:40:35');
 
 -- --------------------------------------------------------
 
@@ -390,8 +407,10 @@ CREATE TABLE `giangday` (
 --
 
 INSERT INTO `giangday` (`MaGV`, `MaLop`, `MaMH`, `NgayBatDau`, `NgayKetThuc`, `GhiChu`, `created_at`, `updated_at`) VALUES
-('GV001', 'CP2296H07', 'MH21', NULL, NULL, 'Giảng viên chính', '2025-06-05 16:03:21', '2025-06-05 16:09:23'),
-('GV001', 'CP2396G11', 'MH21', NULL, NULL, 'Giảng viên chính', '2025-06-05 16:09:23', '2025-06-05 16:09:23');
+('GV001', 'CP2296H07', 'MH15', NULL, NULL, NULL, '2025-06-07 06:09:01', '2025-06-07 06:09:01'),
+('GV001', 'CP2296H07', 'MH21', NULL, NULL, NULL, '2025-06-11 07:01:40', '2025-06-11 07:01:40'),
+('GV001', 'CP2396G11', 'MH21', NULL, NULL, NULL, '2025-06-11 07:01:40', '2025-06-11 07:01:40'),
+('GV004', 'CP2396M02', 'MH21', NULL, NULL, NULL, '2025-06-11 07:15:36', '2025-06-11 07:15:36');
 
 -- --------------------------------------------------------
 
@@ -406,10 +425,10 @@ CREATE TABLE `giaovien` (
   `Email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `EmailCUSC` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `Sdt` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `MaHV` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `HocVi` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `TenChucVu` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `MaDV` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `MaBang` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `DonViCongTac` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `BangCap` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `LoaiGV` enum('CoHuu','MoiGiang') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CoHuu',
   `ChuyenNganh` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `GhiChu` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
@@ -423,15 +442,43 @@ CREATE TABLE `giaovien` (
 -- Dumping data for table `giaovien`
 --
 
-INSERT INTO `giaovien` (`MaGV`, `HoTenGV`, `GioiTinh`, `Email`, `EmailCUSC`, `Sdt`, `MaHV`, `TenChucVu`, `MaDV`, `MaBang`, `LoaiGV`, `ChuyenNganh`, `GhiChu`, `NgayBatDauCongTac`, `NgayKetThucCongTac`, `created_at`, `updated_at`) VALUES
-('GV001', 'Nguyễn Văn An', 1, 'ngvanan@gmail.com', 'gv001nguyenvanan@cusc.ctu.vn', '0912345678', 'HV001', 'Giảng viên', 'DV003', 'BC001', 'CoHuu', 'Khoa học máy tính', 'Giảng viên chính', '2020-01-01', NULL, '2025-05-16 07:53:41', '2025-06-03 06:13:21'),
-('GV002', 'Trần Thị Bình', 0, 'tranthib@gmail.com', 'gv002tranthibinh@cusc.ctu.vn', '0923456789', 'HV002', 'Trưởng khoa', 'DV002', 'BC002', 'MoiGiang', 'Kinh tế học', 'Giảng viên thỉnh giảng', '2018-05-15', NULL, '2025-05-16 07:53:41', '2025-06-03 06:13:21'),
-('GV003', 'Phạm Đức Linh', 0, 'phamduclinh@cusc.vn', 'gv003phamduclinh@cusc.ctu.vn', '0943526107', 'HV002', 'Giảng viên', 'DV003', 'BC002', 'MoiGiang', 'Hệ thống thông tin', NULL, '2018-06-04', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:21'),
-('GV004', 'Hoàng Quang Giang', 0, 'hoangquanggiang@cusc.vn', 'gv004hoangquanggiang@cusc.ctu.vn', '0938554271', 'HV003', 'Giảng viên', 'DV002', 'B001', 'CoHuu', 'Mạng máy tính', NULL, '2018-06-06', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:21'),
-('GV005', 'Hoàng Công Nam', 0, 'hoangcongnam@cusc.vn', 'gv005hoangcongnam@cusc.ctu.vn', '0915354646', 'HV003', 'Giảng viên', 'DV003', 'BC003', 'MoiGiang', 'Khoa học dữ liệu', NULL, '2019-05-09', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:22'),
-('GV006', 'Phan Hữu Giang', 1, 'phanhuugiang@cusc.vn', 'gv006phanhuugiang@cusc.ctu.vn', '0987506679', 'HV001', 'Giảng viên', 'DV001', 'B001', 'CoHuu', 'Trí tuệ nhân tạo', NULL, '2021-12-19', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:22'),
-('GV007', 'Phan Đức Phúc', 1, 'phanducphuc@cusc.vn', 'gv007phanducphuc@cusc.ctu.vn', '0982049005', 'HV002', 'Giảng viên', 'DV001', 'B002', 'CoHuu', 'Trí tuệ nhân tạo', NULL, '2018-12-11', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:22'),
-('GV008', 'Đặng Hoàng Giang', 1, 'danghoanggiang@cusc.vn', 'gv008danghoanggiang@cusc.ctu.vn', '0981259529', 'HV002', 'Giảng viên', 'CNTT', 'B003', 'MoiGiang', 'Trí tuệ nhân tạo', NULL, '2020-06-14', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:22');
+INSERT INTO `giaovien` (`MaGV`, `HoTenGV`, `GioiTinh`, `Email`, `EmailCUSC`, `Sdt`, `HocVi`, `TenChucVu`, `DonViCongTac`, `BangCap`, `LoaiGV`, `ChuyenNganh`, `GhiChu`, `NgayBatDauCongTac`, `NgayKetThucCongTac`, `created_at`, `updated_at`) VALUES
+('GV001', 'Nguyễn Văn An', 1, 'ngvanan@gmail.com', 'gv001nguyenvanan@cusc.ctu.vn', '0912345678', NULL, NULL, NULL, NULL, 'CoHuu', 'Khoa học máy tính', 'Giảng viên chính', '2020-01-01', NULL, '2025-05-16 07:53:41', '2025-06-03 06:13:21'),
+('GV002', 'Trần Thị Bình', 0, 'tranthib@gmail.com', 'gv002tranthibinh@cusc.ctu.vn', '0923456789', NULL, NULL, NULL, NULL, 'MoiGiang', 'Kinh tế học', 'Giảng viên thỉnh giảng', '2018-05-15', NULL, '2025-05-16 07:53:41', '2025-06-03 06:13:21'),
+('GV003', 'Phạm Đức Linh', 0, 'phamduclinh@cusc.vn', 'gv003phamduclinh@cusc.ctu.vn', '0943526107', NULL, NULL, NULL, NULL, 'MoiGiang', 'Hệ thống thông tin', NULL, '2018-06-04', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:21'),
+('GV004', 'Hoàng Quang Giang', 0, 'hoangquanggiang@cusc.vn', 'gv004hoangquanggiang@cusc.ctu.vn', '0938554271', NULL, NULL, NULL, NULL, 'CoHuu', 'Mạng máy tính', NULL, '2018-06-06', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:21'),
+('GV005', 'Hoàng Công Nam', 0, 'hoangcongnam@cusc.vn', 'gv005hoangcongnam@cusc.ctu.vn', '0915354646', NULL, NULL, NULL, NULL, 'MoiGiang', 'Khoa học dữ liệu', NULL, '2019-05-09', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:22'),
+('GV006', 'Phan Hữu Giang', 1, 'phanhuugiang@cusc.vn', 'gv006phanhuugiang@cusc.ctu.vn', '0987506679', NULL, NULL, NULL, NULL, 'CoHuu', 'Trí tuệ nhân tạo', NULL, '2021-12-19', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:22'),
+('GV007', 'Phan Đức Phúc', 1, 'phanducphuc@cusc.vn', 'gv007phanducphuc@cusc.ctu.vn', '0982049005', NULL, NULL, NULL, NULL, 'CoHuu', 'Trí tuệ nhân tạo', NULL, '2018-12-11', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:22'),
+('GV008', 'Đặng Hoàng Giang', 1, 'danghoanggiang@cusc.vn', 'gv008danghoanggiang@cusc.ctu.vn', '0981259529', NULL, NULL, NULL, NULL, 'MoiGiang', 'Trí tuệ nhân tạo', NULL, '2020-06-14', NULL, '2025-05-22 07:40:53', '2025-06-03 06:13:22');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `hinh_thuc_danh_gia`
+--
+
+CREATE TABLE `hinh_thuc_danh_gia` (
+  `id` int NOT NULL,
+  `MaChuongTrinh` varchar(12) DEFAULT NULL,
+  `HinhThuc` enum('Lý thuyết trắc nghiệm','Thực hành','Dự án') DEFAULT NULL,
+  `TiLePhanTram` tinyint DEFAULT NULL,
+  `SoBaiThi` int DEFAULT NULL,
+  `DiemMoiBai` int DEFAULT NULL,
+  `ThoiGian` int DEFAULT NULL,
+  `DonViThoiGian` enum('phút','giờ') DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `hinh_thuc_danh_gia`
+--
+
+INSERT INTO `hinh_thuc_danh_gia` (`id`, `MaChuongTrinh`, `HinhThuc`, `TiLePhanTram`, `SoBaiThi`, `DiemMoiBai`, `ThoiGian`, `DonViThoiGian`, `created_at`, `updated_at`) VALUES
+(1, 'OV-7096', 'Lý thuyết trắc nghiệm', 50, 6, 20, 40, 'phút', '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
+(2, 'OV-7096', 'Thực hành', 30, 5, 20, 60, 'phút', '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
+(3, 'OV-7096', 'Dự án', 20, 1, 100, 24, 'giờ', '2025-06-08 02:57:57', '2025-06-08 02:57:57');
 
 -- --------------------------------------------------------
 
@@ -622,16 +669,16 @@ CREATE TABLE `ldap_accounts` (
 
 INSERT INTO `ldap_accounts` (`id`, `MaTaiKhoan`, `username`, `email`, `full_name`, `initial_password`, `role`, `is_sent`, `is_active`, `created_at`, `updated_at`) VALUES
 (13, '21010003', '21010003levanc', '21010003levanc@cusc.ctu.vn', 'Lê Văn C', '$2y$12$MfIGAS.bEtBUYiEl.VEI1u.wYdnrLHWcmnyrjYOWkZrL0ptFEroTK', 'student', 1, 1, '2025-06-02 23:55:48', '2025-06-03 20:03:15'),
-(14, '23000001', '23000001ovanan', '23000001ovanan@cusc.ctu.vn', 'Đỗ Văn An', '7@lwrYtMzb4@', 'student', 0, 1, '2025-06-02 23:55:48', '2025-06-02 23:55:48'),
-(15, '23000002', '23000002ohuuhung', '23000002ohuuhung@cusc.ctu.vn', 'Đỗ Hữu Hùng', 'PkP++4z;lh(Z', 'student', 0, 1, '2025-06-02 23:55:48', '2025-06-02 23:55:48'),
+(14, '23000001', '23000001ovanan', '23000001ovanan@cusc.ctu.vn', 'Đỗ Văn An', '7@lwrYtMzb4@', 'student', 1, 1, '2025-06-02 23:55:48', '2025-06-14 00:08:50'),
+(15, '23000002', '23000002ohuuhung', '23000002ohuuhung@cusc.ctu.vn', 'Đỗ Hữu Hùng', 'PkP++4z;lh(Z', 'student', 1, 1, '2025-06-02 23:55:48', '2025-06-14 00:08:51'),
 (32, 'GV001', 'gv001nguyenvanan', 'gv001nguyenvanan@cusc.ctu.vn', 'Nguyễn Văn An', '$2y$12$k99GuVyQPJ5khWkfUWLE8.SIyeddGhB4qqnSaYrXaH0UgeStCQLG6', 'teacher', 1, 1, '2025-06-03 06:13:21', '2025-06-03 19:32:06'),
-(33, 'GV002', 'gv002tranthibinh', 'gv002tranthibinh@cusc.ctu.vn', 'Trần Thị Bình', '6#u&ev4.Yxt#', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
+(33, 'GV002', 'gv002tranthibinh', 'gv002tranthibinh@cusc.ctu.vn', 'Trần Thị Bình', '6#u&ev4.Yxt#', 'teacher', 1, 1, '2025-06-03 06:13:21', '2025-06-14 00:15:39'),
 (34, 'GV003', 'gv003phamduclinh', 'gv003phamduclinh@cusc.ctu.vn', 'Phạm Đức Linh', '7S>1#:Y7E4En', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
 (35, 'GV004', 'gv004hoangquanggiang', 'gv004hoangquanggiang@cusc.ctu.vn', 'Hoàng Quang Giang', '|L}D@4oq4}wZ', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
-(36, 'GV005', 'gv005hoangcongnam', 'gv005hoangcongnam@cusc.ctu.vn', 'Hoàng Công Nam', '20qr(=f,&6Lo', 'teacher', 0, 1, '2025-06-03 06:13:22', '2025-06-03 06:13:22'),
-(37, 'GV006', 'gv006phanhuugiang', 'gv006phanhuugiang@cusc.ctu.vn', 'Phan Hữu Giang', 'Pa)T2^bTR{E?', 'teacher', 0, 1, '2025-06-03 06:13:22', '2025-06-03 06:13:22'),
-(38, 'GV007', 'gv007phanducphuc', 'gv007phanducphuc@cusc.ctu.vn', 'Phan Đức Phúc', '^%Ag80SPSQFf', 'teacher', 0, 1, '2025-06-03 06:13:22', '2025-06-03 06:13:22'),
-(39, 'GV008', 'gv008danghoanggiang', 'gv008danghoanggiang@cusc.ctu.vn', 'Đặng Hoàng Giang', ';6+399Oxc@4i', 'teacher', 0, 1, '2025-06-03 06:13:22', '2025-06-03 06:13:22');
+(36, 'GV005', 'gv005hoangcongnam', 'gv005hoangcongnam@cusc.ctu.vn', 'Hoàng Công Nam', '20qr(=f,&6Lo', 'teacher', 1, 1, '2025-06-03 06:13:22', '2025-06-14 00:15:34'),
+(37, 'GV006', 'gv006phanhuugiang', 'gv006phanhuugiang@cusc.ctu.vn', 'Phan Hữu Giang', 'Pa)T2^bTR{E?', 'teacher', 1, 1, '2025-06-03 06:13:22', '2025-06-14 00:15:36'),
+(38, 'GV007', 'gv007phanducphuc', 'gv007phanducphuc@cusc.ctu.vn', 'Phan Đức Phúc', '^%Ag80SPSQFf', 'teacher', 1, 1, '2025-06-03 06:13:22', '2025-06-14 00:15:37'),
+(39, 'GV008', 'gv008danghoanggiang', 'gv008danghoanggiang@cusc.ctu.vn', 'Đặng Hoàng Giang', ';6+399Oxc@4i', 'teacher', 1, 1, '2025-06-03 06:13:22', '2025-06-14 00:15:38');
 
 -- --------------------------------------------------------
 
@@ -642,7 +689,7 @@ INSERT INTO `ldap_accounts` (`id`, `MaTaiKhoan`, `username`, `email`, `full_name
 CREATE TABLE `lichthi` (
   `MaLichThi` varchar(12) NOT NULL,
   `MaLop` varchar(12) DEFAULT NULL,
-  `TenMH` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `MaMH` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `NgayThi` date DEFAULT NULL,
   `KhungGio` varchar(100) DEFAULT NULL,
   `PhongThi` varchar(20) DEFAULT NULL,
@@ -657,10 +704,11 @@ CREATE TABLE `lichthi` (
 -- Dumping data for table `lichthi`
 --
 
-INSERT INTO `lichthi` (`MaLichThi`, `MaLop`, `TenMH`, `NgayThi`, `KhungGio`, `PhongThi`, `HinhThucThi`, `LanThi`, `GhiChu`, `created_at`, `updated_at`) VALUES
-('LT2505240708', 'CP2296H07', 'Phân tích Dữ liệu với MS Excel', '2025-06-24', '13:00 - 13:40', 'Class1', 'Trắc nghiệm', 1, NULL, '2025-05-24 07:08:34', '2025-05-29 07:51:16'),
-('LT2506040812', 'CP2296H07', 'Dự án - Phân tích Dữ liệu với R', '2025-06-25', '08:00 - 08:30', 'Lab4', 'Thực hành', 1, NULL, '2025-06-04 08:12:17', '2025-06-04 08:12:35'),
-('LT2506040813', 'CP2296H07', 'Phân tích Dữ liệu với MS Excel', '2025-06-24', '16:00 - 16:30', 'Lab1', 'Thực hành', 1, NULL, '2025-06-04 08:13:42', '2025-06-04 08:13:42');
+INSERT INTO `lichthi` (`MaLichThi`, `MaLop`, `MaMH`, `NgayThi`, `KhungGio`, `PhongThi`, `HinhThucThi`, `LanThi`, `GhiChu`, `created_at`, `updated_at`) VALUES
+('LT2506061451', 'CP2296H07', 'MH15', '2025-07-26', '13:00 - 13:40', 'Class1', 'Trắc nghiệm', 1, NULL, '2025-06-06 14:51:16', '2025-06-06 14:51:16'),
+('LT2506061453', 'CP2296H07', 'MH15', '2025-07-27', '13:00 - 14:00', 'Lab1', 'Thực hành', 1, NULL, '2025-06-06 14:53:23', '2025-06-06 14:53:23'),
+('LT2506061454', 'CP2396G11', 'MH21', '2025-07-31', '13:00 - 13:40', 'Class2', 'Trắc nghiệm', 1, NULL, '2025-06-06 14:54:02', '2025-06-08 01:54:11'),
+('LT25060634', 'CP2296H07', 'MH16', '2025-08-30', '09:00 - 10:00', 'Lab3', 'Thực hành', 1, NULL, '2025-06-06 15:03:34', '2025-06-06 15:03:34');
 
 -- --------------------------------------------------------
 
@@ -874,14 +922,6 @@ CREATE TABLE `phieuphancongthi` (
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dumping data for table `phieuphancongthi`
---
-
-INSERT INTO `phieuphancongthi` (`MaPhanCong`, `MaLichThi`, `MaCB`, `VaiTro`, `created_at`, `updated_at`) VALUES
-(3, 'LT2505240708', 'CB003', 'Cán bộ coi thi', '2025-06-05 13:38:02', '2025-06-05 13:38:02'),
-(4, 'LT2505240708', 'GV001', 'Cán bộ coi thi', '2025-06-05 13:38:02', '2025-06-05 13:38:02');
-
 -- --------------------------------------------------------
 
 --
@@ -953,8 +993,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('eLpmvAQBqbAGYHz8Ptaewyamf9ig9kMMs4yJQGxm', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoieEJwZHdOSEdlenpJZXNtTDQ0c0RXOVkzMnZUS1NqdENoQUViRVg1MCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NjI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9tb25ob2MvbW9uLWhvYy9waGFuLWNvbmctZ2lhbmctdmllbi9NSDIxIjt9czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToiSlFnVEoiO3M6NDoidXNlciI7czoxMjoiYWRtaW4ua2h1b25nIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxMDoiVGFuIEtodW9uZyI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjtzOjIyOiJQSFBERUJVR0JBUl9TVEFDS19EQVRBIjthOjA6e319', 1749141832),
-('ZwNQ2dNWGLhjPPNIyGg2WHJybOtL5fB6BbCA5vDd', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il90b2tlbiI7czo0MDoiTVNxQ09OSjY2cU91aEtTZ25BRjVHemVwYnNFZklidWU1UW5DY1dCciI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9naWFvLXZpZW4vbGljaC10aGkiO31zOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJmdFA3eiI7czoyOiJpZCI7czo1OiJHVjAwMSI7czo0OiJ1c2VyIjtzOjE2OiJndjAwMW5ndXllbnZhbmFuIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxNjoiTmd1eeG7hW4gVsSDbiBBbiI7czo0OiJyb2xlIjtzOjc6InRlYWNoZXIiO3M6MjI6IlBIUERFQlVHQkFSX1NUQUNLX0RBVEEiO2E6MDp7fX0=', 1749141589);
+('fHTkFfX3nuVtBGo9kFysDvlaH3ax37ASjwUu9qWu', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiU3ZwNkNEQnAwMUR2dEJuT2xOQ0hiZXZxNm9SN0xua2R0OUdDMTBKbiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6ODg6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC90b2NodWN0aGkvdGhvbmcta2Utc2luaC12aWVuLWRhdC1tb24vT1YtNzA5Nj9tYUNodW9uZ1RyaW5oPU9WLTcwOTYiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJPOFl1TiI7czo0OiJ1c2VyIjtzOjEyOiJhZG1pbi5raHVvbmciO3M6MTE6ImRpc3BsYXluYW1lIjtzOjEwOiJUYW4gS2h1b25nIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO3M6MjI6IlBIUERFQlVHQkFSX1NUQUNLX0RBVEEiO2E6MDp7fX0=', 1749885512);
 
 -- --------------------------------------------------------
 
@@ -1130,16 +1169,33 @@ CREATE TABLE `sinhvien_duthi` (
 --
 
 INSERT INTO `sinhvien_duthi` (`id`, `MaSV`, `MaLichThi`, `MaLop`, `TrangThaiDuThi`, `GhiChu`, `created_at`, `updated_at`) VALUES
-(31, '21010001', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
-(32, '21010002', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
-(33, '21010003', 'LT2505240708', 'CP2296H07', 'KhongDuThi', 'Đã thôi học', '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
-(34, '23000054', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
-(35, '23000055', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
-(36, '23000057', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
-(37, '23000096', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
-(38, '23000097', 'LT2505240708', 'CP2296H07', 'DuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
-(39, '23000098', 'LT2505240708', 'CP2296H07', 'KhongDuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03'),
-(40, '23000099', 'LT2505240708', 'CP2296H07', 'KhongDuThi', NULL, '2025-05-30 07:50:03', '2025-05-30 07:50:03');
+(41, '21010001', 'LT2506061451', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:12:13', '2025-06-06 23:12:13'),
+(42, '21010002', 'LT2506061451', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:12:14', '2025-06-06 23:12:14'),
+(43, '21010003', 'LT2506061451', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:12:14', '2025-06-06 23:12:14'),
+(44, '23000054', 'LT2506061451', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:12:14', '2025-06-06 23:12:14'),
+(45, '23000055', 'LT2506061451', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:12:14', '2025-06-06 23:12:14'),
+(46, '23000057', 'LT2506061451', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:12:14', '2025-06-06 23:12:14'),
+(47, '23000096', 'LT2506061451', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:12:14', '2025-06-06 23:12:14'),
+(48, '23000097', 'LT2506061451', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:12:14', '2025-06-06 23:12:14'),
+(49, '23000098', 'LT2506061451', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:12:14', '2025-06-06 23:12:14'),
+(50, '23000099', 'LT2506061451', 'CP2296H07', 'KhongDuThi', 'Không đủ điều kiện dự thi', '2025-06-06 23:12:14', '2025-06-06 23:12:14'),
+(51, '21010001', 'LT2506061453', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:13:28', '2025-06-06 23:13:28'),
+(52, '21010002', 'LT2506061453', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:13:28', '2025-06-06 23:13:28'),
+(53, '21010003', 'LT2506061453', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:13:28', '2025-06-06 23:13:28'),
+(54, '23000054', 'LT2506061453', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:13:28', '2025-06-06 23:13:28'),
+(55, '23000055', 'LT2506061453', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:13:28', '2025-06-06 23:13:28'),
+(56, '23000057', 'LT2506061453', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:13:28', '2025-06-06 23:13:28'),
+(57, '23000096', 'LT2506061453', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:13:28', '2025-06-06 23:13:28'),
+(58, '23000097', 'LT2506061453', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:13:28', '2025-06-06 23:13:28'),
+(59, '23000098', 'LT2506061453', 'CP2296H07', 'DuThi', NULL, '2025-06-06 23:13:28', '2025-06-06 23:13:28'),
+(60, '23000099', 'LT2506061453', 'CP2296H07', 'KhongDuThi', 'Không đủ điều kiện dự thi', '2025-06-06 23:13:28', '2025-06-06 23:13:28'),
+(61, '23000029', 'LT2506061454', 'CP2396G11', 'DuThi', NULL, '2025-06-07 18:54:48', '2025-06-07 18:54:48'),
+(62, '23000036', 'LT2506061454', 'CP2396G11', 'DuThi', NULL, '2025-06-07 18:54:48', '2025-06-07 18:54:48'),
+(63, '23000047', 'LT2506061454', 'CP2396G11', 'DuThi', NULL, '2025-06-07 18:54:48', '2025-06-07 18:54:48'),
+(64, '23000082', 'LT2506061454', 'CP2396G11', 'DuThi', NULL, '2025-06-07 18:54:48', '2025-06-07 18:54:48'),
+(65, '23000086', 'LT2506061454', 'CP2396G11', 'DuThi', NULL, '2025-06-07 18:54:48', '2025-06-07 18:54:48'),
+(66, '23000092', 'LT2506061454', 'CP2396G11', 'DuThi', NULL, '2025-06-07 18:54:48', '2025-06-07 18:54:48'),
+(67, '23000094', 'LT2506061454', 'CP2396G11', 'DuThi', NULL, '2025-06-07 18:54:48', '2025-06-07 18:54:48');
 
 -- --------------------------------------------------------
 
@@ -1222,6 +1278,31 @@ CREATE TABLE `thongtintuyensinh` (
 
 INSERT INTO `thongtintuyensinh` (`MaTS`, `NamTS`, `DotTS`, `NgayBatDau`, `NgayKetThuc`, `ChiTieuTS`, `created_at`, `updated_at`) VALUES
 ('TS20251', 2025, 1, '2025-05-18', '2025-06-18', 100, '2025-05-18 15:02:22', '2025-05-18 15:02:22');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tieu_chi_xep_loai`
+--
+
+CREATE TABLE `tieu_chi_xep_loai` (
+  `id` int NOT NULL,
+  `MaChuongTrinh` varchar(12) DEFAULT NULL,
+  `XepLoai` enum('Đạt','Khá','Giỏi') DEFAULT NULL,
+  `DiemTu` float DEFAULT NULL,
+  `DiemDen` float DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `tieu_chi_xep_loai`
+--
+
+INSERT INTO `tieu_chi_xep_loai` (`id`, `MaChuongTrinh`, `XepLoai`, `DiemTu`, `DiemDen`, `created_at`, `updated_at`) VALUES
+(1, 'OV-7096', 'Đạt', 40, 60, '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
+(2, 'OV-7096', 'Khá', 60, 75, '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
+(3, 'OV-7096', 'Giỏi', 75, 100, '2025-06-08 02:57:57', '2025-06-08 02:57:57');
 
 -- --------------------------------------------------------
 
@@ -1345,8 +1426,8 @@ ALTER TABLE `chuongtrinh`
 -- Indexes for table `chuongtrinh_monhoc`
 --
 ALTER TABLE `chuongtrinh_monhoc`
-  ADD PRIMARY KEY (`MaChuongTrinh`,`TenMH`),
-  ADD KEY `TenMH` (`TenMH`);
+  ADD PRIMARY KEY (`MaChuongTrinh`,`MaMH`) USING BTREE,
+  ADD KEY `chuongtrinh_monhoc_ibfk_2` (`MaMH`);
 
 --
 -- Indexes for table `danhsachmh`
@@ -1381,10 +1462,9 @@ ALTER TABLE `danhsachsv`
 -- Indexes for table `diemthi`
 --
 ALTER TABLE `diemthi`
-  ADD PRIMARY KEY (`MaSV`,`TenMH`,`LanThi`),
-  ADD KEY `TenMH` (`TenMH`),
+  ADD PRIMARY KEY (`MaSV`,`MaMH`,`MaLop`) USING BTREE,
   ADD KEY `MaLop` (`MaLop`),
-  ADD KEY `diemthi_ibfk_4` (`MaLichThi`);
+  ADD KEY `diemthi_ibfk_2` (`MaMH`);
 
 --
 -- Indexes for table `donvi`
@@ -1418,11 +1498,14 @@ ALTER TABLE `giangday`
 --
 ALTER TABLE `giaovien`
   ADD PRIMARY KEY (`MaGV`),
-  ADD UNIQUE KEY `giaovien_email_unique` (`Email`),
-  ADD KEY `giaovien_mahv_foreign` (`MaHV`),
-  ADD KEY `giaovien_tenchucvu_foreign` (`TenChucVu`),
-  ADD KEY `giaovien_madv_foreign` (`MaDV`),
-  ADD KEY `giaovien_mabang_foreign` (`MaBang`);
+  ADD UNIQUE KEY `giaovien_email_unique` (`Email`);
+
+--
+-- Indexes for table `hinh_thuc_danh_gia`
+--
+ALTER TABLE `hinh_thuc_danh_gia`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `MaChuongTrinh` (`MaChuongTrinh`);
 
 --
 -- Indexes for table `hocki`
@@ -1488,7 +1571,7 @@ ALTER TABLE `lichthi`
   ADD PRIMARY KEY (`MaLichThi`),
   ADD KEY `lichthi_ibfk_1` (`MaLop`),
   ADD KEY `lichthi_ibfk_3` (`PhongThi`),
-  ADD KEY `lichthi_ibfk_2` (`TenMH`);
+  ADD KEY `lichthi_ibfk_2` (`MaMH`);
 
 --
 -- Indexes for table `lophoc`
@@ -1602,6 +1685,13 @@ ALTER TABLE `thongtintuyensinh`
   ADD PRIMARY KEY (`MaTS`);
 
 --
+-- Indexes for table `tieu_chi_xep_loai`
+--
+ALTER TABLE `tieu_chi_xep_loai`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `MaChuongTrinh` (`MaChuongTrinh`);
+
+--
 -- Indexes for table `tkb`
 --
 ALTER TABLE `tkb`
@@ -1638,6 +1728,12 @@ ALTER TABLE `users`
 --
 ALTER TABLE `failed_jobs`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `hinh_thuc_danh_gia`
+--
+ALTER TABLE `hinh_thuc_danh_gia`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `jobs`
@@ -1685,7 +1781,13 @@ ALTER TABLE `phieuphancongthi`
 -- AUTO_INCREMENT for table `sinhvien_duthi`
 --
 ALTER TABLE `sinhvien_duthi`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+
+--
+-- AUTO_INCREMENT for table `tieu_chi_xep_loai`
+--
+ALTER TABLE `tieu_chi_xep_loai`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -1719,7 +1821,7 @@ ALTER TABLE `chuongtrinh`
 --
 ALTER TABLE `chuongtrinh_monhoc`
   ADD CONSTRAINT `chuongtrinh_monhoc_ibfk_1` FOREIGN KEY (`MaChuongTrinh`) REFERENCES `chuongtrinh` (`MaChuongTrinh`),
-  ADD CONSTRAINT `chuongtrinh_monhoc_ibfk_2` FOREIGN KEY (`TenMH`) REFERENCES `monhoc` (`TenMH`);
+  ADD CONSTRAINT `chuongtrinh_monhoc_ibfk_2` FOREIGN KEY (`MaMH`) REFERENCES `monhoc` (`MaMH`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `danhsachmh`
@@ -1755,9 +1857,8 @@ ALTER TABLE `danhsachsv`
 --
 ALTER TABLE `diemthi`
   ADD CONSTRAINT `diemthi_ibfk_1` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`),
-  ADD CONSTRAINT `diemthi_ibfk_2` FOREIGN KEY (`TenMH`) REFERENCES `monhoc` (`TenMH`),
-  ADD CONSTRAINT `diemthi_ibfk_3` FOREIGN KEY (`MaLop`) REFERENCES `lophoc` (`MaLop`),
-  ADD CONSTRAINT `diemthi_ibfk_4` FOREIGN KEY (`MaLichThi`) REFERENCES `lichthi` (`MaLichThi`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+  ADD CONSTRAINT `diemthi_ibfk_2` FOREIGN KEY (`MaMH`) REFERENCES `monhoc` (`MaMH`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `diemthi_ibfk_3` FOREIGN KEY (`MaLop`) REFERENCES `lophoc` (`MaLop`);
 
 --
 -- Constraints for table `feedback`
@@ -1773,13 +1874,10 @@ ALTER TABLE `giangday`
   ADD CONSTRAINT `giangday_ibfk_2` FOREIGN KEY (`MaMH`) REFERENCES `monhoc` (`MaMH`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
--- Constraints for table `giaovien`
+-- Constraints for table `hinh_thuc_danh_gia`
 --
-ALTER TABLE `giaovien`
-  ADD CONSTRAINT `giaovien_mabang_foreign` FOREIGN KEY (`MaBang`) REFERENCES `bangcapcanbo` (`MaBang`) ON DELETE SET NULL,
-  ADD CONSTRAINT `giaovien_madv_foreign` FOREIGN KEY (`MaDV`) REFERENCES `donvi` (`MaDV`) ON DELETE SET NULL,
-  ADD CONSTRAINT `giaovien_mahv_foreign` FOREIGN KEY (`MaHV`) REFERENCES `hocvi` (`MaHV`) ON DELETE SET NULL,
-  ADD CONSTRAINT `giaovien_tenchucvu_foreign` FOREIGN KEY (`TenChucVu`) REFERENCES `chucvu` (`TenChucVu`) ON DELETE SET NULL;
+ALTER TABLE `hinh_thuc_danh_gia`
+  ADD CONSTRAINT `hinh_thuc_danh_gia_ibfk_1` FOREIGN KEY (`MaChuongTrinh`) REFERENCES `chuongtrinh` (`MaChuongTrinh`);
 
 --
 -- Constraints for table `hocki`
@@ -1799,7 +1897,7 @@ ALTER TABLE `hosotuyensinh`
 --
 ALTER TABLE `lichthi`
   ADD CONSTRAINT `lichthi_ibfk_1` FOREIGN KEY (`MaLop`) REFERENCES `lophoc` (`MaLop`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `lichthi_ibfk_2` FOREIGN KEY (`TenMH`) REFERENCES `monhoc` (`TenMH`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `lichthi_ibfk_2` FOREIGN KEY (`MaMH`) REFERENCES `monhoc` (`MaMH`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   ADD CONSTRAINT `lichthi_ibfk_3` FOREIGN KEY (`PhongThi`) REFERENCES `phonghoc` (`TenPhong`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
@@ -1827,6 +1925,12 @@ ALTER TABLE `sinhvien_duthi`
   ADD CONSTRAINT `sinhvien_duthi_malichthi_foreign` FOREIGN KEY (`MaLichThi`) REFERENCES `lichthi` (`MaLichThi`),
   ADD CONSTRAINT `sinhvien_duthi_malop_foreign` FOREIGN KEY (`MaLop`) REFERENCES `lophoc` (`MaLop`),
   ADD CONSTRAINT `sinhvien_duthi_masv_foreign` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`);
+
+--
+-- Constraints for table `tieu_chi_xep_loai`
+--
+ALTER TABLE `tieu_chi_xep_loai`
+  ADD CONSTRAINT `tieu_chi_xep_loai_ibfk_1` FOREIGN KEY (`MaChuongTrinh`) REFERENCES `chuongtrinh` (`MaChuongTrinh`);
 
 --
 -- Constraints for table `tkb`

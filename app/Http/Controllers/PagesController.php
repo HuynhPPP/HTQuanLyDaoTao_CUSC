@@ -82,13 +82,13 @@ class PagesController extends Controller
             [
                 'icon' => 'far fa-newspaper',
                 'text' => 'Lập bảng điểm chi tiết',
-                'link' => '#',
+                'link' => route('lapbangdiemchitiet.chon-lop-mon-hoc'),
                 'color' => 'bg-info',
             ],
             [
                 'icon' => 'far fa-newspaper',
-                'text' => 'Lập bảng điểm tổng hợp',
-                'link' => '#',
+                'text' => 'Thống kê kết quả học tập',
+                'link' => route('chon-chuong-trinh-bang-diem-tong'),
                 'color' => 'bg-info',
             ],
             [
@@ -103,12 +103,12 @@ class PagesController extends Controller
                 'link' => '#',
                 'color' => 'bg-info',
             ],
-            [
-                'icon' => 'far fa-newspaper',
-                'text' => 'Xuất điểm nhập điểm',
-                'link' => route('bangdiem.chon'),
-                'color' => 'bg-info',
-            ],
+            // [
+            //     'icon' => 'far fa-newspaper',
+            //     'text' => 'Xuất điểm nhập điểm',
+            //     'link' => route('bangdiem.chon'),
+            //     'color' => 'bg-info',
+            // ],
             [
                 'icon' => 'far fa-newspaper',
                 'text' => 'Lập danh sách đề nghị ra quyết định công nhận tốt nghiệp',
