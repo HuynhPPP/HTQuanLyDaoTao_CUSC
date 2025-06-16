@@ -36,8 +36,7 @@ class ThongKeDashboardController extends Controller
 
         // Thống kê môn học theo chương trình
         $monHocTheoChuongTrinh = $this->thongKeService->thongKeMonHocTheoChuongTrinh();
-
-        $SoChuongTrinhDaoTao = $this->thongKeService->thongKeChuongTrinhDaoTao();
+        $SoChuongTrinhDaoTao = $this->thongKeService->thongKeMonHocTheoChuongTrinh();
 
         // Thống kê tình trạng sinh viên
         $tinhTrangSinhVien = $this->thongKeService->thongKeTinhTrangSinhVien();
@@ -53,8 +52,7 @@ class ThongKeDashboardController extends Controller
             'sinhVienTheoChuongTrinh' => $sinhVienTheoChuongTrinh,
             'sinhVienTheoLop' => $sinhVienTheoLop,
             'monHocTheoChuongTrinh' => $monHocTheoChuongTrinh,
-            'tinhTrangSinhVien' => $tinhTrangSinhVien,
-            'SoChuongTrinhDaoTao' => $SoChuongTrinhDaoTao
+            'tinhTrangSinhVien' => $tinhTrangSinhVien
         ]);
     }
 }

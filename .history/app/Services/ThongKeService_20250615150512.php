@@ -55,7 +55,7 @@ class ThongKeService
     public function thongKeChuongTrinhDaoTao()
     {
         return ChuongTrinh::select(
-            'MaChuongTrinh',
+            'MaChuongTrinh ',
             DB::raw('COUNT(DISTINCT chuongtrinh.MaChuongTrinh ) as tong_so_luong'),
         )
             ->groupBy('chuongtrinh.MaChuongTrinh')
@@ -115,7 +115,7 @@ class ThongKeService
                         WHEN TinhTrangHocTap = "DangHoc" THEN "Đang Học" 
                         WHEN TinhTrangHocTap = "DaNghiHoc" THEN "Thôi Học" 
                         WHEN TinhTrangHocTap = "DaTotNghiep" THEN "Tốt Nghiệp" 
-                        ELSE "Chưa cập nhật" 
+                        ELSE "Khác" 
                     END as ten_tinh_trang
                 ')
             )

@@ -5,10 +5,10 @@
 @section('main-content')
     <section class="section">
         <div class="section-header">
-            <h1>Bảng thống kê</h1>
+            <h1>Bảng Điều Khiển Thống Kê</h1>
             <div class="section-header-breadcrumb">
                 <div class="breadcrumb-item"><a href="{{ route('about') }}">Trang Chủ</a></div>
-                <div class="breadcrumb-item active">Bảng thống kê</div>
+                <div class="breadcrumb-item active">Thống Kê</div>
             </div>
         </div>
 
@@ -62,14 +62,15 @@
                                 <h4>Chương trình đào tạo</h4>
                             </div>
                             <div class="card-body">
-                                {{ count($SoChuongTrinhDaoTao) }}
+                                {{ count($sinhVienTheoChuongTrinh) }}
+                                <small class="text-muted d-block">Đang hoạt động</small>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {{-- Tình Trạng Sinh Viên --}}
-                {{-- <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-12">
                     <div class="card card-statistic-1">
                         <div class="card-icon bg-success">
                             <i class="fas fa-chart-pie"></i>
@@ -79,6 +80,7 @@
                                 <h4>Tình Trạng</h4>
                             </div>
                             <div class="card-body">
+                                {{ $tongSinhVien }}
                                 <small class="text-muted d-block">
                                     @foreach($tinhTrangSinhVien as $tinhTrang)
                                         {{ $tinhTrang->ten_tinh_trang }}: {{ $tinhTrang->so_luong }} 
@@ -87,7 +89,7 @@
                             </div>
                         </div>
                     </div>
-                </div> --}}
+                </div>
             </div>
 
             {{-- Biểu đồ thống kê --}}
@@ -96,7 +98,7 @@
                 <div class="col-lg-6">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Số lượng sinh viên thuộc lớp</h4>
+                            <h4>Sinh Viên Theo Chương Trình</h4>
                         </div>
                         <div class="card-body">
                             <canvas id="chartSinhVienTheoChuongTrinh" height="250"></canvas>
@@ -108,7 +110,7 @@
                 <div class="col-lg-6">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Thống kê tình trạng học tập sinh viên</h4>
+                            <h4>Tình Trạng Sinh Viên</h4>
                         </div>
                         <div class="card-body">
                             <canvas id="chartTinhTrangSinhVien" height="250"></canvas>
@@ -119,12 +121,40 @@
 
             {{-- Chi Tiết Thống Kê --}}
             <div class="row">
-
-                {{-- Môn Học Theo Chương Trình --}}
-                <div class="col-lg-12">
+                {{-- Sinh Viên Theo Lớp --}}
+                <div class="col-lg-6">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Thống kê môn học thuộc chương trình đào tạo</h4>
+                            <h4>Sinh Viên Theo Lớp</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Lớp</th>
+                                            <th>Số Lượng</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($sinhVienTheoLop as $lop)
+                                        <tr>
+                                            <td>{{ $lop->TenLop }}</td>
+                                            <td>{{ $lop->so_luong }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Môn Học Theo Chương Trình --}}
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Môn Học Theo Chương Trình</h4>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
