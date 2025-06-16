@@ -147,4 +147,16 @@ class MainTeacherController extends Controller
             ], 500);
         }
     }
+    public function teacherSchedule()
+    {
+        $id = session('id');
+        $giaoVien = \App\Models\giaovien::where('MaGV', $id)->first();
+        $giangDays = \App\Models\GiangDay::with(['monHoc', 'lopHoc'])
+            ->where('MaGV', $giaoVien->MaGV)
+            ->get();
+        $monHocTheoLop = $giangDays->groupBy(function($item) {
+            return $item->monHoc->MaMH;
+        });
+        return view('teacher_schedule', compact('giaoVien', 'monHocTheoLop'));
+    }
 }

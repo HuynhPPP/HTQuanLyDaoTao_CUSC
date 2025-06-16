@@ -383,6 +383,8 @@ Route::middleware([RoleMiddleware::class . ':teacher'])->group(function () {
         Route::get('/{MaLop}/{MaMH}', [AddPointExamController::class, 'nhapDiem'])
             ->name('giaovien.nhapdiemthi.nhap-diem');
     });
+
+    Route::get('/giao-vien/thoi-khoa-bieu', [\App\Http\Controllers\Front\GiaoVien\MainTeacherController::class, 'teacherSchedule'])->name('giaovien.schedule');
 });
 
 Route::middleware([RoleMiddleware::class . ':student'])->group(function () {
@@ -405,6 +407,10 @@ Route::middleware([RoleMiddleware::class . ':student'])->group(function () {
             ->name('tracuu.diem');
     });
 });
+
+Route::get('/schedule/{TenTKB}', [PagesController::class, 'schedule'])->name('schedule');
+Route::get('/teacher-schedule/{TenTKB}', [PagesController::class, 'teacherSchedule'])->name('teacherSchedule');
+Route::get('/export-teacher-schedule/{TenTKB}', [PagesController::class, 'exportTeacherSchedule'])->name('exportTeacherSchedule');
 
 
 

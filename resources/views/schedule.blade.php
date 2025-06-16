@@ -374,6 +374,11 @@
                                 data-target="#selectSubjectModal">
                                 <i class="fas fa-plus"></i> Chọn Môn Học
                             </button>
+
+                            <!-- Nút Xem lịch giảng viên -->
+                            <a href="{{ route('teacherSchedule', $schedule->TenTKB) }}" class="btn btn-info">
+                                <i class="fas fa-chalkboard-teacher"></i> Lịch giảng viên
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -754,17 +759,18 @@
                 e.preventDefault();
                 const form = $(this).closest('form');
 
-                swal({
+                Swal.fire({
                     title: 'Bạn có chắc chắn muốn xóa lịch học này?',
                     text: 'Dữ liệu đã xóa sẽ không thể khôi phục!',
                     icon: 'warning',
-                    buttons: ['Hủy', 'Xóa'],
-                    dangerMode: true,
-                }).then((willDelete) => {
-                    if (willDelete) {
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         form.submit();
-                    } else {
-                        swal('Thao tác đã bị hủy.');
                     }
                 });
             });
@@ -774,17 +780,18 @@
                 e.preventDefault();
                 const form = $(this);
 
-                swal({
+                Swal.fire({
                     title: 'Xác nhận thêm ngày nghỉ?',
                     text: 'Bạn có chắc chắn muốn thêm ngày nghỉ này?',
                     icon: 'warning',
-                    buttons: ['Hủy', 'Thêm'],
-                    dangerMode: false,
-                }).then((willAdd) => {
-                    if (willAdd) {
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Thêm',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         form.off('submit').submit();
-                    } else {
-                        swal('Thao tác đã bị hủy.');
                     }
                 });
             });
@@ -794,17 +801,18 @@
                 e.preventDefault();
                 const form = $(this);
 
-                swal({
+                Swal.fire({
                     title: 'Xác nhận thêm ngày tự học?',
                     text: 'Bạn có chắc chắn muốn thêm ngày tự học này?',
                     icon: 'warning',
-                    buttons: ['Hủy', 'Thêm'],
-                    dangerMode: false,
-                }).then((willAdd) => {
-                    if (willAdd) {
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Thêm',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         form.off('submit').submit();
-                    } else {
-                        swal('Thao tác đã bị hủy.');
                     }
                 });
             });
@@ -814,17 +822,18 @@
                 e.preventDefault();
                 const form = $(this);
 
-                swal({
+                Swal.fire({
                     title: 'Xác nhận thay đổi?',
                     text: 'Bạn có chắc chắn muốn thay đổi ngày khai giảng?',
                     icon: 'warning',
-                    buttons: ['Hủy', 'Lưu'],
-                    dangerMode: false,
-                }).then((willEdit) => {
-                    if (willEdit) {
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Lưu',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         form.off('submit').submit();
-                    } else {
-                        swal('Thao tác đã bị hủy.');
                     }
                 });
             });
@@ -837,7 +846,7 @@
                 const gioKT = $('#GioKT').val();
 
                 if (gioBD >= gioKT) {
-                    swal({
+                    Swal.fire({
                         title: 'Lỗi!',
                         text: 'Giờ bắt đầu phải trước giờ kết thúc',
                         icon: 'error'
@@ -845,17 +854,18 @@
                     return;
                 }
 
-                swal({
+                Swal.fire({
                     title: 'Xác nhận thêm khung giờ?',
                     text: 'Bạn có chắc chắn muốn thêm khung giờ này?',
                     icon: 'warning',
-                    buttons: ['Hủy', 'Thêm'],
-                    dangerMode: false,
-                }).then((willAdd) => {
-                    if (willAdd) {
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Thêm',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         form.off('submit').submit();
-                    } else {
-                        swal('Thao tác đã bị hủy.');
                     }
                 });
             });
@@ -866,7 +876,7 @@
                 const gioKT = $('#GioKT').val();
 
                 if (gioBD && gioKT && gioBD >= gioKT) {
-                    swal({
+                    Swal.fire({
                         title: 'Lỗi!',
                         text: 'Giờ bắt đầu phải trước giờ kết thúc',
                         icon: 'error'
@@ -944,7 +954,7 @@
                 });
 
                 if (selectedSubjects.length === 0) {
-                    swal({
+                    Swal.fire({
                         title: 'Cảnh báo!',
                         text: 'Vui lòng chọn ít nhất một môn học',
                         icon: 'warning'
@@ -961,8 +971,7 @@
                         subjects: selectedSubjects
                     },
                     success: function(response) {
-                        // Xử lý phản hồi từ server
-                        swal({
+                        Swal.fire({
                             title: 'Thành công!',
                             text: 'Đã cập nhật môn học thành công.',
                             icon: 'success'
@@ -972,8 +981,7 @@
                         });
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                        // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi)
-                        swal({
+                        Swal.fire({
                             title: 'Lỗi!',
                             text: 'Có lỗi xảy ra khi cập nhật môn học.' + (jqXHR
                                 .responseJSON && jqXHR.responseJSON.message ? ' ' +
