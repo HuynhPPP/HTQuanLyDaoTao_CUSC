@@ -136,18 +136,19 @@
             $('.delete-phonghoc').click(function(e) {
                 e.preventDefault();
                 const form = $(this).closest('form');
-
-                swal({
+                Swal.fire({
                     title: 'Bạn có chắc chắn muốn xóa phòng học này?',
                     text: 'Nếu phòng học đang được gán cho lớp, bạn cần xóa các gán phòng trước khi xóa phòng học này. Dữ liệu đã xóa sẽ không thể khôi phục!',
                     icon: 'warning',
-                    buttons: ['Hủy', 'Xóa'],
-                    dangerMode: true,
-                }).then((willDelete) => {
-                    if (willDelete) {
+                    showCancelButton: true,
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy',
+                    dangerMode: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         form.submit();
                     } else {
-                        swal('Thao tác đã bị hủy.');
+                        Swal.fire('Thao tác đã bị hủy.');
                     }
                 });
             });
