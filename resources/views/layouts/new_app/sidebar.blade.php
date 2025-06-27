@@ -84,9 +84,9 @@
                                 <li class="{{ request()->routeIs('lophoc.*') ? 'active' : '' }}">
                                     <a class="nav-link" href="{{ route('lophoc.index') }}">Lớp học</a>
                                 </li>
-                                <li class="{{ request()->routeIs('danhsachphong.*') ? 'active' : '' }}">
+                                {{-- <li class="{{ request()->routeIs('danhsachphong.*') ? 'active' : '' }}">
                                     <a class="nav-link" href="{{ route('danhsachphong.index') }}">Gán phòng cho lớp</a>
-                                </li>
+                                </li> --}}
                             </ul>
                         </li>
                         {{-- <li class="dropdown {{ $hanhChinhActive ? 'active' : '' }}">

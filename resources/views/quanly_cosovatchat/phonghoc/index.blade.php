@@ -90,55 +90,21 @@
                                                     <td>N/A</td>
                                                 @endif
                                                 @php
-                                                    $status = '🟢 Trống';
-                                                    $maLop = null;
-                                                    $tenMH = null;
-
-                                                    if ($phong->TrangThai == 'Bảo trì') {
-                                                        $status = '🟡 Bảo trì';
-                                                    } else {
-                                                        $found = false;
-                                                        foreach ($phong->danhsachphong as $dsphong) {
-                                                            // Check if the current danhsachphong record matches the selected date and time slot
-                                                            if (
-                                                                Carbon::parse($dsphong->NgaySuDung)->format('Y-m-d') ==
-                                                                    $selectedDate->format('Y-m-d') &&
-                                                                ($selectedKhungGioMaCa === null ||
-                                                                    $dsphong->Ca == $selectedKhungGioMaCa)
-                                                            ) {
-                                                                $status = '🔴 Đang sử dụng';
-                                                                $maLop = $dsphong->MaLop;
-
-                                                                // Access eager-loaded data
-                                                                if (
-                                                                    $dsphong->lopHoc &&
-                                                                    $dsphong->lopHoc->tkb &&
-                                                                    $dsphong->lopHoc->tkb->hocki &&
-                                                                    $dsphong->lopHoc->tkb->hocki->danhsachmonhoc->isNotEmpty()
-                                                                ) {
-                                                                    // Assuming there's only one danhsachmonhoc per hocki for simplicity in this context
-                                                                    $danhsachmonhoc = $dsphong->lopHoc->tkb->hocki->danhsachmonhoc->first();
-                                                                    if ($danhsachmonhoc && $danhsachmonhoc->monhoc) {
-                                                                        $tenMH = $danhsachmonhoc->monhoc->TenMH;
-                                                                    }
-                                                                }
-
-                                                                $found = true;
-                                                                break; // Found matching record, no need to check further danhsachphong records for this room
-                                                            }
-                                                        }
-                                                    }
+                                                    $status = $phong->trang_thai_dong;
                                                 @endphp
                                                 <td>
-                                                    {!! $status !!}
-                                                    @if ($status === '🔴 Đang sử dụng')
-                                                        <br />
-                                                        @if ($tenMH)
-                                                            Môn: {{ $tenMH }}<br />
+                                                    @if ($status === 'Đang sử dụng')
+                                                        <span class="badge badge-danger">Đang sử dụng</span>
+                                                        @if ($phong->ten_lop_dang_su_dung)
+                                                            <br>Lớp: <b>{{ $phong->ten_lop_dang_su_dung }}</b>
                                                         @endif
-                                                        @if ($maLop)
-                                                            Lớp: {{ $maLop }}
+                                                        @if ($phong->ten_mon_dang_su_dung)
+                                                            <br>Môn: <b>{{ $phong->ten_mon_dang_su_dung }}</b>
                                                         @endif
+                                                    @elseif ($status === 'Bảo trì')
+                                                        <span class="badge badge-warning">Bảo trì</span>
+                                                    @else
+                                                        <span class="badge badge-success">Trống</span>
                                                     @endif
                                                 </td>
                                                 <td>

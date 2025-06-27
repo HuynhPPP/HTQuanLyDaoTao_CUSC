@@ -7,6 +7,7 @@
         use App\Models\ngaytuhoc;
         use App\Models\GiangDay;
         use App\Models\giaovien;
+        use App\Models\danhsachphong;
         // Ngày bắt đầu học
         $startDate = Carbon::parse($schedule->NgayHoc);
         $totalHours = $hocki->TongGioTrienKhai;
@@ -45,8 +46,6 @@
                 $subjectOccurrences[$monhoc->MaMH]['lastSubject'] = true;
             }
         }
-        // Các ngày trong tuần
-        $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU', 'THỨ BẢY'];
         // Hàm thêm ngày bỏ qua cuối tuần
         $addDaysSkippingWeekends = function ($date, $days) {
             while ($days > 0) {
@@ -107,6 +106,9 @@
             $addDaysSkippingWeekends,
             $holidayDates,
             &$examCounter,
+            $findExamDate = null,
+            $selfStudyDaysArr = [],
+            $weekDaysFull = [],
         ) use ($getTeacherInfo) {
             foreach ($subjectOccurrences as $subject => &$details) {
                 if ($details['remaining'] > 0) {
@@ -116,61 +118,37 @@
                     $details['remaining'] -= 4;
                     if ($details['remaining'] <= 0) {
                         $details['last'] = $currentDate;
-                        if (isset($details['lastSubject']) && $details['lastSubject']) {
-                            // Xử lý môn học cuối cùng
-                            $examDate = $currentDate->copy()->addWeek()->startOfWeek()->next(Carbon::FRIDAY);
-                            // Kiểm tra và điều chỉnh nếu ngày thi trùng với ngày nghỉ hoặc ngày tự học
-                            while (
-                                isset($holidayDates[$examDate->format('Y-m-d')]) ||
-                                isset($selfStudyDays[$examDate->format('Y-m-d')])
+                        // === BẮT ĐẦU LOGIC NGÀY THI MỚI ===
+                        $lastDay = $currentDate->copy();
+                        $examDate = $lastDay->copy()->addWeek(); // sang tuần sau, cùng thứ
+                        // Nếu ngày thi trùng ngày nghỉ/tự học thì dời sang ngày học tiếp theo trong tuần đó
+                        $maxCheck = 6; // kiểm tra tối đa 6 ngày trong tuần đó
+                        $checked = 0;
+                        while (
+                            (isset($holidayDates[$examDate->format('Y-m-d')]) ||
+                                isset($selfStudyDays[$examDate->format('Y-m-d')])) &&
+                            $checked < $maxCheck
+                        ) {
+                            $examDate->addDay();
+                            $checked++;
+                            // Nếu qua Chủ nhật thì dừng
+                            if ($examDate->dayOfWeek == Carbon::SUNDAY) {
+                                break;
+                            }
+                        }
+                        // === KẾT THÚC LOGIC NGÀY THI MỚI ===
+                        // Đặt tên là "self-study" cho các ngày trống trước ngày thi
+                        $emptyDays = $currentDate->diffInDays($examDate) - 1;
+                        for ($i = 0; $i < $emptyDays; $i++) {
+                            $selfStudyDate = $currentDate->copy()->addDays($i + 1);
+                            if (
+                                $selfStudyDate->dayOfWeek !== Carbon::SATURDAY &&
+                                $selfStudyDate->dayOfWeek !== Carbon::SUNDAY &&
+                                !isset($holidayDates[$selfStudyDate->format('Y-m-d')])
                             ) {
-                                $examDate->addDay();
-                            }
-                            // Đặt tên là "self-study" cho các ngày trống trước ngày thi
-                            $emptyDays = $currentDate->diffInDays($examDate) - 1;
-                            for ($i = 0; $i < $emptyDays; $i++) {
-                                $selfStudyDate = $currentDate->copy()->addDays($i + 1);
-                                if (
-                                    $selfStudyDate->dayOfWeek !== Carbon::SATURDAY &&
-                                    $selfStudyDate->dayOfWeek !== Carbon::SUNDAY &&
-                                    !isset($holidayDates[$selfStudyDate->format('Y-m-d')])
-                                ) {
-                                    if (!isset($selfStudyDays[$selfStudyDate->format('Y-m-d')])) {
-                                        $examDays[$selfStudyDate->format('Y-m-d')] = 'self-study';
-                                        $totalHours += 2;
-                                    }
-                                }
-                            }
-                        } else {
-                            // Xử lý các môn học khác
-                            $examDate = $addDaysSkippingWeekends(clone $currentDate, 5);
-                            // Kiểm tra và điều chỉnh nếu ngày thi trùng với ngày nghỉ hoặc ngày tự học
-                            while (
-                                isset($holidayDates[$examDate->format('Y-m-d')]) ||
-                                isset($selfStudyDays[$examDate->format('Y-m-d')])
-                            ) {
-                                $examDate->addDay();
-                            }
-                            // Nếu ngày thi vào thứ hai thì không có ngày self-study
-                            if ($examDate->dayOfWeek !== Carbon::MONDAY) {
-                                $selfStudyDate = $examDate->copy()->subDay();
-                                // Nếu ngày self-study không rơi vào thứ 7 hoặc Chủ nhật
-                                if (
-                                    $selfStudyDate->dayOfWeek !== Carbon::SATURDAY &&
-                                    $selfStudyDate->dayOfWeek !== Carbon::SUNDAY &&
-                                    !isset($holidayDates[$selfStudyDate->format('Y-m-d')])
-                                ) {
-                                    if (!isset($selfStudyDays[$selfStudyDate->format('Y-m-d')])) {
-                                        $examDays[$selfStudyDate->format('Y-m-d')] = 'self-study';
-                                        $totalHours += 2;
-                                        // Điều chỉnh các môn học bị trùng với ngày self-study
-                                        foreach ($subjectOccurrences as $s => &$d) {
-                                            if ($d['first'] && $d['first']->eq($selfStudyDate)) {
-                                                $d['first'] = $addDaysSkippingWeekends($selfStudyDate->copy(), 1);
-                                                $d['last'] = $addDaysSkippingWeekends($d['last']->copy(), 1);
-                                            }
-                                        }
-                                    }
+                                if (!isset($selfStudyDays[$selfStudyDate->format('Y-m-d')])) {
+                                    $examDays[$selfStudyDate->format('Y-m-d')] = 'self-study';
+                                    $totalHours += 2;
                                 }
                             }
                         }
@@ -185,6 +163,16 @@
             return '';
         };
         $examCounter = 0;
+        // Các ngày trong tuần đầy đủ để hiển thị bảng
+        $weekDaysFull = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU', 'THỨ BẢY'];
+        $dayMap = [
+            'THỨ HAI' => 0,
+            'THỨ BA' => 1,
+            'THỨ TƯ' => 2,
+            'THỨ NĂM' => 3,
+            'THỨ SÁU' => 4,
+            'THỨ BẢY' => 5,
+        ];
         // Tạo lịch học
         $scheduleMatrix = [];
         $examDays = [];
@@ -193,24 +181,21 @@
                 ->copy()
                 ->addWeeks($week - 1)
                 ->startOfWeek();
-            $weekEnd = $weekStart->copy()->endOfWeek()->subDays(2);
             $scheduleMatrix[$week] = [];
-            foreach ($weekDays as $dayIndex => $day) {
-                $currentDate = $weekStart->copy()->addDays($dayIndex);
+            foreach ($weekDaysFull as $day) {
+                $currentDate = $weekStart->copy()->addDays($dayMap[$day]);
                 $subject = '';
                 $style = '';
-                if ($currentDate->gte($startDate)) {
-                    if (isset($examDays[$currentDate->format('Y-m-d')])) {
-                        $subject = $examDays[$currentDate->format('Y-m-d')];
-                        $style = 'color: blue; font-weight: bold; filter-bg-exam'; // Added a temporary class prefix
-                        if ($subject === 'self-study') {
-                            $style = 'text-dark filter-bg-self-study'; // Added a temporary class prefix
-                        }
-                    } elseif (isset($selfStudyDays[$currentDate->format('Y-m-d')])) {
-                        $subject = $selfStudyDays[$currentDate->format('Y-m-d')];
-                        $style = 'color: green; font-weight: bold; filter-bg-self-study'; // Added a temporary class prefix
-                    } else {
-                        if (isset($holidayDates[$currentDate->format('Y-m-d')])) {
+                // Ưu tiên kiểm tra ngày thi trước
+                if (isset($examDays[$currentDate->format('Y-m-d')])) {
+                    $subject = $examDays[$currentDate->format('Y-m-d')];
+                    $style = 'color: blue; font-weight: bold; filter-bg-exam';
+                } elseif (in_array($day, $weekDays)) {
+                    if ($currentDate->gte($startDate)) {
+                        if (isset($selfStudyDays[$currentDate->format('Y-m-d')])) {
+                            $subject = $selfStudyDays[$currentDate->format('Y-m-d')];
+                            $style = 'color: black;';
+                        } elseif (isset($holidayDates[$currentDate->format('Y-m-d')])) {
                             $subject = $holidayDates[$currentDate->format('Y-m-d')];
                             $style = 'background-color: yellow; filter-bg-holiday';
                         } else {
@@ -234,11 +219,12 @@
                         }
                     }
                 } else {
-                    // Ngày trước ngày bắt đầu học
-                    $subject = '';
-                    $style = '';
+                    // Ngày không thuộc kiểu ngày học, nếu là ngày tự học thì hiển thị self-study, còn lại để trống
+                    if (isset($selfStudyDays[$currentDate->format('Y-m-d')])) {
+                        $subject = $selfStudyDays[$currentDate->format('Y-m-d')];
+                        $style = 'color: black;';
+                    }
                 }
-                $totalWeeks = ceil($totalHours / 20);
                 $scheduleMatrix[$week][$day] = [
                     'date' => $currentDate->format('d/m/Y'),
                     'subject' => $subject,
@@ -247,6 +233,33 @@
             }
         }
     @endphp
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    @if (session('success'))
+        <script>
+            iziToast.success({
+                title: 'Thành công',
+                message: '{{ session('success') }}',
+                position: 'topRight'
+            });
+        </script>
+    @endif
+    @if (session('error'))
+        <script>
+            iziToast.error({
+                title: 'Lỗi',
+                message: '{{ session('error') }}',
+                position: 'topRight'
+            });
+        </script>
+    @endif
     <section class="section">
         <div class="section-header">
             <h1>{{ $schedule->TenTKB }}</h1>
@@ -285,12 +298,18 @@
                                     <span
                                         style="color: red;">{{ \Carbon\Carbon::parse($schedule->NgayHoc)->format('d/m/Y') }}</span>
                                 </p>
-                                <p class="mb-1"><strong>Học Lý thuyết tại phòng:</strong>
-                                    <span style="color: red;">{{ $phonglt->TenPhong ?? 'Chưa có' }}</span>
-                                </p>
-                                <p class="mb-1"><strong>Học Thực hành tại phòng:</strong>
-                                    <span style="color: red;">{{ $phongth->TenPhong ?? ' Chưa có ' }}</span>
-                                </p>
+                                @if (isset($phongs) && count($phongs) > 0)
+                                    @foreach ($phongs as $phong)
+                                        <p class="mb-1">
+                                            <strong>Phòng học:</strong>
+                                            <span style="color: red;">{{ $phong->TenPhong }}</span>
+                                            @if ($phong->Ca)
+                                                | <strong>Thời gian:</strong> <span
+                                                    style="color: red;">{{ $phong->Ca }}</span>
+                                            @endif
+                                        </p>
+                                    @endforeach
+                                @endif
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -299,12 +318,9 @@
                                     <tr>
                                         <th class="text-center">NGÀY</th>
                                         <th class="text-center">TUẦN</th>
-                                        <th class="text-center">THỨ HAI</th>
-                                        <th class="text-center">THỨ BA</th>
-                                        <th class="text-center">THỨ TƯ</th>
-                                        <th class="text-center">THỨ NĂM</th>
-                                        <th class="text-center">THỨ SÁU</th>
-                                        <th class="text-center">THỨ BẢY</th>
+                                        @foreach ($weekDaysFull as $day)
+                                            <th class="text-center">{{ $day }}</th>
+                                        @endforeach
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -314,22 +330,39 @@
                                         @endphp
                                         <tr>
                                             <td class="text-wrap align-middle text-center" style="width: 12rem;">
-                                                {{ implode(' - ', [reset($weekDates), end($weekDates)]) }}</td>
+                                                {{ reset($weekDates) }}<br>
+                                                <span
+                                                    style="display:inline-block;width:100%;text-align:center;">-</span><br>
+                                                {{ end($weekDates) }}
+                                            </td>
                                             <td class="text-wrap align-middle text-center">{{ $week }}</td>
-                                            @foreach ($days as $dayData)
-                                                {{-- Loop through all 7 days --}}
-                                                <td class="text-wrap align-middle text-center"
-                                                    style="width: 12rem; {{ $dayData['style'] }}">
-                                                    @if ($dayData['subject'])
-                                                        @if (isset($subjectOccurrences[$dayData['subject']]))
-                                                            {{ $subjectOccurrences[$dayData['subject']]['TenMH'] }}{!! $getTeacherInfo($dayData['subject']) !!}
+                                            @foreach ($weekDaysFull as $day)
+                                                @if (isset($days[$day]))
+                                                    <td class="text-wrap align-middle text-center"
+                                                        style="width: 12rem; {{ $days[$day]['subject'] === 'self-study' ? 'color: black;' : $days[$day]['style'] }}">
+                                                        @if ($days[$day]['is_exam'] ?? false)
+                                                            @php
+                                                                $maMH = $days[$day]['MaMH'] ?? null;
+                                                                $tenMH =
+                                                                    $subjectOccurrences[$maMH]['TenMH'] ??
+                                                                    \App\Models\danhsachmonhoc::where(
+                                                                        'MaMH',
+                                                                        $maMH,
+                                                                    )->value('TenMH');
+                                                            @endphp
+                                                            <span class="event-exam">Thi {{ $tenMH }}
+                                                                ({{ $maMH }})
+                                                            </span>
+                                                        @elseif (isset($subjectOccurrences[$days[$day]['subject']]))
+                                                            {{ $subjectOccurrences[$days[$day]['subject']]['TenMH'] }}{!! $getTeacherInfo($days[$day]['subject']) !!}
                                                         @else
-                                                            {{ $dayData['subject'] }}
+                                                            {{ $days[$day]['subject'] }}
                                                         @endif
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
+                                                    </td>
+                                                @else
+                                                    <td class="text-wrap align-middle text-center" style="width: 12rem;">-
+                                                    </td>
+                                                @endif
                                             @endforeach
                                         </tr>
                                     @endforeach
@@ -476,6 +509,17 @@
                             <label for="NgayHoc">Ngày khai giảng</label>
                             <input type="date" class="form-control" id="NgayHoc" name="NgayHoc"
                                 value="{{ $schedule->NgayHoc }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ngayHocType">Kiểu ngày học</label>
+                            <select class="form-control" id="ngayHocType" name="ngayHocType" required>
+                                <option value="all" {{ $schedule->ngayHocType == 'all' ? 'selected' : '' }}>Cả tuần
+                                    (T2-T7)</option>
+                                <option value="chan" {{ $schedule->ngayHocType == 'chan' ? 'selected' : '' }}>Chẵn
+                                    (T2-T4-T6)</option>
+                                <option value="le" {{ $schedule->ngayHocType == 'le' ? 'selected' : '' }}>Lẻ
+                                    (T3-T5-T7)</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -748,6 +792,11 @@
     .event-holiday {
         background-color: #ffc107 !important;
         border-color: #ffc107 !important;
+    }
+
+    .filter-bg-self-study {
+        background-color: #28a745 !important;
+        border-color: #28a745 !important;
     }
 </style>
 

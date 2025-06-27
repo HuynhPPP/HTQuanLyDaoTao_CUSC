@@ -64,6 +64,21 @@
                                     Không thể chọn ngày bắt đầu là thứ 7 hoặc chủ nhật.
                                 </div>
                             </div>
+                            <div class="mb-3">
+                                <label for="PhongHoc" class="form-label">Phòng học</label>
+                                <select id="PhongHoc" class="form-control @error('PhongHoc') is-invalid @enderror"
+                                    name="PhongHoc" required>
+                                    <option value="">----- Chọn Phòng -----</option>
+                                    @foreach ($phonghocs as $phong)
+                                        <option value="{{ $phong->TenPhong }}">{{ $phong->TenPhong }}
+                                            ({{ $phong->LoaiPhong }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('PhongHoc')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <div class="d-flex justify-content-center mt-4">
                                 <button type="submit" class="btn btn-primary px-5 py-2">Lập thời khóa biểu</button>
                             </div>

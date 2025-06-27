@@ -2,14 +2,17 @@
 
 namespace App\Exports;
 
-use Illuminate\Contracts\View\View;
-use Maatwebsite\Excel\Concerns\FromView;
-use Maatwebsite\Excel\Concerns\WithTitle;
 use Carbon\Carbon;
-use App\Models\GiangDay;
-use App\Models\giaovien;
+use Maatwebsite\Excel\Concerns\FromArray;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Concerns\WithCustomStartCell;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class TeacherScheduleExport implements FromView, WithTitle
+class TeacherScheduleExport implements FromArray, WithStyles, WithTitle, WithCustomStartCell
 {
     protected $schedule;
     protected $giangDays;
@@ -34,280 +37,138 @@ class TeacherScheduleExport implements FromView, WithTitle
         $this->monhocs = $monhocs;
     }
 
+    public function array(): array
+    {
+        $rows = [];
+        $rows[] = ['TRUNG TÂM CÔNG NGHỆ PHẦN MỀM ĐẠI HỌC CẦN THƠ', '', '', '', '', '', '', '', ''];
+        $rows[] = ['CANTHO UNIVERSITY SOFTWARE CENTER', '', '', '', '', '', '', '', ''];
+        $rows[] = ['Khu III, Đại học Cần Thơ – 01 Lý Tự Trọng, Tp. Cần Thơ – Tel: 0292.3731072 & Fax: 0292.3731071 – Email: cusc@ctu.edu.vn', '', '', '', '', '', '', '', ''];
+        $rows[] = [''];
+        $rows[] = ['LỊCH GIẢNG DẠY LỚP ' . $this->schedule->MaLop . ' - ' . $this->chuongTrinhName, '', '', '', '', '', '', '', ''];
+        $rows[] = ['HỌC KỲ ' . $this->hocki->TenHK, '', '', '', '', '', '', '', ''];
+        $rows[] = [''];
+        $rows[] = ['Bắt đầu học từ ngày: ' . $this->schedule->NgayHoc, '', '', '', '', '', '', '', ''];
+        $rows[] = ['Phòng lý thuyết: ' . ($this->phonglt->TenPhong ?? ''), '', '', '', '', '', '', '', ''];
+        $rows[] = ['Phòng thực hành: ' . ($this->phongth->TenPhong ?? ''), '', '', '', '', '', '', '', ''];
+        $rows[] = [''];
+
+        $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU', 'THỨ BẢY'];
+
+        foreach ($this->giangDays as $maGV => $teacherData) {
+            $gv = $teacherData['info'];
+            $rows[] = [''];
+            $rows[] = ['Giảng viên: ' . $gv->HoTenGV, '', '', '', '', '', '', '', ''];
+            $rows[] = ['NGÀY', "TUẦN", 'GIỜ HỌC', ...$weekDays];
+            foreach ($teacherData['schedule'] as $week => $days) {
+                $weekDates = array_column($days, 'date');
+                $ngayCell = reset($weekDates) . "\n-\n" . end($weekDates);
+                $row = [
+                    $ngayCell,
+                    $week,
+                    'Sáng', // hoặc lấy từ dữ liệu nếu có
+                ];
+                foreach ($weekDays as $dayName) {
+                    $dayData = $days[$dayName] ?? null;
+                    if (!$dayData) {
+                        $row[] = '-';
+                        continue;
+                    }
+                    if ($dayData['is_exam'] ?? false) {
+                        $maMH = $dayData['MaMH'] ?? null;
+                        $tenMH = '';
+                        if ($maMH) {
+                            $tenMH = $this->monhocs->first(function($mh) use ($maMH) { return $mh->MaMH == $maMH; });
+                            $tenMH = $tenMH ? $tenMH->TenMH : '';
+                        }
+                        $row[] = $tenMH ? ('Thi ' . $tenMH) : '-';
+                    } elseif ($dayData['is_holiday'] ?? false) {
+                        $row[] = $dayData['subject'] ?: 'nghỉ lễ';
+                    } elseif ($dayData['is_self_study_day'] ?? false) {
+                        $row[] = $dayData['subject'] ?: 'self-study';
+                    } elseif (!empty($dayData['subject'])) {
+                        $tenMH = $this->monhocs->first(function($mh) use ($dayData) { return $mh->MaMH == $dayData['subject']; });
+                        $row[] = $tenMH ? $tenMH->TenMH : $dayData['subject'];
+                    } else {
+                        $row[] = '-';
+                    }
+                }
+                $rows[] = $row;
+            }
+            $rows[] = [''];
+        }
+        return $rows;
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        $sheet->getParent()->getDefaultStyle()->getFont()->setName('Times New Roman');
+        $sheet->mergeCells('A1:I1');
+        $sheet->mergeCells('A2:I2');
+        $sheet->mergeCells('A3:I3');
+        $sheet->mergeCells('A5:I5');
+        $sheet->mergeCells('A6:I6');
+        $sheet->mergeCells('A8:I8');
+        $sheet->mergeCells('A9:I9');
+        $sheet->mergeCells('A10:I10');
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('A2')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('A1:A3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A1:A3')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A5')->getFont()->setBold(true)->setSize(16);
+        $sheet->getStyle('A6')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('A5:A6')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A5:A6')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A8:A10')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A8:A10')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('B')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('C:I')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A1:I' . $sheet->getHighestRow())->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('A1:I' . $sheet->getHighestRow())->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A1:I' . $sheet->getHighestRow())->getAlignment()->setWrapText(true);
+        foreach (range(1, $sheet->getHighestRow()) as $row) {
+            $cell = 'A' . $row;
+            if ($sheet->getCell($cell)->getValue() === 'NGÀY') {
+                $sheet->getStyle('A' . $row . ':I' . $row)->getFont()->setBold(true);
+                $sheet->getStyle('A' . $row . ':I' . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('B7B7B7');
+            }
+            if (strpos((string)$sheet->getCell($cell)->getValue(), 'Giảng viên:') === 0) {
+                $sheet->getStyle('A' . $row . ':I' . $row)->getFont()->setBold(true)->setSize(13);
+                $sheet->mergeCells('A' . $row . ':I' . $row);
+            }
+            if ($sheet->getCell($cell)->getValue() === null || $sheet->getCell($cell)->getValue() === '') {
+                $sheet->getRowDimension($row)->setRowHeight(8);
+            } else {
+                $isWeekRow = is_numeric($sheet->getCell('B' . $row)->getValue());
+                if ($isWeekRow) {
+                    $sheet->getRowDimension($row)->setRowHeight(50);
+                } else {
+                    $sheet->getRowDimension($row)->setRowHeight(32);
+                }
+            }
+        }
+        $sheet->getColumnDimension('A')->setWidth(18);
+        $sheet->getColumnDimension('B')->setWidth(12);
+        $sheet->getColumnDimension('C')->setWidth(10);
+        $sheet->getColumnDimension('D')->setWidth(18);
+        $sheet->getColumnDimension('E')->setWidth(18);
+        $sheet->getColumnDimension('F')->setWidth(18);
+        $sheet->getColumnDimension('G')->setWidth(18);
+        $sheet->getColumnDimension('H')->setWidth(18);
+        $sheet->getColumnDimension('I')->setWidth(18);
+        $sheet->getStyle('B')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('B')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('B')->getAlignment()->setWrapText(true);
+        return [];
+    }
+
     public function title(): string
     {
-        \Log::debug('Sheet Title Debug: ' . 'LichGiangVien');
         return 'LichGiangVien';
     }
 
-    public function view(): View
+    public function startCell(): string
     {
-        $schedule = $this->schedule;
-        $giangDays = $this->giangDays;
-        $ngaynghis = $this->ngaynghis;
-        $ngaytuhocs = $this->ngaytuhocs;
-        $hocki = $this->hocki;
-        $chuongTrinhName = $this->chuongTrinhName;
-        $phonglt = $this->phonglt;
-        $phongth = $this->phongth;
-        $monhocs = $this->monhocs;
-
-        // Logic tính toán tương tự như trong teacher_schedule.blade.php
-        $startDate = Carbon::parse($schedule->NgayHoc);
-        $totalHours = $hocki->TongGioTrienKhai;
-        $emptyDays = 0;
-        $weekStartDate = $startDate->copy()->startOfWeek();
-        for ($date = $weekStartDate->copy(); $date->lt($startDate); $date->addDay()) {
-            if ($date->dayOfWeek !== Carbon::SATURDAY && $date->dayOfWeek !== Carbon::SUNDAY) {
-                $emptyDays++;
-            }
-        }
-        $totalHours += $emptyDays * 2;
-        $totalWeeks = ceil($totalHours / 20);
-        $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU', 'THỨ BẢY'];
-        
-        $selfStudyDays = [];
-        foreach ($ngaytuhocs as $ngaytuhoc) {
-            $selfStudyStart = Carbon::parse($ngaytuhoc->NgayBDTuHoc);
-            $selfStudyEnd = Carbon::parse($ngaytuhoc->NgayKTTuHoc);
-            while ($selfStudyStart->lte($selfStudyEnd)) {
-                if ($selfStudyStart->dayOfWeek !== Carbon::SATURDAY && $selfStudyStart->dayOfWeek !== Carbon::SUNDAY) {
-                    $selfStudyDays[$selfStudyStart->format('Y-m-d')] = $ngaytuhoc->TenNgayTuHoc;
-                    $totalHours += 2;
-                }
-                $selfStudyStart->addDay();
-            }
-        }
-
-        $holidayDates = [];
-        foreach ($ngaynghis as $ngaynghi) {
-            $holidayStart = Carbon::parse($ngaynghi->NgayBDNghi);
-            $holidayEnd = Carbon::parse($ngaynghi->NgayKT);
-            while ($holidayStart->lte($holidayEnd)) {
-                if ($holidayStart->dayOfWeek !== Carbon::SATURDAY && $holidayStart->dayOfWeek !== Carbon::SUNDAY) {
-                    $holidayDates[$holidayStart->format('Y-m-d')] = $ngaynghi->TenNgayNghi;
-                    $totalHours += 2;
-                }
-                $holidayStart->addDay();
-            }
-        }
-
-        $filteredMonHocs = [];
-        foreach ($monhocs as $monhoc) {
-            if ($monhoc && $monhoc->GioTrienKhai > 0) {
-                $filteredMonHocs[] = $monhoc;
-            }
-        }
-
-        $subjectOccurrences = [];
-        $subjectCount = count($filteredMonHocs);
-        foreach ($filteredMonHocs as $index => $monhoc) {
-            $subjectOccurrences[$monhoc->MaMH] = [
-                'TenMH' => $monhoc->TenMH,
-                'first' => null,
-                'last' => null,
-                'remaining' => $monhoc->GioTrienKhai,
-            ];
-            if ($index === $subjectCount - 1) {
-                $subjectOccurrences[$monhoc->MaMH]['lastSubject'] = true;
-            }
-        }
-
-        $addDaysSkippingWeekends = function ($date, $days) {
-            while ($days > 0) {
-                $date->addDay();
-                if ($date->dayOfWeek !== Carbon::SATURDAY && $date->dayOfWeek !== Carbon::SUNDAY) {
-                    $days--;
-                }
-            }
-            return $date;
-        };
-
-        $getTeacherInfo = function ($maMH) use ($schedule) {
-            if (!isset($schedule) || !$schedule) {
-                return ' [NO SCHEDULE]';
-            }
-            $giangDay = GiangDay::where('MaMH', $maMH)->where('MaLop', $schedule->MaLop)->first();
-            if (!$giangDay) {
-                return ' [NO GIANGDAY]';
-            }
-            $giangVien = giaovien::where('MaGV', $giangDay->MaGV)->first();
-            return $giangVien ? ' - GV: ' . $giangVien->HoTenGV : ' [NO GIANGVIEN]';
-        };
-
-        $examCounter = 0;
-        $examDays = [];
-
-        $getSubjectForDay = function (
-            &$subjectOccurrences,
-            $currentDate,
-            &$totalHours,
-            &$examDays,
-            &$selfStudyDays,
-            $addDaysSkippingWeekends,
-            $holidayDates,
-            &$examCounter
-        ) use ($getTeacherInfo) {
-            foreach ($subjectOccurrences as $subject => &$details) {
-                if ($details['remaining'] > 0) {
-                    if (is_null($details['first'])) {
-                        $details['first'] = $currentDate;
-                    }
-                    $details['remaining'] -= 4;
-                    if ($details['remaining'] <= 0) {
-                        $details['last'] = $currentDate;
-                        if (isset($details['lastSubject']) && $details['lastSubject']) {
-                            $examDate = $currentDate->copy()->addWeek()->startOfWeek()->next(Carbon::FRIDAY);
-                            while (
-                                isset($holidayDates[$examDate->format('Y-m-d')]) ||
-                                isset($selfStudyDays[$examDate->format('Y-m-d')])
-                            ) {
-                                $examDate->addDay();
-                            }
-                            $emptyDays = $currentDate->diffInDays($examDate) - 1;
-                            for ($i = 0; $i < $emptyDays; $i++) {
-                                $selfStudyDate = $currentDate->copy()->addDays($i + 1);
-                                if (
-                                    $selfStudyDate->dayOfWeek !== Carbon::SATURDAY &&
-                                    $selfStudyDate->dayOfWeek !== Carbon::SUNDAY &&
-                                    !isset($holidayDates[$selfStudyDate->format('Y-m-d')])
-                                ) {
-                                    if (!isset($selfStudyDays[$selfStudyDate->format('Y-m-d')])) {
-                                        $examDays[$selfStudyDate->format('Y-m-d')] = 'self-study';
-                                        $totalHours += 2;
-                                    }
-                                }
-                            }
-                        } else {
-                            $examDate = $addDaysSkippingWeekends(clone $currentDate, 5);
-                            while (
-                                isset($holidayDates[$examDate->format('Y-m-d')]) ||
-                                isset($selfStudyDays[$examDate->format('Y-m-d')])
-                            ) {
-                                $examDate->addDay();
-                            }
-                            if ($examDate->dayOfWeek !== Carbon::MONDAY) {
-                                $selfStudyDate = $examDate->copy()->subDay();
-                                if (
-                                    $selfStudyDate->dayOfWeek !== Carbon::SATURDAY &&
-                                    $selfStudyDate->dayOfWeek !== Carbon::SUNDAY &&
-                                    !isset($holidayDates[$selfStudyDate->format('Y-m-d')])
-                                ) {
-                                    if (!isset($selfStudyDays[$selfStudyDate->format('Y-m-d')])) {
-                                        $examDays[$selfStudyDate->format('Y-m-d')] = 'self-study';
-                                        $totalHours += 2;
-                                        foreach ($subjectOccurrences as $s => &$d) {
-                                            if ($d['first'] && $d['first']->eq($selfStudyDate)) {
-                                                $d['first'] = $addDaysSkippingWeekends($selfStudyDate->copy(), 1);
-                                                $d['last'] = $addDaysSkippingWeekends($d['last']->copy(), 1);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        $examCounter++;
-                        $examDays[$examDate->format('Y-m-d')] =
-                            'Thi ' . $subjectOccurrences[$subject]['TenMH'] . " ($subject, E$examCounter) - L";
-                        $totalHours += 2;
-                    }
-                    return $subject;
-                }
-            }
-            return '';
-        };
-
-        $tempScheduleMatrix = [];
-        $tempExamCounter = 0;
-        $tempSelfStudyDays = $selfStudyDays;
-        $tempHolidayDates = $holidayDates;
-        $tempTotalHours = $totalHours;
-
-        for ($week = 1; $week <= $totalWeeks; $week++) {
-            $weekStart = $startDate->copy()->addWeeks($week - 1)->startOfWeek();
-            foreach ($weekDays as $dayIndex => $day) {
-                $currentDate = $weekStart->copy()->addDays($dayIndex);
-
-                if ($currentDate->gte($startDate)) {
-                    if (isset($tempHolidayDates[$currentDate->format('Y-m-d')])) {
-                    } elseif (isset($tempSelfStudyDays[$currentDate->format('Y-m-d')])) {
-                    } else {
-                        $getSubjectForDay(
-                            $tempSubjectOccurrences,
-                            $currentDate,
-                            $tempTotalHours,
-                            $examDays,
-                            $tempSelfStudyDays,
-                            $addDaysSkippingWeekends,
-                            $tempHolidayDates,
-                            $tempExamCounter
-                        );
-                    }
-                }
-            }
-        }
-        $totalWeeks = ceil($tempTotalHours / 20);
-
-        $teacherSchedules = [];
-        foreach ($giangDays as $maGV => $subjects) {
-            $teacherSchedules[$maGV] = [
-                'info' => $subjects->first()->giaovien,
-                'schedule' => []
-            ];
-
-            for ($week = 1; $week <= $totalWeeks; $week++) {
-                $weekStart = $startDate->copy()->addWeeks($week - 1)->startOfWeek();
-                $weekEnd = $weekStart->copy()->endOfWeek()->subDays(2);
-                $teacherSchedules[$maGV]['schedule'][$week] = [];
-
-                foreach ($weekDays as $dayIndex => $day) {
-                    $currentDate = $weekStart->copy()->addDays($dayIndex);
-                    $scheduleInfo = [
-                        'date' => $currentDate->format('d/m/Y'),
-                        'subject' => '',
-                        'style' => ''
-                    ];
-
-                    if ($currentDate->gte($startDate)) {
-                        if (isset($examDays[$currentDate->format('Y-m-d')])) {
-                            $scheduleInfo['subject'] = $examDays[$currentDate->format('Y-m-d')];
-                            $scheduleInfo['style'] = 'font-weight: bold; background-color: #bbdefb;';
-                        } elseif (isset($holidayDates[$currentDate->format('Y-m-d')])) {
-                            $scheduleInfo['subject'] = $holidayDates[$currentDate->format('Y-m-d')];
-                            $scheduleInfo['style'] = 'background-color: yellow;';
-                        } elseif (isset($selfStudyDays[$currentDate->format('Y-m-d')])) {
-                            $scheduleInfo['subject'] = $selfStudyDays[$currentDate->format('Y-m-d')];
-                            $scheduleInfo['style'] = 'background-color: lightgreen;';
-                        } else {
-                            foreach ($subjects as $subject) {
-                                if ($subject->monhoc && $subject->monhoc->GioTrienKhai > 0) {
-                                    $teacherFullName = '';
-                                    if ($subject->giaovien) {
-                                        $teacherFullName = ' - GV: ' . $subject->giaovien->HoTenGV;
-                                    }
-                                    $scheduleInfo['subject'] = $subject->monhoc->TenMH . $teacherFullName;
-                                    $scheduleInfo['style'] = 'Có lịch dạy';
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    $teacherSchedules[$maGV]['schedule'][$week][$day] = $scheduleInfo;
-                }
-            }
-        }
-
-        return view('exports.teacher_schedule_export', compact(
-            'schedule',
-            'teacherSchedules',
-            'hocki',
-            'chuongTrinhName',
-            'phonglt',
-            'phongth',
-            'startDate',
-            'totalWeeks',
-            'weekDays'
-        ));
+        return 'A1';
     }
 } 

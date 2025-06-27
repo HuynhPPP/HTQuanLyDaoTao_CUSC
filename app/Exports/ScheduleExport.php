@@ -57,15 +57,15 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
     public function collection()
     {
         $data = [];
-        $data[] = ['', '', '', '', '', '', '', '', '', ''];
+        $data[] = ['', '', '', '', '', '', '', '', '', '', ''];
         $startDate = $this->tkb ? Carbon::parse($this->tkb->NgayHoc) : null;
         $totalHours = $this->hocki->TongGioTrienKhai;
     
         $emptyDays = $this->calculateEmptyDays($startDate);
-        $totalHours += $emptyDays * 2;
+        $totalHours += $emptyDays * 4;
     
-        $this->totalWeeks = ceil($totalHours / 10);
-        $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU'];
+        $this->totalWeeks = ceil($totalHours / 20);
+        $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU', 'THỨ BẢY'];
     
         $this->holidayDates = $this->calculateHolidayDays($totalHours);
         $selfStudyDays = $this->addSelfStudyDays($totalHours, $this->holidayDates);
@@ -82,7 +82,6 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
                 $this->dsmh->TenKhungGio
             ];
     
-
             $this->examCounter = 0;
 
             foreach ($weekDays as $day) {
@@ -90,17 +89,17 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
                 $subject = '';
 
                 if ($currentDate && $currentDate->gte($startDate)) {
-                    if (isset($this->examDays[$currentDate->format('Y-m-d')])) {
-                        $subject = $this->examDays[$currentDate->format('Y-m-d')];
+                    if (isset($this->holidayDates[$currentDate->format('Y-m-d')])) {
+                        $subject = $this->holidayDates[$currentDate->format('Y-m-d')];
                     } elseif (isset($selfStudyDays[$currentDate->format('Y-m-d')])) {
                         $subject = $selfStudyDays[$currentDate->format('Y-m-d')];
-                    } elseif (isset($this->holidayDates[$currentDate->format('Y-m-d')])) {
-                        $subject = $this->holidayDates[$currentDate->format('Y-m-d')];
+                    } elseif (isset($this->examDays[$currentDate->format('Y-m-d')])) {
+                        $subject = $this->examDays[$currentDate->format('Y-m-d')];
                     } else {
                         $subject = $this->getSubjectForDay($currentDate, $totalHours, $examCounter);
                     }
                 }
-                $this->totalWeeks = ceil($totalHours / 10);
+                $this->totalWeeks = ceil($totalHours / 20);
                 $row[] = $subject;
             }
 
@@ -121,7 +120,7 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
                     $selfStudyStart->dayOfWeek !== Carbon::SUNDAY) {
     
                     $selfStudyDays[$selfStudyStart->format('Y-m-d')] = $ngaytuhoc->TenNgayTuHoc;
-                    $totalHours += 2;
+                    $totalHours += 4;
                 }
     
                 $selfStudyStart->addDay();
@@ -155,7 +154,7 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
             while ($holidayStart->lte($holidayEnd)) {
                 if ($holidayStart->dayOfWeek !== Carbon::SATURDAY && $holidayStart->dayOfWeek !== Carbon::SUNDAY) {
                     $holidayDates[$holidayStart->format('Y-m-d')] = $ngaynghi->TenNgayNghi;
-                    $totalHours += 2; 
+                    $totalHours += 4; 
                 }
                 $holidayStart->addDay();
             }
@@ -170,7 +169,7 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
                 if (is_null($details['first'])) {
                     $details['first'] = $currentDate;
                 }
-                $details['remaining'] -= 2;
+                $details['remaining'] -= 4;
                 if ($details['remaining'] <= 0) {
                     $details['last'] = $currentDate;
 
@@ -187,7 +186,7 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
                             $selfStudyDate = $currentDate->copy()->addDays($i + 1);
                             if ($selfStudyDate->dayOfWeek !== Carbon::SATURDAY && $selfStudyDate->dayOfWeek !== Carbon::SUNDAY) {
                                 $this->examDays[$selfStudyDate->format('Y-m-d')] = "self-study";
-                                $totalHours += 2;
+                                $totalHours += 4;
                             }
                         }
                     } else {
@@ -202,13 +201,13 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
                             $selfStudyDate = $examDate->copy()->subDay();
                             if ($selfStudyDate->dayOfWeek !== Carbon::SATURDAY && $selfStudyDate->dayOfWeek !== Carbon::SUNDAY  && !isset($this->holidayDates[$selfStudyDate->format('Y-m-d')])) {
                                 $this->examDays[$selfStudyDate->format('Y-m-d')] = "self-study";
-                                $totalHours += 2;
+                                $totalHours += 4;
                             }
                         }
                     }
                     $examCounter++;
                     $this->examDays[$examDate->format('Y-m-d')] = "Thi $subject (E$examCounter) - L";
-                    $totalHours += 2;
+                    $totalHours += 4;
                 }
                 return $subject;
             }
@@ -230,7 +229,7 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
     public function headings(): array
     {
         return [
-            'NGÀY', '-', '', 'TUẦN', 'GIỜ HỌC', 'THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU'
+            'NGÀY', '-', '', 'TUẦN', 'GIỜ HỌC', 'THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU', 'THỨ BẢY'
         ];
     }
 
@@ -248,10 +247,10 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
     {
         $sheet->getParent()->getDefaultStyle()->getFont()->setName('Times New Roman');
 
-        $sheet->mergeCells('A1:J1');
-        $sheet->mergeCells('A2:J2');
-        $sheet->mergeCells('A3:J3');
-        $sheet->mergeCells('A5:J5');
+        $sheet->mergeCells('A1:K1');
+        $sheet->mergeCells('A2:K2');
+        $sheet->mergeCells('A3:K3');
+        $sheet->mergeCells('A5:K5');
         $sheet->mergeCells('A9:C9');
 
         $sheet->getColumnDimension('A')->setWidth(12.66);
@@ -264,6 +263,7 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $sheet->getColumnDimension('H')->setWidth(24.66);
         $sheet->getColumnDimension('I')->setWidth(25.55);
         $sheet->getColumnDimension('J')->setWidth(25.33);
+        $sheet->getColumnDimension('K')->setWidth(25.33);
 
         $sheet->getRowDimension(5)->setRowHeight(41.3);
         $sheet->getRowDimension(9)->setRowHeight(33.8);
@@ -277,8 +277,10 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $sheet->setCellValue('D7', $this->tkb->MaLop);
         $sheet->setCellValue('I6', 'Bắt đầu học từ ngày: ');
         $sheet->setCellValue('J6', Carbon::parse($this->tkb->NgayHoc)->format('d/m/Y'));
-        $sheet->setCellValue('I7', 'Học Lý thuyết tại phòng: ');
-        $sheet->setCellValue('J7', $this->phonglt->TenPhong);
+        if ($this->phonglt) {
+            $sheet->setCellValue('I7', 'Học Lý thuyết tại phòng: ');
+            $sheet->setCellValue('J7', $this->phonglt->TenPhong);
+        }
         $sheet->setCellValue('I8', 'Học Thực hành tại phòng: ');
         $sheet->setCellValue('J8', $this->phongth ? $this->phongth->TenPhong : '');
         $sheet->setCellValue('D8', 'Ver ' . $this->chuongtrinh->PhienBan);
@@ -289,7 +291,7 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $sheet->getStyle('A3')->getFont()->setSize(10)->setItalic(true);
         $sheet->getStyle('A5')->getFont()->setSize(18)->setBold(true);
         $sheet->getStyle('A5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-        $sheet->getStyle('A1:J5')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A1:K5')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle('C7')->getFont()->setSize(12)->setBold(true);
         $sheet->getStyle('D7')->getFont()->setSize(12)->setBold(true)->getColor()->setRGB('FF0000');
         $sheet->getStyle('D8')->getFont()->setSize(10);
@@ -298,31 +300,30 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $sheet->getStyle('I6:I8')->getFont()->setSize(12)->setBold(true);
         $sheet->getStyle('J6:J8')->getFont()->setSize(12)->setBold(true)->getColor()->setRGB('FF0000');
 
-        $sheet->getStyle('A9:J9')->getFont()->setSize(10)->setBold(true);
-        $sheet->getStyle('A9:J9')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A9:J9')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-        $sheet->getStyle('A9:J9')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
-        
+        $sheet->getStyle('A9:K9')->getFont()->setSize(10)->setBold(true);
+        $sheet->getStyle('A9:K9')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A9:K9')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A9:K9')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
         
         $collection = $this->collection();
         $rowCount = $collection->count();
     
         for ($row = 11; $row < 13 + $rowCount; $row++) {
             $sheet->getRowDimension($row)->setRowHeight(53.3);
-            $sheet->getStyle("A$row:J$row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle("A$row:J$row")->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-            $sheet->getStyle("A$row:J$row")->getAlignment()->setWrapText(true);
+            $sheet->getStyle("A$row:K$row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A$row:K$row")->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A$row:K$row")->getAlignment()->setWrapText(true);
     
             $sheet->getStyle("D$row")->getFont()->setBold(true);
             $sheet->getStyle("E$row")->getFont()->setBold(true);
         }
     
         return [
-            'A1:J1' => ['font' => ['bold' => true, 'size' => 11]],
-            'A2:J2' => ['font' => ['bold' => true, 'size' => 17]],
-            'A3:J3' => ['font' => ['italic' => true, 'size' => 10]],
+            'A1:K1' => ['font' => ['bold' => true, 'size' => 11]],
+            'A2:K2' => ['font' => ['bold' => true, 'size' => 17]],
+            'A3:K3' => ['font' => ['italic' => true, 'size' => 10]],
             'A5' => ['font' => ['bold' => true, 'size' => 18]],
-            'A9:J9' => [
+            'A9:K9' => [
                 'font' => ['bold' => true, 'size' => 10],
                 'alignment' => [
                     'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
@@ -334,7 +335,7 @@ class ScheduleExport implements FromCollection, WithHeadings, WithTitle, WithCus
                     ],
                 ],
             ],
-            'A10:J' . (12 + $rowCount) => [
+            'A10:K' . (12 + $rowCount) => [
                 'borders' => [
                     'allBorders' => [
                         'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,

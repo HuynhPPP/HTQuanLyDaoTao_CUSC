@@ -57,6 +57,49 @@ class PhongHocController extends Controller
         // Get all time slots (for the dropdown)
         $khunggios = khunggio::whereIn('TenKhungGio', ['Sáng', 'Chiều', 'Tối'])->get();
 
+        // Xác định trạng thái động cho từng phòng học
+        foreach ($phonghocs as $phong) {
+            $phong->trang_thai_dong = $phong->TrangThai;
+            $phong->ten_lop_dang_su_dung = null;
+            $phong->ten_mon_dang_su_dung = null;
+            if ($phong->TrangThai !== 'Bảo trì') {
+                $phong->trang_thai_dong = 'Trống';
+                foreach ($phong->danhsachphong as $ds) {
+                    if ($selectedKhungGioMaCa) {
+                        if ($ds->Ca == $selectedKhungGioMaCa) {
+                            $phong->trang_thai_dong = 'Đang sử dụng';
+                            $phong->ten_lop_dang_su_dung = $ds->MaLop;
+                            if (
+                                $ds->lopHoc &&
+                                $ds->lopHoc->tkb &&
+                                $ds->lopHoc->tkb->hocki &&
+                                $ds->lopHoc->tkb->hocki->danhsachmonhoc &&
+                                $ds->lopHoc->tkb->hocki->danhsachmonhoc->first() &&
+                                $ds->lopHoc->tkb->hocki->danhsachmonhoc->first()->monhoc
+                            ) {
+                                $phong->ten_mon_dang_su_dung = $ds->lopHoc->tkb->hocki->danhsachmonhoc->first()->monhoc->TenMH;
+                            }
+                            break;
+                        }
+                    } else {
+                        $phong->trang_thai_dong = 'Đang sử dụng';
+                        $phong->ten_lop_dang_su_dung = $ds->MaLop;
+                        if (
+                            $ds->lopHoc &&
+                            $ds->lopHoc->tkb &&
+                            $ds->lopHoc->tkb->hocki &&
+                            $ds->lopHoc->tkb->hocki->danhsachmonhoc &&
+                            $ds->lopHoc->tkb->hocki->danhsachmonhoc->first() &&
+                            $ds->lopHoc->tkb->hocki->danhsachmonhoc->first()->monhoc
+                        ) {
+                            $phong->ten_mon_dang_su_dung = $ds->lopHoc->tkb->hocki->danhsachmonhoc->first()->monhoc->TenMH;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
         return view('quanly_cosovatchat.phonghoc.index', compact('phonghocs', 'khunggios', 'selectedDate', 'selectedKhungGioTen'));
     }
 

@@ -167,6 +167,7 @@ class PagesController extends Controller
             $data = [
                 'khoadaotaos' => khoadaotao::all(),
                 'tkbs' => tkb::all(),
+                'phonghocs' => \App\Models\phonghoc::all(),
             ];
             return view('schedules', $data);
         }
@@ -218,52 +219,41 @@ class PagesController extends Controller
                 'HocKi' => 'required|string',
                 'Lop' => 'required|string',
                 'NgayHoc' => 'required|date',
+                'PhongHoc' => 'required|string',
             ], [
                 'KhoaDaoTao.required' => 'Hãy chọn khoá đào tạo!',
                 'ChuongTrinhTrienKhai.required' => 'Hãy chọn chương trình triển khai!',
                 'HocKi.required' => 'Hãy chọn học kỳ!',
-                'NgayHoc' => 'Ngày bắt đầu học không được là thứ 7 hoặc chủ nhật!',
+                'NgayHoc.required' => 'Hãy chọn ngày bắt đầu học!',
                 'Lop.required' => 'Hãy chọn lớp!',
+                'PhongHoc.required' => 'Hãy chọn phòng học!',
             ]);
 
             $hocki = hocki::where('MaHK', $request->input('HocKi'))->first();
             $scheduleName = 'THỜI KHÓA BIỂU LỚP ' . $request->input('Lop') . ' - ' . $hocki->TenHK . ' (' . $request->input('ChuongTrinhTrienKhai') . ')';
 
-            // Kiểm tra xem thời khóa biểu với tên này đã tồn tại chưa
             $existingSchedule = tkb::where('TenTKB', $scheduleName)->first();
-
             if ($existingSchedule) {
-                // Nếu đã tồn tại, quay lại form với thông báo lỗi
                 return redirect()->back()->withInput()->with('error', 'Thời khóa biểu với thông tin lớp, học kỳ và chương trình này đã tồn tại!');
             }
 
-            // Nếu chưa tồn tại, tạo và lưu bản ghi mới
             $schedule = new tkb([
                 'TenTKB' => $scheduleName,
                 'MaLop' => $request->input('Lop'),
                 'MaHK' => $request->input('HocKi'),
                 'NgayHoc' => $request->input('NgayHoc'),
+                'ngayHocType' => $request->input('ngayHocType', 'all'), // Thêm dòng này
             ]);
             $schedule->save();
 
-            // Sau khi lưu thời khóa biểu thành công
-            // Tìm phòng thực hành được gán cho lớp này trong danhsachphong
-            // $phongThucHanhDaGan = danhsachphong::where('MaLop', $schedule->MaLop)->first();
+            danhsachphong::create([
+                'MaLop' => $schedule->MaLop,
+                'TenPhong' => $request->input('PhongHoc'),
+                'NgaySuDung' => $schedule->NgayHoc,
+                'TrangThai' => 'Đang sử dụng'
+            ]);
 
-            // if ($phongThucHanhDaGan) {
-            //     // Lấy tên phòng thực hành
-            //     $tenPhongThucHanh = $phongThucHanhDaGan->TenPhong;
-
-            //     // Cập nhật trạng thái của phòng thực hành trong bảng phonghoc
-            //     $phongHoc = phonghoc::where('TenPhong', $tenPhongThucHanh)->first();
-
-            //     if ($phongHoc) {
-            //         $phongHoc->TrangThai = 'Đang sử dụng';
-            //         $phongHoc->save();
-            //     }
-            // }
-
-            return redirect()->route('schedule', ['TenTKB' => $schedule->TenTKB]);
+            return redirect()->route('schedules')->with('success', 'Tạo thời khóa biểu thành công!');
         }
         return Redirect::to('')->with([
             'error' => 'Truy cập bị từ chối',
@@ -298,6 +288,11 @@ class PagesController extends Controller
             $monhocs = danhsachmonhoc::where('MaHK', $hocki->MaHK)->get();
             $khunggio = khunggio::all();
             $ngaytuhocs = ngaytuhoc::where('TenTKB', $schedule->TenTKB)->get();
+
+            // Lấy tất cả các phòng đã gán cho lớp này đúng ngày sử dụng (ngày bắt đầu học của TKB)
+            $phongs = \App\Models\danhsachphong::where('MaLop', $lophoc->MaLop)
+                ->where('NgaySuDung', $schedule->NgayHoc)
+                ->get();
 
             // Ngày bắt đầu học
             $startDate = Carbon::parse($schedule->NgayHoc);
@@ -340,7 +335,16 @@ class PagesController extends Controller
             }
 
             // Các ngày trong tuần
-            $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU', 'THỨ BẢY'];
+            switch ($schedule->ngayHocType ?? 'all') {
+                case 'chan':
+                    $weekDays = ['THỨ HAI', 'THỨ TƯ', 'THỨ SÁU'];
+                    break;
+                case 'le':
+                    $weekDays = ['THỨ BA', 'THỨ NĂM', 'THỨ BẢY'];
+                    break;
+                default:
+                    $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU', 'THỨ BẢY'];
+            }
 
             // Hàm thêm ngày bỏ qua cuối tuần
             $addDaysSkippingWeekends = function ($date, $days) {
@@ -439,12 +443,12 @@ class PagesController extends Controller
                                 'MaMH' => $subject, // Store the actual MaMH here
                             ];
                             $totalHours += 2;
-                            \Log::debug('Exam Day Calculation in PagesController', [
+                            Log::debug('Exam Day Calculation in PagesController: ' . json_encode([
                                 'currentDate' => $currentDate->format('Y-m-d'),
                                 'examDate' => $examDate->format('Y-m-d'),
                                 'subject_code' => $subject, // This is the MaMH
                                 'full_exam_string' => $examDays[$examDate->format('Y-m-d')]['subject_string'],
-                            ]);
+                            ], JSON_UNESCAPED_UNICODE));
                         }
                         return $subject;
                     }
@@ -534,7 +538,27 @@ class PagesController extends Controller
                 }
             }
 
-            return view('schedule', compact('schedule', 'chuongtrinh', 'phonglt', 'phongth', 'hocki', 'dsmh', 'ngaynghis', 'monhocs', 'khunggio', 'ngaytuhocs', 'khoaDaoTaoName', 'chuongTrinhName', 'scheduleMatrix', 'startDate', 'totalWeeks', 'weekDays', 'examDays', 'subjectOccurrences'));
+            return view('schedule', compact(
+                'schedule',
+                'chuongtrinh',
+                'phonglt',
+                'phongth',
+                'hocki',
+                'dsmh',
+                'ngaynghis',
+                'monhocs',
+                'khunggio',
+                'ngaytuhocs',
+                'khoaDaoTaoName',
+                'chuongTrinhName',
+                'scheduleMatrix',
+                'startDate',
+                'totalWeeks',
+                'weekDays',
+                'examDays',
+                'subjectOccurrences',
+                'phongs'
+            ));
         }
         return Redirect::to('')->with([
             'error' => 'Truy cập bị từ chối',
@@ -618,6 +642,7 @@ class PagesController extends Controller
 
                 // Cập nhật ngày học
                 $schedule->NgayHoc = $newDate;
+                $schedule->ngayHocType = $request->input('ngayHocType', 'all'); // Thêm dòng này
                 $schedule->save();
 
                 // Xóa tất cả các bản ghi liên quan để tạo lại TKB
@@ -993,7 +1018,16 @@ class PagesController extends Controller
                 }
             }
             // Các ngày trong tuần
-            $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU', 'THỨ BẢY'];
+            switch ($schedule->ngayHocType ?? 'all') {
+                case 'chan':
+                    $weekDays = ['THỨ HAI', 'THỨ TƯ', 'THỨ SÁU'];
+                    break;
+                case 'le':
+                    $weekDays = ['THỨ BA', 'THỨ NĂM', 'THỨ BẢY'];
+                    break;
+                default:
+                    $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU', 'THỨ BẢY'];
+            }
             // Hàm thêm ngày bỏ qua cuối tuần
             $addDaysSkippingWeekends = function ($date, $days) {
                 while ($days > 0) {
@@ -1050,12 +1084,12 @@ class PagesController extends Controller
                                 'MaMH' => $subject, // Store the actual MaMH here
                             ];
                             $totalHours += 2;
-                            \Log::debug('Exam Day Calculation in PagesController', [
+                            Log::debug('Exam Day Calculation in PagesController: ' . json_encode([
                                 'currentDate' => $currentDate->format('Y-m-d'),
                                 'examDate' => $examDate->format('Y-m-d'),
                                 'subject_code' => $subject, // This is the MaMH
                                 'full_exam_string' => $examDays[$examDate->format('Y-m-d')]['subject_string'],
-                            ]);
+                            ], JSON_UNESCAPED_UNICODE));
                         }
                         return $subject;
                     }
@@ -1145,40 +1179,31 @@ class PagesController extends Controller
                 }
             }
 
-            // Now, build the teacher's schedule based on scheduleMatrix
-            $teacherSchedules = [];
+            // Lọc danh sách giáo viên chỉ lấy những người có môn học xuất hiện trong scheduleMatrix
+            $actualMaMHs = [];
+            foreach ($scheduleMatrix as $week) {
+                foreach ($week as $day) {
+                    if (!empty($day['MaMH'])) {
+                        $actualMaMHs[] = $day['MaMH'];
+                    }
+                }
+            }
+            $actualMaMHs = array_unique($actualMaMHs);
 
+            $teacherSchedules = [];
             foreach ($giangDays as $maGV => $subjectsByGV) {
+                // Chỉ lấy giáo viên có môn học xuất hiện trong scheduleMatrix
+                if ($subjectsByGV->pluck('MaMH')->intersect($actualMaMHs)->isEmpty()) {
+                    continue;
+                }
                 $teacherSchedules[$maGV] = [
                     'info' => $subjectsByGV->first()->giaovien,
                     'schedule' => []
                 ];
 
                 for ($week = 1; $week <= $totalWeeks; $week++) {
-                    $teacherSchedules[$maGV]['schedule'][$week] = []; // Initialize inner array for the week
-                    foreach ($weekDays as $dayName) { // 'THỨ HAI', 'THỨ BA', ...
-                        // Always ensure the date is populated from the student's schedule
-                        $currentDateFormatted = $scheduleMatrix[$week][$dayName]['date'] ?? '';
-                        $originalSubject = $scheduleMatrix[$week][$dayName]['subject'] ?? '-';
-                        $originalMaMH = $scheduleMatrix[$week][$dayName]['MaMH'] ?? null;
-                        $isExam = $scheduleMatrix[$week][$dayName]['is_exam'] ?? false;
-                        $isHoliday = $scheduleMatrix[$week][$dayName]['is_holiday'] ?? false;
-                        $isSelfStudy = $scheduleMatrix[$week][$dayName]['is_self_study_day'] ?? false;
-
-                        \Log::debug('Teacher Schedule Day Debug', [
-                            'week' => $week,
-                            'dayName' => $dayName,
-                            'currentDateFormatted' => $currentDateFormatted,
-                            'originalSubject' => $originalSubject,
-                            'isExam' => $isExam,
-                            'isHoliday' => $isHoliday,
-                            'isSelfStudy' => $isSelfStudy,
-                            'MaGV' => $maGV,
-                        ]);
-
-                        // Default values for this teacher on this day
-                        // Initialize with default values from scheduleMatrix (student's view)
-                        // This ensures 'subject', 'style', and 'class' keys are always present
+                    $teacherSchedules[$maGV]['schedule'][$week] = [];
+                    foreach ($weekDays as $dayName) {
                         $dayInfoFromScheduleMatrix = $scheduleMatrix[$week][$dayName] ?? [
                             'date' => '',
                             'subject' => '-',
@@ -1194,46 +1219,56 @@ class PagesController extends Controller
                         $teacherSubjectStyle = $dayInfoFromScheduleMatrix['style'];
                         $teacherSubjectClass = $dayInfoFromScheduleMatrix['class'];
 
-                        // Override based on specific teacher's assignment if it's an actual subject
-                        if ($dayInfoFromScheduleMatrix['MaMH']) {
-                            $assignedGiangDay = GiangDay::where('MaLop', $schedule->MaLop)
-                                ->where('MaMH', $dayInfoFromScheduleMatrix['MaMH'])
-                                ->where('MaGV', $maGV) // Check assignment for *this* teacher
-                                ->with('monhoc', 'giaovien')
-                                ->first();
+                        $isExam = $dayInfoFromScheduleMatrix['is_exam'] ?? false;
+                        $isHoliday = $dayInfoFromScheduleMatrix['is_holiday'] ?? false;
+                        $isSelfStudy = $dayInfoFromScheduleMatrix['is_self_study_day'] ?? false;
+                        $originalMaMH = $dayInfoFromScheduleMatrix['MaMH'] ?? null;
 
-                            if ($assignedGiangDay) {
-                                // If it's assigned to this teacher
-                                if ($dayInfoFromScheduleMatrix['is_exam']) {
-                                    // Exam days for this teacher - subject, style, and class are already correct from scheduleMatrix
-                                } else {
-                                    // Regular subject for this teacher
-                                    $teacherSubjectInfo = $assignedGiangDay->monhoc->TenMH . ' - GV: ' . $assignedGiangDay->giaovien->HoTenGV;
-                                    // Style and class are also correct from scheduleMatrix
-                                }
+                        if ($isSelfStudy) {
+                            // Ngày tự học: chỉ hiển thị nếu giáo viên dạy môn liên quan
+                            if ($originalMaMH && $subjectsByGV->pluck('MaMH')->contains($originalMaMH)) {
+                                $teacherSubjectInfo = $dayInfoFromScheduleMatrix['subject'];
                             } else {
-                                // Subject is in student schedule but not assigned to this teacher.
-                                // Display as empty/default for this teacher.
                                 $teacherSubjectInfo = '-';
                                 $teacherSubjectStyle = '';
                                 $teacherSubjectClass = '';
                             }
+                        } elseif ($isHoliday) {
+                            // Ngày nghỉ: giữ nguyên như tkb
+                            // Không thay đổi gì
+                        } elseif ($isExam) {
+                            // Ngày thi: chỉ hiển thị nếu giáo viên này dạy môn thi đó
+                            if ($originalMaMH && $subjectsByGV->pluck('MaMH')->contains($originalMaMH)) {
+                                $teacherSubjectInfo = $dayInfoFromScheduleMatrix['subject'];
+                            } else {
+                                $teacherSubjectInfo = '-';
+                                $teacherSubjectStyle = '';
+                                $teacherSubjectClass = '';
+                            }
+                        } elseif ($originalMaMH) {
+                            // Môn học: chỉ hiển thị nếu đúng môn của giảng viên
+                            $assignedGiangDay = $subjectsByGV->where('MaMH', $originalMaMH)->first();
+                            if ($assignedGiangDay) {
+                                $teacherSubjectInfo = $assignedGiangDay->monhoc->TenMH . ' - GV: ' . $assignedGiangDay->giaovien->HoTenGV;
+                            } else {
+                                $teacherSubjectInfo = '-';
+                                $teacherSubjectStyle = '';
+                                $teacherSubjectClass = '';
+                            }
+                        } else {
+                            // Ngày trống
+                            $teacherSubjectInfo = '-';
+                            $teacherSubjectStyle = '';
+                            $teacherSubjectClass = '';
                         }
-                        // For holidays and self-study, subject, style, and class are already correctly set
-                        // from $dayInfoFromScheduleMatrix as they are not tied to a specific teacher's assignment.
 
+                        // Luôn giữ nguyên cấu trúc ngày/tuần như scheduleMatrix
                         $teacherSchedules[$maGV]['schedule'][$week][$dayName] = [
                             'date' => $dayInfoFromScheduleMatrix['date'],
                             'subject' => $teacherSubjectInfo,
                             'style' => $teacherSubjectStyle,
                             'class' => $teacherSubjectClass,
                         ];
-                        \Log::debug('Teacher Schedule Final Subject', [
-                            'week' => $week,
-                            'dayName' => $dayName,
-                            'MaGV' => $maGV,
-                            'finalSubject' => $teacherSubjectInfo,
-                        ]);
                     }
                 }
             }
@@ -1297,13 +1332,212 @@ class PagesController extends Controller
             $ngaytuhocs = ngaytuhoc::where('TenTKB', $TenTKB)->get();
 
             $hocki = hocki::find($schedule->MaHK);
+            $dsmh = danhsachmonhoc::where('MaHK', $hocki->MaHK)->first();
 
-            // Lấy danh sách môn học dựa trên MaChuongTrinh của học kỳ
-            $monhocs = monhoc::where('MaChuongTrinh', $hocki->MaChuongTrinh)->get();
+            // Build teacherSchedules giống như ở view
+            // --- BẮT ĐẦU ĐOẠN CODE LẤY $teacherSchedules ---
+            // (Copy logic từ teacherSchedule method, chỉ lấy phần build $teacherSchedules)
+            $selfStudyDays = [];
+            foreach ($ngaytuhocs as $ngaytuhoc) {
+                $selfStudyStart = Carbon::parse($ngaytuhoc->NgayBDTuHoc);
+                $selfStudyEnd = Carbon::parse($ngaytuhoc->NgayKTTuHoc);
+                while ($selfStudyStart->lte($selfStudyEnd)) {
+                    if ($selfStudyStart->dayOfWeek !== Carbon::SATURDAY && $selfStudyStart->dayOfWeek !== Carbon::SUNDAY) {
+                        $selfStudyDays[$selfStudyStart->format('Y-m-d')] = $ngaytuhoc->TenNgayTuHoc;
+                    }
+                    $selfStudyStart->addDay();
+                }
+            }
+            $holidayDates = [];
+            foreach ($ngaynghis as $ngaynghi) {
+                $holidayStart = Carbon::parse($ngaynghi->NgayBDNghi);
+                $holidayEnd = Carbon::parse($ngaynghi->NgayKT);
+                while ($holidayStart->lte($holidayEnd)) {
+                    if ($holidayStart->dayOfWeek !== Carbon::SATURDAY && $holidayStart->dayOfWeek !== Carbon::SUNDAY) {
+                        $holidayDates[$holidayStart->format('Y-m-d')] = $ngaynghi->TenNgayNghi;
+                    }
+                    $holidayStart->addDay();
+                }
+            }
+            $startDate = Carbon::parse($schedule->NgayHoc);
+            $totalHours = $hocki->TongGioTrienKhai;
+            $emptyDays = 0;
+            $weekStartDate = $startDate->copy()->startOfWeek();
+            for ($date = $weekStartDate->copy(); $date->lt($startDate); $date->addDay()) {
+                if ($date->dayOfWeek !== Carbon::SATURDAY && $date->dayOfWeek !== Carbon::SUNDAY) {
+                    $emptyDays++;
+                }
+            }
+            $totalHours += $emptyDays * 2;
+            $totalWeeks = ceil($totalHours / 20);
+            $monhocs = danhsachmonhoc::where('MaHK', $hocki->MaHK)->get();
+            $filteredMonHocs = [];
+            foreach ($monhocs as $index => $monhoc) {
+                if ($monhoc && $monhoc->GioTrienKhai > 0) {
+                    $filteredMonHocs[] = $monhoc;
+                }
+            }
+            $subjectOccurrences = [];
+            $subjectCount = count($filteredMonHocs);
+            foreach ($filteredMonHocs as $index => $monhoc) {
+                $subjectOccurrences[$monhoc->MaMH] = [
+                    'TenMH' => $monhoc->TenMH,
+                    'first' => null,
+                    'last' => null,
+                    'remaining' => $monhoc->GioTrienKhai,
+                ];
+                if ($index === $subjectCount - 1) {
+                    $subjectOccurrences[$monhoc->MaMH]['lastSubject'] = true;
+                }
+            }
+            $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU', 'THỨ BẢY'];
+            $addDaysSkippingWeekends = function ($date, $days) {
+                while ($days > 0) {
+                    $date->addDay();
+                    if ($date->dayOfWeek !== Carbon::SATURDAY && $date->dayOfWeek !== Carbon::SUNDAY) {
+                        $days--;
+                    }
+                }
+                return $date;
+            };
+            $examCounter = 0;
+            $getSubjectForDay = function (
+                &$subjectOccurrences,
+                $currentDate,
+                &$totalHours,
+                &$examDays,
+                $addDaysSkippingWeekends,
+                $holidayDates,
+                &$examCounter
+            ) use ($schedule) {
+                foreach ($subjectOccurrences as $subject => &$details) {
+                    if ($details['remaining'] > 0) {
+                        if (is_null($details['first'])) {
+                            $details['first'] = $currentDate;
+                        }
+                        $details['remaining'] -= 4;
+                        if ($details['remaining'] <= 0) {
+                            $details['last'] = $currentDate;
+                            if (isset($details['lastSubject']) && $details['lastSubject']) {
+                                $examDate = Carbon::parse($currentDate->format('Y-m-d'))->addWeek()->next(Carbon::FRIDAY);
+                                while (
+                                    isset($holidayDates[$examDate->format('Y-m-d')])
+                                ) {
+                                    $examDate->addDay();
+                                }
+                            } else {
+                                $examDate = Carbon::parse($currentDate->format('Y-m-d'))->addWeek()->next(Carbon::FRIDAY);
+                                while (
+                                    isset($holidayDates[$examDate->format('Y-m-d')])
+                                ) {
+                                    $examDate->addDay();
+                                }
+                            }
+                            $examCounter++;
+                            $examDays[$examDate->format('Y-m-d')] = [
+                                'subject_string' => 'Thi ' . $subjectOccurrences[$subject]['TenMH'] . " ($subject, E$examCounter) - L",
+                                'MaMH' => $subject,
+                            ];
+                            $totalHours += 2;
+                        }
+                        return $subject;
+                    }
+                }
+                return '';
+            };
+            $scheduleMatrix = [];
+            $examDays = [];
+            for ($week = 1; $week <= $totalWeeks; $week++) {
+                $weekStart = $startDate
+                    ->copy()
+                    ->addWeeks($week - 1)
+                    ->startOfWeek();
+                $scheduleMatrix[$week] = [];
+                foreach ($weekDays as $dayIndex => $day) {
+                    $currentDate = $weekStart->copy()->addDays($dayIndex);
+                    $subject = '';
+                    $inlineStyle = '';
+                    $cssClasses = '';
+                    if ($currentDate->gte($startDate)) {
+                        if (isset($examDays[$currentDate->format('Y-m-d')])) {
+                            $subject = $examDays[$currentDate->format('Y-m-d')]['subject_string'];
+                        } elseif (isset($selfStudyDays[$currentDate->format('Y-m-d')])) {
+                            $subject = $selfStudyDays[$currentDate->format('Y-m-d')];
+                        } else {
+                            if (isset($holidayDates[$currentDate->format('Y-m-d')])) {
+                                $subject = $holidayDates[$currentDate->format('Y-m-d')];
+                            } else {
+                                $subject = $getSubjectForDay(
+                                    $subjectOccurrences,
+                                    $currentDate,
+                                    $totalHours,
+                                    $examDays,
+                                    $addDaysSkippingWeekends,
+                                    $holidayDates,
+                                    $examCounter
+                                );
+                            }
+                        }
+                    }
+                    $scheduleMatrix[$week][$day] = [
+                        'date' => $currentDate->format('d/m/Y'),
+                        'subject' => $subject,
+                        'style' => $inlineStyle,
+                        'class' => $cssClasses,
+                        'MaMH' => null,
+                        'is_exam' => false,
+                        'is_holiday' => isset($holidayDates[$currentDate->format('Y-m-d')]),
+                        'is_self_study_day' => isset($selfStudyDays[$currentDate->format('Y-m-d')]),
+                    ];
+                    if (isset($examDays[$currentDate->format('Y-m-d')])) {
+                        $scheduleMatrix[$week][$day]['MaMH'] = $examDays[$currentDate->format('Y-m-d')]['MaMH'];
+                        $scheduleMatrix[$week][$day]['is_exam'] = true;
+                    } elseif ($subject && isset($subjectOccurrences[$subject])) {
+                        $scheduleMatrix[$week][$day]['MaMH'] = $subject;
+                    }
+                }
+            }
+            $teacherSchedules = [];
+            foreach ($giangDays as $maGV => $subjectsByGV) {
+                // Chỉ lấy giáo viên có môn học xuất hiện trong scheduleMatrix
+                $actualMaMHs = [];
+                foreach ($scheduleMatrix as $week) {
+                    foreach ($week as $day) {
+                        if (!empty($day['MaMH'])) {
+                            $actualMaMHs[] = $day['MaMH'];
+                        }
+                    }
+                }
+                $actualMaMHs = array_unique($actualMaMHs);
+                if ($subjectsByGV->pluck('MaMH')->intersect($actualMaMHs)->isEmpty()) {
+                    continue;
+                }
+                $teacherSchedules[$maGV] = [
+                    'info' => $subjectsByGV->first()->giaovien,
+                    'schedule' => []
+                ];
+                for ($week = 1; $week <= $totalWeeks; $week++) {
+                    $teacherSchedules[$maGV]['schedule'][$week] = [];
+                    foreach ($weekDays as $dayName) {
+                        $dayInfoFromScheduleMatrix = $scheduleMatrix[$week][$dayName] ?? [
+                            'date' => '',
+                            'subject' => '-',
+                            'style' => '',
+                            'class' => '',
+                            'MaMH' => null,
+                            'is_exam' => false,
+                            'is_holiday' => false,
+                            'is_self_study_day' => false,
+                        ];
+                        $teacherSchedules[$maGV]['schedule'][$week][$dayName] = $dayInfoFromScheduleMatrix;
+                    }
+                }
+            }
+            // --- KẾT THÚC ĐOẠN CODE LẤY $teacherSchedules ---
 
             return Excel::download(new \App\Exports\TeacherScheduleExport(
                 $schedule,
-                $giangDays,
+                $teacherSchedules, // truyền đúng $teacherSchedules thay vì $giangDays
                 $ngaynghis,
                 $ngaytuhocs,
                 $hocki,
