@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 15, 2025 at 07:07 AM
+-- Generation Time: Jul 01, 2025 at 08:30 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -173,6 +173,7 @@ CREATE TABLE `chuongtrinh_monhoc` (
 --
 
 INSERT INTO `chuongtrinh_monhoc` (`MaChuongTrinh`, `MaMH`, `created_at`, `updated_at`) VALUES
+('OV-7023', 'MH21', '2025-06-27 15:31:08', '2025-06-27 15:31:08'),
 ('OV-7096', 'MH15', '2025-06-12 13:03:41', '2025-06-12 13:03:41'),
 ('OV-7096', 'MH16', '2025-06-12 13:03:41', '2025-06-12 13:03:41'),
 ('OV-7096', 'MH17', '2025-06-12 13:03:41', '2025-06-12 13:03:41'),
@@ -188,32 +189,31 @@ INSERT INTO `chuongtrinh_monhoc` (`MaChuongTrinh`, `MaMH`, `created_at`, `update
 --
 
 CREATE TABLE `danhsachmh` (
+  `id` bigint UNSIGNED NOT NULL,
   `MaHK` varchar(50) DEFAULT NULL,
+  `MaMH` varchar(255) DEFAULT NULL,
   `TenKhungGio` varchar(100) DEFAULT NULL,
   `SttMH` int DEFAULT NULL,
-  `TenMH` varchar(255) DEFAULT NULL
+  `TenMH` varchar(255) DEFAULT NULL,
+  `GioTrienKhai` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `danhsachmh`
 --
 
-INSERT INTO `danhsachmh` (`MaHK`, `TenKhungGio`, `SttMH`, `TenMH`) VALUES
-('OV-7023-HK I', NULL, 1, 'Computer fundamentals'),
-('OV-7023-HK I', NULL, 2, 'Logic Building and Elementary Programing'),
-('OV-7023-HK I', NULL, 3, 'HTML5,CSS and Javascript'),
-('OV-7023-HK I', NULL, 4, 'AngularJS'),
-('OV-7023-HK I', NULL, 5, 'eProject-Website Development'),
-('OV-7023-HK I', NULL, 6, 'Database Design and Development(core)'),
-('OV-7023-HK I', NULL, 7, 'Data Management with SQL server'),
-('OV-7023-HK II', '15:00-17:00', 8, 'Markup Language & JSON '),
-('OV-7023-HK II', '15:00-17:00', 9, 'Java Programming - I'),
-('OV-7023-HK II', '15:00-17:00', 10, 'Java Programming -II'),
-('OV-7023-HK II', '15:00-17:00', 11, 'Information Systems Analysis(Core)'),
-('OV-7023-HK II', '15:00-17:00', 12, 'Project-Java Application Development'),
-('OV-7023-HK II', '15:00-17:00', 13, 'Application Programming with C#'),
-('OV-7023-HK II', '15:00-17:00', 14, 'PHP Web Development with Laravel Framework'),
-('OV-7023-HK IV', NULL, NULL, 'Dự án - Phân tích Dữ liệu với R');
+INSERT INTO `danhsachmh` (`id`, `MaHK`, `MaMH`, `TenKhungGio`, `SttMH`, `TenMH`, `GioTrienKhai`) VALUES
+(1, 'OV-7023-HK I', NULL, NULL, 1, 'Computer fundamentals', NULL),
+(2, 'OV-7023-HK I', NULL, NULL, 2, 'Logic Building and Elementary Programing', NULL),
+(3, 'OV-7023-HK I', NULL, NULL, 3, 'HTML5,CSS and Javascript', NULL),
+(4, 'OV-7023-HK I', NULL, NULL, 4, 'AngularJS', NULL),
+(5, 'OV-7023-HK I', NULL, NULL, 5, 'eProject-Website Development', NULL),
+(6, 'OV-7023-HK I', NULL, NULL, 6, 'Database Design and Development(core)', NULL),
+(7, 'OV-7023-HK I', NULL, NULL, 7, 'Data Management with SQL server', NULL),
+(22, 'OV-7023-HK II', 'MH20', NULL, NULL, 'Lập trình Ứng dụng bằng Python', '36'),
+(23, 'OV-7023-HK II', 'MH21', NULL, NULL, 'Dự án - Phân tích Dữ liệu với R', '24'),
+(24, 'OV-7096-HK I', 'MH20', 'Chiều', NULL, 'Lập trình Ứng dụng bằng Python', '36'),
+(25, 'OV-7096-HK I', 'MH21', NULL, NULL, 'Dự án - Phân tích Dữ liệu với R', '24');
 
 -- --------------------------------------------------------
 
@@ -225,18 +225,6 @@ CREATE TABLE `danhsachngaynghi` (
   `TenTKB` varchar(255) DEFAULT NULL,
   `MaNgayNghi` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `danhsachngaynghi`
---
-
-INSERT INTO `danhsachngaynghi` (`TenTKB`, `MaNgayNghi`) VALUES
-('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)', 1),
-('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)', 2),
-('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)', 3),
-('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)', 4),
-('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)', 5),
-('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)', 6);
 
 -- --------------------------------------------------------
 
@@ -256,10 +244,11 @@ CREATE TABLE `danhsachphong` (
 --
 
 INSERT INTO `danhsachphong` (`MaLop`, `TenPhong`, `NgaySuDung`, `Ca`) VALUES
-('CP2296H07', 'Class2', NULL, NULL),
-('CP2396G11', 'Class1', NULL, NULL),
-('CP2396M02', 'Class2', NULL, NULL),
-('CP2396M02', 'Lab2', NULL, NULL);
+('CP2296H07', 'Lab3', '2025-07-24', 'Chiều'),
+('CP2396G11', 'Class2', '2025-07-24', 'Sáng'),
+('CP2396M02', 'Lab2', '2025-07-26', 'Sáng'),
+('CP2396M02', 'Lab3', '2025-07-26', 'Sáng'),
+('CP2396M02', 'Lab4', '2025-07-26', 'Sáng');
 
 -- --------------------------------------------------------
 
@@ -319,14 +308,75 @@ CREATE TABLE `diemthi` (
 --
 
 INSERT INTO `diemthi` (`MaSV`, `MaMH`, `MaLop`, `DiemTong`, `DiemThucHanh`, `DiemLyThuyet`, `DiemDuAn`, `GhiChu`, `created_at`, `updated_at`) VALUES
+('21010001', 'MH15', 'CP2296H07', 75, 70, 70, 95, NULL, '2025-06-27 08:28:05', '2025-07-01 02:08:47'),
+('21010001', 'MH16', 'CP2296H07', 72, 70, 70, 80, NULL, '2025-07-01 05:36:22', '2025-07-01 05:36:22'),
+('21010001', 'MH17', 'CP2296H07', 82, 80, 80, 90, NULL, '2025-07-01 05:40:22', '2025-07-01 05:40:22'),
+('21010001', 'MH18', 'CP2296H07', 47.5, 50, 45, 50, NULL, '2025-07-01 05:42:21', '2025-07-01 05:42:21'),
+('21010001', 'MH19', 'CP2296H07', 45, 50, 40, 50, NULL, '2025-07-01 05:43:52', '2025-07-01 05:43:52'),
+('21010001', 'MH20', 'CP2296H07', 87, 80, 90, 90, NULL, '2025-07-01 05:45:54', '2025-07-01 05:45:54'),
 ('21010001', 'MH21', 'CP2296H07', 93.33, 95, 95, 90, NULL, '2025-06-09 11:23:17', '2025-06-10 05:40:35'),
+('21010002', 'MH15', 'CP2296H07', 79.5, 80, 75, 90, NULL, '2025-06-27 08:28:05', '2025-07-01 02:08:47'),
+('21010002', 'MH16', 'CP2296H07', 84.5, 80, 85, 90, NULL, '2025-07-01 05:36:22', '2025-07-01 05:36:22'),
+('21010002', 'MH17', 'CP2296H07', 92, 90, 90, 100, NULL, '2025-07-01 05:40:22', '2025-07-01 05:40:22'),
+('21010002', 'MH18', 'CP2296H07', 64.5, 60, 65, 70, NULL, '2025-07-01 05:42:21', '2025-07-01 05:42:21'),
+('21010002', 'MH19', 'CP2296H07', 69, 60, 70, 80, NULL, '2025-07-01 05:43:52', '2025-07-01 05:43:52'),
+('21010002', 'MH20', 'CP2296H07', 87, 80, 90, 90, NULL, '2025-07-01 05:45:54', '2025-07-01 05:45:54'),
 ('21010002', 'MH21', 'CP2296H07', 86.67, 90, 90, 80, NULL, '2025-06-09 11:23:17', '2025-06-09 11:23:17'),
+('21010003', 'MH15', 'CP2296H07', 71, 60, 70, 90, NULL, '2025-06-27 08:28:05', '2025-07-01 02:08:47'),
+('21010003', 'MH16', 'CP2296H07', 87, 80, 90, 90, NULL, '2025-07-01 05:36:22', '2025-07-01 05:36:22'),
+('21010003', 'MH17', 'CP2296H07', 94, 95, 95, 90, NULL, '2025-07-01 05:40:22', '2025-07-01 05:40:22'),
+('21010003', 'MH18', 'CP2296H07', 43, 40, 50, 30, NULL, '2025-07-01 05:42:21', '2025-07-01 05:42:21'),
+('21010003', 'MH19', 'CP2296H07', 87, 80, 90, 90, NULL, '2025-07-01 05:43:52', '2025-07-01 05:43:52'),
+('21010003', 'MH20', 'CP2296H07', 79, 70, 80, 90, NULL, '2025-07-01 05:45:54', '2025-07-01 05:45:54'),
 ('21010003', 'MH21', 'CP2296H07', 95, 100, 95, 90, NULL, '2025-06-09 11:23:17', '2025-06-09 11:23:17'),
+('23000029', 'MH21', 'CP2396G11', 96.67, 95, 95, 100, NULL, '2025-06-27 08:28:45', '2025-06-27 08:32:20'),
+('23000036', 'MH21', 'CP2396G11', 91.67, 95, 90, 90, NULL, '2025-06-27 08:28:45', '2025-06-27 08:28:45'),
+('23000047', 'MH21', 'CP2396G11', 83.33, 85, 85, 80, NULL, '2025-06-27 08:28:45', '2025-06-27 08:28:45'),
+('23000054', 'MH15', 'CP2296H07', 92.5, 90, 95, 90, NULL, '2025-06-27 08:28:05', '2025-07-01 02:08:47'),
+('23000054', 'MH16', 'CP2296H07', 94.5, 90, 95, 100, NULL, '2025-07-01 05:36:22', '2025-07-01 05:36:22'),
+('23000054', 'MH17', 'CP2296H07', 64.5, 60, 65, 70, NULL, '2025-07-01 05:40:22', '2025-07-01 05:40:22'),
+('23000054', 'MH18', 'CP2296H07', 56, 60, 50, 65, NULL, '2025-07-01 05:42:21', '2025-07-01 05:42:21'),
+('23000054', 'MH19', 'CP2296H07', 46, 45, 45, 50, NULL, '2025-07-01 05:43:52', '2025-07-01 05:43:52'),
+('23000054', 'MH20', 'CP2296H07', 77, 60, 80, 95, NULL, '2025-07-01 05:45:54', '2025-07-01 05:45:54'),
 ('23000054', 'MH21', 'CP2296H07', 85, 100, 95, 60, NULL, '2025-06-09 11:23:17', '2025-06-09 11:23:17'),
+('23000055', 'MH15', 'CP2296H07', 81.5, 85, 80, 80, NULL, '2025-06-27 08:28:05', '2025-07-01 02:08:47'),
+('23000055', 'MH16', 'CP2296H07', 91, 90, 90, 95, NULL, '2025-07-01 05:36:22', '2025-07-01 05:36:22'),
+('23000055', 'MH17', 'CP2296H07', 53, 60, 50, 50, NULL, '2025-07-01 05:40:22', '2025-07-01 05:40:22'),
+('23000055', 'MH18', 'CP2296H07', 63.5, 65, 70, 45, NULL, '2025-07-01 05:42:21', '2025-07-01 05:42:21'),
+('23000055', 'MH19', 'CP2296H07', 48, 50, 50, 40, NULL, '2025-07-01 05:43:52', '2025-07-01 05:43:52'),
+('23000055', 'MH20', 'CP2296H07', 94.5, 90, 95, 100, NULL, '2025-07-01 05:45:54', '2025-07-01 05:45:54'),
 ('23000055', 'MH21', 'CP2296H07', 66.67, 70, 60, 70, NULL, '2025-06-09 11:23:17', '2025-06-09 11:23:17'),
+('23000057', 'MH15', 'CP2296H07', 88, 90, 90, 80, NULL, '2025-06-27 08:28:05', '2025-07-01 02:08:47'),
+('23000057', 'MH16', 'CP2296H07', 80, 80, 80, 80, NULL, '2025-07-01 05:36:22', '2025-07-01 05:36:22'),
+('23000057', 'MH17', 'CP2296H07', 48, 60, 40, 50, NULL, '2025-07-01 05:40:22', '2025-07-01 05:40:22'),
+('23000057', 'MH18', 'CP2296H07', 59.5, 65, 60, 50, NULL, '2025-07-01 05:42:21', '2025-07-01 05:42:21'),
+('23000057', 'MH19', 'CP2296H07', 64.5, 60, 65, 70, NULL, '2025-07-01 05:43:52', '2025-07-01 05:43:52'),
+('23000057', 'MH20', 'CP2296H07', 98, 100, 100, 90, NULL, '2025-07-01 05:45:54', '2025-07-01 05:45:54'),
 ('23000057', 'MH21', 'CP2296H07', 80, 75, 80, 85, NULL, '2025-06-09 11:23:17', '2025-06-09 11:23:17'),
+('23000082', 'MH21', 'CP2396G11', 86.67, 80, 80, 100, NULL, '2025-06-27 08:28:45', '2025-06-27 08:28:45'),
+('23000086', 'MH21', 'CP2396G11', 91.67, 90, 90, 95, NULL, '2025-06-27 08:28:45', '2025-06-27 08:28:45'),
+('23000092', 'MH21', 'CP2396G11', 63.33, 50, 60, 80, NULL, '2025-06-27 08:28:45', '2025-06-27 08:28:45'),
+('23000094', 'MH21', 'CP2396G11', 65, 60, 65, 70, NULL, '2025-06-27 08:28:45', '2025-06-27 08:28:45'),
+('23000096', 'MH15', 'CP2296H07', 96, 95, 95, 100, NULL, '2025-06-27 08:28:05', '2025-07-01 02:08:47'),
+('23000096', 'MH16', 'CP2296H07', 92.5, 90, 95, 90, NULL, '2025-07-01 05:36:22', '2025-07-01 05:36:22'),
+('23000096', 'MH17', 'CP2296H07', 42, 30, 50, 40, NULL, '2025-07-01 05:40:22', '2025-07-01 05:40:22'),
+('23000096', 'MH18', 'CP2296H07', 42, 50, 30, 60, NULL, '2025-07-01 05:42:21', '2025-07-01 05:42:21'),
+('23000096', 'MH19', 'CP2296H07', 47, 50, 40, 60, NULL, '2025-07-01 05:43:52', '2025-07-01 05:43:52'),
+('23000096', 'MH20', 'CP2296H07', 86.5, 80, 85, 100, NULL, '2025-07-01 05:45:54', '2025-07-01 05:45:54'),
 ('23000096', 'MH21', 'CP2296H07', 86.67, 80, 90, 90, NULL, '2025-06-09 11:23:17', '2025-06-09 11:23:17'),
+('23000097', 'MH15', 'CP2296H07', 84.5, 90, 75, 100, NULL, '2025-06-27 08:28:05', '2025-07-01 02:08:47'),
+('23000097', 'MH16', 'CP2296H07', 78, 80, 80, 70, NULL, '2025-07-01 05:36:22', '2025-07-01 05:36:22'),
+('23000097', 'MH17', 'CP2296H07', 46.5, 50, 45, 45, NULL, '2025-07-01 05:40:22', '2025-07-01 05:40:22'),
+('23000097', 'MH18', 'CP2296H07', 54, 40, 60, 60, NULL, '2025-07-01 05:42:21', '2025-07-01 05:42:21'),
+('23000097', 'MH19', 'CP2296H07', 88, 80, 90, 95, NULL, '2025-07-01 05:43:52', '2025-07-01 05:43:52'),
+('23000097', 'MH20', 'CP2296H07', 96.5, 95, 100, 90, NULL, '2025-07-01 05:45:54', '2025-07-01 05:45:54'),
 ('23000097', 'MH21', 'CP2296H07', 26.67, 0, 0, 80, 'Gian lận thi cử', '2025-06-09 11:23:17', '2025-06-10 05:40:35'),
+('23000098', 'MH15', 'CP2296H07', 98.5, 95, 100, 100, NULL, '2025-06-27 08:28:05', '2025-07-01 02:08:47'),
+('23000098', 'MH16', 'CP2296H07', 86, 85, 85, 90, NULL, '2025-07-01 05:36:22', '2025-07-01 05:36:22'),
+('23000098', 'MH17', 'CP2296H07', 64.5, 60, 65, 70, NULL, '2025-07-01 05:40:22', '2025-07-01 05:40:22'),
+('23000098', 'MH18', 'CP2296H07', 53, 40, 50, 80, NULL, '2025-07-01 05:42:21', '2025-07-01 05:42:21'),
+('23000098', 'MH19', 'CP2296H07', 59, 50, 70, 45, NULL, '2025-07-01 05:43:52', '2025-07-01 05:43:52'),
+('23000098', 'MH20', 'CP2296H07', 93, 90, 100, 80, NULL, '2025-07-01 05:45:54', '2025-07-01 05:45:54'),
 ('23000098', 'MH21', 'CP2296H07', 96.67, 90, 100, 100, NULL, '2025-06-09 11:23:17', '2025-06-10 05:40:35');
 
 -- --------------------------------------------------------
@@ -410,7 +460,12 @@ INSERT INTO `giangday` (`MaGV`, `MaLop`, `MaMH`, `NgayBatDau`, `NgayKetThuc`, `G
 ('GV001', 'CP2296H07', 'MH15', NULL, NULL, NULL, '2025-06-07 06:09:01', '2025-06-07 06:09:01'),
 ('GV001', 'CP2296H07', 'MH21', NULL, NULL, NULL, '2025-06-11 07:01:40', '2025-06-11 07:01:40'),
 ('GV001', 'CP2396G11', 'MH21', NULL, NULL, NULL, '2025-06-11 07:01:40', '2025-06-11 07:01:40'),
-('GV004', 'CP2396M02', 'MH21', NULL, NULL, NULL, '2025-06-11 07:15:36', '2025-06-11 07:15:36');
+('GV004', 'CP2396M02', 'MH21', NULL, NULL, NULL, '2025-06-11 07:15:36', '2025-06-11 07:15:36'),
+('GV002', 'CP2296H07', 'MH16', '2025-08-01', '2025-08-30', NULL, '2025-07-01 05:31:10', '2025-07-01 05:31:10'),
+('GV003', 'CP2296H07', 'MH17', '2025-08-01', '2025-08-30', NULL, '2025-07-01 05:31:27', '2025-07-01 05:31:27'),
+('GV005', 'CP2296H07', 'MH18', '2025-08-01', '2025-08-31', NULL, '2025-07-01 05:32:09', '2025-07-01 05:32:09'),
+('GV006', 'CP2296H07', 'MH19', '2025-08-01', '2025-08-30', NULL, '2025-07-01 05:32:27', '2025-07-01 05:32:27'),
+('GV007', 'CP2296H07', 'MH20', '2025-08-01', '2025-08-30', NULL, '2025-07-01 05:32:44', '2025-07-01 05:32:44');
 
 -- --------------------------------------------------------
 
@@ -478,7 +533,11 @@ CREATE TABLE `hinh_thuc_danh_gia` (
 INSERT INTO `hinh_thuc_danh_gia` (`id`, `MaChuongTrinh`, `HinhThuc`, `TiLePhanTram`, `SoBaiThi`, `DiemMoiBai`, `ThoiGian`, `DonViThoiGian`, `created_at`, `updated_at`) VALUES
 (1, 'OV-7096', 'Lý thuyết trắc nghiệm', 50, 6, 20, 40, 'phút', '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
 (2, 'OV-7096', 'Thực hành', 30, 5, 20, 60, 'phút', '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
-(3, 'OV-7096', 'Dự án', 20, 1, 100, 24, 'giờ', '2025-06-08 02:57:57', '2025-06-08 02:57:57');
+(3, 'OV-7096', 'Dự án', 20, 1, 100, 24, 'giờ', '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
+(4, 'OV-7023', 'Lý thuyết trắc nghiệm', 50, 6, 20, 40, 'phút', '2025-06-27 08:35:31', '2025-06-27 08:35:31'),
+(5, 'OV-7023', 'Thực hành', 30, 5, 20, 60, 'phút', '2025-06-27 08:35:31', '2025-06-27 08:35:31'),
+(6, 'OV-7023', 'Dự án', 20, 1, 100, 24, 'giờ', '2025-06-27 08:35:31', '2025-06-27 08:35:31'),
+(8, 'OV-6062', 'Lý thuyết trắc nghiệm', 100, 5, 100, 40, 'phút', '2025-07-01 01:19:15', '2025-07-01 01:19:15');
 
 -- --------------------------------------------------------
 
@@ -618,7 +677,7 @@ CREATE TABLE `khoadaotao` (
 INSERT INTO `khoadaotao` (`TenKhoaDaoTao`, `ThoiGianDaoTao`, `create_at`, `update_at`) VALUES
 ('Dài hạn', '2 năm', '2025-05-18 21:26:47', '2025-05-18 21:26:47'),
 ('Ngắn hạn', '1 Học Kỳ', '2025-05-18 21:26:47', '2025-05-18 21:26:47'),
-('Theo yêu cầu', '1 học kỳ', '2025-05-19 15:08:26', '2025-05-19 15:08:26');
+('Steam', '1 học kỳ', '2025-05-19 15:08:26', '2025-06-25 14:09:53');
 
 -- --------------------------------------------------------
 
@@ -628,7 +687,7 @@ INSERT INTO `khoadaotao` (`TenKhoaDaoTao`, `ThoiGianDaoTao`, `create_at`, `updat
 
 CREATE TABLE `khunggio` (
   `TenKhungGio` varchar(100) NOT NULL,
-  `ThoiGian` int DEFAULT NULL
+  `ThoiGian` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -636,12 +695,16 @@ CREATE TABLE `khunggio` (
 --
 
 INSERT INTO `khunggio` (`TenKhungGio`, `ThoiGian`) VALUES
-('13:00-15:00', 2),
-('15:00-17:00', 2),
-('17:30-19:30', 2),
-('19:30-21:30', 2),
-('7:00-9:00', 2),
-('9:00-11:00', 2);
+('13:00-15:00', '2'),
+('15:00-17:00', '2'),
+('17:30-19:30', '2'),
+('19:30-21:30', '2'),
+('7:00-9:00', '2'),
+('9:00-11:00', '2'),
+('ca 1', '08:00 - 11:00'),
+('Chiều', '13:00 - 16:00'),
+('Sáng', '07:00 - 11:00'),
+('Tối', '18:00 - 21:00');
 
 -- --------------------------------------------------------
 
@@ -656,7 +719,7 @@ CREATE TABLE `ldap_accounts` (
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `full_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `initial_password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `role` enum('student','teacher','staff') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'student',
+  `role` enum('admin','student','teacher','staff') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'student',
   `is_sent` tinyint(1) NOT NULL DEFAULT '0',
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
@@ -668,13 +731,14 @@ CREATE TABLE `ldap_accounts` (
 --
 
 INSERT INTO `ldap_accounts` (`id`, `MaTaiKhoan`, `username`, `email`, `full_name`, `initial_password`, `role`, `is_sent`, `is_active`, `created_at`, `updated_at`) VALUES
+(1, 'admin01', 'admin', 'admin@gmail.com', 'admin', 'admin', 'admin', 0, 1, '2025-07-01 08:23:53', '2025-07-01 08:23:53'),
 (13, '21010003', '21010003levanc', '21010003levanc@cusc.ctu.vn', 'Lê Văn C', '$2y$12$MfIGAS.bEtBUYiEl.VEI1u.wYdnrLHWcmnyrjYOWkZrL0ptFEroTK', 'student', 1, 1, '2025-06-02 23:55:48', '2025-06-03 20:03:15'),
 (14, '23000001', '23000001ovanan', '23000001ovanan@cusc.ctu.vn', 'Đỗ Văn An', '7@lwrYtMzb4@', 'student', 1, 1, '2025-06-02 23:55:48', '2025-06-14 00:08:50'),
 (15, '23000002', '23000002ohuuhung', '23000002ohuuhung@cusc.ctu.vn', 'Đỗ Hữu Hùng', 'PkP++4z;lh(Z', 'student', 1, 1, '2025-06-02 23:55:48', '2025-06-14 00:08:51'),
 (32, 'GV001', 'gv001nguyenvanan', 'gv001nguyenvanan@cusc.ctu.vn', 'Nguyễn Văn An', '$2y$12$k99GuVyQPJ5khWkfUWLE8.SIyeddGhB4qqnSaYrXaH0UgeStCQLG6', 'teacher', 1, 1, '2025-06-03 06:13:21', '2025-06-03 19:32:06'),
 (33, 'GV002', 'gv002tranthibinh', 'gv002tranthibinh@cusc.ctu.vn', 'Trần Thị Bình', '6#u&ev4.Yxt#', 'teacher', 1, 1, '2025-06-03 06:13:21', '2025-06-14 00:15:39'),
-(34, 'GV003', 'gv003phamduclinh', 'gv003phamduclinh@cusc.ctu.vn', 'Phạm Đức Linh', '7S>1#:Y7E4En', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
-(35, 'GV004', 'gv004hoangquanggiang', 'gv004hoangquanggiang@cusc.ctu.vn', 'Hoàng Quang Giang', '|L}D@4oq4}wZ', 'teacher', 0, 1, '2025-06-03 06:13:21', '2025-06-03 06:13:21'),
+(34, 'GV003', 'gv003phamduclinh', 'gv003phamduclinh@cusc.ctu.vn', 'Phạm Đức Linh', '7S>1#:Y7E4En', 'teacher', 1, 1, '2025-06-03 06:13:21', '2025-06-30 22:28:55'),
+(35, 'GV004', 'gv004hoangquanggiang', 'gv004hoangquanggiang@cusc.ctu.vn', 'Hoàng Quang Giang', '|L}D@4oq4}wZ', 'teacher', 1, 1, '2025-06-03 06:13:21', '2025-06-30 22:28:57'),
 (36, 'GV005', 'gv005hoangcongnam', 'gv005hoangcongnam@cusc.ctu.vn', 'Hoàng Công Nam', '20qr(=f,&6Lo', 'teacher', 1, 1, '2025-06-03 06:13:22', '2025-06-14 00:15:34'),
 (37, 'GV006', 'gv006phanhuugiang', 'gv006phanhuugiang@cusc.ctu.vn', 'Phan Hữu Giang', 'Pa)T2^bTR{E?', 'teacher', 1, 1, '2025-06-03 06:13:22', '2025-06-14 00:15:36'),
 (38, 'GV007', 'gv007phanducphuc', 'gv007phanducphuc@cusc.ctu.vn', 'Phan Đức Phúc', '^%Ag80SPSQFf', 'teacher', 1, 1, '2025-06-03 06:13:22', '2025-06-14 00:15:37'),
@@ -765,7 +829,11 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (15, '2025_05_30_092315_create_call_records_table', 8),
 (16, '2024_03_21_000000_add_status_to_phonghoc_table', 9),
 (17, '2025_05_30_075534_add_columns_to_danh_sach_phong_table', 9),
-(18, '2025_05_31_060619_create_ldap_accounts_table', 9);
+(18, '2025_05_31_060619_create_ldap_accounts_table', 9),
+(19, '2025_06_03_161614_add_time_columns_to_hocki_table', 10),
+(20, '2025_06_03_173050_alter_khung_gio_thoi_gian_column', 10),
+(21, '2025_06_12_020943_create_sessions_table', 11),
+(22, '2025_06_30_052339_create_thong_ke_hoc_taps_table', 12);
 
 -- --------------------------------------------------------
 
@@ -835,7 +903,12 @@ INSERT INTO `ngaynghi` (`MaNgayNghi`, `TenNgayNghi`, `NgayBDNghi`, `NgayKT`) VAL
 (3, 'Nghỉ - Giỗ Tổ Hùng Vương', '2024-04-18', '2024-04-18'),
 (4, 'Nghỉ 30/04-01/05', '2024-04-29', '2024-05-01'),
 (5, 'Nghỉ hè', '2024-07-15', '2024-07-26'),
-(6, 'aaa', '2025-09-02', '2025-09-16');
+(6, 'aaa', '2025-09-02', '2025-09-16'),
+(7, 'nghỉ lễ', '2025-07-31', '2025-08-01'),
+(8, 'nghỉ lễ', '2025-08-09', '2025-08-09'),
+(9, 'nghỉ lễ', '2025-08-09', '2025-08-09'),
+(10, 'nghỉ lễ', '2025-07-27', '2025-07-28'),
+(11, 'nghỉ lễ', '2025-07-28', '2025-07-30');
 
 -- --------------------------------------------------------
 
@@ -850,33 +923,6 @@ CREATE TABLE `ngaytuhoc` (
   `NgayKTTuHoc` date DEFAULT NULL,
   `TenTKB` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `ngaytuhoc`
---
-
-INSERT INTO `ngaytuhoc` (`MaNgayTuHoc`, `TenNgayTuHoc`, `NgayBDTuHoc`, `NgayKTTuHoc`, `TenTKB`) VALUES
-(1, 'self study', '2023-12-28', '2023-12-28', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(2, 'self study', '2024-01-26', '2024-01-26', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(3, 'self study', '2024-02-29', '2024-02-29', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(4, 'self study', '2024-03-06', '2024-03-06', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(5, 'self study', '2024-03-13', '2024-03-13', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(6, 'self study', '2024-03-20', '2024-03-20', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(7, 'self study', '2024-03-27', '2024-03-27', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(8, 'self study', '2024-04-03', '2024-04-03', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(9, 'Team works', '2024-04-24', '2024-04-24', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(10, 'Team works', '2024-04-26', '2024-04-26', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(11, 'Team works', '2024-05-03', '2024-05-03', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(12, 'Team works', '2024-05-06', '2024-05-08', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(13, 'Team works', '2024-05-10', '2024-05-10', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(14, 'Team works', '2024-05-13', '2024-05-15', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(15, 'Team works', '2024-05-17', '2024-05-17', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(16, 'Team works', '2024-05-20', '2024-05-22', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(17, 'Team works', '2024-05-24', '2024-05-24', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(18, 'Team works', '2024-05-27', '2024-05-29', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(19, 'Team works', '2024-05-31', '2024-05-31', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(20, 'Team works', '2024-06-03', '2024-06-06', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)'),
-(21, 'Báo cáo đồ án', '2024-06-07', '2024-06-07', 'THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)');
 
 -- --------------------------------------------------------
 
@@ -946,8 +992,8 @@ INSERT INTO `phonghoc` (`TenPhong`, `LoaiPhong`, `SucChua`, `created_at`, `updat
 ('Class2', 'Phòng lý thuyết 2', NULL, '2025-05-22 09:28:21', '2025-05-22 06:55:20', 'Trống'),
 ('Class3', 'Phòng lý thuyết 3', NULL, '2025-05-22 02:28:29', '2025-05-22 06:55:30', 'Trống'),
 ('Class4', 'Phòng lý thuyết 4', NULL, '2025-05-22 06:55:45', '2025-05-22 06:55:45', 'Trống'),
-('Lab1', 'Phòng thực hành 1', NULL, '2025-05-22 09:28:21', '2025-05-22 06:55:53', 'Trống'),
-('Lab2', 'Phòng thực hành 2', NULL, '2025-05-22 09:28:21', '2025-05-22 06:56:01', 'Trống'),
+('Lab1', 'Phòng thực hành 1', NULL, '2025-05-22 09:28:21', '2025-06-27 07:47:53', 'Đang sử dụng'),
+('Lab2', 'Phòng thực hành 2', NULL, '2025-05-22 09:28:21', '2025-06-27 07:47:56', 'Đang sử dụng'),
 ('Lab3', 'Phòng thực hành 3', NULL, '2025-05-22 06:56:10', '2025-05-22 06:56:10', 'Trống'),
 ('Lab4', 'Phòng thực hành 4', NULL, '2025-05-22 06:56:20', '2025-05-22 06:56:20', 'Trống');
 
@@ -984,7 +1030,7 @@ CREATE TABLE `sessions` (
   `user_id` bigint UNSIGNED DEFAULT NULL,
   `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `user_agent` text COLLATE utf8mb4_unicode_ci,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `last_activity` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -993,8 +1039,9 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('fHTkFfX3nuVtBGo9kFysDvlaH3ax37ASjwUu9qWu', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiU3ZwNkNEQnAwMUR2dEJuT2xOQ0hiZXZxNm9SN0xua2R0OUdDMTBKbiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9naWFvdmllbi9saXN0Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToiTzhZdU4iO3M6NDoidXNlciI7czoxMjoiYWRtaW4ua2h1b25nIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxMDoiVGFuIEtodW9uZyI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjtzOjIyOiJQSFBERUJVR0JBUl9TVEFDS19EQVRBIjthOjA6e319', 1749888714),
-('whjpoV0VM8JMAxpEdFxw41Yrn0bGRnthx5pKFlKR', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiQnhpenZwTlc0SEVhRk5uS2dPOTVDTVRLTzdpZDRMS2R2YnBDVVZzbCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDk6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC90aG9uZy1rZS90aG9uZy1rZS1kYXNoYm9hcmQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJtNkNqVSI7czo0OiJ1c2VyIjtzOjEyOiJhZG1pbi5raHVvbmciO3M6MTE6ImRpc3BsYXluYW1lIjtzOjEwOiJUYW4gS2h1b25nIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO3M6MjI6IlBIUERFQlVHQkFSX1NUQUNLX0RBVEEiO2E6MDp7fX0=', 1749953221);
+('AQheZzA5JRZGoJAqz0Dc7MtcvAKnqyhx1ZZI0E5Z', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il90b2tlbiI7czo0MDoiOGljdGh2bnU3M0xOSXhVbXE3T1VTbmszZlhWRlp6ZjdMSGJUQ3hibyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTAzOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvdGhvbmcta2UvdG9uZy1rZXQtaG9jLWx1Yy9DUDIyOTZIMDcvT1YtNzA5Nj9tYUNodW9uZ1RyaW5oPU9WLTcwOTYmbWFMb3A9Q1AyMjk2SDA3Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToiTTVVQjciO3M6NDoidXNlciI7czoxMzoiaHV5bmhwaGFuQ1VTQyI7czo4OiJwYXNzd29yZCI7czoxMzoiTUB0S2hhdUAyMDI1ISI7czoxMToiZGlzcGxheW5hbWUiO3M6MTA6IlBoYW4gSHV5bmgiO3M6NDoicm9sZSI7czo1OiJhZG1pbiI7czoyMjoiUEhQREVCVUdCQVJfU1RBQ0tfREFUQSI7YTowOnt9fQ==', 1751352107),
+('CBWZ9eMA13pposwPqF8PtGoVA8kvj0NVaLE6nB95', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czo2MDoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2dpYW8tdmllbi9uaGFwLWRpZW0tdGhpL0NQMjI5NkgwNy9NSDIwIjt9czo2OiJfdG9rZW4iO3M6NDA6IlVvMlpteWxkTDg0WHBpZkQxT2V0eHg0ZmRrUWRPWTZRRmlUVlB2UHIiO3M6MTQ6ImNhcHRjaGFfcGhyYXNlIjtzOjU6IkdNNmRLIjtzOjI6ImlkIjtzOjU6IkdWMDA3IjtzOjQ6InVzZXIiO3M6MTY6Imd2MDA3cGhhbmR1Y3BodWMiO3M6MTE6ImRpc3BsYXluYW1lIjtzOjE3OiJQaGFuIMSQ4bupYyBQaMO6YyI7czo0OiJyb2xlIjtzOjc6InRlYWNoZXIiO30=', 1751348755),
+('OZ3QfNS8SzBdSIBp93aJFhxpTRZIfFzw5fe2Pvhg', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czo1ODoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2dpYW92aWVuL2xkYXAvZGFuaC1zYWNoLXRhaS1raG9hbi1ndiI7fXM6NjoiX3Rva2VuIjtzOjQwOiJUZ01KN3E2MVAzQkRBYkQzWDBDUmdGc2dvajlHNVlFY3FUclpkY1lKIjtzOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJKN2V2NCI7czoyOiJpZCI7czo3OiJhZG1pbjAxIjtzOjQ6InVzZXIiO3M6NToiYWRtaW4iO3M6MTE6ImRpc3BsYXluYW1lIjtzOjU6ImFkbWluIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO3M6MjI6IlBIUERFQlVHQkFSX1NUQUNLX0RBVEEiO2E6MDp7fX0=', 1751358573);
 
 -- --------------------------------------------------------
 
@@ -1044,11 +1091,11 @@ CREATE TABLE `sinhvien` (
 --
 
 INSERT INTO `sinhvien` (`MaSV`, `MaEnroll`, `HoTen`, `InDebt`, `NgaySinh`, `GioiTinh`, `SoCCCD`, `NgayCap`, `NoiCap`, `Sdt`, `NoiSinh`, `DiaChi`, `Zalo`, `Receipt`, `Invoice`, `Billing`, `Coll`, `Billing(VND)`, `Coll(VND)`, `Discount`, `LiDo`, `NgayDangKi`, `HoTenNguoiThan`, `MoiQuanHe`, `SdtNguoiThan`, `ZaloNguoiThan`, `EmailNguoiThan`, `Email`, `EmailCUSC`, `password_CUSC`, `Size`, `TinhTrangHocTap`, `created_at`, `updated_at`) VALUES
-('21010001', NULL, 'Nguyễn Văn A', NULL, '2003-06-12', 1, 12345678, NULL, NULL, '0944902423', NULL, 'Ninh Kiều', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'nva1@gmail.com', '21010001nguyenva@cusc.ctu.vn', NULL, NULL, NULL, '2025-05-11 06:31:03', '2025-05-31 16:14:19'),
-('21010002', NULL, 'Trần Thị B', NULL, '1970-01-01', 0, 12345679, NULL, NULL, '0912345679', NULL, 'Bình Thủy', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ttb2@gmail.com', '21010002tranthib@cusc.ctu.vn', NULL, NULL, NULL, '2025-05-11 06:31:03', '2025-05-31 16:14:19'),
-('21010003', NULL, 'Lê Văn C', NULL, '1970-01-01', 1, 12345680, NULL, NULL, '0912345680', NULL, 'Cái Răng', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'lvc3@gmail.com', '21010003levanc@cusc.ctu.vn', NULL, NULL, NULL, '2025-05-11 06:31:03', '2025-06-03 06:55:48'),
-('23000001', NULL, 'Đỗ Văn An', NULL, '2005-07-12', 1, 222742174, '2023-09-05', 'Công an Tiền Giang', '0862455565', 'Vĩnh Long', '989 Nguyễn Văn Cừ, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Minh Giang', 'Chị', 823642868, NULL, 'rosalinda41@zulauf.net', 'dovanan@gmail.com', '23000001ovanan@cusc.ctu.vn', NULL, NULL, NULL, NULL, '2025-06-03 06:55:48'),
-('23000002', NULL, 'Đỗ Hữu Hùng', NULL, '2006-08-19', 1, 218008983, '2023-06-30', 'Công an Trà Vinh', '0705117568', 'Cà Mau', '976 3/2, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Hữu Mai', 'Em', 886874835, NULL, 'monte.casper@hotmail.com', 'dohuudung@gmail.com', '23000002ohuuhung@cusc.ctu.vn', NULL, NULL, NULL, NULL, '2025-06-03 06:55:48'),
+('21010001', NULL, 'Nguyễn Văn A', NULL, '2003-06-12', 1, 12345678, NULL, NULL, '0944902423', NULL, 'Ninh Kiều', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'nva1@gmail.com', '21010001nguyenva@cusc.ctu.vn', NULL, NULL, 'DangHoc', '2025-05-11 06:31:03', '2025-05-31 16:14:19'),
+('21010002', NULL, 'Trần Thị B', NULL, '1970-01-01', 0, 12345679, NULL, NULL, '0912345679', NULL, 'Bình Thủy', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ttb2@gmail.com', '21010002tranthib@cusc.ctu.vn', NULL, NULL, 'DangHoc', '2025-05-11 06:31:03', '2025-05-31 16:14:19'),
+('21010003', NULL, 'Lê Văn C', NULL, '1970-01-01', 1, 12345680, NULL, NULL, '0912345680', NULL, 'Cái Răng', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'lvc3@gmail.com', '21010003levanc@cusc.ctu.vn', NULL, NULL, 'DangHoc', '2025-05-11 06:31:03', '2025-06-03 06:55:48'),
+('23000001', NULL, 'Đỗ Văn An', NULL, '2005-07-12', 1, 222742174, '2023-09-05', 'Công an Tiền Giang', '0862455565', 'Vĩnh Long', '989 Nguyễn Văn Cừ, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Minh Giang', 'Chị', 823642868, NULL, 'rosalinda41@zulauf.net', 'dovanan@gmail.com', '23000001ovanan@cusc.ctu.vn', NULL, NULL, 'DangHoc', NULL, '2025-06-03 06:55:48'),
+('23000002', NULL, 'Đỗ Hữu Hùng', NULL, '2006-08-19', 1, 218008983, '2023-06-30', 'Công an Trà Vinh', '0705117568', 'Cà Mau', '976 3/2, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Hữu Mai', 'Em', 886874835, NULL, 'monte.casper@hotmail.com', 'dohuudung@gmail.com', '23000002ohuuhung@cusc.ctu.vn', NULL, NULL, 'DaTotNghiep', NULL, '2025-06-03 06:55:48'),
 ('23000003', NULL, 'Huỳnh Đức Bình', NULL, '2003-10-31', 0, 613326769, '2023-09-18', 'Công an Hậu Giang', '0332699777', 'Sóc Trăng', '835 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Đặng Đức An', 'Chị', 841161800, NULL, 'pearline.pfeffer@yahoo.com', 'huỳnhdứcbình@gmail.com', '23000003@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
 ('23000004', NULL, 'Phan Đức Em', NULL, '2003-08-25', 1, 211193627, '2024-12-19', 'Công an Sóc Trăng', '0868728484', 'Bạc Liêu', '354 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Quang Mai', 'Chị', 349820726, NULL, 'wiegand.mariam@reichert.com', 'phandứcem@gmail.com', '23000004@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
 ('23000005', NULL, 'Võ Quang Phúc', NULL, '2003-12-03', 1, 139868417, '2025-04-03', 'Công an Hậu Giang', '0398780304', 'Hậu Giang', '864 Nguyễn Văn Linh, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Hoàng Văn Giang', 'Chị', 706580553, NULL, 'esperanza50@hotmail.com', 'võquangphúc@gmail.com', '23000005@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
@@ -1133,10 +1180,10 @@ INSERT INTO `sinhvien` (`MaSV`, `MaEnroll`, `HoTen`, `InDebt`, `NgaySinh`, `Gioi
 ('23000084', NULL, 'Đặng Thành Mai', NULL, '2006-03-10', 1, 212418191, '2024-08-14', 'Công an Sóc Trăng', '0764426300', 'Cà Mau', '646 3/2, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Lê Quang Linh', 'Cha', 324627684, NULL, 'misael36@schmidt.biz', 'dặngthànhmai@gmail.com', '23000084@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
 ('23000085', NULL, 'Đỗ Hoàng Bình', NULL, '2005-04-09', 1, 432849557, '2024-03-23', 'Công an Trà Vinh', '0367417520', 'Vĩnh Long', '953 3/2, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phạm Văn Dũng', 'Cha', 931343135, NULL, 'anais.cummings@yahoo.com', 'dỗhoàngbình@gmail.com', '23000085@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
 ('23000086', NULL, 'Phạm Công An', NULL, '2006-07-04', 0, 315941084, '2024-03-05', 'Công an Tiền Giang', '0772490922', 'Tiền Giang', '171 30/4, Ô Môn, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Võ Hữu Giang', 'Mẹ', 883317726, NULL, 'mark66@yahoo.com', 'phạmcôngan@gmail.com', '23000086@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
-('23000087', NULL, 'Phạm Hoàng Linh', NULL, '2005-03-31', 1, 532764901, '2023-06-06', 'Công an Kiên Giang', '0968509543', 'Trà Vinh', '899 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Hoàng Em', 'Cha', 868032557, NULL, 'upton.arely@green.biz', 'phạmhoànglinh@gmail.com', '23000087@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
-('23000088', NULL, 'Trần Công Cường', NULL, '2007-02-27', 1, 236032348, '2023-06-25', 'Công an Sóc Trăng', '0371594250', 'Cần Thơ', '381 Mậu Thân, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Công An', 'Mẹ', 869866587, NULL, 'zena87@gmail.com', 'trầncôngcường@gmail.com', '23000088@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
-('23000089', NULL, 'Phan Đức Linh', NULL, '2004-07-18', 1, 531602009, '2024-05-28', 'Công an Cần Thơ', '0771107439', 'An Giang', '417 3/2, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Thị Cường', 'Em', 368327156, NULL, 'cierra78@krajcik.net', 'phandứclinh@gmail.com', '23000089@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
-('23000090', NULL, 'Phạm Thành Dũng', NULL, '2005-03-21', 0, 327999049, '2024-06-14', 'Công an Sóc Trăng', '0885597664', 'Bạc Liêu', '810 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Đức Em', 'Anh', 973002244, NULL, 'raegan70@osinski.com', 'phạmthànhdũng@gmail.com', '23000090@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
+('23000087', NULL, 'Phạm Hoàng Linh', NULL, '2005-03-31', 1, 532764901, '2023-06-06', 'Công an Kiên Giang', '0968509543', 'Trà Vinh', '899 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Bùi Hoàng Em', 'Cha', 868032557, NULL, 'upton.arely@green.biz', 'phạmhoànglinh@gmail.com', '23000087@student.cusc.vn', NULL, NULL, 'DaNghiHoc', NULL, NULL),
+('23000088', NULL, 'Trần Công Cường', NULL, '2007-02-27', 1, 236032348, '2023-06-25', 'Công an Sóc Trăng', '0371594250', 'Cần Thơ', '381 Mậu Thân, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Công An', 'Mẹ', 869866587, NULL, 'zena87@gmail.com', 'trầncôngcường@gmail.com', '23000088@student.cusc.vn', NULL, NULL, 'DaNghiHoc', NULL, NULL),
+('23000089', NULL, 'Phan Đức Linh', NULL, '2004-07-18', 1, 531602009, '2024-05-28', 'Công an Cần Thơ', '0771107439', 'An Giang', '417 3/2, Cái Răng, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Thị Cường', 'Em', 368327156, NULL, 'cierra78@krajcik.net', 'phandứclinh@gmail.com', '23000089@student.cusc.vn', NULL, NULL, 'DaTotNghiep', NULL, NULL),
+('23000090', NULL, 'Phạm Thành Dũng', NULL, '2005-03-21', 0, 327999049, '2024-06-14', 'Công an Sóc Trăng', '0885597664', 'Bạc Liêu', '810 Nguyễn Văn Cừ, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Phan Đức Em', 'Anh', 973002244, NULL, 'raegan70@osinski.com', 'phạmthànhdũng@gmail.com', '23000090@student.cusc.vn', NULL, NULL, 'DaTotNghiep', NULL, NULL),
 ('23000091', NULL, 'Võ Hữu Mai', NULL, '2005-05-07', 0, 533907493, '2024-04-06', 'Công an Vĩnh Long', '0810857494', 'Bến Tre', '389 30/4, Bình Thủy, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Võ Thị Em', 'Anh', 932188375, NULL, 'coleman20@stokes.com', 'võhữumai@gmail.com', '23000091@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
 ('23000092', NULL, 'Vũ Đức An', NULL, '2006-06-12', 1, 316644441, '2025-04-18', 'Công an Vĩnh Long', '0789039355', 'An Giang', '790 3/2, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Trần Thành Dũng', 'Anh', 792109706, NULL, 'lockman.leonard@gleichner.com', 'vũdứcan@gmail.com', '23000092@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
 ('23000093', NULL, 'Nguyễn Thành Cường', NULL, '2004-10-28', 1, 210521149, '2024-11-20', 'Công an Trà Vinh', '0780079367', 'Kiên Giang', '705 30/4, Ninh Kiều, Cần Thơ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-20', 'Huỳnh Văn An', 'Mẹ', 867561655, NULL, 'kris63@nitzsche.com', 'nguyễnthànhcường@gmail.com', '23000093@student.cusc.vn', NULL, NULL, NULL, NULL, NULL),
@@ -1283,6 +1330,27 @@ INSERT INTO `thongtintuyensinh` (`MaTS`, `NamTS`, `DotTS`, `NgayBatDau`, `NgayKe
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `thong_ke_hoc_tap`
+--
+
+CREATE TABLE `thong_ke_hoc_tap` (
+  `id` bigint UNSIGNED NOT NULL,
+  `ma_chuong_trinh` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `hoc_ki` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tong_sinh_vien` int NOT NULL DEFAULT '0',
+  `sinh_vien_gioi` int NOT NULL DEFAULT '0',
+  `sinh_vien_kha` int NOT NULL DEFAULT '0',
+  `sinh_vien_trung_binh` int NOT NULL DEFAULT '0',
+  `sinh_vien_yeu` int NOT NULL DEFAULT '0',
+  `diem_trung_binh_tong_khoa` double NOT NULL DEFAULT '0',
+  `ty_le_tot_nghiep` double NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tieu_chi_xep_loai`
 --
 
@@ -1303,7 +1371,10 @@ CREATE TABLE `tieu_chi_xep_loai` (
 INSERT INTO `tieu_chi_xep_loai` (`id`, `MaChuongTrinh`, `XepLoai`, `DiemTu`, `DiemDen`, `created_at`, `updated_at`) VALUES
 (1, 'OV-7096', 'Đạt', 40, 60, '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
 (2, 'OV-7096', 'Khá', 60, 75, '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
-(3, 'OV-7096', 'Giỏi', 75, 100, '2025-06-08 02:57:57', '2025-06-08 02:57:57');
+(3, 'OV-7096', 'Giỏi', 75, 100, '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
+(4, 'OV-7023', 'Đạt', 40, 60, '2025-06-27 08:35:31', '2025-06-27 08:35:31'),
+(5, 'OV-7023', 'Khá', 60, 75, '2025-06-27 08:35:31', '2025-06-27 08:35:31'),
+(6, 'OV-7023', 'Giỏi', 70, 100, '2025-06-27 08:35:31', '2025-06-27 08:35:31');
 
 -- --------------------------------------------------------
 
@@ -1316,6 +1387,7 @@ CREATE TABLE `tkb` (
   `MaLop` varchar(12) DEFAULT NULL,
   `MaHK` varchar(50) DEFAULT NULL,
   `NgayHoc` date DEFAULT NULL,
+  `ngayHocType` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `NgayPhienBan` varchar(12) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -1323,11 +1395,8 @@ CREATE TABLE `tkb` (
 -- Dumping data for table `tkb`
 --
 
-INSERT INTO `tkb` (`TenTKB`, `MaLop`, `MaHK`, `NgayHoc`, `NgayPhienBan`) VALUES
-('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kỳ I (OV-7096)', 'CP2296H07', 'OV-7096-HK I', '2025-06-28', NULL),
-('THỜI KHÓA BIỂU LỚP CP2396G11 - HỌC KỲ IV (OV-7023)', 'CP2396G11', 'OV-7023-HK IV', '2025-06-22', NULL),
-('THỜI KHÓA BIỂU LỚP CP2396M02 - Học Kỳ II (OV-7023)', 'CP2396M02', 'OV-7023-HK II', '2025-05-09', '1.0'),
-('THỜI KHÓA BIỂU LỚP CP2396M02 - HỌC KỲ III (OV-7023)', 'CP2396M02', 'OV-7023-HK III', '2025-06-22', NULL);
+INSERT INTO `tkb` (`TenTKB`, `MaLop`, `MaHK`, `NgayHoc`, `ngayHocType`, `NgayPhienBan`) VALUES
+('THỜI KHÓA BIỂU LỚP CP2296H07 - Học kỳ I (OV-7096)', 'CP2296H07', 'OV-7096-HK I', '2025-07-24', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1434,9 +1503,10 @@ ALTER TABLE `chuongtrinh_monhoc`
 -- Indexes for table `danhsachmh`
 --
 ALTER TABLE `danhsachmh`
+  ADD PRIMARY KEY (`id`),
   ADD KEY `TenKhungGio` (`TenKhungGio`),
   ADD KEY `MaHK` (`MaHK`),
-  ADD KEY `TenMH` (`TenMH`);
+  ADD KEY `danhsachmh_ibfk_3` (`MaMH`);
 
 --
 -- Indexes for table `danhsachngaynghi`
@@ -1686,6 +1756,13 @@ ALTER TABLE `thongtintuyensinh`
   ADD PRIMARY KEY (`MaTS`);
 
 --
+-- Indexes for table `thong_ke_hoc_tap`
+--
+ALTER TABLE `thong_ke_hoc_tap`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `thong_ke_hoc_tap_ma_chuong_trinh_foreign` (`ma_chuong_trinh`);
+
+--
 -- Indexes for table `tieu_chi_xep_loai`
 --
 ALTER TABLE `tieu_chi_xep_loai`
@@ -1725,6 +1802,12 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `danhsachmh`
+--
+ALTER TABLE `danhsachmh`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+
+--
 -- AUTO_INCREMENT for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
@@ -1734,7 +1817,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `hinh_thuc_danh_gia`
 --
 ALTER TABLE `hinh_thuc_danh_gia`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `jobs`
@@ -1752,13 +1835,13 @@ ALTER TABLE `ldap_accounts`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `ngaynghi`
 --
 ALTER TABLE `ngaynghi`
-  MODIFY `MaNgayNghi` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `MaNgayNghi` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `ngaytuhoc`
@@ -1785,10 +1868,16 @@ ALTER TABLE `sinhvien_duthi`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
+-- AUTO_INCREMENT for table `thong_ke_hoc_tap`
+--
+ALTER TABLE `thong_ke_hoc_tap`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `tieu_chi_xep_loai`
 --
 ALTER TABLE `tieu_chi_xep_loai`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -1828,16 +1917,16 @@ ALTER TABLE `chuongtrinh_monhoc`
 -- Constraints for table `danhsachmh`
 --
 ALTER TABLE `danhsachmh`
-  ADD CONSTRAINT `danhsachmh_ibfk_1` FOREIGN KEY (`TenKhungGio`) REFERENCES `khunggio` (`TenKhungGio`),
-  ADD CONSTRAINT `danhsachmh_ibfk_2` FOREIGN KEY (`MaHK`) REFERENCES `hocki` (`MaHK`),
-  ADD CONSTRAINT `danhsachmh_ibfk_3` FOREIGN KEY (`TenMH`) REFERENCES `monhoc` (`TenMH`);
+  ADD CONSTRAINT `danhsachmh_ibfk_1` FOREIGN KEY (`MaHK`) REFERENCES `hocki` (`MaHK`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `danhsachmh_ibfk_2` FOREIGN KEY (`TenKhungGio`) REFERENCES `khunggio` (`TenKhungGio`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `danhsachmh_ibfk_3` FOREIGN KEY (`MaMH`) REFERENCES `monhoc` (`MaMH`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `danhsachngaynghi`
 --
 ALTER TABLE `danhsachngaynghi`
-  ADD CONSTRAINT `danhsachngaynghi_ibfk_1` FOREIGN KEY (`TenTKB`) REFERENCES `tkb` (`TenTKB`),
-  ADD CONSTRAINT `danhsachngaynghi_ibfk_2` FOREIGN KEY (`MaNgayNghi`) REFERENCES `ngaynghi` (`MaNgayNghi`);
+  ADD CONSTRAINT `danhsachngaynghi_ibfk_1` FOREIGN KEY (`TenTKB`) REFERENCES `tkb` (`TenTKB`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `danhsachngaynghi_ibfk_2` FOREIGN KEY (`MaNgayNghi`) REFERENCES `ngaynghi` (`MaNgayNghi`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `danhsachphong`
@@ -1926,6 +2015,12 @@ ALTER TABLE `sinhvien_duthi`
   ADD CONSTRAINT `sinhvien_duthi_malichthi_foreign` FOREIGN KEY (`MaLichThi`) REFERENCES `lichthi` (`MaLichThi`),
   ADD CONSTRAINT `sinhvien_duthi_malop_foreign` FOREIGN KEY (`MaLop`) REFERENCES `lophoc` (`MaLop`),
   ADD CONSTRAINT `sinhvien_duthi_masv_foreign` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`);
+
+--
+-- Constraints for table `thong_ke_hoc_tap`
+--
+ALTER TABLE `thong_ke_hoc_tap`
+  ADD CONSTRAINT `thong_ke_hoc_tap_ma_chuong_trinh_foreign` FOREIGN KEY (`ma_chuong_trinh`) REFERENCES `chuongtrinh` (`MaChuongTrinh`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `tieu_chi_xep_loai`
