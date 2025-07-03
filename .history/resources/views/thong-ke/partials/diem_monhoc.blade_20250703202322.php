@@ -34,7 +34,7 @@
                                         $diemTong = $diem->DiemTong ?? 0;
                                         $bgColor = $diemTong >= 5 ? 'success' : 'danger';
                                     @endphp
-                                    <span>
+                                    <span class="badge badge-{{ $bgColor }}">
                                         {{ number_format($diemTong, 2) }}
                                     </span>
                                 </td>

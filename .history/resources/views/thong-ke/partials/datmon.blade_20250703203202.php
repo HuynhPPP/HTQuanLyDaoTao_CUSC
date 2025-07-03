@@ -48,7 +48,7 @@
                                     <td>{{ $stats['khongDat'] }}</td>
                                     <td>{{ $stats['tong'] }}</td>
                                     <td>
-                                        <span>
+                                        <span class="badge badge-{{ $bgColor }}">
                                             {{ $tyLe }}%
                                         </span>
                                     </td>

@@ -11,7 +11,7 @@
                 <h4>Thống kê đạt/chưa đạt theo môn học</h4>
             </div>
             <div class="card-body">
-                <canvas id="chart-datmon" height="120"></canvas>
+                <canvas id="chart-datmon" height="150"></canvas>
             </div>
         </div>
     </div>
@@ -48,7 +48,7 @@
                                     <td>{{ $stats['khongDat'] }}</td>
                                     <td>{{ $stats['tong'] }}</td>
                                     <td>
-                                        <span>
+                                        <span class="badge badge-{{ $bgColor }}">
                                             {{ $tyLe }}%
                                         </span>
                                     </td>

@@ -3,8 +3,7 @@
         $tenMH = \App\Models\MonHoc::find($maMH)->TenMH ?? 'Môn không xác định';
     @endphp
     <div class="card">
-        <div class="card-header" role="button" data-toggle="collapse" data-target="#monhoc-{{ $maMH }}"
-            aria-expanded="true">
+        <div class="card-header" role="button" data-toggle="collapse" data-target="#monhoc-{{ $maMH }}" aria-expanded="true">
             <h4>{{ $tenMH }} ({{ $maMH }})</h4>
         </div>
         <div class="card-body collapse show" id="monhoc-{{ $maMH }}">
@@ -30,11 +29,11 @@
                                 <td>{{ number_format($diem->DiemThucHanh ?? 0, 2) }}</td>
                                 <td>{{ number_format($diem->DiemDuAn ?? 0, 2) }}</td>
                                 <td>
-                                    @php
+                                    @php 
                                         $diemTong = $diem->DiemTong ?? 0;
                                         $bgColor = $diemTong >= 5 ? 'success' : 'danger';
                                     @endphp
-                                    <span>
+                                    <span class="badge badge-{{ $bgColor }}">
                                         {{ number_format($diemTong, 2) }}
                                     </span>
                                 </td>

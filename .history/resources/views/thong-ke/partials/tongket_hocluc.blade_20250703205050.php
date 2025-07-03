@@ -26,7 +26,23 @@
 @endphp
 
 <div class="row">
-    <div class="col-12 col-md-12 col-lg-12">
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h4>Phân loại học lực</h4>
+            </div>
+            <div class="card-body">
+                <canvas id="chart-xeploai" height="300"></canvas>
+                
+                <!-- Debug thông tin -->
+                <div id="chart-debug" class="mt-3">
+                    <strong>Debug Thông Tin:</strong>
+                    <pre id="chart-debug-info"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
         <div class="card">
             <div class="card-header">
                 <h4>Chi tiết học lực sinh viên</h4>
