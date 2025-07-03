@@ -119,15 +119,28 @@
                     action="{{ route('saveTimeSlot', ['TenTKB' => $schedule->TenTKB]) }}">
                     @csrf
                     <div class="form-group">
-                        <label for="khunggio" class="form-label">Tên khung giờ</label>
-                        <select id="khunggio" class="form-control @error('khunggio') is-invalid @enderror"
-                            name="khunggio">
+                        <label for="TenKhungGio" class="form-label">Tên khung giờ</label>
+                        <select id="TenKhungGio" class="form-control @error('TenKhungGio') is-invalid @enderror" name="TenKhungGio">
                             <option value="">----- Tên khung giờ -----</option>
                             @foreach ($khunggio as $kg)
                                 <option value="{{ $kg->TenKhungGio }}">{{ $kg->TenKhungGio }}</option>
                             @endforeach
                         </select>
-                        @error('khunggio')
+                        @error('TenKhungGio')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="GioBD" class="form-label">Giờ bắt đầu</label>
+                        <input type="time" class="form-control @error('GioBD') is-invalid @enderror" id="GioBD" name="GioBD" required>
+                        @error('GioBD')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="GioKT" class="form-label">Giờ kết thúc</label>
+                        <input type="time" class="form-control @error('GioKT') is-invalid @enderror" id="GioKT" name="GioKT" required>
+                        @error('GioKT')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -217,4 +230,4 @@
             </div>
         </div>
     </div>
-</div> --}} 
+</div> --}}

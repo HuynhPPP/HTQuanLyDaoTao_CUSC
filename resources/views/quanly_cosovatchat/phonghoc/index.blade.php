@@ -75,10 +75,8 @@
                                             <th>Tên phòng</th>
                                             <th>Loại phòng</th>
                                             <th>Sức chứa</th>
-                                            <th>Trạng thái tại {{ $selectedKhungGioTen ?? 'Hiện tại' }}</th>
-                                            <th>Thao tác</th>
-                                        </tr>
-                                    </thead>
+                                            <th>Trạng thái tại c</th>
+                                            ? H ệ tại/tr>
                                     <tbody>
                                         @foreach ($phonghocs as $phong)
                                             <tr>
@@ -103,20 +101,12 @@
                                                         @endif
                                                     @elseif ($status === 'Bảo trì')
                                                         <span class="badge badge-warning">Bảo trì</span>
-                                                    @else
-                                                        <span class="badge badge-success">Trống</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <a href="{{ route('phonghoc.edit', $phong->TenPhong) }}"
-                                                        class="btn btn-warning btn-sm" title="Sửa"><i
-                                                            class="fas fa-edit"></i></a>
-                                                    <form action="{{ route('phonghoc.destroy', $phong->TenPhong) }}"
-                                                        method="POST" style="display:inline;">
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm delete-phonghoc"
-                                                            title="Xóa"><i class="fas fa-trash"></i></button>
-                                                    </form>
+                                                        <a href="{{ route('phonghoc.edit', $phong->TenPhong) }}"
+                                                            class="btn btn-warning btn-sm" title="Sửa"><i
+                                                                class="fas fa-edit"></i></a>
+                                                        honghoc"
+                                                        title="Xóa"><i class="fas fa-trash"></i></button>
+                                                        </form>
                                                 </td>
                                             </tr>
                                         @endforeach

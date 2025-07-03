@@ -11,8 +11,9 @@ class danhsachphong extends Model
     protected $table = 'DanhSachPhong';
 
     public $timestamps = false; // Disable timestamp columns if not used
-    protected $primaryKey='MaLop';
-    protected $keyType='string';
+    protected $primaryKey = ['MaLop', 'TenPhong', 'NgaySuDung', 'Ca']; // Composite primary key
+    public $incrementing = false; // Disable auto-incrementing for composite keys
+    protected $keyType = 'string';
     protected $fillable = [
         'MaLop',
         'TenPhong',

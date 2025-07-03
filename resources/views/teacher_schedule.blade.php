@@ -103,12 +103,8 @@
                                 <p class="mb-1"><strong>Mã lớp:</strong> <span
                                         style="color: red;">{{ $schedule->MaLop }}</span></p>
                                 @if ($phonglt)
-                                    <p class="mb-1"><strong>Phòng lý thuyết:</strong> <span
+                                    <p class="mb-1"><strong>Phòng học:</strong> <span
                                             style="color: red;">{{ $phonglt->TenPhong }}</span></p>
-                                @endif
-                                @if ($phongth)
-                                    <p class="mb-1"><strong>Phòng thực hành:</strong> <span
-                                            style="color: red;">{{ $phongth->TenPhong }}</span></p>
                                 @endif
                             </div>
                             <div class="col-md-6 text-start">
@@ -171,13 +167,12 @@
                                                     </td>
                                                     <td class="text-wrap align-middle text-center">{{ $week }}</td>
                                                     @foreach ($weekDaysFull as $day)
-                                                        @php $dayData = $days[$day] ?? ['subject' => '-', 'is_exam' => false, 'MaMH' => null]; @endphp
-                                                        <td
-                                                            class="text-wrap align-middle text-center
-                                                                @if (strpos($dayData['subject'], 'Thi') === 0) event-exam
-                                                                @elseif (in_array($dayData['subject'], $allHolidayNames))
-                                                                    event-holiday @endif
-                                                            ">
+                                                        <?php
+                                                        $dayData = $days[$day] ?? ['subject' => '-', 'is_exam' => false, 'MaMH' => null, 'class' => '', 'style' => ''];
+                                                        $style = $dayData['style'] ?? '';
+                                                        ?>
+                                                        <td class="text-wrap align-middle text-center"
+                                                            style="{{ $style }}">
                                                             @if ($dayData['is_exam'] ?? false)
                                                                 @php
                                                                     $maMH = $dayData['MaMH'] ?? null;
@@ -188,32 +183,34 @@
                                                                             $maMH,
                                                                         )->value('TenMH');
                                                                 @endphp
-                                                                <span class="event-exam">Thi {{ $tenMH }}
-                                                                    ({{ $maMH }})
-                                                                </span>
+                                                                <span style="color: blue; font-weight: bold;">Thi
+                                                                    {{ $tenMH }} ({{ $maMH }})</span>
                                                             @elseif (isset($subjectOccurrences[$dayData['subject']]))
-                                                                {{ $subjectOccurrences[$dayData['subject']]['TenMH'] }}
-                                                                @php
-                                                                    $giangDay = \App\Models\GiangDay::where(
-                                                                        'MaMH',
-                                                                        $dayData['subject'],
-                                                                    )
-                                                                        ->where('MaLop', $schedule->MaLop)
-                                                                        ->first();
-                                                                    if ($giangDay) {
-                                                                        $giangVien = \App\Models\giaovien::where(
-                                                                            'MaGV',
-                                                                            $giangDay->MaGV,
-                                                                        )->first();
-                                                                        if ($giangVien) {
-                                                                            echo ' - GV: ' . $giangVien->HoTenGV;
+                                                                <span style="{{ $style }}">
+                                                                    {{ $subjectOccurrences[$dayData['subject']]['TenMH'] }}
+                                                                    @php
+                                                                        $giangDay = \App\Models\GiangDay::where(
+                                                                            'MaMH',
+                                                                            $dayData['subject'],
+                                                                        )
+                                                                            ->where('MaLop', $schedule->MaLop)
+                                                                            ->first();
+                                                                        if ($giangDay) {
+                                                                            $giangVien = \App\Models\giaovien::where(
+                                                                                'MaGV',
+                                                                                $giangDay->MaGV,
+                                                                            )->first();
+                                                                            if ($giangVien) {
+                                                                                echo ' - GV: ' . $giangVien->HoTenGV;
+                                                                            }
                                                                         }
-                                                                    }
-                                                                @endphp
+                                                                    @endphp
+                                                                </span>
                                                             @elseif ($dayData['subject'] === 'self-study')
-                                                                -
+                                                                <span style="color: black;">self-study</span>
                                                             @else
-                                                                {{ $dayData['subject'] }}
+                                                                <span
+                                                                    style="{{ $style }}">{{ $dayData['subject'] }}</span>
                                                             @endif
                                                         </td>
                                                     @endforeach
