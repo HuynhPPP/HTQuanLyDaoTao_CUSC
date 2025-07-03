@@ -41,19 +41,19 @@ class PagesController extends Controller
             [
                 'icon' => 'far fa-newspaper',
                 'text' => 'Lập lịch Theo dõi phòng học',
-                'link' => route('monitorClassroom'),
+                'link' => '',
                 'color' => 'bg-info',
             ],
             [
                 'icon' => 'far fa-newspaper',
                 'text' => 'Lập lịch theo dõi môn học sắp bắt đầu',
-                'link' => route('monitorSubject'),
+                'link' => '',
                 'color' => 'bg-info',
             ],
             [
                 'icon' => 'far fa-newspaper',
                 'text' => 'Lập điểm danh',
-                'link' => route('rollCall'),
+                'link' => '',
                 'color' => 'bg-info',
             ],
             [
@@ -76,8 +76,8 @@ class PagesController extends Controller
             ],
             [
                 'icon' => 'far fa-newspaper',
-                'text' => 'Lập phân công báo cáo đồ án',
-                'link' => '#',
+                'text' => 'Lập bảng thống kê báo cáo đồ án',
+                'link' => route('bao-cao.upload.form'),
                 'color' => 'bg-info',
             ],
             [
@@ -95,7 +95,7 @@ class PagesController extends Controller
             [
                 'icon' => 'far fa-newspaper',
                 'text' => 'Lập bảng báo cáo kết quả học tập',
-                'link' => '#',
+                'link' => route('thong-ke.thong-ke-hoc-luc'),
                 'color' => 'bg-info',
             ],
             [

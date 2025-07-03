@@ -1,5 +1,5 @@
-
-<div class="modal fade" id="modal-addTime" tabindex="-1" role="dialog" aria-labelledby="absenceModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal-addTime" tabindex="-1" role="dialog" aria-labelledby="absenceModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -9,7 +9,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="absenceForm" method="POST" action="{{ route('saveholiday', ['TenTKB' => $schedule->TenTKB]) }}">
+                <form id="absenceForm" method="POST"
+                    action="{{ route('saveholiday', ['TenTKB' => $schedule->TenTKB]) }}">
                     @csrf
                     <div class="form-group">
                         <label for="TenNgayNghi" class="form-label">Tên ngày nghỉ:</label>

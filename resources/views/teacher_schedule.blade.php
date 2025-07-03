@@ -80,22 +80,22 @@
         </div>
 
         <div class="row justify-content-center my-5">
-            <div class="col-lg-10">
+            <div class="col-lg-12">
                 <div class="card shadow rounded-4 border-0 mb-4">
                     <div class="card-body">
                         <div class="text-center mb-4">
                             <img src="{{ asset('images/logo_CTU.png') }}" alt="logo" width="80" class="mb-3">
                             <h5 class="fw-bold text-primary mb-1">TRUNG TÂM CÔNG NGHỆ PHẦN MỀM ĐẠI HỌC CẦN THƠ</h5>
-                            <h1 class="fw-bold mb-2">CANTHO UNIVERSITY SOFTWARE CENTER</h1>
-                            <p class="text-secondary mb-0">Khu III, Đại học Cần Thơ – 01 Lý Tự Trọng, Tp. Cần Thơ – Tel:
+                            <h3 class="fw-bold mb-2">CANTHO UNIVERSITY SOFTWARE CENTER</h3>
+                            <p class="mb-0 fw-bold">Khu III, Đại học Cần Thơ – 01 Lý Tự Trọng, Tp. Cần Thơ – Tel:
                                 0292.3731072 & Fax: 0292.3731071 – Email: cusc@ctu.edu.vn</p>
                         </div>
 
                         <div class="text-center mb-4">
-                            <h2 class="fw-bold">
+                            <h4 class="fw-bold">
                                 LỊCH GIẢNG DẠY LỚP {{ $schedule->MaLop }} - {{ $chuongTrinhName }}<br>
                                 HỌC KỲ {{ $hocki->TenHK }}
-                            </h2>
+                            </h4>
                         </div>
 
                         <div class="row justify-content-between mb-4">
