@@ -8,17 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class danhsachphong extends Model
 {
     use HasFactory;
-    protected $table = 'DanhSachPhong';
+    protected $table = 'danhsachphong';
 
     public $timestamps = false; // Disable timestamp columns if not used
-    protected $primaryKey = ['MaLop', 'TenPhong', 'NgaySuDung', 'Ca']; // Composite primary key
-    public $incrementing = false; // Disable auto-incrementing for composite keys
-    protected $keyType = 'string';
+    public $primaryKey = null;
+    public $incrementing = false;
+
     protected $fillable = [
         'MaLop',
         'TenPhong',
         'NgaySuDung',
-        'Ca'
+        'Ca',
+        'TrangThai'
     ];
 
     public function lopHoc()

@@ -12,95 +12,45 @@ class PhongHocController extends Controller
 {
     public function index(Request $request)
     {
-        $query = phonghoc::query();
-
-        // Determine the selected date and time slot
         $selectedDate = $request->input('ngay') ? Carbon::parse($request->input('ngay')) : Carbon::now();
-        $selectedKhungGioTen = $request->input('khung_gio'); // Tên khung giờ được chọn từ bộ lọc
-        $selectedKhungGioMaCa = null;
 
-        // Đảm bảo các khung giờ mặc định luôn tồn tại
-        $defaultTimeSlots = [
-            ['TenKhungGio' => 'Sáng', 'ThoiGian' => '08:00 - 11:00'],
-            ['TenKhungGio' => 'Chiều', 'ThoiGian' => '13:00 - 16:00'],
-            ['TenKhungGio' => 'Tối', 'ThoiGian' => '18:00 - 21:00']
-        ];
+        // Lấy tất cả khung giờ thực tế
+        $khunggios = KhungGio::whereIn('TenKhungGio', [
+            'Sáng 7h-9h',
+            'Sáng 9h-11h',
+            'Chiều 13h-15h',
+            'Chiều 15h-17h',
+            'Tối 18h-20h',
+            'Tối 20h-22h'
+        ])->get();
+        // Lấy tất cả phòng học
+        $phonghocs = \App\Models\phonghoc::all();
 
-        foreach ($defaultTimeSlots as $slot) {
-            khunggio::firstOrCreate(
-                ['TenKhungGio' => $slot['TenKhungGio']],
-                ['ThoiGian' => $slot['ThoiGian']]
-            );
-        }
-
-        if ($selectedKhungGioTen) {
-            $khungGioObj = khunggio::where('TenKhungGio', $selectedKhungGioTen)->first();
-            if ($khungGioObj) {
-                $selectedKhungGioMaCa = $khungGioObj->TenKhungGio;
-            }
-        }
-
-        // Build the query for phonghocs, eagerly loading danhsachphong with relevant filters
-        $phonghocs = $query->with(['danhsachphong' => function($q) use ($selectedDate, $selectedKhungGioMaCa) {
-            $q->whereDate('NgaySuDung', $selectedDate->format('Y-m-d'));
-            if ($selectedKhungGioMaCa) {
-                $q->where('Ca', $selectedKhungGioMaCa);
-            }
-            // Eager load nested relationships for danhsachphong
-            $q->with(['lopHoc.tkb.hocki.danhsachmonhoc.monhoc']);
-        }])
-        ->when($request->has('trang_thai'), function ($q) use ($request) {
-            $q->where('TrangThai', $request->trang_thai);
-        })
-        ->paginate(10);
-
-        // Get all time slots (for the dropdown)
-        $khunggios = khunggio::whereIn('TenKhungGio', ['Sáng', 'Chiều', 'Tối'])->get();
-
-        // Xác định trạng thái động cho từng phòng học
-        foreach ($phonghocs as $phong) {
-            $phong->trang_thai_dong = $phong->TrangThai;
-            $phong->ten_lop_dang_su_dung = null;
-            $phong->ten_mon_dang_su_dung = null;
-            if ($phong->TrangThai !== 'Bảo trì') {
-                $phong->trang_thai_dong = 'Trống';
-                foreach ($phong->danhsachphong as $ds) {
-                    if ($selectedKhungGioMaCa) {
-                        if ($ds->Ca == $selectedKhungGioMaCa) {
-                            $phong->trang_thai_dong = 'Đang sử dụng';
-                            $phong->ten_lop_dang_su_dung = $ds->MaLop;
-                            if (
-                                $ds->lopHoc &&
-                                $ds->lopHoc->tkb &&
-                                $ds->lopHoc->tkb->hocki &&
-                                $ds->lopHoc->tkb->hocki->danhsachmonhoc &&
-                                $ds->lopHoc->tkb->hocki->danhsachmonhoc->first() &&
-                                $ds->lopHoc->tkb->hocki->danhsachmonhoc->first()->monhoc
-                            ) {
-                                $phong->ten_mon_dang_su_dung = $ds->lopHoc->tkb->hocki->danhsachmonhoc->first()->monhoc->TenMH;
-                            }
-                            break;
-                        }
-                    } else {
-                        $phong->trang_thai_dong = 'Đang sử dụng';
-                        $phong->ten_lop_dang_su_dung = $ds->MaLop;
-                        if (
-                            $ds->lopHoc &&
-                            $ds->lopHoc->tkb &&
-                            $ds->lopHoc->tkb->hocki &&
-                            $ds->lopHoc->tkb->hocki->danhsachmonhoc &&
-                            $ds->lopHoc->tkb->hocki->danhsachmonhoc->first() &&
-                            $ds->lopHoc->tkb->hocki->danhsachmonhoc->first()->monhoc
-                        ) {
-                            $phong->ten_mon_dang_su_dung = $ds->lopHoc->tkb->hocki->danhsachmonhoc->first()->monhoc->TenMH;
-                        }
-                        break;
-                    }
+        // Tạo ma trận trạng thái phòng học theo khung giờ
+        $matrix = [];
+        foreach ($khunggios as $khunggio) {
+            foreach ($phonghocs as $phong) {
+                // Tìm bản ghi sử dụng phòng này ở ngày và ca này
+                $ds = \App\Models\danhsachphong::where('TenPhong', $phong->TenPhong)
+                    ->whereDate('NgaySuDung', $selectedDate->format('Y-m-d'))
+                    ->where('Ca', $khunggio->TenKhungGio)
+                    ->first();
+                if ($ds) {
+                    $matrix[$khunggio->TenKhungGio][$phong->TenPhong] = [
+                        'status' => 'Đang sử dụng',
+                        'MaLop' => $ds->MaLop,
+                        'TrangThai' => $ds->TrangThai,
+                    ];
+                } else {
+                    $matrix[$khunggio->TenKhungGio][$phong->TenPhong] = [
+                        'status' => 'Trống',
+                        'MaLop' => null,
+                        'TrangThai' => null,
+                    ];
                 }
             }
         }
-
-        return view('quanly_cosovatchat.phonghoc.index', compact('phonghocs', 'khunggios', 'selectedDate', 'selectedKhungGioTen'));
+        return view('quanly_cosovatchat.phonghoc.index', compact('phonghocs', 'khunggios', 'selectedDate', 'matrix'));
     }
 
     public function create()

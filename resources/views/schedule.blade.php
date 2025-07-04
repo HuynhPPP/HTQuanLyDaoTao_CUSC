@@ -303,10 +303,6 @@
                                         <p class="mb-1">
                                             <strong>Phòng học:</strong>
                                             <span style="color: red;">{{ $phong->TenPhong }}</span>
-                                            @if ($phong->Ca)
-                                                | <strong>Thời gian:</strong> <span
-                                                    style="color: red;">{{ $phong->Ca }}</span>
-                                            @endif
                                         </p>
                                     @endforeach
                                 @endif
