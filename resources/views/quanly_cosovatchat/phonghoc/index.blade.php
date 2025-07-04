@@ -19,105 +19,40 @@
                             </a>
                         </div>
                         <div class="card-body">
-                            <!-- Filter Form -->
-                            <form action="{{ route('phonghoc.index') }}" method="GET" class="mb-4">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Ngày</label>
-                                            <input type="date" name="ngay" class="form-control"
-                                                value="{{ request('ngay', $selectedDate->format('Y-m-d')) }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Khung giờ</label>
-                                            <select name="khung_gio" class="form-control">
-                                                <option value="">Tất cả</option>
-                                                @foreach ($khunggios as $khunggio)
-                                                    <option value="{{ $khunggio->TenKhungGio }}"
-                                                        {{ request('khung_gio') == $khunggio->TenKhungGio ? 'selected' : '' }}>
-                                                        {{ $khunggio->TenKhungGio }} ({{ $khunggio->ThoiGian }})
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Trạng thái</label>
-                                            <select name="trang_thai" class="form-control">
-                                                <option value="">Tất cả</option>
-                                                <option value="Trống"
-                                                    {{ request('trang_thai') == 'Trống' ? 'selected' : '' }}>Trống</option>
-                                                <option value="Đang sử dụng"
-                                                    {{ request('trang_thai') == 'Đang sử dụng' ? 'selected' : '' }}>Đang sử
-                                                    dụng</option>
-                                                <option value="Bảo trì"
-                                                    {{ request('trang_thai') == 'Bảo trì' ? 'selected' : '' }}>Bảo trì
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col-12">
-                                        <button type="submit" class="btn btn-primary">Lọc</button>
-                                        <a href="{{ route('phonghoc.index') }}" class="btn btn-secondary">Reset</a>
-                                    </div>
-                                </div>
+                            <form method="GET" action="{{ route('phonghoc.index') }}" class="mb-3">
+                                <label for="ngay"><b>Chọn ngày:</b></label>
+                                <input type="date" id="ngay" name="ngay"
+                                    value="{{ $selectedDate->format('Y-m-d') }}" onchange="this.form.submit()"
+                                    style="margin-left: 8px; margin-right: 16px;">
+                                <span><b>Đang xem ngày:</b> {{ $selectedDate->format('d/m/Y') }}</span>
                             </form>
-
                             <div class="table-responsive">
-                                <table class="table table-striped" id="table-1">
+                                <table class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
-                                            <th>Tên phòng</th>
-                                            <th>Loại phòng</th>
-                                            <th>Sức chứa</th>
-                                            <th>Trạng thái tại {{ $selectedKhungGioTen ?? 'Hiện tại' }}</th>
-                                            <th>Thao tác</th>
+                                            <th>Khung giờ</th>
+                                            @foreach ($phonghocs as $phong)
+                                                <th>{{ $phong->TenPhong }}</th>
+                                            @endforeach
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($phonghocs as $phong)
+                                        @foreach ($khunggios as $khunggio)
                                             <tr>
-                                                <td>{{ $phong->TenPhong }}</td>
-                                                <td>{{ $phong->LoaiPhong }}</td>
-                                                @if ($phong->SucChua)
-                                                    <td>{{ $phong->SucChua }}</td>
-                                                @else
-                                                    <td>N/A</td>
-                                                @endif
-                                                @php
-                                                    $status = $phong->trang_thai_dong;
-                                                @endphp
-                                                <td>
-                                                    @if ($status === 'Đang sử dụng')
-                                                        <span class="badge badge-danger">Đang sử dụng</span>
-                                                        @if ($phong->ten_lop_dang_su_dung)
-                                                            <br>Lớp: <b>{{ $phong->ten_lop_dang_su_dung }}</b>
-                                                        @endif
-                                                        @if ($phong->ten_mon_dang_su_dung)
-                                                            <br>Môn: <b>{{ $phong->ten_mon_dang_su_dung }}</b>
-                                                        @endif
-                                                    @elseif ($status === 'Bảo trì')
-                                                        <span class="badge badge-warning">Bảo trì</span>
-                                                    @else
-                                                        <span class="badge badge-success">Trống</span>
-                                                    @endif
+                                                <td><b>{{ $khunggio->TenKhungGio }}</b><br><small>{{ $khunggio->ThoiGian }}</small>
                                                 </td>
-                                                <td>
-                                                    <a href="{{ route('phonghoc.edit', $phong->TenPhong) }}"
-                                                        class="btn btn-warning btn-sm" title="Sửa"><i
-                                                            class="fas fa-edit"></i></a>
-                                                    <form action="{{ route('phonghoc.destroy', $phong->TenPhong) }}"
-                                                        method="POST" style="display:inline;">
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm delete-phonghoc"
-                                                            title="Xóa"><i class="fas fa-trash"></i></button>
-                                                    </form>
-                                                </td>
+                                                @foreach ($phonghocs as $phong)
+                                                    @php $cell = $matrix[$khunggio->TenKhungGio][$phong->TenPhong] ?? ['status'=>'Trống','MaLop'=>null]; @endphp
+                                                    <td class="text-center">
+                                                        @if ($cell['status'] === 'Đang sử dụng')
+                                                            <span class="badge badge-danger">Đang sử dụng</span><br>
+                                                            <span class="badge badge-primary">Lớp:
+                                                                {{ $cell['MaLop'] }}</span>
+                                                        @else
+                                                            <span class="badge badge-success">Trống</span>
+                                                        @endif
+                                                    </td>
+                                                @endforeach
                                             </tr>
                                         @endforeach
                                     </tbody>

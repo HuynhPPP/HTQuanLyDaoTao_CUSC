@@ -303,10 +303,6 @@
                                         <p class="mb-1">
                                             <strong>Phòng học:</strong>
                                             <span style="color: red;">{{ $phong->TenPhong }}</span>
-                                            @if ($phong->Ca)
-                                                | <strong>Thời gian:</strong> <span
-                                                    style="color: red;">{{ $phong->Ca }}</span>
-                                            @endif
                                         </p>
                                     @endforeach
                                 @endif
@@ -546,17 +542,24 @@
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="TenKhungGio">Tên khung giờ</label>
-                            <input type="text" class="form-control" id="TenKhungGio" name="TenKhungGio"
-                                placeholder="VD: Sáng: 7:30-11:30, Chiều: 13:30-17:30" required>
+                            <label for="TenKhungGio">Chọn khung giờ</label>
+                            <select class="form-control" id="TenKhungGio" name="TenKhungGio" required>
+                                <option value="">-- Chọn khung giờ --</option>
+                                <option value="Sáng 7h-9h">Sáng: 7:00-9:00</option>
+                                <option value="Sáng 9h-11h">Sáng: 9:00-11:00</option>
+                                <option value="Chiều 13h-15h">Chiều: 13:00-15:00</option>
+                                <option value="Chiều 15h-17h">Chiều: 15:00-17:00</option>
+                                <option value="Tối 18h-20h">Tối: 18:00-20:00</option>
+                                <option value="Tối 20h-22h">Tối: 20:00-22:00</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="GioBD">Giờ bắt đầu</label>
-                            <input type="time" class="form-control" id="GioBD" name="GioBD" required>
+                            <input type="time" class="form-control" id="GioBD" name="GioBD" required readonly>
                         </div>
                         <div class="form-group">
                             <label for="GioKT">Giờ kết thúc</label>
-                            <input type="time" class="form-control" id="GioKT" name="GioKT" required>
+                            <input type="time" class="form-control" id="GioKT" name="GioKT" required readonly>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -891,18 +894,6 @@
             $('#timeSlotModal form').on('submit', function(e) {
                 e.preventDefault();
                 const form = $(this);
-                const gioBD = $('#GioBD').val();
-                const gioKT = $('#GioKT').val();
-
-                if (gioBD >= gioKT) {
-                    Swal.fire({
-                        title: 'Lỗi!',
-                        text: 'Giờ bắt đầu phải trước giờ kết thúc',
-                        icon: 'error'
-                    });
-                    return;
-                }
-
                 Swal.fire({
                     title: 'Xác nhận thêm khung giờ?',
                     text: 'Bạn có chắc chắn muốn thêm khung giờ này?',
@@ -919,18 +910,19 @@
                 });
             });
 
-            // Validate giờ học
-            $('#timeSlotModal form').on('change', 'input[type="time"]', function() {
-                const gioBD = $('#GioBD').val();
-                const gioKT = $('#GioKT').val();
+            document.getElementById('TenKhungGio').addEventListener('change', function() {
+                const timeMap = {
+                    'Sáng 7h-9h': ['07:00', '09:00'],
+                    'Sáng 9h-11h': ['09:00', '11:00'],
+                    'Chiều 13h-15h': ['13:00', '15:00'],
+                    'Chiều 15h-17h': ['15:00', '17:00'],
+                    'Tối 18h-20h': ['18:00', '20:00'],
+                    'Tối 20h-22h': ['20:00', '22:00']
+                };
 
-                if (gioBD && gioKT && gioBD >= gioKT) {
-                    Swal.fire({
-                        title: 'Lỗi!',
-                        text: 'Giờ bắt đầu phải trước giờ kết thúc',
-                        icon: 'error'
-                    });
-                }
+                const selectedTime = timeMap[this.value] || ['', ''];
+                document.getElementById('GioBD').value = selectedTime[0];
+                document.getElementById('GioKT').value = selectedTime[1];
             });
 
             // Load danh sách môn học

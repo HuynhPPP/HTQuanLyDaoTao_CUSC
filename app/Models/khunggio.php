@@ -15,5 +15,6 @@ class khunggio extends Model
     protected $fillable = [
         'TenKhungGio',
 	    'ThoiGian',
+        'TenTKB',
     ];
 }
