@@ -1,232 +1,241 @@
 <?php
 
 namespace App\Http\Controllers\NhanSu;
-use App\Http\Controllers\Controller;
 
-use App\Models\sinhvien;
-use App\Models\hoso;
-use App\Models\danhsachsv;
+use App\Http\Controllers\Controller;
+use App\Models\giaovien;
+use App\Models\hocvi;
+use App\Models\bangcapcanbo;
+use App\Models\chucvu;
+use App\Models\donvi;
 use App\Models\LdapAccount;
+use App\Imports\GiaoVienImport;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use App\Mail\LdapAccountInfoMail;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\SinhVienImport;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use LdapRecord\Connection;
-use LdapRecord\Models\ActiveDirectory\User;
-use LdapRecord\Models\ActiveDirectory\Group;
-use LdapRecord\Container;
-use Illuminate\Support\Facades\Validator;
 
-class SinhVienController extends Controller
+class GiaoVienController extends Controller
 {
     public function index()
     {
-        $sinhViens = sinhvien::with(['hosotuyensinh', 'danhSachLop'])->get();
-        return view('quanly_nhansu.sinhvien.index', compact('sinhViens'));
+        $giaoviens = giaovien::with([
+            'hocvi',
+            'chucvu',
+            'donvi',
+            'bangcapcanbo'
+        ])->paginate(10);
+
+        return view('quanly_nhansu.giaovien.index', compact('giaoviens'));
     }
     public function create()
     {
-        return view('quanly_nhansu.sinhvien.create');
+        $hocvis = hocvi::all();
+        $bangcaps = bangcapcanbo::all();
+        $chucvus = chucvu::all();
+        $donvis = donvi::all();
+
+        return view('quanly_nhansu.giaovien.create', compact(
+            'hocvis',
+            'bangcaps',
+            'chucvus',
+            'donvis'
+        ));
     }
     public function store(Request $request)
     {
-        $request->validate([
-            'MaSV' => 'required|unique:SinhVien,MaSV',
-            'HoTen' => 'required',
-            'NgaySinh' => 'required|date',
+        $validated = $request->validate([
+            'MaGV' => 'required|unique:giaovien,MaGV',
+            'HoTenGV' => 'required',
+            'Email' => 'required|email|unique:giaovien,Email',
             'GioiTinh' => 'required',
-            'SoCCCD' => 'required|numeric',
-            'Email' => 'required|email',
-            'Sdt' => ['required', 'string', 'regex:/^0(3|5|7|8|9)[0-9]{8}$/'],
+            'LoaiGV' => 'required|in:CoHuu,MoiGiang',
         ], [
-            'MaSV.required' => 'Vui lòng nhập mã sinh viên.',
-            'MaSV.unique' => 'Mã sinh viên đã tồn tại trong hệ thống.',
-            'HoTen.required' => 'Vui lòng nhập họ và tên.',
-            'NgaySinh.required' => 'Vui lòng nhập ngày sinh.',
-            'NgaySinh.date' => 'Ngày sinh không đúng định dạng.',
-            'GioiTinh.required' => 'Vui lòng chọn giới tính.',
-            'SoCCCD.required' => 'Vui lòng nhập số CCCD.',
-            'SoCCCD.numeric' => 'Số CCCD phải là số.',
-            'Email.required' => 'Vui lòng nhập email.',
-            'Email.email' => 'Email không đúng định dạng.',
-            'Sdt.required' => 'Vui lòng nhập số điện thoại.',
-            'Sdt.regex' => 'Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại Việt Nam (bắt đầu bằng 03, 05, 07, 08, 09).',
+            'MaGV.required' => 'Vui lòng nhập mã giáo viên',
+            'MaGV.unique' => 'Mã giáo viên đã tồn tại',
+            'HoTenGV.required' => 'Vui lòng nhập họ tên giáo viên',
+            'Email.required' => 'Vui lòng nhập email',
+            'Email.email' => 'Email không đúng định dạng',
+            'Email.unique' => 'Email đã tồn tại',
+            'GioiTinh.required' => 'Vui lòng chọn giới tính',
+            'LoaiGV.required' => 'Vui lòng chọn loại giáo viên',
         ]);
 
-        // Mapping dữ liệu
-        $data = $request->all();
-        $data['GioiTinh'] = $request->GioiTinh === 'Nam' ? 1 : 0;
-
-        DB::beginTransaction();
         try {
-            $sinhVien = sinhvien::create($data);
-            // ... các thao tác khác
-            DB::commit();
-            return redirect()->route('student.list')->with('success', 'Thêm sinh viên thành công');
+            // Xử lý các khóa ngoại
+            $this->handleForeignKeys($request);
+
+            // Tạo giáo viên mới
+            giaovien::create($request->all());
+
+            return redirect()->route('giaovien.index')
+                ->with('success', 'Thêm giáo viên thành công');
         } catch (\Exception $e) {
-            DB::rollback();
-            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+            return back()->withInput()
+                ->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage());
+        }
+    }
+    public function show($maGV)
+    {
+        $giaovien = giaovien::with([
+            'hocvi',
+            'chucvu',
+            'donvi',
+            'bangcapcanbo'
+        ])->findOrFail($maGV);
+
+        return view('quanly_nhansu.giaovien.show', compact('giaovien'));
+    }
+    public function edit($maGV)
+    {
+        $giaovien = giaovien::findOrFail($maGV);
+
+        $hocvis = hocvi::all();
+        $bangcaps = bangcapcanbo::all();
+        $chucvus = chucvu::all();
+        $donvis = donvi::all();
+
+        return view('quanly_nhansu.giaovien.edit', compact(
+            'giaovien',
+            'hocvis',
+            'bangcaps',
+            'chucvus',
+            'donvis'
+        ));
+    }
+    public function update(Request $request, $maGV)
+    {
+        $giaovien = giaovien::findOrFail($maGV);
+
+        $validated = $request->validate([
+            'MaGV' => 'required|unique:giaovien,MaGV,' . $maGV . ',MaGV',
+            'HoTenGV' => 'required',
+            'Email' => 'required|email|unique:giaovien,Email,' . $maGV . ',MaGV',
+            'GioiTinh' => 'required',
+            'LoaiGV' => 'required|in:CoHuu,MoiGiang',
+        ], [
+            'MaGV.required' => 'Vui lòng nhập mã giáo viên',
+            'MaGV.unique' => 'Mã giáo viên này đã tồn tại trong hệ thống.',
+            'HoTenGV.required' => 'Vui lòng nhập họ tên giáo viên',
+            'Email.required' => 'Vui lòng nhập email',
+            'Email.email' => 'Email không đúng định dạng',
+            'Email.unique' => 'Email đã tồn tại',
+            'GioiTinh.required' => 'Vui lòng chọn giới tính',
+            'LoaiGV.required' => 'Vui lòng chọn loại giáo viên',
+        ]);
+
+        try {
+            // Xử lý các khóa ngoại
+            $this->handleForeignKeys($request);
+
+            // Cập nhật thông tin giáo viên
+            $giaovien->update($request->all());
+
+            return redirect()->route('giaovien.index')
+                ->with('success', 'Cập nhật thông tin giáo viên thành công');
+        } catch (\Exception $e) {
+            return back()->withInput()
+                ->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage());
+        }
+    }
+    public function destroy($maGV)
+    {
+        try {
+            $giaovien = giaovien::findOrFail($maGV);
+            $giaovien->delete();
+
+            return redirect()->route('giaovien.index')
+                ->with('success', 'Xóa giáo viên thành công');
+        } catch (\Exception $e) {
+            return back()
+                ->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage());
         }
     }
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv',
+            'file' => 'required|mimes:xlsx,xls,csv'
+        ], [
+            'file.required' => 'Vui lòng chọn file để import',
+            'file.mimes' => 'File phải có định dạng Excel (.xlsx, .xls, .csv)'
         ]);
 
-        Excel::import(new SinhVienImport, $request->file('file'));
+        try {
+            // Thực hiện import
+            Excel::import(new GiaoVienImport, $request->file('file'));
 
-        $successCount = session('import_success_count', 0);
-        $errors = session('import_errors', []);
+            // Lấy số lượng import thành công và lỗi
+            $successCount = session('import_success_count', 0);
+            $errors = session('import_errors', []);
 
-        if ($successCount > 0 && empty($errors)) {
-            return back()->with('success', "Đã import thành công $successCount sinh viên.");
-        } elseif ($successCount > 0 && !empty($errors)) {
-            return redirect()->route('student.list')->with([
-                'success' => "Import thành công $successCount dòng, nhưng có lỗi ở các dòng khác.",
-                'import_errors' => $errors
-            ]);
-        } else {
-            return back()->with([
-                'error' => "Import thất bại. Không có dòng nào được lưu. Chi tiết lỗi: " . implode(', ', $errors),
-                'import_errors' => $errors,
-                // dd(session('import_errors')), // Xem chi tiết lỗi
+            // Xử lý thông báo
+            if ($successCount > 0) {
+                $message = "Import thành công $successCount giáo viên.";
+                if (!empty($errors)) {
+                    $message .= " Có " . count($errors) . " dòng bị lỗi.";
+                }
+                return redirect()->route('giaovien.index')
+                    ->with('success', $message);
+            } else {
+                return back()
+                    ->with('warning', 'Không có dữ liệu nào được import.');
+            }
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
 
-            ]);
+            return back()
+                ->with('warning', 'Lỗi import: ' . $failures[0]->errors()[0]);
+        } catch (\Exception $e) {
+            return back()
+                ->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage());
         }
     }
-    public function show($maSV)
+    private function handleForeignKeys($request)
     {
-        $sinhVien = sinhvien::with(['hosotuyensinh', 'danhSachLop'])
-            ->where('MaSV', $maSV)
-            ->firstOrFail();
-        return view('quanly_nhansu.sinhvien.show', compact('sinhVien'));
-    }
-    public function edit($maSV)
-    {
-        $sinhVien = sinhvien::where('MaSV', $maSV)->firstOrFail();
-        return view('quanly_nhansu.sinhvien.edit', compact('sinhVien'));
-    }
+        // Xử lý học vị
+        if ($request->filled('MaHV') && !hocvi::where('MaHV', $request->MaHV)->exists()) {
+            hocvi::create([
+                'MaHV' => $request->MaHV,
+                'TenHocVi' => $request->filled('TenHocVi')
+                    ? $request->TenHocVi
+                    : 'Học vị ' . $request->MaHV,
+            ]);
+        }
 
-    public function edit_all($maSV)
-    {
-        $sinhVien = sinhvien::where('MaSV', $maSV)->firstOrFail();
-        return view('quanly_nhansu.sinhvien.edit_all', compact('sinhVien'));
-    }
+        // Xử lý chức vụ
+        if ($request->filled('TenChucVu') && !chucvu::where('TenChucVu', $request->TenChucVu)->exists()) {
+            chucvu::create([
+                'TenChucVu' => $request->TenChucVu,
+            ]);
+        }
 
-    public function update(Request $request, $maSV)
-    {
-        dd($request->all());
-        $request->validate([
-            'MaSV' => 'required|unique:sinhvien,MaSV,' . $maSV . ',MaSV',
-            'HoTen' => 'required',
-            'NgaySinh' => 'required|date',
-            'GioiTinh' => 'required',
-            'SoCCCD' => 'required|numeric',
-            'Email' => 'required|email',
-            'Sdt' => ['required', 'string', 'regex:/^0(3|5|7|8|9)[0-9]{8}$/'],
-        ], [
-            'MaSV.required' => 'Vui lòng nhập mã sinh viên.',
-            'MaSV.unique' => 'Mã sinh viên đã tồn tại trong hệ thống.',
-            'HoTen.required' => 'Vui lòng nhập họ và tên.',
-            'NgaySinh.required' => 'Vui lòng nhập ngày sinh.',
-            'NgaySinh.date' => 'Ngày sinh không đúng định dạng.',
-            'GioiTinh.required' => 'Vui lòng chọn giới tính.',
-            'SoCCCD.required' => 'Vui lòng nhập số CCCD.',
-            'SoCCCD.numeric' => 'Số CCCD phải là số.',
-            'Email.required' => 'Vui lòng nhập email.',
-            'Email.email' => 'Email không đúng định dạng.',
-            'Sdt.required' => 'Vui lòng nhập số điện thoại.',
-            'Sdt.regex' => 'Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại Việt Nam.',
-        ]);
+        // Xử lý đơn vị
+        if ($request->filled('MaDV') && !donvi::where('MaDV', $request->MaDV)->exists()) {
+            donvi::create([
+                'MaDV' => $request->MaDV,
+                'TenDVHienTai' => $request->filled('TenDVHienTai')
+                    ? $request->TenDVHienTai
+                    : 'Đơn vị ' . $request->MaDV,
+            ]);
+        }
 
-        $sinhVien = sinhvien::where('MaSV', $maSV)->firstOrFail();
-        $sinhVien->update([
-            'MaSV' => $request->MaSV,
-            'HoTen' => $request->HoTen,
-            'NgaySinh' => $request->NgaySinh,
-            'GioiTinh' => $request->GioiTinh,
-            'SoCCCD' => $request->SoCCCD,
-            'Email' => $request->Email,
-            'Sdt' => $request->Sdt,
-            'DiaChi' => $request->DiaChi,
-        ]);
-
-        return redirect()->route('student.show', $sinhVien->MaSV)->with('success', 'Cập nhật thông tin sinh viên thành công');
-    }
-
-    public function update_all(Request $request, $id)
-    {
-        // Validate dữ liệu đầu vào
-        $request->validate([
-            'MaSV' => 'required',
-            'HoTen' => 'required',
-            'NgaySinh' => 'required|date',
-            'GioiTinh' => 'required|in:0,1',
-            'SoCCCD' => 'required',
-            'Email' => 'required|email',
-            'Sdt' => 'required',
-        ]);
-
-        // Tìm sinh viên cần cập nhật
-        $sinhVien = SinhVien::findOrFail($id);
-
-        // Cập nhật thông tin cá nhân
-        $sinhVien->update([
-            'MaSV' => $request->MaSV,
-            'HoTen' => $request->HoTen,
-            'NgaySinh' => $request->NgaySinh,
-            'GioiTinh' => $request->GioiTinh,
-            'SoCCCD' => $request->SoCCCD,
-            'NgayCap' => $request->NgayCap,
-            'NoiCap' => $request->NoiCap,
-            'TinhTrangHocTap' => $request->TinhTrangHocTap,
-
-            // Thông tin liên hệ
-            'Email' => $request->Email,
-            'EmailCUSC' => $request->EmailCUSC,
-            'Sdt' => $request->Sdt,
-            'DiaChi' => $request->DiaChi,
-            'Zalo' => $request->Zalo,
-
-            // Thông tin người thân
-            'HoTenNguoiThan' => $request->HoTenNguoiThan,
-            'MoiQuanHe' => $request->MoiQuanHe,
-            'SdtNguoiThan' => $request->SdtNguoiThan,
-            'EmailNguoiThan' => $request->EmailNguoiThan,
-            'ZaloNguoiThan' => $request->ZaloNguoiThan,
-        ]);
-
-        return redirect()->route('student.list')
-            ->with('success', 'Cập nhật thông tin sinh viên thành công');
-    }
-    public function destroy($maSV)
-    {
-        DB::beginTransaction();
-        try {
-            $sinhVien = sinhvien::where('MaSV', $maSV)->firstOrFail();
-
-            // Xóa các bản ghi liên quan
-            hoso::where('MaSV', $maSV)->delete();
-            danhsachsv::where('MaSV', $maSV)->delete();
-
-            // Xóa sinh viên
-            $sinhVien->delete();
-
-            DB::commit();
-            return redirect()->route('student.list')->with('success', 'Xóa sinh viên thành công');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+        // Xử lý bằng cấp
+        if ($request->filled('MaBang') && !bangcapcanbo::where('MaBang', $request->MaBang)->exists()) {
+            bangcapcanbo::create([
+                'MaBang' => $request->MaBang,
+                'TenBang' => $request->filled('TenBang')
+                    ? $request->TenBang
+                    : 'Bằng cấp ' . $request->MaBang,
+            ]);
         }
     }
     // Phương thức đồng bộ tài khoản LDAP
-    // public function dongBoTaiKhoanLDAP()
+    // public function dongBoTaiKhoanGVLDAP()
     // {
     //     // Cấu hình LDAP
     //     $domain = 'CUSC';
@@ -266,41 +275,54 @@ class SinhVienController extends Controller
 
     //         // Lấy sinh viên chưa có tài khoản LDAP
     //         // $sinhViens = SinhVien::whereDoesntHave('ldapAccount')->where('EmailCUSC', '')->get();
-    //         $sinhViens = SinhVien::whereNull('EmailCUSC')
+    //         $giaoViens = giaovien::whereNull('EmailCUSC')
     //             // ->orWhereNull('password_CUSC')
     //             ->get();
     //         $successCount = 0;
     //         $errorCount = 0;
     //         $errorDetails = [];
 
-    //         foreach ($sinhViens as $sinhVien) {
+    //         foreach ($giaoViens as $giaoVien) {
     //             DB::beginTransaction();
     //             try {
     //                 // Tạo email và mật khẩu
-    //                 $email = $this->taoEmailCUSC($sinhVien);
+    //                 $email = $this->taoEmailCUSC($giaoVien);
     //                 $password = $this->taoMatKhauManh();
     //                 $fullEmail = $email . '@cusc.ctu.vn';
 
     //                 // Chuẩn bị thông tin LDAP
+    //                 if (empty($email)) {
+    //                     Log::warning('Email rỗng khi tạo tài khoản LDAP', ['MaGV' => $giaoVien->MaGV]);
+    //                     throw new \Exception("Không tạo được email CUSC cho giáo viên {$giaoVien->HoTenGV}");
+    //                 }
     //                 $sanitizedEmail = preg_replace('/[^a-zA-Z0-9]/', '', $email);
 
-    //                 // Tạo DN cho user mới (chú ý OU)
-    //                 $dn = "CN={$sanitizedEmail},CN=Users,{$ldapconfig['basedn']}";
 
+    //                 // Chuẩn hóa họ tên và tách họ - tên
+    //                 $hoTen = trim($giaoVien->HoTenGV);
+    //                 $tenParts = preg_split('/\s+/', $hoTen);
+    //                 $givenName = $tenParts[0] ?? 'Unknown';
+    //                 $sn = end($tenParts) ?: 'Unknown';
+    //                 $initial = strtoupper(substr($givenName, 0, 1));
 
-    //                 // Thông tin entry LDAP với các thuộc tính bắt buộc
+    //                 // Escape CN để dùng trong DN
+    //                 $escapedCN = ldap_escape($hoTen, '', LDAP_ESCAPE_DN);
+
+    //                 // Tạo Distinguished Name cho tài khoản mới
+    //                 $dn = "CN={$escapedCN},CN=Users,{$ldapconfig['basedn']}";
+
+    //                 // Tạo thông tin entry đầy đủ và đúng cú pháp
     //                 $entry = [
     //                     'objectClass' => ['top', 'person', 'organizationalPerson', 'user'],
-    //                     'cn' => [$sanitizedEmail],
-    //                     'sAMAccountName' => [$sanitizedEmail],
-    //                     'userPrincipalName' => [$fullEmail],
-    //                     'displayName' => [$sinhVien->HoTen],
-    //                     'mail' => [$fullEmail],
-
-    //                     // Thêm các thuộc tính để tránh vi phạm ràng buộc
-    //                     'givenName' => [explode(' ', $sinhVien->HoTen)[0]],
-    //                     'sn' => [array_slice(explode(' ', $sinhVien->HoTen), -1)[0]],
-    //                     'initials' => [substr($sinhVien->HoTen, 0, 1)]
+    //                     'cn' => $hoTen,
+    //                     'sAMAccountName' => $sanitizedEmail,
+    //                     'userPrincipalName' => $fullEmail,
+    //                     'displayName' => $hoTen,
+    //                     'mail' => $fullEmail,
+    //                     'givenName' => $givenName,
+    //                     'sn' => $sn,
+    //                     'initials' => $initial,
+    //                     'userAccountControl' => '544', // Enable user account
     //                 ];
 
     //                 // Thêm user vào LDAP với xử lý ngoại lệ chi tiết
@@ -330,9 +352,8 @@ class SinhVienController extends Controller
     //                     }
     //                 }
 
-
     //                 // Thêm vào group Students
-    //                 $studentGroupDN = "CN=Student,CN=Users,{$ldapconfig['basedn']}";
+    //                 $studentGroupDN = "CN=Teacher,CN=Users,{$ldapconfig['basedn']}";
     //                 $addToGroupResult = ldap_mod_add($ds, $studentGroupDN, ['member' => $dn]);
 
     //                 if (!$addToGroupResult) {
@@ -343,18 +364,18 @@ class SinhVienController extends Controller
 
     //                 // Tạo tài khoản LDAP trong CSDL
     //                 $ldapAccount = LdapAccount::create([
-    //                     'MaTaiKhoan' => $sinhVien->MaSV,
+    //                     'MaTaiKhoan' => $giaoVien->MaGV,
     //                     'username' => $sanitizedEmail,
     //                     'email' => $fullEmail,
-    //                     'full_name' => $sinhVien->HoTen,
+    //                     'full_name' => $giaoVien->HoTenGV,
     //                     'initial_password' => $password,
-    //                     'role' => 'student',
+    //                     'role' => 'teacher',
     //                     'is_sent' => false,
     //                     'is_active' => true
     //                 ]);
 
-    //                 // Cập nhật thông tin sinh viên
-    //                 $sinhVien->update([
+    //                 // Cập nhật thông tin giáo viên
+    //                 $giaoVien->update([
     //                     'EmailCUSC' => $fullEmail
     //                 ]);
 
@@ -363,7 +384,7 @@ class SinhVienController extends Controller
 
     //                 $successCount++;
     //                 Log::info('Đồng bộ LDAP thành công', [
-    //                     'MaTaiKhoan' => $sinhVien->MaSV,
+    //                     'MaTaiKhoan' => $giaoVien->MaGV,
     //                     'Email' => $fullEmail
     //                 ]);
 
@@ -373,13 +394,13 @@ class SinhVienController extends Controller
 
     //                 $errorCount++;
     //                 $errorDetails[] = [
-    //                     'MaTaiKhoan' => $sinhVien->MaSV,
-    //                     'ho_ten' => $sinhVien->HoTen,
+    //                     'MaTaiKhoan' => $giaoVien->MaGV,
+    //                     'ho_ten' => $giaoVien->HoTenGV,
     //                     'error_message' => $userException->getMessage()
     //                 ];
 
     //                 Log::error('Lỗi đồng bộ LDAP', [
-    //                     'ma_sv' => $sinhVien->MaSV,
+    //                     'MaTaiKhoan' => $giaoVien->MaGV,
     //                     'error' => $userException->getMessage()
     //                 ]);
 
@@ -394,7 +415,7 @@ class SinhVienController extends Controller
     //         $message = "Đồng bộ hoàn tất. Thành công: $successCount, Lỗi: $errorCount";
     //         Log::info($message, ['error_details' => $errorDetails]);
 
-    //         return redirect()->route('student.list')
+    //         return redirect()->route('giaovien.index')
     //             ->with('success', $message)
     //             ->with('error_details', $errorDetails);
 
@@ -409,39 +430,43 @@ class SinhVienController extends Controller
     //             'trace' => $e->getTraceAsString()
     //         ]);
 
-    //         return redirect()->route('student.list')
+    //         return redirect()->route('giaovien.index')
     //             ->with('error', 'Lỗi đồng bộ: ' . $e->getMessage());
     //     }
     // }
-    public function dongBoTaiKhoanLDAP()
+    public function dongBoTaiKhoanGV()
     {
-        $sinhViens = SinhVien::whereNull('EmailCUSC')->get();
+        $giaoViens = GiaoVien::whereNull('EmailCUSC')->get();
         $successCount = 0;
         $errorCount = 0;
         $errorDetails = [];
 
-        foreach ($sinhViens as $sinhVien) {
+        foreach ($giaoViens as $giaoVien) {
             DB::beginTransaction();
             try {
                 // Tạo email và mật khẩu
-                $email = $this->taoEmailCUSC($sinhVien);
+                $email = $this->taoEmailCUSC($giaoVien);
                 $password = $this->taoMatKhauManh();
                 $fullEmail = $email . '@cusc.ctu.vn';
 
+                if (empty($email)) {
+                    throw new \Exception("Không tạo được email CUSC cho giáo viên {$giaoVien->HoTenGV}");
+                }
+
                 // Tạo tài khoản trong bảng ldap_accounts
                 $ldapAccount = LdapAccount::create([
-                    'MaTaiKhoan' => $sinhVien->MaSV,
+                    'MaTaiKhoan' => $giaoVien->MaGV,
                     'username' => $email,
                     'email' => $fullEmail,
-                    'full_name' => $sinhVien->HoTen,
+                    'full_name' => $giaoVien->HoTenGV,
                     'initial_password' => $password,
-                    'role' => 'student',
+                    'role' => 'teacher',
                     'is_sent' => false,
                     'is_active' => true
                 ]);
 
-                // Cập nhật cột EmailCUSC trong bảng sinhvien
-                $sinhVien->update([
+                // Cập nhật email trong bảng giao_viens
+                $giaoVien->update([
                     'EmailCUSC' => $fullEmail
                 ]);
 
@@ -452,15 +477,15 @@ class SinhVienController extends Controller
                 DB::rollBack();
                 $errorCount++;
                 $errorDetails[] = [
-                    'MaTaiKhoan' => $sinhVien->MaSV,
-                    'ho_ten' => $sinhVien->HoTen,
+                    'MaTaiKhoan' => $giaoVien->MaGV,
+                    'ho_ten' => $giaoVien->HoTenGV,
                     'error_message' => $e->getMessage()
                 ];
             }
         }
 
         $message = "Đồng bộ hoàn tất. Thành công: $successCount, Lỗi: $errorCount";
-        return redirect()->route('student.list')
+        return redirect()->route('giaovien.index')
             ->with('success', $message)
             ->with('error_details', $errorDetails);
     }
@@ -494,10 +519,10 @@ class SinhVienController extends Controller
     public function xuatDanhSachTaiKhoanMoi()
     {
         $ldapAccounts = LdapAccount::orderBy('created_at', 'desc')
-            ->where('role', 'student')
+            ->where('role', 'teacher')
             ->get();
 
-        return view('quanly_nhansu.sinhvien.list_account', compact('ldapAccounts'));
+        return view('quanly_nhansu.giaovien.list_account', compact('ldapAccounts'));
     }
     // Phương thức gửi thông tin tài khoản qua email
     public function guiThongTinTaiKhoan($id)
@@ -558,7 +583,7 @@ class SinhVienController extends Controller
                 $sentAccounts[] = $id;
 
             } catch (\Exception $e) {
-                Log::error('Lỗi gửi email LDAP', [
+                Log::error('Lỗi gửi email LDAP cho giáo viên', [
                     'ma_tai_khoan' => $ldapAccount->MaTaiKhoan ?? 'Không xác định',
                     'error' => $e->getMessage()
                 ]);
@@ -572,18 +597,19 @@ class SinhVienController extends Controller
         ]);
     }
     // Giữ nguyên các phương thức tạo email và mật khẩu như trước
-    private function taoEmailCUSC($sinhVien)
+    private function taoEmailCUSC($giaoVien)
     {
-        // Loại bỏ dấu và chuyển sang chữ thường
-        $hoTenKhongDau = $this->loaiBoKyTuDacBiet($sinhVien->HoTen);
+        // Bỏ dấu và ký tự đặc biệt, chuyển thành chữ thường
+        $hoTenKhongDau = $this->loaiBoKyTuDacBiet($giaoVien->HoTenGV);
+        $tenKhongDau = strtolower(preg_replace('/\s+/', '', $hoTenKhongDau));
 
-        // Tạo email duy nhất
-        $baseEmail = strtolower(
-            $sinhVien->MaSV .
-            substr(preg_replace('/\s+/', '', $hoTenKhongDau), 0, 8)
-        );
+        // Tạo email với MaGV ở đầu
+        $baseEmail = strtolower($giaoVien->MaGV . $tenKhongDau);
 
-        // Kiểm tra và thêm hậu tố nếu email đã tồn tại
+        // Cắt ngắn để tránh email quá dài (ví dụ 30 ký tự là hợp lý)
+        $baseEmail = substr($baseEmail, 0, 30);
+
+        // Kiểm tra trùng và thêm hậu tố nếu cần
         $email = $baseEmail;
         $suffix = 1;
         while (LdapAccount::where('username', $email)->exists()) {
@@ -595,17 +621,17 @@ class SinhVienController extends Controller
     }
     private function loaiBoKyTuDacBiet($text)
     {
-        $text = preg_replace('/[áàảãạăắằẳẵặâấầẩẫậ]/u', 'a', $text);
-        $text = preg_replace('/[éèẻẽẹêếềểễệ]/u', 'e', $text);
-        $text = preg_replace('/[íìỉĩị]/u', 'i', $text);
-        $text = preg_replace('/[óòỏõọôốồổỗộơớờởỡợ]/u', 'o', $text);
-        $text = preg_replace('/[úùủũụưứừửữự]/u', 'u', $text);
-        $text = preg_replace('/[ýỳỷỹỵ]/u', 'y', $text);
-        $text = preg_replace('/[đ]/u', 'd', $text);
+        $text = preg_replace('/[áàảãạăắằẳẵặâấầẩẫậ]/iu', 'a', $text);
+        $text = preg_replace('/[éèẻẽẹêếềểễệ]/iu', 'e', $text);
+        $text = preg_replace('/[íìỉĩị]/iu', 'i', $text);
+        $text = preg_replace('/[óòỏõọôốồổỗộơớờởỡợ]/iu', 'o', $text);
+        $text = preg_replace('/[úùủũụưứừửữự]/iu', 'u', $text);
+        $text = preg_replace('/[ýỳỷỹỵ]/iu', 'y', $text);
+        $text = preg_replace('/[đ]/iu', 'd', $text);
 
-        return preg_replace('/[^a-zA-Z0-9]/', '', $text);
+        return preg_replace('/[^a-zA-Z0-9\s]/', '', $text);
     }
-    public function kiemTraDongBoLDAP()
+    public function kiemTraDongBoGVLDAP()
     {
         // Cấu hình LDAP
         $domain = 'CUSC';
@@ -648,15 +674,15 @@ class SinhVienController extends Controller
             ldap_close($ds);
 
             // Kiểm tra số lượng sinh viên chưa có tài khoản
-            $sinhViensCount = SinhVien::whereNull('EmailCUSC')
+            $giaoViensCount = giaovien::whereNull('EmailCUSC')
                 // ->orWhereNull('password_CUSC')
                 ->count();
             // $sinhViensCount = SinhVien::whereDoesntHave('ldapAccount')->where('EmailCUSC', '')->get();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Kết nối đến máy chủ thành công',
-                'sinh_viens_chua_co_tai_khoan' => $sinhViensCount
+                'message' => 'Kết nối máy chủ thành công',
+                'so_luong_giao_vien_chua_co_tai_khoan' => $giaoViensCount
             ]);
 
         } catch (\Exception $e) {
@@ -673,4 +699,5 @@ class SinhVienController extends Controller
             ]);
         }
     }
+
 }

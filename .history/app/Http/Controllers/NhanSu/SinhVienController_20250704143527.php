@@ -413,13 +413,13 @@ class SinhVienController extends Controller
     //             ->with('error', 'Lỗi đồng bộ: ' . $e->getMessage());
     //     }
     // }
-    public function dongBoTaiKhoanLDAP()
+    public function dongBoTaiKhoan()
     {
         $sinhViens = SinhVien::whereNull('EmailCUSC')->get();
         $successCount = 0;
         $errorCount = 0;
         $errorDetails = [];
-
+    
         foreach ($sinhViens as $sinhVien) {
             DB::beginTransaction();
             try {
@@ -427,7 +427,7 @@ class SinhVienController extends Controller
                 $email = $this->taoEmailCUSC($sinhVien);
                 $password = $this->taoMatKhauManh();
                 $fullEmail = $email . '@cusc.ctu.vn';
-
+    
                 // Tạo tài khoản trong bảng ldap_accounts
                 $ldapAccount = LdapAccount::create([
                     'MaTaiKhoan' => $sinhVien->MaSV,
@@ -439,15 +439,15 @@ class SinhVienController extends Controller
                     'is_sent' => false,
                     'is_active' => true
                 ]);
-
+    
                 // Cập nhật cột EmailCUSC trong bảng sinhvien
                 $sinhVien->update([
                     'EmailCUSC' => $fullEmail
                 ]);
-
+    
                 DB::commit();
                 $successCount++;
-
+    
             } catch (\Exception $e) {
                 DB::rollBack();
                 $errorCount++;
@@ -458,7 +458,7 @@ class SinhVienController extends Controller
                 ];
             }
         }
-
+    
         $message = "Đồng bộ hoàn tất. Thành công: $successCount, Lỗi: $errorCount";
         return redirect()->route('student.list')
             ->with('success', $message)

@@ -211,4 +211,42 @@
             }
         @endif
     </script>
+    <script>
+        document.getElementById('btnKiemTraLDAP').addEventListener('click', function() {
+            Swal.fire({
+                title: 'Đang kiểm tra kết nối...',
+                didOpen: () => {
+                    Swal.showLoading();
+                    fetch('{{ route('giaovien.ldap.kiem-tra-dong-bo') }}')
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: data.message,
+                                    html: `<p>Số lượng giảng viên chưa có tài khoản: <strong>${data.so_luong_giao_vien_chua_co_tai_khoan}</strong></p>`
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi',
+                                    text: data.error || 'Không xác định'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi',
+                                text: 'Không thể kiểm tra kết nối. Vui lòng thử lại sau.'
+                            });
+                            console.error('Lỗi kiểm tra LDAP:', error);
+                        });
+                },
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false
+            });
+        });
+    </script>
 @endsection

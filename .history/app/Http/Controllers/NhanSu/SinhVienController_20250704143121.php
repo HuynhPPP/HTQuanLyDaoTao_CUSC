@@ -413,57 +413,49 @@ class SinhVienController extends Controller
     //             ->with('error', 'Lỗi đồng bộ: ' . $e->getMessage());
     //     }
     // }
-    public function dongBoTaiKhoanLDAP()
-    {
-        $sinhViens = SinhVien::whereNull('EmailCUSC')->get();
-        $successCount = 0;
-        $errorCount = 0;
-        $errorDetails = [];
+    public function dongBoTaiKhoan()
+{
+    $sinhViens = SinhVien::whereNull('EmailCUSC')->get();
+    $successCount = 0;
+    $errorCount = 0;
+    $errorDetails = [];
 
-        foreach ($sinhViens as $sinhVien) {
-            DB::beginTransaction();
-            try {
-                // Tạo email và mật khẩu
-                $email = $this->taoEmailCUSC($sinhVien);
-                $password = $this->taoMatKhauManh();
-                $fullEmail = $email . '@cusc.ctu.vn';
+    foreach ($sinhViens as $sinhVien) {
+        DB::beginTransaction();
+        try {
+            // Tạo email và mật khẩu
+            $email = $this->taoEmailCUSC($sinhVien);
+            $password = $this->taoMatKhauManh();
+            $fullEmail = $email . '@cusc.ctu.vn';
 
-                // Tạo tài khoản trong bảng ldap_accounts
-                $ldapAccount = LdapAccount::create([
-                    'MaTaiKhoan' => $sinhVien->MaSV,
-                    'username' => $email,
-                    'email' => $fullEmail,
-                    'full_name' => $sinhVien->HoTen,
-                    'initial_password' => $password,
-                    'role' => 'student',
-                    'is_sent' => false,
-                    'is_active' => true
-                ]);
+            // Cập nhật thông tin sinh viên
+            $sinhVien->update([
+                'EmailCUSC' => $fullEmail,
+                // Nếu bạn cũng muốn lưu mật khẩu đã mã hóa:
+                // 'password_CUSC' => bcrypt($password),
+            ]);
 
-                // Cập nhật cột EmailCUSC trong bảng sinhvien
-                $sinhVien->update([
-                    'EmailCUSC' => $fullEmail
-                ]);
+            // (Không cần tạo bản ghi LdapAccount nếu không dùng nữa)
 
-                DB::commit();
-                $successCount++;
+            DB::commit();
+            $successCount++;
 
-            } catch (\Exception $e) {
-                DB::rollBack();
-                $errorCount++;
-                $errorDetails[] = [
-                    'MaTaiKhoan' => $sinhVien->MaSV,
-                    'ho_ten' => $sinhVien->HoTen,
-                    'error_message' => $e->getMessage()
-                ];
-            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $errorCount++;
+            $errorDetails[] = [
+                'MaTaiKhoan' => $sinhVien->MaSV,
+                'ho_ten' => $sinhVien->HoTen,
+                'error_message' => $e->getMessage()
+            ];
         }
-
-        $message = "Đồng bộ hoàn tất. Thành công: $successCount, Lỗi: $errorCount";
-        return redirect()->route('student.list')
-            ->with('success', $message)
-            ->with('error_details', $errorDetails);
     }
+
+    $message = "Đồng bộ hoàn tất. Thành công: $successCount, Lỗi: $errorCount";
+    return redirect()->route('student.list')
+        ->with('success', $message)
+        ->with('error_details', $errorDetails);
+}
 
     // Phương thức tạo mật khẩu LDAP
     private function taoMatKhauManh($length = 6)

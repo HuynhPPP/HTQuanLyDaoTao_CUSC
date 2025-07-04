@@ -428,22 +428,14 @@ class SinhVienController extends Controller
                 $password = $this->taoMatKhauManh();
                 $fullEmail = $email . '@cusc.ctu.vn';
 
-                // Tạo tài khoản trong bảng ldap_accounts
-                $ldapAccount = LdapAccount::create([
-                    'MaTaiKhoan' => $sinhVien->MaSV,
-                    'username' => $email,
-                    'email' => $fullEmail,
-                    'full_name' => $sinhVien->HoTen,
-                    'initial_password' => $password,
-                    'role' => 'student',
-                    'is_sent' => false,
-                    'is_active' => true
+                // Cập nhật thông tin sinh viên
+                $sinhVien->update([
+                    'EmailCUSC' => $fullEmail,
+                    // Nếu bạn cũng muốn lưu mật khẩu đã mã hóa:
+                    // 'password_CUSC' => bcrypt($password),
                 ]);
 
-                // Cập nhật cột EmailCUSC trong bảng sinhvien
-                $sinhVien->update([
-                    'EmailCUSC' => $fullEmail
-                ]);
+                // (Không cần tạo bản ghi LdapAccount nếu không dùng nữa)
 
                 DB::commit();
                 $successCount++;

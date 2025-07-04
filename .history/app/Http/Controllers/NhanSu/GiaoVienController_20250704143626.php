@@ -434,61 +434,61 @@ class GiaoVienController extends Controller
     //             ->with('error', 'Lỗi đồng bộ: ' . $e->getMessage());
     //     }
     // }
-    public function dongBoTaiKhoanGVLDAP()
-    {
-        $giaoViens = GiaoVien::whereNull('EmailCUSC')->get();
-        $successCount = 0;
-        $errorCount = 0;
-        $errorDetails = [];
+    public function dongBoTaiKhoanGV()
+{
+    $giaoViens = GiaoVien::whereNull('EmailCUSC')->get();
+    $successCount = 0;
+    $errorCount = 0;
+    $errorDetails = [];
 
-        foreach ($giaoViens as $giaoVien) {
-            DB::beginTransaction();
-            try {
-                // Tạo email và mật khẩu
-                $email = $this->taoEmailCUSC($giaoVien);
-                $password = $this->taoMatKhauManh();
-                $fullEmail = $email . '@cusc.ctu.vn';
+    foreach ($giaoViens as $giaoVien) {
+        DB::beginTransaction();
+        try {
+            // Tạo email và mật khẩu
+            $email = $this->taoEmailCUSC($giaoVien);
+            $password = $this->taoMatKhauManh();
+            $fullEmail = $email . '@cusc.ctu.vn';
 
-                if (empty($email)) {
-                    throw new \Exception("Không tạo được email CUSC cho giáo viên {$giaoVien->HoTenGV}");
-                }
-
-                // Tạo tài khoản trong bảng ldap_accounts
-                $ldapAccount = LdapAccount::create([
-                    'MaTaiKhoan' => $giaoVien->MaGV,
-                    'username' => $email,
-                    'email' => $fullEmail,
-                    'full_name' => $giaoVien->HoTenGV,
-                    'initial_password' => $password,
-                    'role' => 'teacher',
-                    'is_sent' => false,
-                    'is_active' => true
-                ]);
-
-                // Cập nhật email trong bảng giao_viens
-                $giaoVien->update([
-                    'EmailCUSC' => $fullEmail
-                ]);
-
-                DB::commit();
-                $successCount++;
-
-            } catch (\Exception $e) {
-                DB::rollBack();
-                $errorCount++;
-                $errorDetails[] = [
-                    'MaTaiKhoan' => $giaoVien->MaGV,
-                    'ho_ten' => $giaoVien->HoTenGV,
-                    'error_message' => $e->getMessage()
-                ];
+            if (empty($email)) {
+                throw new \Exception("Không tạo được email CUSC cho giáo viên {$giaoVien->HoTenGV}");
             }
-        }
 
-        $message = "Đồng bộ hoàn tất. Thành công: $successCount, Lỗi: $errorCount";
-        return redirect()->route('giaovien.index')
-            ->with('success', $message)
-            ->with('error_details', $errorDetails);
+            // Tạo tài khoản trong bảng ldap_accounts
+            $ldapAccount = LdapAccount::create([
+                'MaTaiKhoan' => $giaoVien->MaGV,
+                'username' => $email,
+                'email' => $fullEmail,
+                'full_name' => $giaoVien->HoTenGV,
+                'initial_password' => $password,
+                'role' => 'teacher',
+                'is_sent' => false,
+                'is_active' => true
+            ]);
+
+            // Cập nhật email trong bảng giao_viens
+            $giaoVien->update([
+                'EmailCUSC' => $fullEmail
+            ]);
+
+            DB::commit();
+            $successCount++;
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $errorCount++;
+            $errorDetails[] = [
+                'MaTaiKhoan' => $giaoVien->MaGV,
+                'ho_ten' => $giaoVien->HoTenGV,
+                'error_message' => $e->getMessage()
+            ];
+        }
     }
+
+    $message = "Đồng bộ hoàn tất. Thành công: $successCount, Lỗi: $errorCount";
+    return redirect()->route('giaovien.index')
+        ->with('success', $message)
+        ->with('error_details', $errorDetails);
+}
 
     // Phương thức tạo mật khẩu LDAP
     private function taoMatKhauManh($length = 6)
