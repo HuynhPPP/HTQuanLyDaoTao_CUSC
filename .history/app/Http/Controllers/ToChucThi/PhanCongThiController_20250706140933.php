@@ -92,6 +92,10 @@ class PhanCongThiController extends Controller
             // Kiểm tra số lượng cán bộ còn lại
             $remainingAssignments = PhieuPhanCongThi::where('MaLichThi', $maLichThi)->count();
             
+            // Không cho xóa nếu chỉ còn 1 cán bộ
+            if ($remainingAssignments <= 1) {
+                return redirect()->back()->with('error', 'Phải có ít nhất một cán bộ được phân công.');
+            }
 
             $phanCong = PhieuPhanCongThi::where('MaLichThi', $maLichThi)
                 ->where('MaPhanCong', $maPhanCong)

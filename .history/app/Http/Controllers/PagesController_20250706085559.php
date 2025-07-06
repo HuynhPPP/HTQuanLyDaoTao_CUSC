@@ -405,7 +405,15 @@ class PagesController extends Controller
             $examCounter = 0;
 
             // Hàm lấy môn học cho ngày hiện tại (Crucial for building scheduleMatrix)
-            $getSubjectForDay = function (&$subjectOccurrences, $currentDate, &$totalHours, &$examDays, $addDaysSkippingWeekends, $holidayDates, &$examCounter) use ($schedule) {
+            $getSubjectForDay = function (
+                &$subjectOccurrences,
+                $currentDate,
+                &$totalHours,
+                &$examDays,
+                $addDaysSkippingWeekends,
+                $holidayDates,
+                &$examCounter
+            ) use ($schedule) {
                 foreach ($subjectOccurrences as $subject => &$details) {
                     if ($details['remaining'] > 0) {
                         if (is_null($details['first'])) {
@@ -1064,7 +1072,15 @@ class PagesController extends Controller
             // Hàm lấy môn học cho ngày hiện tại (Crucial for building scheduleMatrix)
             $examCounter = 0; // Initialize here for clarity
 
-            $getSubjectForDay = function (&$subjectOccurrences, $currentDate, &$totalHours, &$examDays, $addDaysSkippingWeekends, $holidayDates, &$examCounter) use ($schedule) {
+            $getSubjectForDay = function (
+                &$subjectOccurrences,
+                $currentDate,
+                &$totalHours,
+                &$examDays,
+                $addDaysSkippingWeekends,
+                $holidayDates,
+                &$examCounter
+            ) use ($schedule) {
                 foreach ($subjectOccurrences as $subject => &$details) {
                     if ($details['remaining'] > 0) {
                         if (is_null($details['first'])) {
@@ -1427,7 +1443,15 @@ class PagesController extends Controller
                 return $date;
             };
             $examCounter = 0;
-            $getSubjectForDay = function (&$subjectOccurrences, $currentDate, &$totalHours, &$examDays, $addDaysSkippingWeekends, $holidayDates, &$examCounter) use ($schedule) {
+            $getSubjectForDay = function (
+                &$subjectOccurrences,
+                $currentDate,
+                &$totalHours,
+                &$examDays,
+                $addDaysSkippingWeekends,
+                $holidayDates,
+                &$examCounter
+            ) use ($schedule) {
                 foreach ($subjectOccurrences as $subject => &$details) {
                     if ($details['remaining'] > 0) {
                         if (is_null($details['first'])) {

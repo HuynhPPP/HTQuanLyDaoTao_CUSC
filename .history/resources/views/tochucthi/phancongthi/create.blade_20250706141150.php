@@ -25,7 +25,8 @@
                                     <select name="MaGV[]" class="form-control select2" multiple="">
                                         @foreach ($availableCanBos as $cb)
                                             <option value="{{ $cb->MaGV }}">
-                                                {{ $cb->HoTenGV }}
+                                                {{ $cb->HoTenGV }} 
+                                                ({{ $cb->type === 'Giảng viên' }})
                                             </option>
                                         @endforeach
                                     </select>
@@ -73,7 +74,13 @@
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>
-                                                    {{ $pc->giaoVien->HoTenGV }}
+                                                    @if($pc->canBo)
+                                                        {{ $pc->canBo->HoTenCB }} (Cán bộ)
+                                                    @elseif($pc->giaoVien)
+                                                        {{ $pc->giaoVien->HoTenGV }} (Giảng viên)
+                                                    @else
+                                                        Không xác định
+                                                    @endif
                                                 </td>
                                                 <td>{{ $pc->VaiTro }}</td>
                                                 <td>{{ $pc->lichThi->NgayThi }}</td>
@@ -111,18 +118,16 @@
                 e.preventDefault(); // Ngăn submit mặc định
                 const form = $(this).closest('form'); // Tìm form cha gần nhất
 
-                Swal.fire({
+                swal({
                     title: 'Bạn có chắc chắn muốn huỷ phân công cán bộ này?',
                     icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Xóa',
-                    cancelButtonText: 'Hủy',
-                    dangerMode: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
+                    buttons: ['Hủy', 'Xác nhận'],
+                    dangerMode: true,
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        form.submit(); // Xác nhận thì submit form
                     } else {
-                        Swal.fire('Thao tác đã bị hủy.');
+                        swal('Thao tác đã bị hủy.');
                     }
                 });
             });

@@ -22,16 +22,18 @@ class PhanCongThiController extends Controller
     {
         $lichThi = LichThi::with('monHoc')->findOrFail($maLichThi);
         
+        // Lấy danh sách cán bộ
+        $canBos = CanBo::orderBy('HoTenCB')->get();
         
         // Lấy danh sách giảng viên
         $giaoViens = GiaoVien::orderBy('HoTenGV')->get();
 
         // Gộp danh sách cán bộ và giảng viên
-        $allCanBos = $giaoViens->concat($giaoViens)->map(function($item) {
+        $allCanBos = $canBos->concat($giaoViens)->map(function($item) {
             return (object)[
-                'MaGV' => $item->MaGV,
-                'HoTenGV' => $item->HoTenGV,
-                'type' => 'GiaoVien'
+                'MaCB' => $item->MaCB ?? $item->MaGV,
+                'HoTenCB' => $item->HoTenCB ?? $item->HoTenGV,
+                'type' => $item->MaCB ? 'CanBo' : 'GiaoVien'
             ];
         });
 
@@ -74,7 +76,7 @@ class PhanCongThiController extends Controller
                 if (!$existingAssignment) {
                     PhieuPhanCongThi::create([
                         'MaLichThi' => $maLichThi,
-                        'MaGV' => $maCB,
+                        'MaCB' => $maCB,
                         'VaiTro' => $request->VaiTro
                     ]);
                 }
@@ -92,6 +94,10 @@ class PhanCongThiController extends Controller
             // Kiểm tra số lượng cán bộ còn lại
             $remainingAssignments = PhieuPhanCongThi::where('MaLichThi', $maLichThi)->count();
             
+            // Không cho xóa nếu chỉ còn 1 cán bộ
+            if ($remainingAssignments <= 1) {
+                return redirect()->back()->with('error', 'Phải có ít nhất một cán bộ được phân công.');
+            }
 
             $phanCong = PhieuPhanCongThi::where('MaLichThi', $maLichThi)
                 ->where('MaPhanCong', $maPhanCong)

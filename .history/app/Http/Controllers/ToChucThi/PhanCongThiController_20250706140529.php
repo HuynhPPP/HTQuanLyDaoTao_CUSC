@@ -22,16 +22,18 @@ class PhanCongThiController extends Controller
     {
         $lichThi = LichThi::with('monHoc')->findOrFail($maLichThi);
         
+        // Lấy danh sách cán bộ
+        $canBos = CanBo::orderBy('HoTenCB')->get();
         
         // Lấy danh sách giảng viên
         $giaoViens = GiaoVien::orderBy('HoTenGV')->get();
 
         // Gộp danh sách cán bộ và giảng viên
-        $allCanBos = $giaoViens->concat($giaoViens)->map(function($item) {
+        $allCanBos = $canBos->concat($giaoViens)->map(function($item) {
             return (object)[
-                'MaGV' => $item->MaGV,
-                'HoTenGV' => $item->HoTenGV,
-                'type' => 'GiaoVien'
+                'MaCB' => $item->MaCB ?? $item->MaGV,
+                'HoTenCB' => $item->HoTenCB ?? $item->HoTenGV,
+                'type' => $item->MaCB ? 'CanBo' : 'GiaoVien'
             ];
         });
 
@@ -41,10 +43,10 @@ class PhanCongThiController extends Controller
             ->get();
 
         // Lấy danh sách MaCB đã được phân công
-        $assignedCBIds = $phanCongList->pluck('MaGV')->toArray();
+        $assignedCBIds = $phanCongList->pluck('MaCB')->toArray();
 
         // Lọc ra các cán bộ chưa được phân công
-        $availableCanBos = $allCanBos->whereNotIn('MaGV', $assignedCBIds);
+        $availableCanBos = $allCanBos->whereNotIn('MaCB', $assignedCBIds);
 
         return view(
             'tochucthi.phancongthi.create',
@@ -55,26 +57,26 @@ class PhanCongThiController extends Controller
     public function store(Request $request, $maLichThi)
     {
         $request->validate([
-            'MaGV' => 'required|array|max:10', // Giới hạn tối đa 10 cán bộ
-            'MaGV.*' => 'distinct', // Không cho phép trùng lặp
+            'MaCB' => 'required|array|max:10', // Giới hạn tối đa 10 cán bộ
+            'MaCB.*' => 'distinct', // Không cho phép trùng lặp
             'VaiTro' => 'required|in:Cán bộ coi thi,Giám sát,Chấm thi'
         ], [
-            'MaGV.max' => 'Chỉ được phân công tối đa 10 cán bộ/giảng viên.',
-            'MaGV.*.distinct' => 'Không được chọn trùng cán bộ/giảng viên.'
+            'MaCB.max' => 'Chỉ được phân công tối đa 10 cán bộ/giảng viên.',
+            'MaCB.*.distinct' => 'Không được chọn trùng cán bộ/giảng viên.'
         ]);
 
         try {
             // Thêm từng cán bộ vào phân công
-            foreach ($request->MaGV as $maCB) {
+            foreach ($request->MaCB as $maCB) {
                 // Kiểm tra xem cán bộ đã được phân công chưa
                 $existingAssignment = PhieuPhanCongThi::where('MaLichThi', $maLichThi)
-                    ->where('MaGV', $maCB)
+                    ->where('MaCB', $maCB)
                     ->exists();
 
                 if (!$existingAssignment) {
                     PhieuPhanCongThi::create([
                         'MaLichThi' => $maLichThi,
-                        'MaGV' => $maCB,
+                        'MaCB' => $maCB,
                         'VaiTro' => $request->VaiTro
                     ]);
                 }
@@ -92,6 +94,10 @@ class PhanCongThiController extends Controller
             // Kiểm tra số lượng cán bộ còn lại
             $remainingAssignments = PhieuPhanCongThi::where('MaLichThi', $maLichThi)->count();
             
+            // Không cho xóa nếu chỉ còn 1 cán bộ
+            if ($remainingAssignments <= 1) {
+                return redirect()->back()->with('error', 'Phải có ít nhất một cán bộ được phân công.');
+            }
 
             $phanCong = PhieuPhanCongThi::where('MaLichThi', $maLichThi)
                 ->where('MaPhanCong', $maPhanCong)

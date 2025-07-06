@@ -40,7 +40,7 @@ class CalendarExamController extends Controller
         }
 
         // Kiểm tra xem giảng viên có được phân công coi thi không
-        $phanCongThi = PhieuPhanCongThi::where('MaGV', $giaoVien->MaGV)
+        $phanCongThi = PhieuPhanCongThi::where('MaCB', $giaoVien->MaGV)
             ->where('MaLichThi', $maLichThi)
             ->first();
 

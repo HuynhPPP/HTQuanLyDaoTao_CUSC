@@ -118,11 +118,11 @@
                     confirmButtonText: 'Xóa',
                     cancelButtonText: 'Hủy',
                     dangerMode: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        form.submit(); // Xác nhận thì submit form
                     } else {
-                        Swal.fire('Thao tác đã bị hủy.');
+                        swal('Thao tác đã bị hủy.');
                     }
                 });
             });

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jul 05, 2025 at 10:11 AM
+-- Generation Time: Jul 06, 2025 at 07:52 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -49,54 +49,6 @@ INSERT INTO `bangcapcanbo` (`MaBang`, `TenBang`, `ThoiGianCap`, `DonViCap`, `SoH
 ('BC001', 'Bằng TSKH', NULL, NULL, NULL, NULL, '2025-05-16 09:50:25', '2025-05-16 09:50:25'),
 ('BC002', 'Bằng ThS', NULL, NULL, NULL, NULL, '2025-05-16 09:50:25', '2025-05-16 09:50:25'),
 ('BC003', 'Bằng ĐH', NULL, NULL, NULL, NULL, '2025-05-16 09:50:25', '2025-05-16 09:50:25');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `bao_cao_do_an_upload`
---
-
-CREATE TABLE `bao_cao_do_an_upload` (
-  `id` bigint UNSIGNED NOT NULL,
-  `ten_file` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `duong_dan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `lop_bao_cao` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Tên lớp từ file word (e.g., CP24Y0G05)',
-  `lan_bao_cao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Lần báo cáo (e.g., 01)',
-  `hoc_ky` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Học kỳ (e.g., 1 (Print Portfolio))',
-  `giang_vien_huong_dan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Họ tên Giáo viên hướng dẫn',
-  `giang_vien_phan_bien` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Họ tên Giáo viên phản biện',
-  `ngay_bao_cao` date DEFAULT NULL COMMENT 'Ngày báo cáo (e.g., 17/01/2025)',
-  `gio_bao_cao_bat_dau` time DEFAULT NULL COMMENT 'Giờ báo cáo bắt đầu (e.g., 7:00)',
-  `gio_bao_cao_ket_thuc` time DEFAULT NULL COMMENT 'Giờ báo cáo kết thúc (e.g., 12:00)',
-  `dia_diem_bao_cao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Địa điểm báo cáo (e.g., Lý thuyết 04)',
-  `so_luong_nhom` int DEFAULT NULL COMMENT 'Số lượng nhóm (e.g., 05 Nhóm)',
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cache`
---
-
-CREATE TABLE `cache` (
-  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `expiration` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cache_locks`
---
-
-CREATE TABLE `cache_locks` (
-  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `owner` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `expiration` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -426,38 +378,6 @@ INSERT INTO `donvi` (`MaDV`, `TenDVHienTai`, `TenDVTungCongTac`, `created_at`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `failed_jobs`
---
-
-CREATE TABLE `failed_jobs` (
-  `id` bigint UNSIGNED NOT NULL,
-  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `feedback`
---
-
-CREATE TABLE `feedback` (
-  `MaFeedback` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `MaSV` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `MaGV` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `NoiDung` text COLLATE utf8mb4_unicode_ci,
-  `TrangThai` enum('DaXuLy','ChuaXuLy') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ChuaXuLy',
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `giangday`
 --
 
@@ -504,7 +424,7 @@ CREATE TABLE `giaovien` (
   `TenChucVu` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `DonViCongTac` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `BangCap` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `LoaiGV` enum('CoHuu','MoiGiang') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CoHuu',
+  `LoaiGV` enum('CoHuu','MoiGiang') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CoHuu',
   `ChuyenNganh` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `GhiChu` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `NgayBatDauCongTac` date DEFAULT NULL,
@@ -617,69 +537,6 @@ INSERT INTO `hocvi` (`MaHV`, `TenHocVi`, `NganhHoc`, `ChuyenNganh`, `CoSoDaoTao`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `hosotuyensinh`
---
-
-CREATE TABLE `hosotuyensinh` (
-  `MaHoSo` varchar(12) NOT NULL,
-  `MaSV` varchar(12) DEFAULT NULL,
-  `MaTS` varchar(12) NOT NULL,
-  `NgayNopHS` date DEFAULT NULL,
-  `TrangThaiHS` enum('DaNop','DaXet','DaTrungTuyen','KhongTrungTuyen') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `Hinh3X4` tinyint(1) DEFAULT NULL,
-  `HinhCCCD` tinyint(1) DEFAULT NULL,
-  `ToDangKi` tinyint(1) DEFAULT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `hosotuyensinh`
---
-
-INSERT INTO `hosotuyensinh` (`MaHoSo`, `MaSV`, `MaTS`, `NgayNopHS`, `TrangThaiHS`, `Hinh3X4`, `HinhCCCD`, `ToDangKi`, `created_at`, `updated_at`) VALUES
-('HS1747584061', '21010001', 'TS20251', '2025-05-18', 'DaXet', NULL, NULL, NULL, '2025-05-18 16:01:01', '2025-05-19 08:22:50'),
-('HS1747585057', '21010002', 'TS20251', '2025-05-18', 'DaNop', NULL, NULL, NULL, '2025-05-18 16:17:37', '2025-05-18 16:17:37'),
-('HS1747585066', '21010003', 'TS20251', '2025-05-18', 'DaNop', NULL, NULL, NULL, '2025-05-18 16:17:46', '2025-05-18 16:17:46');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `jobs`
---
-
-CREATE TABLE `jobs` (
-  `id` bigint UNSIGNED NOT NULL,
-  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `attempts` tinyint UNSIGNED NOT NULL,
-  `reserved_at` int UNSIGNED DEFAULT NULL,
-  `available_at` int UNSIGNED NOT NULL,
-  `created_at` int UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `job_batches`
---
-
-CREATE TABLE `job_batches` (
-  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `total_jobs` int NOT NULL,
-  `pending_jobs` int NOT NULL,
-  `failed_jobs` int NOT NULL,
-  `failed_job_ids` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `options` mediumtext COLLATE utf8mb4_unicode_ci,
-  `cancelled_at` int DEFAULT NULL,
-  `created_at` int NOT NULL,
-  `finished_at` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `khoadaotao`
 --
 
@@ -735,10 +592,10 @@ INSERT INTO `khunggio` (`TenKhungGio`, `ThoiGian`) VALUES
 CREATE TABLE `ldap_accounts` (
   `id` bigint UNSIGNED NOT NULL,
   `MaTaiKhoan` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `full_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `initial_password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `full_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `initial_password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `role` enum('admin','student','teacher','staff') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'student',
   `is_sent` tinyint(1) NOT NULL DEFAULT '0',
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
@@ -826,7 +683,7 @@ INSERT INTO `lophoc` (`MaLop`, `TenLop`, `NgayBatDau`, `MaChuongTrinh`, `created
 
 CREATE TABLE `migrations` (
   `id` int UNSIGNED NOT NULL,
-  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -955,8 +812,8 @@ CREATE TABLE `ngaytuhoc` (
 --
 
 CREATE TABLE `password_reset_tokens` (
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -997,8 +854,10 @@ CREATE TABLE `phieuphancongthi` (
 --
 
 INSERT INTO `phieuphancongthi` (`MaPhanCong`, `MaLichThi`, `MaGV`, `VaiTro`, `created_at`, `updated_at`) VALUES
-(5, 'LT25060634', 'GV007', 'Cán bộ coi thi', '2025-07-02 14:38:18', '2025-07-02 14:38:18'),
-(6, 'LT25060634', 'GV006', 'Cán bộ coi thi', '2025-07-02 14:38:18', '2025-07-02 14:38:18');
+(9, 'LT25060634', 'GV008', 'Cán bộ coi thi', '2025-07-06 07:18:39', '2025-07-06 07:18:39'),
+(11, 'LT25060634', 'GV005', 'Cán bộ coi thi', '2025-07-06 07:19:14', '2025-07-06 07:19:14'),
+(12, 'LT2506061453', 'GV004', 'Cán bộ coi thi', '2025-07-06 07:21:17', '2025-07-06 07:21:17'),
+(13, 'LT2506061453', 'GV001', 'Cán bộ coi thi', '2025-07-06 07:21:17', '2025-07-06 07:21:17');
 
 -- --------------------------------------------------------
 
@@ -1058,11 +917,11 @@ INSERT INTO `phutrach` (`CongViecPhuTrach`, `MieuTaChiTiet`, `created_at`, `upda
 --
 
 CREATE TABLE `sessions` (
-  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `user_id` bigint UNSIGNED DEFAULT NULL,
-  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_agent` text COLLATE utf8mb4_unicode_ci,
-  `payload` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ip_address` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_agent` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `payload` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `last_activity` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -1071,9 +930,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('SuCwX0cN8GZbaJHXLiSqCSgXoAjmc5fWIYsK7ZNX', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il90b2tlbiI7czo0MDoiYUdURkhJNEE4R2tubmMzaUd3ZWZSVElJTHhVQnByd2VoS3YxVEJOaSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDk6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC90aG9uZy1rZS90aG9uZy1rZS1kYXNoYm9hcmQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJyZ2hMTyI7czoyOiJpZCI7czo3OiJhZG1pbjAxIjtzOjQ6InVzZXIiO3M6NToiYWRtaW4iO3M6MTE6ImRpc3BsYXluYW1lIjtzOjU6ImFkbWluIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO3M6MjI6IlBIUERFQlVHQkFSX1NUQUNLX0RBVEEiO2E6MDp7fX0=', 1751679242),
-('T4gL6kATyOkZ6VmhtZ0qLa1OreRbZ5EFvYDa8j7v', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTozOntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czoyMToiaHR0cDovLzEyNy4wLjAuMTo4MDAwIjt9czo2OiJfdG9rZW4iO3M6NDA6IlI2ODVjNnVueG1JQ2FqRTR0NWlNM2FvTmYyc29QUFdoYk1odzFIV2YiO30=', 1751618238),
-('ZZP7wjti8CLx6zAlMlC50fNOmrYQmONao9i2PcSN', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il90b2tlbiI7czo0MDoiOXRDY0gwYW01TVBQVk5FTTJPN1d3VHBVQkZBa2l5WldBaDFOdUF3NiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTY2OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvbWluaXN0cnkvc2NoZWR1bGVzL3NjaGVkdWxlL1RIJUUxJUJCJTlDSSUyMEtIJUMzJTkzQSUyMEJJJUUxJUJCJTgyVSUyMEwlRTElQkIlOUFQJTIwQ1AyMzk2RzExJTIwLSUyMEglRTElQkIlOENDJTIwSyVFMSVCQiVCMiUyMEklMjAlMjhPVi03MDIzJTI5Ijt9czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToibjlhUFkiO3M6MjoiaWQiO3M6NzoiYWRtaW4wMSI7czo0OiJ1c2VyIjtzOjU6ImFkbWluIjtzOjExOiJkaXNwbGF5bmFtZSI7czo1OiJhZG1pbiI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjtzOjIyOiJQSFBERUJVR0JBUl9TVEFDS19EQVRBIjthOjA6e319', 1751618243);
+('ohK8p82hZFPvy2nr25oCRosecsV31N463L8VaNqv', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il90b2tlbiI7czo0MDoiZlNxZ0g4RzNkdzZTZTJmN2d4QWRya2t4TWpmSmdXT0piRktNZWk5TSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9naWFvLXZpZW4vbGljaC10aGkiO31zOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJJNWUyOCI7czoyOiJpZCI7czo1OiJHVjAwMSI7czo0OiJ1c2VyIjtzOjE2OiJndjAwMW5ndXllbnZhbmFuIjtzOjExOiJkaXNwbGF5bmFtZSI7czoxNjoiTmd1eeG7hW4gVsSDbiBBbiI7czo0OiJyb2xlIjtzOjc6InRlYWNoZXIiO3M6MjI6IlBIUERFQlVHQkFSX1NUQUNLX0RBVEEiO2E6MDp7fX0=', 1751788168),
+('XoP5DWw0R4t8eIBq2V5XAHkLhW3QqlCT6kYR9gUp', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiZnloTEdaV0lVaDJOc3VETTc2bm9hSG1aMnVQM1FaUkF6MlkxM1RmcyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9naWFvdmllbi9saXN0Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToiTDNsdXAiO3M6MjoiaWQiO3M6NzoiYWRtaW4wMSI7czo0OiJ1c2VyIjtzOjU6ImFkbWluIjtzOjExOiJkaXNwbGF5bmFtZSI7czo1OiJhZG1pbiI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjt9', 1751788211);
 
 -- --------------------------------------------------------
 
@@ -1239,7 +1097,7 @@ CREATE TABLE `sinhvien_duthi` (
   `MaLichThi` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `MaLop` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `TrangThaiDuThi` enum('ChuaDangKy','DuThi','VangMat','KhongDuThi') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ChuaDangKy',
-  `GhiChu` text COLLATE utf8mb4_unicode_ci,
+  `GhiChu` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1290,22 +1148,6 @@ INSERT INTO `sinhvien_duthi` (`id`, `MaSV`, `MaLichThi`, `MaLop`, `TrangThaiDuTh
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tainguyen_hoctap`
---
-
-CREATE TABLE `tainguyen_hoctap` (
-  `MaTaiNguyen` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `TenTaiNguyen` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `LoaiTaiNguyen` enum('Sach','TaiLieu','PhanMem','ThietBiThucHanh') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `MoTa` text COLLATE utf8mb4_unicode_ci,
-  `TrangThai` enum('KhaDung','KhongKhaDung') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'KhaDung',
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `taphuan`
 --
 
@@ -1331,74 +1173,13 @@ INSERT INTO `taphuan` (`MaTapHuan`, `TenKhoaTapHuan`, `ThoiGianBatDau`, `ThoiGia
 -- --------------------------------------------------------
 
 --
--- Table structure for table `thietbi`
---
-
-CREATE TABLE `thietbi` (
-  `MaThietBi` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `TenThietBi` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `MoTa` text COLLATE utf8mb4_unicode_ci,
-  `TinhTrang` enum('TotNhat','Tot','TrungBinh','CanSuaChua','HongHoan') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Tot',
-  `NgayNhap` date DEFAULT NULL,
-  `HanBaoHanh` date DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `thongtintuyensinh`
---
-
-CREATE TABLE `thongtintuyensinh` (
-  `MaTS` varchar(12) NOT NULL,
-  `NamTS` int DEFAULT NULL,
-  `DotTS` int DEFAULT NULL,
-  `NgayBatDau` date DEFAULT NULL,
-  `NgayKetThuc` date DEFAULT NULL,
-  `ChiTieuTS` int DEFAULT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `thongtintuyensinh`
---
-
-INSERT INTO `thongtintuyensinh` (`MaTS`, `NamTS`, `DotTS`, `NgayBatDau`, `NgayKetThuc`, `ChiTieuTS`, `created_at`, `updated_at`) VALUES
-('TS20251', 2025, 1, '2025-05-18', '2025-06-18', 100, '2025-05-18 15:02:22', '2025-05-18 15:02:22');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `thong_ke_bao_cao_do_ans`
---
-
-CREATE TABLE `thong_ke_bao_cao_do_ans` (
-  `id` bigint UNSIGNED NOT NULL,
-  `class_id` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `instructor_id` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `reviewer_id` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `report_date` date NOT NULL,
-  `report_time_start` time NOT NULL,
-  `report_time_end` time NOT NULL,
-  `location` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `report_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `thong_ke_hoc_tap`
 --
 
 CREATE TABLE `thong_ke_hoc_tap` (
   `id` bigint UNSIGNED NOT NULL,
   `ma_chuong_trinh` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `hoc_ki` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `hoc_ki` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tong_sinh_vien` int NOT NULL DEFAULT '0',
   `sinh_vien_gioi` int NOT NULL DEFAULT '0',
   `sinh_vien_kha` int NOT NULL DEFAULT '0',
@@ -1461,53 +1242,6 @@ INSERT INTO `tkb` (`TenTKB`, `MaLop`, `MaHK`, `NgayHoc`, `ngayHocType`, `NgayPhi
 ('THỜI KHÓA BIỂU LỚP CP2396G11 - HỌC KỲ I (OV-7023)', 'CP2396G11', 'OV-7096-HK I', '2025-07-08', 'all', NULL),
 ('THỜI KHÓA BIỂU LỚP CP2396M02 - HỌC KỲ II (OV-7023)', 'CP2396M02', 'OV-7023-HK I', '2025-07-07', 'all', NULL);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `trangthaimh`
---
-
-CREATE TABLE `trangthaimh` (
-  `MaTTMH` varchar(12) NOT NULL,
-  `TrangThai` tinyint(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tuvan_tuyensinh`
---
-
-CREATE TABLE `tuvan_tuyensinh` (
-  `MaTuVan` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `HoTen` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Email` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `SoDienThoai` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `NoiDungTuVan` text COLLATE utf8mb4_unicode_ci,
-  `NgayTuVan` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `TrangThai` enum('ChuaLienHe','DaLienHe','DaHoanThanh') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ChuaLienHe',
-  `NhanVienTuVan` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `users`
---
-
-CREATE TABLE `users` (
-  `id` bigint UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 --
 -- Indexes for dumped tables
 --
@@ -1517,24 +1251,6 @@ CREATE TABLE `users` (
 --
 ALTER TABLE `bangcapcanbo`
   ADD PRIMARY KEY (`MaBang`);
-
---
--- Indexes for table `bao_cao_do_an_upload`
---
-ALTER TABLE `bao_cao_do_an_upload`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `cache`
---
-ALTER TABLE `cache`
-  ADD PRIMARY KEY (`key`);
-
---
--- Indexes for table `cache_locks`
---
-ALTER TABLE `cache_locks`
-  ADD PRIMARY KEY (`key`);
 
 --
 -- Indexes for table `canbo`
@@ -1613,21 +1329,6 @@ ALTER TABLE `donvi`
   ADD PRIMARY KEY (`MaDV`);
 
 --
--- Indexes for table `failed_jobs`
---
-ALTER TABLE `failed_jobs`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
-
---
--- Indexes for table `feedback`
---
-ALTER TABLE `feedback`
-  ADD PRIMARY KEY (`MaFeedback`),
-  ADD KEY `feedback_masv_foreign` (`MaSV`),
-  ADD KEY `feedback_magv_foreign` (`MaGV`);
-
---
 -- Indexes for table `giangday`
 --
 ALTER TABLE `giangday`
@@ -1659,27 +1360,6 @@ ALTER TABLE `hocki`
 --
 ALTER TABLE `hocvi`
   ADD PRIMARY KEY (`MaHV`);
-
---
--- Indexes for table `hosotuyensinh`
---
-ALTER TABLE `hosotuyensinh`
-  ADD PRIMARY KEY (`MaHoSo`),
-  ADD KEY `MaSV` (`MaSV`),
-  ADD KEY `fk_MaTS` (`MaTS`);
-
---
--- Indexes for table `jobs`
---
-ALTER TABLE `jobs`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `jobs_queue_index` (`queue`);
-
---
--- Indexes for table `job_batches`
---
-ALTER TABLE `job_batches`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `khoadaotao`
@@ -1801,37 +1481,10 @@ ALTER TABLE `sinhvien_duthi`
   ADD KEY `sinhvien_duthi_malop_foreign` (`MaLop`);
 
 --
--- Indexes for table `tainguyen_hoctap`
---
-ALTER TABLE `tainguyen_hoctap`
-  ADD PRIMARY KEY (`MaTaiNguyen`);
-
---
 -- Indexes for table `taphuan`
 --
 ALTER TABLE `taphuan`
   ADD PRIMARY KEY (`MaTapHuan`);
-
---
--- Indexes for table `thietbi`
---
-ALTER TABLE `thietbi`
-  ADD PRIMARY KEY (`MaThietBi`);
-
---
--- Indexes for table `thongtintuyensinh`
---
-ALTER TABLE `thongtintuyensinh`
-  ADD PRIMARY KEY (`MaTS`);
-
---
--- Indexes for table `thong_ke_bao_cao_do_ans`
---
-ALTER TABLE `thong_ke_bao_cao_do_ans`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `thong_ke_bao_cao_do_ans_class_id_foreign` (`class_id`),
-  ADD KEY `thong_ke_bao_cao_do_ans_instructor_id_foreign` (`instructor_id`),
-  ADD KEY `thong_ke_bao_cao_do_ans_reviewer_id_foreign` (`reviewer_id`);
 
 --
 -- Indexes for table `thong_ke_hoc_tap`
@@ -1856,34 +1509,8 @@ ALTER TABLE `tkb`
   ADD KEY `MaLop` (`MaLop`);
 
 --
--- Indexes for table `trangthaimh`
---
-ALTER TABLE `trangthaimh`
-  ADD PRIMARY KEY (`MaTTMH`);
-
---
--- Indexes for table `tuvan_tuyensinh`
---
-ALTER TABLE `tuvan_tuyensinh`
-  ADD PRIMARY KEY (`MaTuVan`),
-  ADD KEY `tuvan_tuyensinh_nhanvientuvan_foreign` (`NhanVienTuVan`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `users_email_unique` (`email`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
-
---
--- AUTO_INCREMENT for table `bao_cao_do_an_upload`
---
-ALTER TABLE `bao_cao_do_an_upload`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `danhsachmh`
@@ -1892,22 +1519,10 @@ ALTER TABLE `danhsachmh`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
--- AUTO_INCREMENT for table `failed_jobs`
---
-ALTER TABLE `failed_jobs`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `hinh_thuc_danh_gia`
 --
 ALTER TABLE `hinh_thuc_danh_gia`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
---
--- AUTO_INCREMENT for table `jobs`
---
-ALTER TABLE `jobs`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `ldap_accounts`
@@ -1943,19 +1558,13 @@ ALTER TABLE `phieulido`
 -- AUTO_INCREMENT for table `phieuphancongthi`
 --
 ALTER TABLE `phieuphancongthi`
-  MODIFY `MaPhanCong` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `MaPhanCong` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `sinhvien_duthi`
 --
 ALTER TABLE `sinhvien_duthi`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
-
---
--- AUTO_INCREMENT for table `thong_ke_bao_cao_do_ans`
---
-ALTER TABLE `thong_ke_bao_cao_do_ans`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `thong_ke_hoc_tap`
@@ -1968,12 +1577,6 @@ ALTER TABLE `thong_ke_hoc_tap`
 --
 ALTER TABLE `tieu_chi_xep_loai`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -2041,13 +1644,6 @@ ALTER TABLE `diemthi`
   ADD CONSTRAINT `diemthi_ibfk_3` FOREIGN KEY (`MaLop`) REFERENCES `lophoc` (`MaLop`);
 
 --
--- Constraints for table `feedback`
---
-ALTER TABLE `feedback`
-  ADD CONSTRAINT `feedback_magv_foreign` FOREIGN KEY (`MaGV`) REFERENCES `giaovien` (`MaGV`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `feedback_masv_foreign` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`) ON DELETE SET NULL ON UPDATE CASCADE;
-
---
 -- Constraints for table `giangday`
 --
 ALTER TABLE `giangday`
@@ -2064,13 +1660,6 @@ ALTER TABLE `hinh_thuc_danh_gia`
 --
 ALTER TABLE `hocki`
   ADD CONSTRAINT `hocki_ibfk_1` FOREIGN KEY (`MaChuongTrinh`) REFERENCES `chuongtrinh` (`MaChuongTrinh`);
-
---
--- Constraints for table `hosotuyensinh`
---
-ALTER TABLE `hosotuyensinh`
-  ADD CONSTRAINT `fk_MaTS` FOREIGN KEY (`MaTS`) REFERENCES `thongtintuyensinh` (`MaTS`),
-  ADD CONSTRAINT `hosotuyensinh_ibfk_1` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`);
 
 --
 -- Constraints for table `lichthi`
@@ -2107,14 +1696,6 @@ ALTER TABLE `sinhvien_duthi`
   ADD CONSTRAINT `sinhvien_duthi_masv_foreign` FOREIGN KEY (`MaSV`) REFERENCES `sinhvien` (`MaSV`);
 
 --
--- Constraints for table `thong_ke_bao_cao_do_ans`
---
-ALTER TABLE `thong_ke_bao_cao_do_ans`
-  ADD CONSTRAINT `thong_ke_bao_cao_do_ans_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `lophoc` (`MaLop`) ON DELETE CASCADE,
-  ADD CONSTRAINT `thong_ke_bao_cao_do_ans_instructor_id_foreign` FOREIGN KEY (`instructor_id`) REFERENCES `giaovien` (`MaGV`) ON DELETE SET NULL,
-  ADD CONSTRAINT `thong_ke_bao_cao_do_ans_reviewer_id_foreign` FOREIGN KEY (`reviewer_id`) REFERENCES `giaovien` (`MaGV`) ON DELETE SET NULL;
-
---
 -- Constraints for table `thong_ke_hoc_tap`
 --
 ALTER TABLE `thong_ke_hoc_tap`
@@ -2132,12 +1713,6 @@ ALTER TABLE `tieu_chi_xep_loai`
 ALTER TABLE `tkb`
   ADD CONSTRAINT `tkb_ibfk_1` FOREIGN KEY (`MaHK`) REFERENCES `hocki` (`MaHK`),
   ADD CONSTRAINT `tkb_ibfk_2` FOREIGN KEY (`MaLop`) REFERENCES `lophoc` (`MaLop`);
-
---
--- Constraints for table `tuvan_tuyensinh`
---
-ALTER TABLE `tuvan_tuyensinh`
-  ADD CONSTRAINT `tuvan_tuyensinh_nhanvientuvan_foreign` FOREIGN KEY (`NhanVienTuVan`) REFERENCES `canbo` (`MaCB`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

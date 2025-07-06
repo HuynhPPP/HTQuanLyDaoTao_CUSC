@@ -25,7 +25,8 @@
                                     <select name="MaGV[]" class="form-control select2" multiple="">
                                         @foreach ($availableCanBos as $cb)
                                             <option value="{{ $cb->MaGV }}">
-                                                {{ $cb->HoTenGV }}
+                                                {{ $cb->HoTenGV }} 
+                                                ({{ $cb->type === 'Giảng viên' }})
                                             </option>
                                         @endforeach
                                     </select>
@@ -73,7 +74,7 @@
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>
-                                                    {{ $pc->giaoVien->HoTenGV }}
+                                                        {{ $pc->giaoVien->HoTenGV }}
                                                 </td>
                                                 <td>{{ $pc->VaiTro }}</td>
                                                 <td>{{ $pc->lichThi->NgayThi }}</td>
@@ -118,11 +119,11 @@
                     confirmButtonText: 'Xóa',
                     cancelButtonText: 'Hủy',
                     dangerMode: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        form.submit(); // Xác nhận thì submit form
                     } else {
-                        Swal.fire('Thao tác đã bị hủy.');
+                        swal('Thao tác đã bị hủy.');
                     }
                 });
             });
