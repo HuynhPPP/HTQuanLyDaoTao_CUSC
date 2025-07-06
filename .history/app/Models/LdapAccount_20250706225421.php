@@ -45,11 +45,4 @@ class LdapAccount extends Model
     {
         return $query->where('is_active', true);
     }
-    public function scopeUniqueUsername($query, $username, $exceptId = null)
-{
-    if ($exceptId) {
-        return $query->where('username', $username)->where('id', '!=', $exceptId)->doesntExist();
-    }
-    return $query->where('username', $username)->doesntExist();
-}
 }

@@ -31,7 +31,7 @@
                             <i class="fas fa-key"></i> Đổi mật khẩu
                         </a>
                     @endif
-                    @if (session('role') == 'admin')
+                    @if (session('role') == 'student')
                         <a href="#" class="dropdown-item has-icon" data-toggle="modal"
                             data-target="#changePasswordModal">
                             <i class="fas fa-key"></i> Đổi mật khẩu

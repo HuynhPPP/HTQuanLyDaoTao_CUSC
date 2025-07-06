@@ -196,7 +196,7 @@
             $('.delete-account').click(function(e) {
                 e.preventDefault();
                 var form = $(this).closest('.delete-account-form');
-
+                
                 Swal.fire({
                     title: 'Xác Nhận Xóa Tài Khoản',
                     text: 'Bạn có chắc chắn muốn xóa tài khoản này?',
@@ -217,10 +217,9 @@
             $('.toggle-account-status').change(function() {
                 var accountId = $(this).data('id');
                 var checkbox = $(this);
-
+                
                 $.ajax({
-                    url: "{{ route('giaovien.ldap.account.toggle-status', ':id') }}".replace(':id',
-                        accountId),
+                    url: "{{ route('giaovien.ldap.account.toggle-status', ':id') }}".replace(':id', accountId),
                     method: 'POST',
                     data: {
                         _token: "{{ csrf_token() }}"
@@ -234,19 +233,16 @@
                             });
 
                             // Cập nhật trạng thái badge
-                            var badgeCell = checkbox.closest('tr').find(
-                            '.account-status-badge');
+                            var badgeCell = checkbox.closest('tr').find('.account-status-badge');
                             if (response.is_active) {
-                                badgeCell.removeClass('bg-warning').addClass('bg-success').text(
-                                    'Đang Hoạt Động');
+                                badgeCell.removeClass('bg-warning').addClass('bg-success').text('Đang Hoạt Động');
                             } else {
-                                badgeCell.removeClass('bg-success').addClass('bg-warning').text(
-                                    'Ngừng Hoạt Động');
+                                badgeCell.removeClass('bg-success').addClass('bg-warning').text('Ngừng Hoạt Động');
                             }
                         } else {
                             // Hoàn lại trạng thái checkbox nếu có lỗi
                             checkbox.prop('checked', !checkbox.prop('checked'));
-
+                            
                             iziToast.error({
                                 message: response.message,
                                 position: 'topRight'
@@ -256,7 +252,7 @@
                     error: function(xhr) {
                         // Hoàn lại trạng thái checkbox
                         checkbox.prop('checked', !checkbox.prop('checked'));
-
+                        
                         iziToast.error({
                             message: 'Có lỗi xảy ra khi thay đổi trạng thái',
                             position: 'topRight'

@@ -21,7 +21,6 @@ use LdapRecord\Models\ActiveDirectory\User;
 use LdapRecord\Models\ActiveDirectory\Group;
 use LdapRecord\Container;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class SinhVienController extends Controller
 {
@@ -409,108 +408,5 @@ class SinhVienController extends Controller
         $text = preg_replace('/[đ]/u', 'd', $text);
 
         return preg_replace('/[^a-zA-Z0-9]/', '', $text);
-    }
-    public function editLdapAccount($id)
-    {
-        $ldapAccount = LdapAccount::findOrFail($id);
-        return view('quanly_nhansu.sinhvien.account.edit_account', compact('ldapAccount'));
-    }
-    public function updateLdapAccount(Request $request, $id)
-    {
-        $ldapAccount = LdapAccount::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [
-            'username' => [
-                'required',
-                'string',
-                'max:50',
-                Rule::unique('ldap_accounts', 'username')->ignore($ldapAccount->id)
-            ],
-            'email' => 'required|email|max:100',
-            'is_active' => 'boolean'
-        ], [
-            'username.required' => 'Vui lòng nhập tên tài khoản.',
-            'username.unique' => 'Tên tài khoản đã tồn tại.',
-            'email.required' => 'Vui lòng nhập email.',
-            'email.email' => 'Địa chỉ email không hợp lệ.'
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        DB::beginTransaction();
-        try {
-            $ldapAccount->update([
-                'username' => $request->username,
-                'email' => $request->email,
-                'is_active' => $request->has('is_active')
-            ]);
-
-            DB::commit();
-            return redirect()->route('ldap.account.list')
-                ->with('success', 'Cập nhật tài khoản thành công');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
-        }
-    }
-    public function destroyLdapAccount($id)
-    {
-        DB::beginTransaction();
-        try {
-            $ldapAccount = LdapAccount::findOrFail($id);
-
-            // Kiểm tra nếu tài khoản đã được sử dụng
-            $user = $ldapAccount->getUser();
-            if ($user) {
-                return back()->with('error', 'Không thể xóa tài khoản đã được gán cho người dùng');
-            }
-
-            $ldapAccount->delete();
-
-            DB::commit();
-            return redirect()->route('ldap.account.list')
-                ->with('success', 'Xóa tài khoản thành công');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
-        }
-    }
-    // app/Http/Controllers/NhanSu/SinhVienController.php
-    public function toggleLdapAccountStatus($id)
-    {
-        DB::beginTransaction();
-        try {
-            $ldapAccount = LdapAccount::findOrFail($id);
-
-            // Đảo ngược trạng thái hiện tại
-            $newStatus = !$ldapAccount->is_active;
-
-            $ldapAccount->update([
-                'is_active' => $newStatus
-            ]);
-
-            DB::commit();
-
-            // Trả về thông báo phù hợp
-            $message = $newStatus
-                ? 'Kích hoạt tài khoản thành công'
-                : 'Vô hiệu hóa tài khoản thành công';
-
-            return response()->json([
-                'success' => true,
-                'is_active' => $newStatus,
-                'message' => $message
-            ]);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
-        }
     }
 }

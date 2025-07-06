@@ -21,7 +21,6 @@ use LdapRecord\Models\ActiveDirectory\User;
 use LdapRecord\Models\ActiveDirectory\Group;
 use LdapRecord\Container;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class SinhVienController extends Controller
 {
@@ -158,6 +157,7 @@ class SinhVienController extends Controller
 
         return redirect()->route('student.show', $sinhVien->MaSV)->with('success', 'Cập nhật thông tin sinh viên thành công');
     }
+
     public function update_all(Request $request, $id)
     {
         // Validate dữ liệu đầu vào
@@ -223,6 +223,194 @@ class SinhVienController extends Controller
             return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
     }
+    // Phương thức đồng bộ tài khoản LDAP
+    // public function dongBoTaiKhoanLDAP()
+    // {
+    //     // Cấu hình LDAP
+    //     $domain = 'CUSC';
+    //     $ldapconfig = [
+    //         'host' => '10.0.0.2',
+    //         'port' => 389,
+    //         'basedn' => 'dc=cusc,dc=ctu,dc=vn',
+    //     ];
+
+    //     $ds = null;
+
+    //     try {
+    //         // Ghi log thử kết nối
+    //         Log::info('Attempting LDAP connection', ['host' => $ldapconfig['host'], 'port' => $ldapconfig['port']]);
+
+    //         // Thực hiện kết nối LDAP
+    //         $ds = ldap_connect($ldapconfig['host'], $ldapconfig['port']);
+    //         if (!$ds) {
+    //             throw new \Exception('Không thể kết nối đến máy chủ LDAP');
+    //         }
+
+    //         // Cài đặt các tùy chọn LDAP
+    //         ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+    //         ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+    //         ldap_set_option($ds, LDAP_OPT_NETWORK_TIMEOUT, 10);
+
+    //         // Thử bind với tài khoản quản trị
+    //         $bind_string = $domain . '\\Administrator';
+    //         $password = 'Huynhphan@0322';
+
+    //         $bind = ldap_bind($ds, $bind_string, $password);
+    //         if (!$bind) {
+    //             $error = ldap_error($ds);
+    //             $errno = ldap_errno($ds);
+    //             throw new \Exception("Kết nối LDAP thất bại: $error (Mã lỗi: $errno)");
+    //         }
+
+    //         // Lấy sinh viên chưa có tài khoản LDAP
+    //         // $sinhViens = SinhVien::whereDoesntHave('ldapAccount')->where('EmailCUSC', '')->get();
+    //         $sinhViens = SinhVien::whereNull('EmailCUSC')
+    //             // ->orWhereNull('password_CUSC')
+    //             ->get();
+    //         $successCount = 0;
+    //         $errorCount = 0;
+    //         $errorDetails = [];
+
+    //         foreach ($sinhViens as $sinhVien) {
+    //             DB::beginTransaction();
+    //             try {
+    //                 // Tạo email và mật khẩu
+    //                 $email = $this->taoEmailCUSC($sinhVien);
+    //                 $password = $this->taoMatKhauManh();
+    //                 $fullEmail = $email . '@cusc.ctu.vn';
+
+    //                 // Chuẩn bị thông tin LDAP
+    //                 $sanitizedEmail = preg_replace('/[^a-zA-Z0-9]/', '', $email);
+
+    //                 // Tạo DN cho user mới (chú ý OU)
+    //                 $dn = "CN={$sanitizedEmail},CN=Users,{$ldapconfig['basedn']}";
+
+
+    //                 // Thông tin entry LDAP với các thuộc tính bắt buộc
+    //                 $entry = [
+    //                     'objectClass' => ['top', 'person', 'organizationalPerson', 'user'],
+    //                     'cn' => [$sanitizedEmail],
+    //                     'sAMAccountName' => [$sanitizedEmail],
+    //                     'userPrincipalName' => [$fullEmail],
+    //                     'displayName' => [$sinhVien->HoTen],
+    //                     'mail' => [$fullEmail],
+
+    //                     // Thêm các thuộc tính để tránh vi phạm ràng buộc
+    //                     'givenName' => [explode(' ', $sinhVien->HoTen)[0]],
+    //                     'sn' => [array_slice(explode(' ', $sinhVien->HoTen), -1)[0]],
+    //                     'initials' => [substr($sinhVien->HoTen, 0, 1)]
+    //                 ];
+
+    //                 // Thêm user vào LDAP với xử lý ngoại lệ chi tiết
+    //                 $addResult = ldap_add($ds, $dn, $entry);
+    //                 if (!$addResult) {
+    //                     $error = ldap_error($ds);
+    //                     $errno = ldap_errno($ds);
+
+    //                     // Log chi tiết lỗi
+    //                     Log::error('Chi tiết lỗi LDAP khi thêm user', [
+    //                         'error_message' => $error,
+    //                         'error_number' => $errno,
+    //                         'dn' => $dn,
+    //                         'entry' => $entry
+    //                     ]);
+
+    //                     // Xử lý các mã lỗi cụ thể
+    //                     switch ($errno) {
+    //                         case 68:  // Entry Already Exists
+    //                             throw new \Exception("Tài khoản đã tồn tại trong hệ thống LDAP");
+    //                         case 49:  // Invalid Credentials
+    //                             throw new \Exception("Lỗi xác thực: Không đủ quyền tạo tài khoản");
+    //                         case 53:  // Server Down
+    //                             throw new \Exception("Máy chủ LDAP không khả dụng");
+    //                         default:
+    //                             throw new \Exception("Lỗi không xác định khi thêm user LDAP: $error (Mã lỗi: $errno)");
+    //                     }
+    //                 }
+
+
+    //                 // Thêm vào group Students
+    //                 $studentGroupDN = "CN=Student,CN=Users,{$ldapconfig['basedn']}";
+    //                 $addToGroupResult = ldap_mod_add($ds, $studentGroupDN, ['member' => $dn]);
+
+    //                 if (!$addToGroupResult) {
+    //                     $error = ldap_error($ds);
+    //                     $errno = ldap_errno($ds);
+    //                     Log::warning("Không thể thêm user vào group Student: $error (Mã lỗi: $errno)");
+    //                 }
+
+    //                 // Tạo tài khoản LDAP trong CSDL
+    //                 $ldapAccount = LdapAccount::create([
+    //                     'MaTaiKhoan' => $sinhVien->MaSV,
+    //                     'username' => $sanitizedEmail,
+    //                     'email' => $fullEmail,
+    //                     'full_name' => $sinhVien->HoTen,
+    //                     'initial_password' => $password,
+    //                     'role' => 'student',
+    //                     'is_sent' => false,
+    //                     'is_active' => true
+    //                 ]);
+
+    //                 // Cập nhật thông tin sinh viên
+    //                 $sinhVien->update([
+    //                     'EmailCUSC' => $fullEmail
+    //                 ]);
+
+    //                 // Commit giao dịch
+    //                 DB::commit();
+
+    //                 $successCount++;
+    //                 Log::info('Đồng bộ LDAP thành công', [
+    //                     'MaTaiKhoan' => $sinhVien->MaSV,
+    //                     'Email' => $fullEmail
+    //                 ]);
+
+    //             } catch (\Exception $userException) {
+    //                 // Rollback giao dịch
+    //                 DB::rollBack();
+
+    //                 $errorCount++;
+    //                 $errorDetails[] = [
+    //                     'MaTaiKhoan' => $sinhVien->MaSV,
+    //                     'ho_ten' => $sinhVien->HoTen,
+    //                     'error_message' => $userException->getMessage()
+    //                 ];
+
+    //                 Log::error('Lỗi đồng bộ LDAP', [
+    //                     'ma_sv' => $sinhVien->MaSV,
+    //                     'error' => $userException->getMessage()
+    //                 ]);
+
+    //                 continue;
+    //             }
+    //         }
+
+    //         // Đóng kết nối LDAP
+    //         ldap_close($ds);
+
+    //         // Thông báo kết quả
+    //         $message = "Đồng bộ hoàn tất. Thành công: $successCount, Lỗi: $errorCount";
+    //         Log::info($message, ['error_details' => $errorDetails]);
+
+    //         return redirect()->route('student.list')
+    //             ->with('success', $message)
+    //             ->with('error_details', $errorDetails);
+
+    //     } catch (\Exception $e) {
+    //         // Đóng kết nối LDAP nếu còn mở
+    //         if ($ds) {
+    //             ldap_close($ds);
+    //         }
+
+    //         Log::error('Lỗi đồng bộ LDAP toàn bộ', [
+    //             'message' => $e->getMessage(),
+    //             'trace' => $e->getTraceAsString()
+    //         ]);
+
+    //         return redirect()->route('student.list')
+    //             ->with('error', 'Lỗi đồng bộ: ' . $e->getMessage());
+    //     }
+    // }
     public function dongBoTaiKhoanLDAP()
     {
         $sinhViens = SinhVien::whereNull('EmailCUSC')->get();
@@ -274,6 +462,8 @@ class SinhVienController extends Controller
             ->with('success', $message)
             ->with('error_details', $errorDetails);
     }
+
+    // Phương thức tạo mật khẩu LDAP
     private function taoMatKhauManh($length = 6)
     {
         $upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -298,6 +488,7 @@ class SinhVienController extends Controller
 
         return implode('', $password);
     }
+    // Phương thức xuất danh sách tài khoản mới
     public function xuatDanhSachTaiKhoanMoi()
     {
         $ldapAccounts = LdapAccount::orderBy('created_at', 'desc')
@@ -306,6 +497,7 @@ class SinhVienController extends Controller
 
         return view('quanly_nhansu.sinhvien.list_account', compact('ldapAccounts'));
     }
+    // Phương thức gửi thông tin tài khoản qua email
     public function guiThongTinTaiKhoan($id)
     {
         $ldapAccount = LdapAccount::findOrFail($id);
@@ -377,6 +569,7 @@ class SinhVienController extends Controller
             'errors' => $errors
         ]);
     }
+    // Giữ nguyên các phương thức tạo email và mật khẩu như trước
     private function taoEmailCUSC($sinhVien)
     {
         // Loại bỏ dấu và chuyển sang chữ thường
@@ -410,107 +603,72 @@ class SinhVienController extends Controller
 
         return preg_replace('/[^a-zA-Z0-9]/', '', $text);
     }
-    public function editLdapAccount($id)
+    public function kiemTraDongBoLDAP()
     {
-        $ldapAccount = LdapAccount::findOrFail($id);
-        return view('quanly_nhansu.sinhvien.account.edit_account', compact('ldapAccount'));
-    }
-    public function updateLdapAccount(Request $request, $id)
-    {
-        $ldapAccount = LdapAccount::findOrFail($id);
+        // Cấu hình LDAP
+        $domain = 'CUSC';
+        $ldapconfig = [
+            'host' => '10.0.0.2',
+            'port' => 389,
+            'basedn' => 'dc=cusc,dc=ctu,dc=vn',
+        ];
 
-        $validator = Validator::make($request->all(), [
-            'username' => [
-                'required',
-                'string',
-                'max:50',
-                Rule::unique('ldap_accounts', 'username')->ignore($ldapAccount->id)
-            ],
-            'email' => 'required|email|max:100',
-            'is_active' => 'boolean'
-        ], [
-            'username.required' => 'Vui lòng nhập tên tài khoản.',
-            'username.unique' => 'Tên tài khoản đã tồn tại.',
-            'email.required' => 'Vui lòng nhập email.',
-            'email.email' => 'Địa chỉ email không hợp lệ.'
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        DB::beginTransaction();
         try {
-            $ldapAccount->update([
-                'username' => $request->username,
-                'email' => $request->email,
-                'is_active' => $request->has('is_active')
-            ]);
+            // Ghi log thử kết nối
+            Log::info('Attempting LDAP connection', ['host' => $ldapconfig['host'], 'port' => $ldapconfig['port']]);
 
-            DB::commit();
-            return redirect()->route('ldap.account.list')
-                ->with('success', 'Cập nhật tài khoản thành công');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
-        }
-    }
-    public function destroyLdapAccount($id)
-    {
-        DB::beginTransaction();
-        try {
-            $ldapAccount = LdapAccount::findOrFail($id);
-
-            // Kiểm tra nếu tài khoản đã được sử dụng
-            $user = $ldapAccount->getUser();
-            if ($user) {
-                return back()->with('error', 'Không thể xóa tài khoản đã được gán cho người dùng');
+            // Thực hiện kết nối LDAP
+            $ds = ldap_connect($ldapconfig['host'], $ldapconfig['port']);
+            if (!$ds) {
+                throw new \Exception('Không thể kết nối đến máy chủ LDAP');
             }
 
-            $ldapAccount->delete();
+            // Cài đặt các tùy chọn LDAP
+            ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+            ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+            ldap_set_option($ds, LDAP_OPT_NETWORK_TIMEOUT, 10);
 
-            DB::commit();
-            return redirect()->route('ldap.account.list')
-                ->with('success', 'Xóa tài khoản thành công');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
-        }
-    }
-    // app/Http/Controllers/NhanSu/SinhVienController.php
-    public function toggleLdapAccountStatus($id)
-    {
-        DB::beginTransaction();
-        try {
-            $ldapAccount = LdapAccount::findOrFail($id);
+            $username = session('user');
+            $user_password = session('password');
 
-            // Đảo ngược trạng thái hiện tại
-            $newStatus = !$ldapAccount->is_active;
+            // Thử bind với tài khoản quản trị
+            $bind_string = $domain . '\\' . $username;
+            $password = $user_password;
 
-            $ldapAccount->update([
-                'is_active' => $newStatus
-            ]);
+            $bind = ldap_bind($ds, $bind_string, $password);
+            if (!$bind) {
+                $error = ldap_error($ds);
+                $errno = ldap_errno($ds);
+                throw new \Exception("Kết nối LDAP thất bại: $error (Mã lỗi: $errno)");
+            }
 
-            DB::commit();
+            // Đóng kết nối
+            ldap_close($ds);
 
-            // Trả về thông báo phù hợp
-            $message = $newStatus
-                ? 'Kích hoạt tài khoản thành công'
-                : 'Vô hiệu hóa tài khoản thành công';
+            // Kiểm tra số lượng sinh viên chưa có tài khoản
+            $sinhViensCount = SinhVien::whereNull('EmailCUSC')
+                // ->orWhereNull('password_CUSC')
+                ->count();
+            // $sinhViensCount = SinhVien::whereDoesntHave('ldapAccount')->where('EmailCUSC', '')->get();
 
             return response()->json([
-                'success' => true,
-                'is_active' => $newStatus,
-                'message' => $message
+                'status' => 'success',
+                'message' => 'Kết nối đến máy chủ thành công',
+                'sinh_viens_chua_co_tai_khoan' => $sinhViensCount
             ]);
+
         } catch (\Exception $e) {
-            DB::rollback();
+            // Ghi log lỗi chi tiết
+            Log::error('LDAP Connection Error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
+                'status' => 'error',
+                'message' => 'Lỗi kiểm tra LDAP',
+                'error' => $e->getMessage()
+            ]);
         }
     }
 }

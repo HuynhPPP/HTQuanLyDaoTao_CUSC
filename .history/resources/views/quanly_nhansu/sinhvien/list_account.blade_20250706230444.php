@@ -3,7 +3,7 @@
 @section('main-content')
     <section class="section">
         <div class="section-header">
-            <h1>Danh sách tài khoản giáo viên</h1>
+            <h1>Danh sách tài khoản sinh viên</h1>
         </div>
         <div class="section-body">
             <div class="row">
@@ -23,14 +23,13 @@
                                             <th>
                                                 <input type="checkbox" id="chonTatCa">
                                             </th>
-                                            <th>Mã GV</th>
+                                            <th>Mã SV</th>
                                             <th>Họ Tên</th>
                                             <th>Tài Khoản đăng nhập</th>
                                             <th>Email</th>
                                             <th>Ngày Tạo</th>
-                                            <th>Trạng Thái email</th>
+                                            <th>Trạng Thái</th>
                                             <th>Thao tác</th>
-                                            <th>Trạng thái tài khoản</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -46,20 +45,19 @@
                                                 <td>{{ $account->email }}</td>
                                                 <td>{{ $account->created_at->format('d/m/Y') }}</td>
                                                 <td>
-                                                    @if ($account->is_sent)
-                                                        <span class="badge bg-success">Đã Gửi</span>
-                                                    @else
-                                                        <span class="badge bg-warning">Chưa Gửi</span>
-                                                    @endif
+                                                    <span
+                                                        class="badge account-status-badge 
+                                                        {{ $account->is_active ? 'bg-success' : 'bg-warning' }}">
+                                                        {{ $account->is_active ? 'Đang Hoạt Động' : 'Ngừng Hoạt Động' }}
+                                                    </span>
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('giaovien.ldap.account.edit', $account->id) }}"
+                                                    <a href="{{ route('ldap.account.edit', $account->id) }}"
                                                         class="btn btn-warning btn-sm" data-toggle="tooltip"
                                                         title="Chỉnh sửa">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <form
-                                                        action="{{ route('giaovien.ldap.account.destroy', $account->id) }}"
+                                                    <form action="{{ route('ldap.account.destroy', $account->id) }}"
                                                         method="POST" class="d-inline delete-account-form">
                                                         @csrf
                                                         @method('DELETE')
@@ -142,7 +140,7 @@
 
                 // Gửi yêu cầu ajax
                 $.ajax({
-                    url: "{{ route('giaovien.ldap.account.send.bulk') }}",
+                    url: "{{ route('ldap.account.send.bulk') }}",
                     method: 'POST',
                     data: {
                         _token: "{{ csrf_token() }}",
@@ -192,7 +190,6 @@
                 });
             });
 
-            // Xóa tài khoản
             $('.delete-account').click(function(e) {
                 e.preventDefault();
                 var form = $(this).closest('.delete-account-form');
@@ -209,17 +206,18 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         form.submit();
+                    } else {
+                        Swal.fire('Thao tác đã bị hủy.');
                     }
                 });
             });
 
-            // Toggle trạng thái tài khoản
             $('.toggle-account-status').change(function() {
                 var accountId = $(this).data('id');
                 var checkbox = $(this);
 
                 $.ajax({
-                    url: "{{ route('giaovien.ldap.account.toggle-status', ':id') }}".replace(':id',
+                    url: "{{ route('ldap.account.toggle-status', ':id') }}".replace(':id',
                         accountId),
                     method: 'POST',
                     data: {

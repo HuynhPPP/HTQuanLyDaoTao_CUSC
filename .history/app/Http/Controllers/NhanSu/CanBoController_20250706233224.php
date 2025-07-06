@@ -16,8 +16,6 @@ use Illuminate\Support\Facades\DB;
 use App\Mail\LdapAccountInfoMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class CanBoController extends Controller

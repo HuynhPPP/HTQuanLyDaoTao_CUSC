@@ -28,9 +28,7 @@
                                             <th>Tài Khoản đăng nhập</th>
                                             <th>Email</th>
                                             <th>Ngày Tạo</th>
-                                            <th>Trạng Thái email</th>
-                                            <th>Thao tác</th>
-                                            <th>Trạng thái tài khoản</th>
+                                            <th>Trạng Thái</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -54,30 +52,29 @@
                                                 </td>
                                                 <td>
                                                     <a href="{{ route('giaovien.ldap.account.edit', $account->id) }}"
-                                                        class="btn btn-warning btn-sm" data-toggle="tooltip"
-                                                        title="Chỉnh sửa">
+                                                       class="btn btn-warning btn-sm" data-toggle="tooltip"
+                                                       title="Chỉnh sửa">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <form
-                                                        action="{{ route('giaovien.ldap.account.destroy', $account->id) }}"
-                                                        method="POST" class="d-inline delete-account-form">
+                                                    <form action="{{ route('giaovien.ldap.account.destroy', $account->id) }}" 
+                                                          method="POST" class="d-inline delete-account-form">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="button" class="btn btn-danger btn-sm delete-account"
-                                                            title="Xóa">
+                                                                title="Xóa">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
                                                 </td>
                                                 <td>
                                                     <div class="custom-control custom-switch">
-                                                        <input type="checkbox"
-                                                            class="custom-control-input toggle-account-status"
-                                                            id="accountStatus{{ $account->id }}"
-                                                            data-id="{{ $account->id }}"
-                                                            {{ $account->is_active ? 'checked' : '' }}>
-                                                        <label class="custom-control-label"
-                                                            for="accountStatus{{ $account->id }}"></label>
+                                                        <input type="checkbox" 
+                                                               class="custom-control-input toggle-account-status" 
+                                                               id="accountStatus{{ $account->id }}"
+                                                               data-id="{{ $account->id }}"
+                                                               {{ $account->is_active ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" 
+                                                               for="accountStatus{{ $account->id }}"></label>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -187,79 +184,6 @@
                             title: 'Lỗi',
                             text: xhr.responseJSON.message ||
                                 'Có lỗi xảy ra khi gửi email'
-                        });
-                    }
-                });
-            });
-
-            // Xóa tài khoản
-            $('.delete-account').click(function(e) {
-                e.preventDefault();
-                var form = $(this).closest('.delete-account-form');
-
-                Swal.fire({
-                    title: 'Xác Nhận Xóa Tài Khoản',
-                    text: 'Bạn có chắc chắn muốn xóa tài khoản này?',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Xóa',
-                    cancelButtonText: 'Hủy'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
-
-            // Toggle trạng thái tài khoản
-            $('.toggle-account-status').change(function() {
-                var accountId = $(this).data('id');
-                var checkbox = $(this);
-
-                $.ajax({
-                    url: "{{ route('giaovien.ldap.account.toggle-status', ':id') }}".replace(':id',
-                        accountId),
-                    method: 'POST',
-                    data: {
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        // Hiển thị toast thông báo
-                        if (response.success) {
-                            iziToast.success({
-                                message: response.message,
-                                position: 'topRight'
-                            });
-
-                            // Cập nhật trạng thái badge
-                            var badgeCell = checkbox.closest('tr').find(
-                            '.account-status-badge');
-                            if (response.is_active) {
-                                badgeCell.removeClass('bg-warning').addClass('bg-success').text(
-                                    'Đang Hoạt Động');
-                            } else {
-                                badgeCell.removeClass('bg-success').addClass('bg-warning').text(
-                                    'Ngừng Hoạt Động');
-                            }
-                        } else {
-                            // Hoàn lại trạng thái checkbox nếu có lỗi
-                            checkbox.prop('checked', !checkbox.prop('checked'));
-
-                            iziToast.error({
-                                message: response.message,
-                                position: 'topRight'
-                            });
-                        }
-                    },
-                    error: function(xhr) {
-                        // Hoàn lại trạng thái checkbox
-                        checkbox.prop('checked', !checkbox.prop('checked'));
-
-                        iziToast.error({
-                            message: 'Có lỗi xảy ra khi thay đổi trạng thái',
-                            position: 'topRight'
                         });
                     }
                 });

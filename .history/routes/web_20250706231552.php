@@ -46,8 +46,6 @@ Route::post('ldap', [LDAPConnection::class, 'index'])->name('ldap');
 
 // Các route ministry: chỉ cho admin (quản lý dữ liệu hệ thống)
 Route::middleware([RoleMiddleware::class . ':admin'])->group(function () {
-    Route::post('/admin/change-password', [CanBoController::class, 'changePassword'])
-        ->name('admin.change.password');
     Route::get('/ministry', [PagesController::class, 'ministry'])->name('ministry');
     Route::get('/ministry/schedules', [PagesController::class, 'schedules'])->name('schedules');
     Route::post('/ministry/schedules/save', [PagesController::class, 'saveSchedule'])->name('saveSchedule');
@@ -301,25 +299,14 @@ Route::middleware([RoleMiddleware::class . ':admin'])->group(function () {
             ->name('diemthi.tongket.hocluc');
     });
     Route::prefix('manage_account')->group(function () {
-        // Route cho sinh viên
-        Route::get('/ldap/sinh-vien/edit-account/{id}', [SinhVienController::class, 'editLdapAccount'])
+        Route::get('/ldap/edit-account/{id}', [SinhVienController::class, 'editLdapAccount'])
             ->name('ldap.account.edit');
-        Route::put('/ldap/sinh-vien/update-account/{id}', [SinhVienController::class, 'updateLdapAccount'])
+        Route::put('/ldap/update-account/{id}', [SinhVienController::class, 'updateLdapAccount'])
             ->name('ldap.account.update');
-        Route::delete('/ldap/sinh-vien/destroy-account/{id}', [SinhVienController::class, 'destroyLdapAccount'])
+        Route::delete('/ldap/destroy-account/{id}', [SinhVienController::class, 'destroyLdapAccount'])
             ->name('ldap.account.destroy');
-        Route::post('/ldap/sinh-vien/toggle-status/{id}', [SinhVienController::class, 'toggleLdapAccountStatus'])
+        Route::post('/ldap/toggle-status/{id}', [SinhVienController::class, 'toggleLdapAccountStatus'])
             ->name('ldap.account.toggle-status');
-
-        // Route cho giáo viên
-        Route::get('/ldap/giao-vien/edit-account/{id}', [GiaoVienController::class, 'editLdapAccount'])
-            ->name('giaovien.ldap.account.edit');
-        Route::put('/ldap/giao-vien/update-account/{id}', [GiaoVienController::class, 'updateLdapAccount'])
-            ->name('giaovien.ldap.account.update');
-        Route::delete('/ldap/giao-vien/destroy-account/{id}', [GiaoVienController::class, 'destroyLdapAccount'])
-            ->name('giaovien.ldap.account.destroy');
-        Route::post('/ldap/giao-vien/toggle-status/{id}', [GiaoVienController::class, 'toggleLdapAccountStatus'])
-            ->name('giaovien.ldap.account.toggle-status');
     });
 });
 

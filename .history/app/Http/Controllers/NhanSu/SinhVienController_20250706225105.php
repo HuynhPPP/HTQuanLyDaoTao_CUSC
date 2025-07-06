@@ -21,7 +21,6 @@ use LdapRecord\Models\ActiveDirectory\User;
 use LdapRecord\Models\ActiveDirectory\Group;
 use LdapRecord\Container;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class SinhVienController extends Controller
 {
@@ -410,107 +409,72 @@ class SinhVienController extends Controller
 
         return preg_replace('/[^a-zA-Z0-9]/', '', $text);
     }
-    public function editLdapAccount($id)
+    public function kiemTraDongBoLDAP()
     {
-        $ldapAccount = LdapAccount::findOrFail($id);
-        return view('quanly_nhansu.sinhvien.account.edit_account', compact('ldapAccount'));
-    }
-    public function updateLdapAccount(Request $request, $id)
-    {
-        $ldapAccount = LdapAccount::findOrFail($id);
+        // Cấu hình LDAP
+        $domain = 'CUSC';
+        $ldapconfig = [
+            'host' => '10.0.0.2',
+            'port' => 389,
+            'basedn' => 'dc=cusc,dc=ctu,dc=vn',
+        ];
 
-        $validator = Validator::make($request->all(), [
-            'username' => [
-                'required',
-                'string',
-                'max:50',
-                Rule::unique('ldap_accounts', 'username')->ignore($ldapAccount->id)
-            ],
-            'email' => 'required|email|max:100',
-            'is_active' => 'boolean'
-        ], [
-            'username.required' => 'Vui lòng nhập tên tài khoản.',
-            'username.unique' => 'Tên tài khoản đã tồn tại.',
-            'email.required' => 'Vui lòng nhập email.',
-            'email.email' => 'Địa chỉ email không hợp lệ.'
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        DB::beginTransaction();
         try {
-            $ldapAccount->update([
-                'username' => $request->username,
-                'email' => $request->email,
-                'is_active' => $request->has('is_active')
-            ]);
+            // Ghi log thử kết nối
+            Log::info('Attempting LDAP connection', ['host' => $ldapconfig['host'], 'port' => $ldapconfig['port']]);
 
-            DB::commit();
-            return redirect()->route('ldap.account.list')
-                ->with('success', 'Cập nhật tài khoản thành công');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
-        }
-    }
-    public function destroyLdapAccount($id)
-    {
-        DB::beginTransaction();
-        try {
-            $ldapAccount = LdapAccount::findOrFail($id);
-
-            // Kiểm tra nếu tài khoản đã được sử dụng
-            $user = $ldapAccount->getUser();
-            if ($user) {
-                return back()->with('error', 'Không thể xóa tài khoản đã được gán cho người dùng');
+            // Thực hiện kết nối LDAP
+            $ds = ldap_connect($ldapconfig['host'], $ldapconfig['port']);
+            if (!$ds) {
+                throw new \Exception('Không thể kết nối đến máy chủ LDAP');
             }
 
-            $ldapAccount->delete();
+            // Cài đặt các tùy chọn LDAP
+            ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+            ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+            ldap_set_option($ds, LDAP_OPT_NETWORK_TIMEOUT, 10);
 
-            DB::commit();
-            return redirect()->route('ldap.account.list')
-                ->with('success', 'Xóa tài khoản thành công');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
-        }
-    }
-    // app/Http/Controllers/NhanSu/SinhVienController.php
-    public function toggleLdapAccountStatus($id)
-    {
-        DB::beginTransaction();
-        try {
-            $ldapAccount = LdapAccount::findOrFail($id);
+            $username = session('user');
+            $user_password = session('password');
 
-            // Đảo ngược trạng thái hiện tại
-            $newStatus = !$ldapAccount->is_active;
+            // Thử bind với tài khoản quản trị
+            $bind_string = $domain . '\\' . $username;
+            $password = $user_password;
 
-            $ldapAccount->update([
-                'is_active' => $newStatus
-            ]);
+            $bind = ldap_bind($ds, $bind_string, $password);
+            if (!$bind) {
+                $error = ldap_error($ds);
+                $errno = ldap_errno($ds);
+                throw new \Exception("Kết nối LDAP thất bại: $error (Mã lỗi: $errno)");
+            }
 
-            DB::commit();
+            // Đóng kết nối
+            ldap_close($ds);
 
-            // Trả về thông báo phù hợp
-            $message = $newStatus
-                ? 'Kích hoạt tài khoản thành công'
-                : 'Vô hiệu hóa tài khoản thành công';
+            // Kiểm tra số lượng sinh viên chưa có tài khoản
+            $sinhViensCount = SinhVien::whereNull('EmailCUSC')
+                // ->orWhereNull('password_CUSC')
+                ->count();
+            // $sinhViensCount = SinhVien::whereDoesntHave('ldapAccount')->where('EmailCUSC', '')->get();
 
             return response()->json([
-                'success' => true,
-                'is_active' => $newStatus,
-                'message' => $message
+                'status' => 'success',
+                'message' => 'Kết nối đến máy chủ thành công',
+                'sinh_viens_chua_co_tai_khoan' => $sinhViensCount
             ]);
+
         } catch (\Exception $e) {
-            DB::rollback();
+            // Ghi log lỗi chi tiết
+            Log::error('LDAP Connection Error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
+                'status' => 'error',
+                'message' => 'Lỗi kiểm tra LDAP',
+                'error' => $e->getMessage()
+            ]);
         }
     }
 }

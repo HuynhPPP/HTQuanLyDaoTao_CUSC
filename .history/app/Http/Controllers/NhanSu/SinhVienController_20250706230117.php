@@ -421,9 +421,9 @@ class SinhVienController extends Controller
 
         $validator = Validator::make($request->all(), [
             'username' => [
-                'required',
-                'string',
-                'max:50',
+                'required', 
+                'string', 
+                'max:50', 
                 Rule::unique('ldap_accounts', 'username')->ignore($ldapAccount->id)
             ],
             'email' => 'required|email|max:100',
@@ -457,12 +457,13 @@ class SinhVienController extends Controller
             return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
     }
+
     public function destroyLdapAccount($id)
     {
         DB::beginTransaction();
         try {
             $ldapAccount = LdapAccount::findOrFail($id);
-
+            
             // Kiểm tra nếu tài khoản đã được sử dụng
             $user = $ldapAccount->getUser();
             if ($user) {
@@ -477,40 +478,6 @@ class SinhVienController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
-        }
-    }
-    // app/Http/Controllers/NhanSu/SinhVienController.php
-    public function toggleLdapAccountStatus($id)
-    {
-        DB::beginTransaction();
-        try {
-            $ldapAccount = LdapAccount::findOrFail($id);
-
-            // Đảo ngược trạng thái hiện tại
-            $newStatus = !$ldapAccount->is_active;
-
-            $ldapAccount->update([
-                'is_active' => $newStatus
-            ]);
-
-            DB::commit();
-
-            // Trả về thông báo phù hợp
-            $message = $newStatus
-                ? 'Kích hoạt tài khoản thành công'
-                : 'Vô hiệu hóa tài khoản thành công';
-
-            return response()->json([
-                'success' => true,
-                'is_active' => $newStatus,
-                'message' => $message
-            ]);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
         }
     }
 }

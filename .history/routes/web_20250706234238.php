@@ -302,24 +302,24 @@ Route::middleware([RoleMiddleware::class . ':admin'])->group(function () {
     });
     Route::prefix('manage_account')->group(function () {
         // Route cho sinh viên
-        Route::get('/ldap/sinh-vien/edit-account/{id}', [SinhVienController::class, 'editLdapAccount'])
-            ->name('ldap.account.edit');
-        Route::put('/ldap/sinh-vien/update-account/{id}', [SinhVienController::class, 'updateLdapAccount'])
-            ->name('ldap.account.update');
-        Route::delete('/ldap/sinh-vien/destroy-account/{id}', [SinhVienController::class, 'destroyLdapAccount'])
-            ->name('ldap.account.destroy');
-        Route::post('/ldap/sinh-vien/toggle-status/{id}', [SinhVienController::class, 'toggleLdapAccountStatus'])
-            ->name('ldap.account.toggle-status');
+    Route::get('/ldap/sinh-vien/edit-account/{id}', [SinhVienController::class, 'editLdapAccount'])
+    ->name('ldap.account.edit');
+Route::put('/ldap/sinh-vien/update-account/{id}', [SinhVienController::class, 'updateLdapAccount'])
+    ->name('ldap.account.update');
+Route::delete('/ldap/sinh-vien/destroy-account/{id}', [SinhVienController::class, 'destroyLdapAccount'])
+    ->name('ldap.account.destroy');
+Route::post('/ldap/sinh-vien/toggle-status/{id}', [SinhVienController::class, 'toggleLdapAccountStatus'])
+    ->name('ldap.account.toggle-status');
 
-        // Route cho giáo viên
-        Route::get('/ldap/giao-vien/edit-account/{id}', [GiaoVienController::class, 'editLdapAccount'])
-            ->name('giaovien.ldap.account.edit');
-        Route::put('/ldap/giao-vien/update-account/{id}', [GiaoVienController::class, 'updateLdapAccount'])
-            ->name('giaovien.ldap.account.update');
-        Route::delete('/ldap/giao-vien/destroy-account/{id}', [GiaoVienController::class, 'destroyLdapAccount'])
-            ->name('giaovien.ldap.account.destroy');
-        Route::post('/ldap/giao-vien/toggle-status/{id}', [GiaoVienController::class, 'toggleLdapAccountStatus'])
-            ->name('giaovien.ldap.account.toggle-status');
+// Route cho giáo viên
+Route::get('/ldap/giao-vien/edit-account/{id}', [GiaoVienController::class, 'editLdapAccount'])
+    ->name('giaovien.ldap.account.edit');
+Route::put('/ldap/giao-vien/update-account/{id}', [GiaoVienController::class, 'updateLdapAccount'])
+    ->name('giaovien.ldap.account.update');
+Route::delete('/ldap/giao-vien/destroy-account/{id}', [GiaoVienController::class, 'destroyLdapAccount'])
+    ->name('giaovien.ldap.account.destroy');
+Route::post('/ldap/giao-vien/toggle-status/{id}', [GiaoVienController::class, 'toggleLdapAccountStatus'])
+    ->name('giaovien.ldap.account.toggle-status');
     });
 });
 

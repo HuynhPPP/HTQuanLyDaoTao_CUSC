@@ -31,7 +31,7 @@
                             <i class="fas fa-key"></i> Đổi mật khẩu
                         </a>
                     @endif
-                    @if (session('role') == 'admin')
+                    @if (session('role') == 'student')
                         <a href="#" class="dropdown-item has-icon" data-toggle="modal"
                             data-target="#changePasswordModal">
                             <i class="fas fa-key"></i> Đổi mật khẩu
@@ -79,6 +79,7 @@
 
             // Hàm hiển thị lỗi
             function displayErrors(errors) {
+                // Hiển thị lỗi từng trường
                 if (errors.current_password) {
                     $('#current_password_error').text(errors.current_password[0]);
                 }
@@ -122,6 +123,7 @@
                     }
                 });
             });
+
         });
     </script>
 @endsection

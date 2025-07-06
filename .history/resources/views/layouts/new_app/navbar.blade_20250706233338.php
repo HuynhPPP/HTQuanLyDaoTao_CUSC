@@ -31,7 +31,7 @@
                             <i class="fas fa-key"></i> Đổi mật khẩu
                         </a>
                     @endif
-                    @if (session('role') == 'admin')
+                    @if (session('role') == 'student')
                         <a href="#" class="dropdown-item has-icon" data-toggle="modal"
                             data-target="#changePasswordModal">
                             <i class="fas fa-key"></i> Đổi mật khẩu
@@ -116,8 +116,7 @@
                             const errors = xhr.responseJSON.errors;
                             displayErrors(errors);
                         } else {
-                            $('#general_error').text(xhr.responseJSON.message ||
-                                'Lỗi không xác định');
+                            $('#general_error').text(xhr.responseJSON.message || 'Lỗi không xác định');
                         }
                     }
                 });
