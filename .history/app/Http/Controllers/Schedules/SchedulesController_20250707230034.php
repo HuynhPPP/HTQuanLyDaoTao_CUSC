@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Http\Controllers\Schedules;
+
+use App\Http\Controllers\Controller;
+use App\Models\khoadaotao;
+use Illuminate\Http\Request;
+
+class SchedulesController extends Controller
+{
+    public function CreateSchedules()
+    {
+        if (session()->has('user')) {
+            $data = [
+                'khoadaotaos' => khoadaotao::all(),
+                'tkbs' => tkb::all(),
+                'phonghocs' => \App\Models\phonghoc::all(),
+            ];
+            return view('schedules', $data);
+        }
+        return Redirect::to('')->with([
+            'error' => 'Truy cập bị từ chối',
+            'redirectTo' => route('ministry'),
+        ]);
+    }
+}
