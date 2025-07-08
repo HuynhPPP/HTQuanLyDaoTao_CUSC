@@ -131,7 +131,7 @@
             var HocKiSelect = document.getElementById('HocKi');
 
             if (KhoaDaoTao && KhoaDaoTao !== "") {
-                fetch(`/schedules/getChuongTrinh/${encodeURIComponent(KhoaDaoTao)}`)
+                fetch(`/getChuongTrinh/${encodeURIComponent(KhoaDaoTao)}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -149,6 +149,7 @@
                     })
                     .catch(error => {
                         console.error('Error:', error);
+                        alert('Có lỗi xảy ra khi tải chương trình. Vui lòng đăng nhập lại.');
                     });
             } else {
                 chuongTrinhSelect.innerHTML = '<option value="">----- Chương Trình Triển Khai -----</option>';
@@ -168,7 +169,7 @@
             var HocKiSelect = document.getElementById('HocKi');
 
             if (chuongTrinh && chuongTrinh !== "") {
-                fetch(`/schedules/getLop/${encodeURIComponent(chuongTrinh)}`)
+                fetch(`/getLop/${chuongTrinh}`)
                     .then(response => response.json())
                     .then(data => {
                         lopSelect.innerHTML = '<option value="">----- Mã Lớp Học -----</option>';
@@ -179,7 +180,7 @@
                         lopSelect.disabled = false;
                     });
 
-                fetch(`/schedules/getHK/${encodeURIComponent(chuongTrinh)}`)
+                fetch(`/getHK/${chuongTrinh}`)
                     .then(response => response.json())
                     .then(data => {
                         HocKiSelect.innerHTML = '<option value="">----- Mã Học Kỳ -----</option>';
@@ -202,7 +203,7 @@
             var maLop = this.value;
 
             if (maLop && maLop !== "") {
-                fetch(`/schedules/getPhongThucHanh/${encodeURIComponent(maLop)}`)
+                fetch(`/getPhongThucHanh/${maLop}`)
                     .then(response => response.json())
                     .then(data => {
                         // Handle the response to update the PhongThucHanh select

@@ -203,6 +203,7 @@
 
             if (maLop && maLop !== "") {
                 fetch(`/schedules/getPhongThucHanh/${encodeURIComponent(maLop)}`)
+
                     .then(response => response.json())
                     .then(data => {
                         // Handle the response to update the PhongThucHanh select

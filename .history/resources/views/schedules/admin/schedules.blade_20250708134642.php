@@ -179,7 +179,7 @@
                         lopSelect.disabled = false;
                     });
 
-                fetch(`/schedules/getHK/${encodeURIComponent(chuongTrinh)}`)
+                    fetch(`/schedules/getHK/${encodeURIComponent(chuongTrinh)}`)
                     .then(response => response.json())
                     .then(data => {
                         HocKiSelect.innerHTML = '<option value="">----- Mã Học Kỳ -----</option>';
@@ -202,7 +202,7 @@
             var maLop = this.value;
 
             if (maLop && maLop !== "") {
-                fetch(`/schedules/getPhongThucHanh/${encodeURIComponent(maLop)}`)
+                fetch(`/getPhongThucHanh/${maLop}`)
                     .then(response => response.json())
                     .then(data => {
                         // Handle the response to update the PhongThucHanh select

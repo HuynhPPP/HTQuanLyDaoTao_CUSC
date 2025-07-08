@@ -928,7 +928,7 @@
             // Load danh sách môn học
             function loadSubjects() {
                 console.log('Fetching subjects...');
-                $.get('/schedules/get-subjects', function(subjects) {
+                $.get('schedules/get-subjects', function(subjects) {
                     console.log('Subjects received:', subjects);
                     const tbody = $('#subjectsTable tbody');
                     tbody.empty();
