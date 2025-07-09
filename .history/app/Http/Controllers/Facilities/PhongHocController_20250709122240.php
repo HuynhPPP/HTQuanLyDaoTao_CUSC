@@ -24,14 +24,14 @@ class PhongHocController extends Controller
             'Tối 20h-22h'
         ])->get();
         // Lấy tất cả phòng học
-        $phonghocs = phonghoc::all();
+        $phonghocs = \App\Models\phonghoc::all();
 
         // Tạo ma trận trạng thái phòng học theo khung giờ
         $matrix = [];
         foreach ($khunggios as $khunggio) {
             foreach ($phonghocs as $phong) {
                 // Tìm bản ghi sử dụng phòng này ở ngày và ca này
-                $ds = danhsachphong::where('TenPhong', $phong->TenPhong)
+                $ds = \App\Models\danhsachphong::where('TenPhong', $phong->TenPhong)
                     ->whereDate('NgaySuDung', $selectedDate->format('Y-m-d'))
                     ->where('Ca', $khunggio->TenKhungGio)
                     ->first();
@@ -77,6 +77,7 @@ class PhongHocController extends Controller
         $phonghoc = phonghoc::where('TenPhong', $tenPhong)->firstOrFail();
         return view('quanly_cosovatchat.phonghoc.edit', compact('phonghoc'));
     }
+
     public function update(Request $request, $tenPhong)
     {
         $request->validate([
@@ -89,6 +90,7 @@ class PhongHocController extends Controller
         $phonghoc->update($request->all());
         return redirect()->route('phonghoc.index')->with('success', 'Cập nhật phòng học thành công');
     }
+
     public function destroy($tenPhong)
     {
         try {

@@ -31,7 +31,7 @@
                             <div class="list-group">
                                 <div class="list-group-item d-flex justify-content-between align-items-center">
                                     <strong>Môn thi:</strong>
-                                    <span>{{ $lichThi->monHoc->TenMH }}</span>
+                                    <span>{{ $lichThi->TenMH }}</span>
                                 </div>
                                 <div class="list-group-item d-flex justify-content-between align-items-center">
                                     <strong>Lớp:</strong>

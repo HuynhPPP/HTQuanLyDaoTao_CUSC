@@ -3,7 +3,7 @@
 @section('main-content')
 <section class="section">
     <div class="section-header">
-        <h1>Tra cứu điểm thi</h1>
+        <h1>Tra Cứu Điểm Thi</h1>
     </div>
 
     <div class="section-body">
@@ -17,7 +17,7 @@
                         <form action="{{ route('tracuu.diem') }}" method="POST">
                             @csrf
                             <div class="form-group">
-                                <label for="MaSV">Mã sinh viên</label>
+                                <label for="MaSV">Mã Sinh Viên</label>
                                 <input type="text" 
                                        class="form-control @error('MaSV') is-invalid @enderror" 
                                        id="MaSV" 
@@ -32,7 +32,7 @@
                                 @enderror
                             </div>
                             <button type="submit" class="btn btn-primary btn-block">
-                                <i class="fas fa-search"></i> Tra cứu điểm
+                                <i class="fas fa-search"></i> Tra Cứu Điểm
                             </button>
                         </form>
                     </div>

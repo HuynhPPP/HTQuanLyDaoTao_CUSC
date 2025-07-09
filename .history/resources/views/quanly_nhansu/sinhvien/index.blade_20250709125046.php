@@ -121,6 +121,7 @@
 @section('custom-js')
     <script>
         $(document).ready(function() {
+            // Use event delegation for delete buttons
             $(document).on('click', '.delete-student', function(e) {
                 e.preventDefault(); // Ngăn submit mặc định
                 const form = $(this).closest('form'); // Tìm form cha gần nhất

@@ -15,15 +15,16 @@ class PhongHocController extends Controller
         $selectedDate = $request->input('ngay') ? Carbon::parse($request->input('ngay')) : Carbon::now();
 
         // Lấy tất cả khung giờ thực tế
-        $khunggios = KhungGio::whereIn('TenKhungGio', [
-            'Sáng 7h-9h',
-            'Sáng 9h-11h',
-            'Chiều 13h-15h',
-            'Chiều 15h-17h',
-            'Tối 18h-20h',
-            'Tối 20h-22h'
-        ])->get();
+        // $khunggios = KhungGio::whereIn('TenKhungGio', [
+        //     'Sáng 7h-9h',
+        //     'Sáng 9h-11h',
+        //     'Chiều 13h-15h',
+        //     'Chiều 15h-17h',
+        //     'Tối 18h-20h',
+        //     'Tối 20h-22h'
+        // ])->get();
         // Lấy tất cả phòng học
+        $khunggios = KhungGio::all();
         $phonghocs = phonghoc::all();
 
         // Tạo ma trận trạng thái phòng học theo khung giờ

@@ -79,6 +79,7 @@
     <script>
         $(document).ready(function() {
             $(document).on('click', '.delete-lichthi', function(e) {
+            
                 e.preventDefault();
                 const form = $(this).closest('form');
 

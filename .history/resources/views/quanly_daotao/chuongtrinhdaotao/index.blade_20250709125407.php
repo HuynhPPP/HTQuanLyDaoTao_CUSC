@@ -1,23 +1,23 @@
 @extends('layouts.new_app.master')
 
-@section('title', 'Quản Lý Học Kỳ')
+@section('title', 'Quản Lý Chương Trình Đào Tạo')
 
 @section('main-content')
     <section class="section">
         <div class="section-header">
-            <h1>Danh sách học kỳ</h1>
+            <h1>Danh sách chương trình đào tạo</h1>
             <div class="section-header-breadcrumb">
                 <div class="breadcrumb-item active"><a href="{{ route('about') }}">Trang chủ</a></div>
-                <div class="breadcrumb-item">Học kỳ</div>
+                <div class="breadcrumb-item">Chương trình đào tạo</div>
             </div>
         </div>
 
         <div class="section-body">
             <div class="card">
                 <div class="card-header">
-                    <h4>Danh sách học kỳ</h4>
+                    <h4>Danh sách chương trình đào tạo</h4>
                     <div class="card-header-action">
-                        <a href="{{ route('hocki.create') }}" class="btn btn-primary">
+                        <a href="{{ route('chuongtrinh.create') }}" class="btn btn-primary">
                             <i class="fas fa-plus"></i> Thêm Mới
                         </a>
                     </div>
@@ -27,32 +27,37 @@
                         <table class="table table-striped" id="table-1">
                             <thead>
                                 <tr>
-                                    <th>Mã học kỳ</th>
-                                    <th>Tên học kỳ</th>
-                                    <th>Tổng giờ gốc</th>
-                                    <th>Tổng giờ triển khai</th>
-                                    <th>Chương trình</th>
-                                    <th>Thao tác</th>
+                                    <th>Mã Chương Trình</th>
+                                    <th>Tên Chương Trình</th>
+                                    <th>Ngày Triển Khai</th>
+                                    <th>Khóa Đào Tạo</th>
+                                    <th>Thời Gian Đào Tạo</th>
+                                    <th>Hành Động</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($hockis as $hocki)
+                                @foreach ($chuongTrinhs as $chuongTrinh)
                                     <tr>
-                                        <td>{{ $hocki->MaHK }}</td>
-                                        <td>{{ $hocki->TenHK }}</td>
-                                        <td>{{ $hocki->TongGioGoc }}</td>
-                                        <td>{{ $hocki->TongGioTrienKhai }}</td>
-                                        <td>{{ $hocki->chuongTrinh->TenChuongTrinh }}</td>
+                                        <td>{{ $chuongTrinh->MaChuongTrinh }}</td>
+                                        <td>{{ $chuongTrinh->TenChuongTrinh }}</td>
+                                        <td>{{ $chuongTrinh->NgayTrienKhaiPB ? date('d/m/Y', strtotime($chuongTrinh->NgayTrienKhaiPB)) : 'Chưa xác định' }}
+                                        </td>
+                                        <td>{{ $chuongTrinh->TenKhoaDaoTao }}</td>
+                                        <td>{{ $chuongTrinh->khoadaotao->ThoiGianDaoTao }}</td>
                                         <td>
-                                            <a href="{{ route('hocki.edit', $hocki->MaHK) }}"
+                                            <a href="{{ route('chuongtrinh.monhoc', $chuongTrinh->MaChuongTrinh) }}"
+                                                class="btn btn-info btn-sm" title="Gán môn học">
+                                                <i class="fas fa-folder-plus"></i>
+                                            </a>
+                                            <a href="{{ route('chuongtrinh.edit', $chuongTrinh->MaChuongTrinh) }}"
                                                 class="btn btn-warning btn-sm">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <form action="{{ route('hocki.destroy', $hocki->MaHK) }}" method="POST"
-                                                class="d-inline">
+                                            <form action="{{ route('chuongtrinh.destroy', $chuongTrinh->MaChuongTrinh) }}"
+                                                method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm delete-hocki">
+                                                <button type="submit" class="btn btn-danger btn-sm delete-chuongtrinh">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -71,12 +76,12 @@
 @section('custom-js')
     <script>
         $(document).ready(function() {
-            $(document).on('click', '.delete-hocki', function(e) {
-                e.preventDefault();
-                const form = $(this).closest('form');
+            $(document).on('click', '.delete-chuongtrinh', function(e) {
+                e.preventDefault(); // Ngăn submit mặc định
+                const form = $(this).closest('form'); // Tìm form cha gần nhất
 
                 Swal.fire({
-                    title: 'Bạn có chắc chắn muốn xóa học kỳ này?',
+                    title: 'Bạn có chắc chắn muốn xóa chương trình đào tạo này?',
                     text: 'Dữ liệu đã xóa sẽ không thể khôi phục!',
                     icon: 'warning',
                     showCancelButton: true,

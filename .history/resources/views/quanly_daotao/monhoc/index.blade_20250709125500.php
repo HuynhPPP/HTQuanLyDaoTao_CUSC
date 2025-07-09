@@ -33,14 +33,89 @@
                                     <th>Giờ gốc</th>
                                     <th>Giờ triển khai</th>
                                     <th>Loại tiết học</th>
-                                    <th>Thao tác</th>
+                                    <th>Hành động</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($monhocs as $monhoc)
                                     <tr>
                                         <td>{{ $monhoc->MaMH }}</td>
-                                        <td>{{ $monhoc->TenMH }}</td>                        
+                                        <td>{{ $monhoc->TenMH }}</td>
+                                        {{-- <td>
+                                            @if ($monhoc->giangViens->count() > 0)
+                                                <div class="d-flex align-items-center">
+                                                    <span class="badge badge-primary mr-2">
+                                                        {{ $monhoc->giangViens->unique('MaGV')->count() }}
+                                                        <i class="fas fa-chalkboard-teacher ml-1"></i>
+                                                    </span>
+
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-sm btn-outline-info dropdown-toggle"
+                                                            type="button" id="teacherDropdown{{ $monhoc->MaMH }}"
+                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                            aria-expanded="false">
+                                                            Giảng Viên
+                                                        </button>
+
+                                                        <div class="dropdown-menu dropdown-menu-right p-2"
+                                                            style="min-width: 300px;"
+                                                            aria-labelledby="teacherDropdown{{ $monhoc->MaMH }}">
+
+                                                            @foreach ($monhoc->giangViens->groupBy('MaGV') as $maGV => $assignments)
+                                                                @php
+                                                                    $gv = $assignments->first();
+                                                                @endphp
+
+                                                                <div class="dropdown-item">
+                                                                    <div>
+                                                                        <strong>{{ $gv->HoTenGV }}</strong>
+                                                                        <small class="text-muted d-block">
+                                                                            Lớp:
+                                                                            {{ $assignments->pluck('pivot.MaLop')->unique()->implode(', ') }}
+                                                                        </small>
+                                                                        @if ($gv->GhiChu)
+                                                                            <small class="text-muted d-block">Ghi chú:
+                                                                                {{ $gv->GhiChu }}</small>
+                                                                        @endif
+                                                                    </div>
+
+                                                                    <div class="btn-group btn-group-sm mt-1" role="group">
+                                                                        <a href="{{ route('monhoc.edit-teacher', ['MaMH' => $monhoc->MaMH, 'maGV' => $maGV]) }}"
+                                                                            class="btn btn-warning" data-toggle="tooltip"
+                                                                            title="Chỉnh sửa">
+                                                                            <i class="fas fa-edit"></i>
+                                                                        </a>
+                                                                        <form
+                                                                            action="{{ route('monhoc.remove-teacher', ['MaMH' => $monhoc->MaMH, 'maGV' => $maGV]) }}"
+                                                                            method="POST" style="display:inline-block;">
+                                                                            @csrf
+                                                                            @method('DELETE')
+                                                                            <button type="submit"
+                                                                                class="btn btn-danger remove-teacher-btn"
+                                                                                data-toggle="tooltip" title="Xoá phân công">
+                                                                                <i class="fas fa-trash"></i>
+                                                                            </button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="dropdown-divider"></div>
+                                                            @endforeach
+
+                                                            <a href="{{ route('monhoc.add-teacher', $monhoc->MaMH) }}"
+                                                                class="dropdown-item text-primary">
+                                                                <i class="fas fa-plus-circle mr-2"></i>Phân công giảng dạy
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <a href="{{ route('monhoc.add-teacher', $monhoc->MaMH) }}"
+                                                    class="btn btn-outline-info btn-sm">
+                                                    <i class="fas fa-user-plus mr-1"></i>Phân công giảng dạy
+                                                </a>
+                                            @endif
+                                        </td> --}}
                                         <td>
                                             @if ($monhoc->giangViens->count() > 0)
                                                 <div class="d-flex align-items-center">

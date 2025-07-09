@@ -24,14 +24,14 @@ class PhongHocController extends Controller
             'Tối 20h-22h'
         ])->get();
         // Lấy tất cả phòng học
-        $phonghocs = phonghoc::all();
+        $phonghocs = \App\Models\phonghoc::all();
 
         // Tạo ma trận trạng thái phòng học theo khung giờ
         $matrix = [];
         foreach ($khunggios as $khunggio) {
             foreach ($phonghocs as $phong) {
                 // Tìm bản ghi sử dụng phòng này ở ngày và ca này
-                $ds = danhsachphong::where('TenPhong', $phong->TenPhong)
+                $ds = \App\Models\danhsachphong::where('TenPhong', $phong->TenPhong)
                     ->whereDate('NgaySuDung', $selectedDate->format('Y-m-d'))
                     ->where('Ca', $khunggio->TenKhungGio)
                     ->first();

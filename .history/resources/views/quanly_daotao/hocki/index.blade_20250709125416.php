@@ -27,12 +27,12 @@
                         <table class="table table-striped" id="table-1">
                             <thead>
                                 <tr>
-                                    <th>Mã học kỳ</th>
-                                    <th>Tên học kỳ</th>
-                                    <th>Tổng giờ gốc</th>
-                                    <th>Tổng giờ triển khai</th>
-                                    <th>Chương trình</th>
-                                    <th>Thao tác</th>
+                                    <th>Mã Học Kỳ</th>
+                                    <th>Tên Học Kỳ</th>
+                                    <th>Tổng Giờ Gốc</th>
+                                    <th>Tổng Giờ Triển Khai</th>
+                                    <th>Chương Trình</th>
+                                    <th>Hành Động</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -71,7 +71,8 @@
 @section('custom-js')
     <script>
         $(document).ready(function() {
-            $(document).on('click', '.delete-hocki', function(e) {
+            $(document).on('click', '.delete-chuongtrinh', function(e) {
+            $('.delete-hocki').click(function(e) {
                 e.preventDefault();
                 const form = $(this).closest('form');
 
