@@ -103,7 +103,7 @@ class SinhVienController extends Controller
     }
     public function show($maSV)
     {
-        $sinhVien = sinhvien::with(['hosotuyensinh', 'danhSachLop'])
+        $sinhVien = sinhvien::with(['danhSachLop'])
             ->where('MaSV', $maSV)
             ->firstOrFail();
         return view('quanly_nhansu.sinhvien.show', compact('sinhVien'));

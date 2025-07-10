@@ -45,10 +45,6 @@ class sinhvien extends Model
     ];
 
     // Quan hệ với các bảng khác
-    public function hosotuyensinh()
-    {
-        return $this->hasOne(HoSoTuyenSinh::class, 'MaSV', 'MaSV');
-    }
 
     public function sinhVienDuThi()
     {

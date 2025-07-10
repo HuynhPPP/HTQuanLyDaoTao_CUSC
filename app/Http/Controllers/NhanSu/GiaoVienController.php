@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\NhanSu;
 
 use App\Http\Controllers\Controller;
+use App\Models\GiangDay;
 use App\Models\giaovien;
 use App\Models\hocvi;
 use App\Models\bangcapcanbo;
@@ -88,10 +89,12 @@ class GiaoVienController extends Controller
             'hocvi',
             'chucvu',
             'donvi',
-            'bangcapcanbo'
+            'bangcapcanbo',
         ])->findOrFail($maGV);
 
-        return view('quanly_nhansu.giaovien.show', compact('giaovien'));
+        $giangdays = GiangDay::where('MaGV', $maGV)->get();
+
+        return view('quanly_nhansu.giaovien.show', compact('giaovien', 'giangdays'));
     }
     public function edit($maGV)
     {

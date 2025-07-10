@@ -31,6 +31,11 @@ class giaovien extends Model
         'NgayBatDauCongTac',
         'NgayKetThucCongTac'
     ];
+    // Quan hệ với Giảng dạy
+    public function giangday()
+    {
+        return $this->belongsTo(GiangDay::class, 'MaGV', 'MaGV');
+    }
 
     // Quan hệ với Học Vị
     public function hocvi()
@@ -54,15 +59,5 @@ class giaovien extends Model
     public function bangcapcanbo()
     {
         return $this->belongsTo(bangcapcanbo::class, 'MaBang', 'MaBang');
-    }
-
-    public function reportsAsInstructor()
-    {
-        return $this->hasMany(ThongKeBaoCaoDoAn::class, 'instructor_id', 'MaGV');
-    }
-
-    public function reportsAsReviewer()
-    {
-        return $this->hasMany(ThongKeBaoCaoDoAn::class, 'reviewer_id', 'MaGV');
     }
 }

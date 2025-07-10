@@ -128,6 +128,31 @@
                                     </table>
                                 </div>
                             </div>
+                            <div class="row mt-4">
+                                <div class="col-md-12">
+                                    <h6 class="mb-3">Lớp học đang giảng dạy</h6>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Lớp học</th>
+                                                <th>Môn học</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse($giangdays as $index => $giangday)
+                                                <tr>
+                                                    <td>{{ $giangday->MaLop }}</td>
+                                                    <td>{{ $giangday->monHoc->TenMH }}</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="4" class="text-center">Chưa có thông tin</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
