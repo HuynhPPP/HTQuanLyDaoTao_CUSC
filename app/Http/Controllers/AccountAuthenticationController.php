@@ -28,7 +28,7 @@ class AccountAuthenticationController extends Controller
 
         // Kiểm tra captcha nếu dùng
         // if ($request->input('captcha') !== session('captcha_phrase')) {
-        //     return back()->withErrors(['captcha' => 'Captcha không đúng.'])->withInput();
+        //     return back()->with('error', 'Capcha không đúng. Vui lòng thử lại !.')->withInput();
         // }
 
         $username = $request->input('username');

@@ -4,6 +4,12 @@
     <div class="section">
         <div class="section-header">
             <h1>Thống kê kết quả học tập - Lớp {{ $lop->MaLop }}</h1>
+            <div class="section-header-breadcrumb">
+            <a href="{{ route('thong-ke.export', ['MaLop' => $lop->MaLop, 'MaChuongTrinh' => $MaCT]) }}"
+                class="btn btn-success">
+                <i class="fas fa-file-excel"></i> Tải Excel thống kê
+            </a>
+            </div>
         </div>
 
         <ul class="nav nav-tabs mb-4" id="stat-tabs" role="tablist">

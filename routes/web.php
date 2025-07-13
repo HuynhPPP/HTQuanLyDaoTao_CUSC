@@ -301,6 +301,9 @@ Route::middleware([RoleMiddleware::class . ':admin'])->group(function () {
             ->name('thong-ke-hoc-luc');
         Route::get('/tong-ket-hoc-luc/{MaLop}/{MaChuongTrinh}', [ThongKeDashboardController::class, 'thongkehoctap'])
             ->name('diemthi.tongket.hocluc');
+        Route::get('/export-thong-ke/{MaLop}/{MaChuongTrinh}', [ThongKeDashboardController::class, 'exportExcel'])
+            ->name('export');
+
     });
     Route::prefix('manage_account')->group(function () {
         // Route cho sinh viên

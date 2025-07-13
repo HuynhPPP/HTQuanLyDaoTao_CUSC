@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ThongKe;
 
 use App\Http\Controllers\Controller;
 
+use App\Models\ChuongTrinh;
 use App\Services\ThongKeService;
 use App\Models\danhsachsv;
 use App\Models\ChuongTrinhMonHoc;
@@ -11,6 +12,8 @@ use App\Models\TieuChiXepLoai;
 use App\Models\DiemThi;
 use App\Models\LopHoc;
 use Illuminate\Support\Facades\DB;
+use App\Exports\ThongKeKetQuaHocTapExport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Models\MonHoc;
 use Illuminate\Http\Request;
 
@@ -80,6 +83,7 @@ class ThongKeDashboardController extends Controller
     public function tongKetHocLuc($MaLop, $MaChuongTrinh)
     {
         $lop = LopHoc::where('MaLop', $MaLop)->firstOrFail();
+        $MaChuongTrinh = ChuongTrinh::where('MaChuongTrinh', $MaChuongTrinh)->firstOrFail();
 
         $monHocIds = ChuongTrinhMonHoc::where('MaChuongTrinh', $MaChuongTrinh)
             ->pluck('MaMH')
@@ -117,11 +121,13 @@ class ThongKeDashboardController extends Controller
         return view('thong-ke.hoc-luc', [
             'lop' => $lop,
             'ketQua' => $ketQua,
+            'MaChuongTrinh' => $MaChuongTrinh
         ]);
     }
     public function thongkehoctap($MaLop, $MaChuongTrinh)
     {
         $lop = LopHoc::where('MaLop', $MaLop)->first();
+        $MaCT = ChuongTrinh::where('MaChuongTrinh', $MaChuongTrinh)->firstOrFail();
         $monHocs = ChuongTrinhMonHoc::where('MaChuongTrinh', $MaChuongTrinh)->pluck('MaMH');
         $dsDiem = DiemThi::where('MaLop', $MaLop)->whereIn('MaMH', $monHocs)->get();
 
@@ -152,7 +158,42 @@ class ThongKeDashboardController extends Controller
             ];
         });
 
-        return view('thong-ke.thongkehoctap_dashboard', compact('lop', 'theoMon', 'thongKeDat', 'tongKet'));
+        return view('thong-ke.thongkehoctap_dashboard', compact('lop', 'theoMon', 'thongKeDat', 'tongKet', 'MaCT'));
     }
+    public function exportExcel($MaLop, $MaChuongTrinh)
+    {
+        $lop = LopHoc::where('MaLop', $MaLop)->first();
+        $monHocs = ChuongTrinhMonHoc::where('MaChuongTrinh', $MaChuongTrinh)->pluck('MaMH');
+        $dsDiem = DiemThi::where('MaLop', $MaLop)->whereIn('MaMH', $monHocs)->get();
 
+        $theoMon = $dsDiem->groupBy('MaMH');
+        $thongKeDat = $dsDiem->groupBy('MaMH')->map(function ($ds) {
+            return [
+                'dat' => $ds->where('DiemTong', '>=', 40)->count(),
+                'khongDat' => $ds->where('DiemTong', '<', 40)->count(),
+                'tong' => $ds->count()
+            ];
+        });
+
+        $tieuChi = TieuChiXepLoai::where('MaChuongTrinh', $MaChuongTrinh)->get();
+        $tongKet = $dsDiem->groupBy('MaSV')->map(function ($ds) use ($tieuChi) {
+            $tb = $ds->avg('DiemTong');
+            $loai = 'Chưa xếp loại';
+            foreach ($tieuChi as $tc) {
+                if ($tb >= $tc->DiemTu && $tb < $tc->DiemDen)
+                    $loai = $tc->XepLoai;
+            }
+            return [
+                'MaSV' => $ds->first()->MaSV,
+                'HoTen' => $ds->first()->sinhVien->HoTen ?? '',
+                'DiemTB' => round($tb, 2),
+                'XepLoai' => $loai
+            ];
+        });
+
+        return Excel::download(
+            new ThongKeKetQuaHocTapExport($lop, $theoMon, $thongKeDat, $tongKet),
+            'ThongKeHocTap_' . $lop->MaLop . '.xlsx'
+        );
+    }
 }
