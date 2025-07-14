@@ -196,4 +196,8 @@ class ThongKeDashboardController extends Controller
             'ThongKeHocTap_' . $lop->MaLop . '.xlsx'
         );
     }
+    public function thongKeBaoCaoDoAn()
+    {
+        return view('thong-ke.cusc_report_synthesizer.index');
+    }
 }

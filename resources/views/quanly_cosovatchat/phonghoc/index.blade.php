@@ -45,7 +45,7 @@
                                                     @php $cell = $matrix[$khunggio->TenKhungGio][$phong->TenPhong] ?? ['status'=>'Trống','MaLop'=>null]; @endphp
                                                     <td class="text-center">
                                                         @if ($cell['status'] === 'Đang sử dụng')
-                                                            {{-- <span class="badge badge-danger">Đang sử dụng</span><br> --}}
+                                                            <span class="badge badge-danger">Đang sử dụng</span><br>
                                                             <span class="badge badge-primary">Lớp:
                                                                 {{ $cell['MaLop'] }}</span>
                                                         @else

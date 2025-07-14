@@ -77,7 +77,7 @@ class MainController extends Controller
             [
                 'icon' => 'far fa-newspaper',
                 'text' => 'Lập bảng thống kê báo cáo đồ án',
-                'link' => '#',
+                'link' => route('thong-ke.bao-cao-do-an'),
                 'color' => 'bg-info',
             ],
             [
