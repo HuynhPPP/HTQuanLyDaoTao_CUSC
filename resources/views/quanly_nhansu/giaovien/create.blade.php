@@ -1,12 +1,12 @@
 @extends('layouts.new_app.master')
 
 @section('main-content')
-<style>
-    .custom-modal-width {
-        max-width: 90vw;
-        width: 100%;
-    }
-</style>
+    <style>
+        .custom-modal-width {
+            max-width: 90vw;
+            width: 100%;
+        }
+    </style>
     <div class="section">
         <div class="section-header">
             <h1>Thêm giáo viên mới</h1>
@@ -123,7 +123,8 @@
 
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
-                                            <label for="Sdt" class="form-label">Số điện thoại</label>
+                                            <label for="Sdt" class="form-label">Số điện thoại <span
+                                                    class="text-danger">*</span></label>
                                             <input type="text" class="form-control @error('Sdt') is-invalid @enderror"
                                                 id="Sdt" name="Sdt" value="{{ old('Sdt') }}">
                                             @error('Sdt')
@@ -151,79 +152,8 @@
 
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
-                                            <label for="MaHV" class="form-label">Học vị</label>
-                                            <select class="form-control @error('MaHV') is-invalid @enderror"
-                                                id="MaHV" name="MaHV">
-                                                <option value="">Chọn học vị</option>
-                                                @foreach ($hocvis as $hv)
-                                                    <option value="{{ $hv->MaHV }}"
-                                                        {{ old('MaHV') == $hv->MaHV ? 'selected' : '' }}>
-                                                        {{ $hv->TenHocVi }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            @error('MaHV')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="col-md-6 mb-3">
-                                            <label for="TenChucVu" class="form-label">Chức vụ</label>
-                                            <select class="form-control @error('TenChucVu') is-invalid @enderror"
-                                                id="TenChucVu" name="TenChucVu">
-                                                <option value="">Chọn chức vụ</option>
-                                                @foreach ($chucvus as $cv)
-                                                    <option value="{{ $cv->TenChucVu }}"
-                                                        {{ old('TenChucVu') == $cv->TenChucVu ? 'selected' : '' }}>
-                                                        {{ $cv->TenChucVu }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            @error('TenChucVu')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="MaDV" class="form-label">Đơn vị</label>
-                                            <select class="form-control @error('MaDV') is-invalid @enderror"
-                                                id="MaDV" name="MaDV">
-                                                <option value="">Chọn đơn vị</option>
-                                                @foreach ($donvis as $dv)
-                                                    <option value="{{ $dv->MaDV }}"
-                                                        {{ old('MaDV') == $dv->MaDV ? 'selected' : '' }}>
-                                                        {{ $dv->TenDVHienTai }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            @error('MaDV')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="col-md-6 mb-3">
-                                            <label for="MaBang" class="form-label">Bằng cấp</label>
-                                            <select class="form-control @error('MaBang') is-invalid @enderror"
-                                                id="MaBang" name="MaBang">
-                                                <option value="">Chọn bằng cấp</option>
-                                                @foreach ($bangcaps as $bc)
-                                                    <option value="{{ $bc->MaBang }}"
-                                                        {{ old('MaBang') == $bc->MaBang ? 'selected' : '' }}>
-                                                        {{ $bc->TenBang }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            @error('MaBang')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="ChuyenNganh" class="form-label">Chuyên ngành</label>
+                                            <label for="ChuyenNganh" class="form-label">Chuyên ngành <span
+                                                    class="text-danger">*</span></label>
                                             <input type="text"
                                                 class="form-control @error('ChuyenNganh') is-invalid @enderror"
                                                 id="ChuyenNganh" name="ChuyenNganh" value="{{ old('ChuyenNganh') }}">
@@ -240,16 +170,6 @@
                                                 id="NgayBatDauCongTac" name="NgayBatDauCongTac"
                                                 value="{{ old('NgayBatDauCongTac') }}">
                                             @error('NgayBatDauCongTac')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-12 mb-3">
-                                            <label for="GhiChu" class="form-label">Ghi chú</label>
-                                            <textarea class="form-control @error('GhiChu') is-invalid @enderror" id="GhiChu" name="GhiChu" rows="3">{{ old('GhiChu') }}</textarea>
-                                            @error('GhiChu')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -287,9 +207,11 @@
                     <div class="alert alert-info">
                         <h6 class="font-weight-bold">Hướng dẫn import file Excel:</h6>
                         <ol>
-                            <li>Các cột bắt buộc: <code>Mã giảng viên, Họ tên giảng viên, Giới tính, Email, Loại giảng viên</code></li>
+                            <li>Các cột bắt buộc: <code>Mã giảng viên, Họ tên giảng viên, Giới tính, Email, Loại giảng
+                                    viên</code></li>
                             <li>Cột <code>Giới tính</code> chỉ nhận giá trị <code>Nam</code> hoặc <code>Nữ</code></li>
-                            <li>Cột <code>Loại giảng viên</code> chỉ nhận giá trị <code>CoHuu</code> hoặc <code>MoiGiang</code></li>
+                            <li>Cột <code>Loại giảng viên</code> chỉ nhận giá trị <code>CoHuu</code> hoặc
+                                <code>MoiGiang</code></li>
                         </ol>
                     </div>
 

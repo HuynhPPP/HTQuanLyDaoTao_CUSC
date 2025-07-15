@@ -17,7 +17,7 @@ class TraCuuDiemThiController extends Controller
         $id = session('id');
         $maSV = LdapAccount::where('MaTaiKhoan', $id)->first();
         
-        return view('tracuudiem.index', [
+        return view('frontend.sinhvien.tra_cuu_diem_thi.index', [
             'maSV' => $maSV
         ]);
     }
@@ -83,7 +83,7 @@ class TraCuuDiemThiController extends Controller
                 return $item;
             });
 
-        return view('tracuudiem.ketqua', [
+        return view('frontend.sinhvien.tra_cuu_diem_thi.ketqua', [
             'sinhVien' => $sinhVien,
             'danhSachDiem' => $danhSachDiem,
             'lopHoc' => $lopHoc->MaLop

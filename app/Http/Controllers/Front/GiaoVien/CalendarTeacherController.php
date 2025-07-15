@@ -1,26 +1,25 @@
 <?php
 
-namespace App\Http\Controllers\Front\SinhVien;
+namespace App\Http\Controllers\Front\GiaoVien;
 
 use App\Http\Controllers\Controller;
-use App\Models\sinhvien;
-use App\Models\LdapAccount;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use App\Models\lophoc;
-use App\Models\danhsachphong;
-use App\Models\chuongtrinh;
+use App\Models\GiangDay;
+use App\Models\LdapAccount;
+use App\Models\giaovien;
 use App\Models\tkb;
+use App\Models\lophoc;
+use App\Models\chuongtrinh;
+use App\Models\danhsachphong;
 use App\Models\danhsachmonhoc;
-use App\Models\danhsachngaynghi;
-use App\Models\ngaytuhoc;
 use App\Models\hocki;
+use App\Models\ngaytuhoc;
+use App\Models\danhsachngaynghi;
 use Carbon\Carbon;
-class CalendarController extends Controller
+
+class CalendarTeacherController extends Controller
 {
-    public function StudentCalendar(Request $request)
+    public function teacherSchedule(Request $request)
     {
         $username = session('user');
         if (!$username) {
@@ -29,40 +28,43 @@ class CalendarController extends Controller
 
         // 1. Lấy MaSV từ bảng ldap_accounts
         $ldapAccount = LdapAccount::where('username', $username)->first();
-        if (!$ldapAccount) {
-            return view('frontend.sinhvien.lich_hoc.calendar_index')->with('error', 'Không tìm thấy tài khoản LDAP.');
+        // Lấy mã giảng viên từ bảng giangvien (giả sử username là mã GV hoặc có thể join từ bảng tài khoản)
+        $giangVien = giaovien::where('MaGV', $ldapAccount->MaTaiKhoan)->first();
+        if (!$giangVien) {
+            return view('frontend.giangvien.lich_giang_day.teacher_schedule')->with('error', 'Không tìm thấy thông tin giảng viên.');
+        }
+        $maGV = $giangVien->MaGV;
+
+        // Lấy các lớp/môn mà giảng viên này dạy
+        $giangDays = GiangDay::where('MaGV', $maGV)->get();
+        if ($giangDays->isEmpty()) {
+            return view('frontend.giangvien.lich_giang_day.teacher_schedule')->with('error', 'Bạn chưa được phân công giảng dạy lớp nào.');
         }
 
-        // 2. Lấy sinh viên từ bảng sinhvien
-        $sinhVien = sinhvien::where('MaSV', $ldapAccount->MaTaiKhoan)->first();
-        if (!$sinhVien) {
-            return view('frontend.sinhvien.lich_hoc.calendar_index')->with('error', 'Không tìm thấy thông tin sinh viên.');
+        // Lấy tất cả các MaLop mà GV dạy
+        $maLops = $giangDays->pluck('MaLop')->unique()->values();
+        $tkbs = tkb::whereIn('MaLop', $maLops)->get();
+        if ($tkbs->isEmpty()) {
+            return view('frontend.giangvien.lich_giang_day.teacher_schedule')->with('error', 'Không tìm thấy thời khoá biểu cho các lớp bạn dạy.');
         }
 
-        // 3. Lấy mã lớp từ bảng danhsachsv (giả sử 1 sinh viên chỉ thuộc 1 lớp)
-        $danhSachLop = $sinhVien->danhSachLop()->first();
-        if (!$danhSachLop) {
-            return view('frontend.sinhvien.lich_hoc.calendar_index')->with('error', 'Không tìm thấy lớp của sinh viên.');
-        }
-        $maLop = $danhSachLop->MaLop;
-
-        // 4. Lấy thời khoá biểu và các bước tiếp theo như cũ
-        $schedule = tkb::where('MaLop', $maLop)->latest('NgayHoc')->first();
+        // Chọn 1 lớp để xem lịch (hoặc cho phép chọn lớp)
+        $selectedMaLop = $request->input('lop', $maLops->first());
+        $schedule = $tkbs->where('MaLop', $selectedMaLop)->first();
         if (!$schedule) {
-            return view('frontend.sinhvien.lich_hoc.calendar_index')->with('error', 'Không tìm thấy thời khoá biểu.');
+            return view('frontend.giangvien.lich_giang_day.teacher_schedule')->with('error', 'Không tìm thấy thời khoá biểu cho lớp đã chọn.');
         }
 
-        $chuongtrinh = chuongtrinh::find(optional(lophoc::find($schedule->MaLop))->MaChuongTrinh);
+        $lophoc = lophoc::find($schedule->MaLop);
+        $chuongtrinh = chuongtrinh::find($lophoc->MaChuongTrinh ?? null);
         $hocki = hocki::find($schedule->MaHK);
         $dsmh = danhsachmonhoc::where('MaHK', $hocki->MaHK)->first();
-        $ngaynghis = danhsachngaynghi::with('ngayNghi')->where('TenTKB', $schedule->TenTKB)->get()->pluck('ngayNghi');
         $monhocs = danhsachmonhoc::where('MaHK', $hocki->MaHK)->get();
         $ngaytuhocs = ngaytuhoc::where('TenTKB', $schedule->TenTKB)->get();
+        $ngaynghis = danhsachngaynghi::with('ngayNghi')->where('TenTKB', $schedule->TenTKB)->get()->pluck('ngayNghi');
+        $phongHocTheoNgay = danhsachphong::where('MaLop', $schedule->MaLop)->get()->keyBy('NgaySuDung');
 
-        // Lấy toàn bộ phòng học của lớp, keyBy ngày sử dụng
-        $phongHocTheoNgay = danhsachphong::where('MaLop', $maLop)->get()->keyBy('NgaySuDung');
-
-        // Build scheduleMatrix giống SchedulesController
+        // Build scheduleMatrix: chỉ hiển thị các tiết mà giảng viên này phụ trách
         $startDate = Carbon::parse($schedule->NgayHoc);
         $totalHours = $hocki->TongGioTrienKhai;
         $emptyDays = 0;
@@ -87,13 +89,9 @@ class CalendarController extends Controller
                 $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU', 'THỨ BẢY'];
         }
 
-        // Lọc môn học có giờ triển khai > 0
-        $filteredMonHocs = [];
-        foreach ($monhocs as $monhoc) {
-            if ($monhoc && $monhoc->GioTrienKhai > 0) {
-                $filteredMonHocs[] = $monhoc;
-            }
-        }
+        // Lọc các môn mà GV này dạy
+        $maMHsGVDay = $giangDays->pluck('MaMH')->unique()->values();
+        $filteredMonHocs = $monhocs->whereIn('MaMH', $maMHsGVDay);
         $subjectOccurrences = [];
         $subjectCount = count($filteredMonHocs);
         foreach ($filteredMonHocs as $index => $monhoc) {
@@ -162,7 +160,7 @@ class CalendarController extends Controller
             return '';
         };
 
-        // Tạo scheduleMatrix
+        // Tạo scheduleMatrix: chỉ hiển thị tiết mà GV này dạy hoặc các ngày nghỉ/tự học/thi
         $scheduleMatrix = [];
         for ($week = 1; $week <= $totalWeeks; $week++) {
             $weekStart = $startDate->copy()->addWeeks($week - 1)->startOfWeek();
@@ -172,10 +170,7 @@ class CalendarController extends Controller
                 $subject = '';
                 $inlineStyle = '';
                 if ($currentDate->gte($startDate)) {
-                    if (isset($examDays[$currentDate->format('Y-m-d')])) {
-                        $subject = $examDays[$currentDate->format('Y-m-d')]['subject_string'];
-                        $inlineStyle = 'color: blue; font-weight: bold;';
-                    } elseif (isset($selfStudyDays[$currentDate->format('Y-m-d')])) {
+                    if (isset($selfStudyDays[$currentDate->format('Y-m-d')])) {
                         $subject = $selfStudyDays[$currentDate->format('Y-m-d')];
                         $inlineStyle = 'color: green; font-weight: bold;';
                     } elseif (isset($holidayDates[$currentDate->format('Y-m-d')])) {
@@ -190,6 +185,10 @@ class CalendarController extends Controller
                             $holidayDates,
                             $examCounter
                         );
+                        // Chỉ hiển thị nếu là môn mà GV này dạy
+                        if ($subject && !$maMHsGVDay->contains($subject)) {
+                            $subject = '';
+                        }
                         if ($subject) {
                             if (isset($subjectOccurrences[$subject]['first']) && $subjectOccurrences[$subject]['first']->eq($currentDate)) {
                                 $inlineStyle = 'color: red; font-weight: bold;';
@@ -209,23 +208,26 @@ class CalendarController extends Controller
 
         // Lấy tuần hiện tại từ request, mặc định là 1
         $selectedWeek = $request->input('week', 1);
-        $viewMode = $request->input('viewMode', 'week'); // 'week' hoặc 'all'
+        $viewMode = $request->input('viewMode', 'week');
 
-        return view('frontend.sinhvien.lich_hoc.calendar_index', compact(
+        return view('frontend.giangvien.lich_giang_day.teacher_schedule', compact(
             'schedule',
             'chuongtrinh',
             'hocki',
             'dsmh',
-            'ngaynghis',
             'monhocs',
             'ngaytuhocs',
+            'ngaynghis',
+            'phongHocTheoNgay',
             'scheduleMatrix',
             'selectedWeek',
             'totalWeeks',
             'weekDays',
             'subjectOccurrences',
             'viewMode',
-            'phongHocTheoNgay',
+            'giangVien',
+            'maLops',
+            'selectedMaLop',
         ));
     }
 }

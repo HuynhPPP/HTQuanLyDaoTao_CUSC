@@ -34,6 +34,7 @@ use App\Http\Controllers\Front\SinhVien\CalendarController;
 use App\Http\Controllers\Front\SinhVien\MainStudentController;
 use App\Http\Controllers\Front\GiaoVien\AddPointExamController;
 use App\Http\Controllers\Front\GiaoVien\CalendarExamController;
+use App\Http\Controllers\Front\GiaoVien\CalendarTeacherController;
 use App\Http\Controllers\Front\GiaoVien\MainTeacherController;
 use App\Http\Middleware\RoleMiddleware;
 
@@ -408,7 +409,7 @@ Route::middleware([RoleMiddleware::class . ':teacher'])->group(function () {
             ->name('giaovien.nhapdiemthi.nhap-diem');
     });
 
-    Route::get('/giao-vien/thoi-khoa-bieu', [\App\Http\Controllers\Front\GiaoVien\MainTeacherController::class, 'teacherSchedule'])->name('giaovien.schedule');
+    Route::get('/giao-vien/lich-giang-day', [CalendarTeacherController::class, 'teacherSchedule'])->name('giaovien.schedule');
 });
 
 Route::middleware([RoleMiddleware::class . ':student'])->group(function () {

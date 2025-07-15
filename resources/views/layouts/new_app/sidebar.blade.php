@@ -141,7 +141,7 @@
             @endif
             @if (session('role') == 'teacher')
                 <li class="dropdown">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('giaovien.schedule') }}" class="nav-link">
                         <i class="far fa-calendar-alt"></i>
                         <span>Lịch giảng dạy</span>
                     </a>

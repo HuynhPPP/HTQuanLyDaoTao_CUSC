@@ -27,7 +27,7 @@ class CalendarExamController extends Controller
             ->where('MaGV', $giaoVien->MaGV)
             ->get();
 
-        return view('giaovien.lichthi.index', compact('lichCoiThi'));
+        return view('frontend.giangvien.lichthi.index', compact('lichCoiThi'));
     }
     public function chiTietLichThi($maLichThi)
     {
@@ -68,6 +68,6 @@ class CalendarExamController extends Controller
             )
             ->get();
 
-        return view('giaovien.lichthi.chi-tiet', compact('lichThi', 'phanCongThi', 'danhSachSinhVien'));
+        return view('frontend.giangvien.lichthi.chi-tiet', compact('lichThi', 'phanCongThi', 'danhSachSinhVien'));
     }
 }

@@ -5,10 +5,6 @@ namespace App\Http\Controllers\NhanSu;
 use App\Http\Controllers\Controller;
 use App\Models\GiangDay;
 use App\Models\giaovien;
-use App\Models\hocvi;
-use App\Models\bangcapcanbo;
-use App\Models\chucvu;
-use App\Models\donvi;
 use App\Models\LdapAccount;
 use App\Imports\GiaoVienImport;
 use Illuminate\Http\Request;
@@ -38,17 +34,9 @@ class GiaoVienController extends Controller
     }
     public function create()
     {
-        $hocvis = hocvi::all();
-        $bangcaps = bangcapcanbo::all();
-        $chucvus = chucvu::all();
-        $donvis = donvi::all();
-
-        return view('quanly_nhansu.giaovien.create', compact(
-            'hocvis',
-            'bangcaps',
-            'chucvus',
-            'donvis'
-        ));
+        return view(
+            'quanly_nhansu.giaovien.create'
+        );
     }
     public function store(Request $request)
     {
@@ -58,6 +46,8 @@ class GiaoVienController extends Controller
             'Email' => 'required|email|unique:giaovien,Email',
             'GioiTinh' => 'required',
             'LoaiGV' => 'required|in:CoHuu,MoiGiang',
+            'ChuyenNganh' => 'required',
+            'Sdt' => 'required',
         ], [
             'MaGV.required' => 'Vui lòng nhập mã giáo viên',
             'MaGV.unique' => 'Mã giáo viên đã tồn tại',
@@ -67,6 +57,8 @@ class GiaoVienController extends Controller
             'Email.unique' => 'Email đã tồn tại',
             'GioiTinh.required' => 'Vui lòng chọn giới tính',
             'LoaiGV.required' => 'Vui lòng chọn loại giáo viên',
+            'ChuyenNganh.required' => 'Vui lòng chọn nhập chuyên ngành giảng dạy',
+            'Sdt.required' => 'Vui lòng chọn nhập số điện thoại',
         ]);
 
         try {

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LdapAccount extends Model
 {
-    protected $table = 'ldap_accounts';
+    protected $table = 'accounts';
 
     protected $fillable = [
         'MaTaiKhoan',

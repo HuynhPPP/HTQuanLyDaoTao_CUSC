@@ -9,6 +9,7 @@ use App\Models\bangcapcanbo;
 use App\Models\chucvu;
 use App\Models\donvi;
 use App\Models\LdapAccount;
+use App\Models\GiangDay;
 use App\Imports\GiaoVienImport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -42,7 +43,7 @@ class MainTeacherController extends Controller
         $chucvus = chucvu::all();
         $donvis = donvi::all();
 
-        return view('quanly_nhansu.giaovien.profile', compact(
+        return view('frontend.giangvien.thong_tin_giang_vien.profile', compact(
             'giaoVien',
             'hocvis',
             'chucvus',
@@ -146,17 +147,5 @@ class MainTeacherController extends Controller
                 'message' => 'Đã xảy ra lỗi. Vui lòng thử lại sau.'
             ], 500);
         }
-    }
-    public function teacherSchedule()
-    {
-        $id = session('id');
-        $giaoVien = \App\Models\giaovien::where('MaGV', $id)->first();
-        $giangDays = \App\Models\GiangDay::with(['monHoc', 'lopHoc'])
-            ->where('MaGV', $giaoVien->MaGV)
-            ->get();
-        $monHocTheoLop = $giangDays->groupBy(function($item) {
-            return $item->monHoc->MaMH;
-        });
-        return view('teacher_schedule', compact('giaoVien', 'monHocTheoLop'));
     }
 }

@@ -35,7 +35,7 @@ class AddPointExamController extends Controller
             ->where('MaGV', $giaoVien->MaGV)
             ->get();
 
-        return view('giaovien.nhapdiemthi.danh-sach-mon', compact('giangDays'));
+        return view('frontend.giangvien.nhapdiemthi.danh-sach-mon', compact('giangDays'));
 
     }
     public function nhapDiem($MaLop, $MaMH)
@@ -89,7 +89,7 @@ class AddPointExamController extends Controller
             ->get()
             ->keyBy('MaSV');
 
-        return view('giaovien.nhapdiemthi.nhap-diem', compact(
+        return view('frontend.giangvien.nhapdiemthi.nhap-diem', compact(
             'sinhViens',
             'diemThis',
             'lophoc',

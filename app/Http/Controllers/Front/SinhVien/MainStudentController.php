@@ -29,12 +29,11 @@ class MainStudentController extends Controller
 
         // Lấy thêm thông tin từ các bảng liên quan nếu cần
         $sinhVien->load([
-            'hosotuyensinh',
             'danhSachLop',
             // Thêm các quan hệ khác nếu có
         ]);
 
-        return view('quanly_nhansu.sinhvien.profile', compact('sinhVien'));
+        return view('frontend.sinhvien.thong_tin_sinh_vien.profile', compact('sinhVien'));
     }
     public function updateProfile(Request $request)
     {
