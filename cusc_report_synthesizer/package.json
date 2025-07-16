@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@google/genai": "^1.8.0",
+    "@google/generative-ai": "^0.24.1",
     "exceljs": "^4.4.0",
     "fs": "^0.0.1-security",
     "react": "^19.1.0",

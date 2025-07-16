@@ -23,6 +23,8 @@ export interface SummaryInstructor {
     role: string;
     hours: number;
     notes: string;
+    isChamDoAn?: boolean;
+    stt?: number;
 }
 
 export interface SummaryEntry {

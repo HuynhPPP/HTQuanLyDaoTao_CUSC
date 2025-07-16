@@ -53,6 +53,19 @@ const base64ToBuffer = (base64: string): ArrayBuffer => {
     return bytes.buffer;
 };
 
+function calcHoursFromTimeRange(timeRange: string): number {
+    const match = timeRange.match(/(\d{1,2}):(\d{2})\s*[–-]\s*(\d{1,2}):(\d{2})/);
+    if (!match) return 0;
+    const start = parseInt(match[1]) + parseInt(match[2]) / 60;
+    const end = parseInt(match[3]) + parseInt(match[4]) / 60;
+    return Math.max(0, end - start);
+}
+
+function getGroupCount(classInfo: string): number {
+    const match = classInfo.match(/(\d+)\s*nhóm/i);
+    return match ? parseInt(match[1]) : 1;
+}
+
 export const exportSummaryToExcel = async (data: SummaryData) => {
   const wb = new ExcelJS.Workbook();
   const monthStr = String(data.month).padStart(2, '0');
@@ -161,11 +174,35 @@ export const exportSummaryToExcel = async (data: SummaryData) => {
     gr.getCell(1).border = borderAll;
     gr.getCell(5).border = { right: { style: 'thin' } }; // Right border for merged cell
 
-    let sessionStt = 1;
-    entry.instructors.forEach(inst => {
+    // Kiểm tra nếu tất cả instructors có notes giống nhau và khác rỗng
+    const allNotes = entry.instructors.map(i => (i.notes && i.notes.trim()) || '');
+    const uniqueNotes = Array.from(new Set(allNotes.filter(Boolean)));
+    const groupNote = uniqueNotes.length === 1 ? uniqueNotes[0] : '';
+    const shouldMergeNote = groupNote && allNotes.every(n => n === groupNote);
+
+    entry.instructors.forEach((inst, instIndex) => {
       const r = next();
       r.height = 18;
-      const vals = [sessionStt++, inst.name, inst.role, inst.hours, inst.notes];
+      // Logic số giờ fallback như cũ
+      let hours = inst.hours;
+      if ((hours === undefined || hours === null || hours === 0)) {
+        if (/hướng dẫn/i.test(inst.role)) {
+          hours = calcHoursFromTimeRange(entry.timeRange);
+        } else if (/phản biện/i.test(inst.role)) {
+          const hd = entry.instructors.find(i => /hướng dẫn/i.test(i.role));
+          hours = hd ? (hd.hours && hd.hours !== 0 ? hd.hours : calcHoursFromTimeRange(entry.timeRange)) : 0;
+        } else if (inst.isChamDoAn) {
+          const yearType = /năm\s*2/i.test(inst.notes) ? 2 : 1;
+          hours = (yearType === 1 ? 1.5 * getGroupCount(entry.classInfo) : 2.0 * getGroupCount(entry.classInfo));
+        }
+      }
+      const vals = [
+        inst.stt ?? (instIndex + 1),
+        inst.name,
+        inst.role,
+        hours,
+        shouldMergeNote && instIndex === 0 ? groupNote : (!shouldMergeNote ? ((inst.notes && inst.notes.trim()) || '') : '')
+      ];
       vals.forEach((v, i) => {
         const c = r.getCell(i + 1);
         c.value = v;
@@ -175,6 +212,10 @@ export const exportSummaryToExcel = async (data: SummaryData) => {
         Object.assign(c, i === 0 || i === 3 ? styles.center : styles.default);
         c.border = borderAll;
       });
+      // Nếu gộp ô ghi chú, merge cell ở cột ghi chú cho toàn bộ nhóm (sau khi gán giá trị)
+      if (shouldMergeNote && instIndex === 0) {
+        ws.mergeCells(r.number, 5, r.number + entry.instructors.length - 1, 5);
+      }
     });
   });
 

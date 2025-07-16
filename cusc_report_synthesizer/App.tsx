@@ -108,99 +108,61 @@ const App: React.FC = () => {
         const classEntries = infos.map(info => {
             const groupCountNum = parseInt(info.groupCount.match(/\d+/)?.[0] || '1', 10);
             const sessionDuration = calculateHoursFromTimeRange(info.time);
-            const sessionNote = findSessionGradingNote(info.instructors);
-    
+            let note = info.instructors.find(i => /phản\s*biện/i.test(i.role))?.note || '';
+            // Gán ghi chú là Năm 1 hoặc Năm 2 dựa vào học kỳ
+            if (/học\s*kỳ\s*1/i.test(note)) note = 'Năm 1';
+            if (/học\s*kỳ\s*2/i.test(note)) note = 'Năm 2';
+            // Nếu không có ghi chú, thử lấy từ info hoặc mặc định Năm 1
+            if (!note) {
+                if ('semester' in info && /học\s*kỳ\s*2/i.test((info as any).semester || '')) note = 'Năm 2';
+                else note = 'Năm 1';
+            }
+            const gvhd = info.instructors.find(i => /hướng dẫn/i.test(i.role));
+            const gvpb = info.instructors.find(i => /phản\s*biện/i.test(i.role));
             const allInstructors: SummaryInstructor[] = [];
-            const processedGraderNames = new Set<string>();
-
-            info.instructors.forEach((inst, index) => {
-                const roleLower = inst.role.toLowerCase();
-
-                // Add the primary role entry (Advisor or Reviewer) with hours based on session duration
-                if (roleLower.includes('hướng dẫn') || roleLower.includes('phản biện')) {
-                    allInstructors.push({
-                        id: `inst-${Date.now()}-${Math.random()}-${index}-primary`,
-                        name: inst.name,
-                        role: inst.role,
-                        hours: sessionDuration,
-                        notes: inst.note || '',
-                    });
-                }
-    
-                // If the instructor is a Reviewer, automatically add a Grader row with formula-based hours
-                if (roleLower.includes('phản biện')) {
-                    let graderHours = 0;
-                    if (sessionNote.includes('1')) {
-                        graderHours = 1.5 * groupCountNum;
-                    } else if (sessionNote.includes('2')) {
-                        graderHours = 2.0 * groupCountNum;
-                    }
-    
-                    if (graderHours > 0) {
-                        allInstructors.push({
-                            id: `inst-${Date.now()}-${Math.random()}-${index}-grader`,
-                            name: inst.name,
-                            role: 'Chấm đồ án',
-                            hours: graderHours,
-                            notes: '', // Synthetic row has no specific notes
-                        });
-                        processedGraderNames.add(inst.name);
-                    }
-                }
-
-                // Fallback: In case the AI returns a "Chấm đồ án" role directly for someone not listed as a reviewer
-                if (roleLower.includes('chấm đồ án') && !processedGraderNames.has(inst.name)) {
-                     let graderHours = 0;
-                    if (sessionNote.includes('1')) {
-                        graderHours = 1.5 * groupCountNum;
-                    } else if (sessionNote.includes('2')) {
-                        graderHours = 2.0 * groupCountNum;
-                    }
-                     allInstructors.push({
-                        id: `inst-${Date.now()}-${Math.random()}-${index}-grader-only`,
-                        name: inst.name,
-                        role: 'Chấm đồ án',
-                        hours: graderHours > 0 ? graderHours : (inst.hours || 0),
-                        notes: inst.note || '',
-                    });
-                }
-            });
-            
+            if (gvhd) {
+                allInstructors.push({
+                    id: `inst-${Date.now()}-${Math.random()}-hd`,
+                    name: gvhd.name,
+                    role: gvhd.role,
+                    hours: sessionDuration,
+                    notes: note,
+                });
+            }
+            if (gvpb) {
+                // Số giờ của GVPB = số giờ của GVHD (sessionDuration)
+                allInstructors.push({
+                    id: `inst-${Date.now()}-${Math.random()}-pb`,
+                    name: gvpb.name,
+                    role: gvpb.role,
+                    hours: sessionDuration,
+                    notes: note,
+                });
+                allInstructors.push({
+                    id: `inst-${Date.now()}-${Math.random()}-chamdoan`,
+                    name: gvpb.name,
+                    role: 'Chấm đồ án',
+                    hours: (/năm\s*2/i.test(note) ? 2.0 : 1.5) * groupCountNum,
+                    notes: note,
+                    isChamDoAn: true
+                });
+            }
             return {
-                id: `session-${Date.now()}-${Math.random()}`,
+                id: `entry-${Date.now()}-${Math.random()}`,
                 date: info.date,
                 timeRange: info.time,
                 classInfo: `${info.classId} (${info.groupCount})-Lần ${info.reportSession}`,
                 instructors: allInstructors
             };
-        }).sort((a, b) => {
-            const dateA = new Date(a.date.split('/').reverse().join('-'));
-            const dateB = new Date(b.date.split('/').reverse().join('-'));
-            if (dateA.getTime() !== dateB.getTime()) return dateA.getTime() - dateB.getTime();
-            return a.timeRange.localeCompare(b.timeRange);
         });
-    
-        const now = new Date();
-        const firstDateStr = infos[0]?.date;
-        let reportMonth = now.getMonth() + 1;
-        let reportYear = now.getFullYear();
-    
-        if (firstDateStr) {
-            const dateParts = firstDateStr.split('/');
-            if (dateParts.length === 3) {
-                reportMonth = parseInt(dateParts[1], 10);
-                reportYear = parseInt(dateParts[2], 10);
-            }
-        }
-        
         return {
-            id: `report-${Date.now()}`,
-            month: reportMonth,
-            year: reportYear,
+            id: `summary-${Date.now()}`,
             entries: classEntries,
-            preparer: 'Lâm Thị Hồng Nghi',
-            approver: 'Cù Vĩnh Lộc',
-            signatureDate: `Ngày ${String(now.getDate()).padStart(2, '0')} tháng ${String(now.getMonth() + 1).padStart(2, '0')} năm ${now.getFullYear()}`,
+            month: new Date().getMonth() + 1,
+            year: new Date().getFullYear(),
+            signatureDate: '',
+            preparer: '',
+            approver: ''
         };
     };
     

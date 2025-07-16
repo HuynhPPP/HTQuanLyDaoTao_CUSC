@@ -1,25 +1,13 @@
-
-import { GoogleGenAI } from "@google/genai";
+/// <reference types="vite/client" />
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { ExtractedInfo } from "../types.ts";
 
-const API_KEY = process.env.API_KEY;
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 if (!API_KEY) {
-    throw new Error("API_KEY environment variable not set");
+    throw new Error("VITE_GEMINI_API_KEY environment variable not set");
 }
+const genAI = new GoogleGenerativeAI(API_KEY);
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
-
-const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const base64String = (reader.result as string).split(',')[1];
-            resolve(base64String);
-        };
-        reader.onerror = (error) => reject(error);
-        reader.readAsDataURL(file);
-    });
-};
 
 const PROMPT = `
 You are an expert data extraction tool. Analyze the provided image of a document titled 'BẢNG THỐNG KÊ CÁC BUỔI CHẤM BÁO CÁO ĐỒ ÁN'. Your task is to extract the specified information and format it as a single, valid JSON object.
@@ -49,19 +37,43 @@ You are an expert data extraction tool. Analyze the provided image of a document
 **Final Check**: Before you provide the response, mentally validate the JSON. Is it 100% correct according to JSON specifications?
 `;
 
-export const analyzeSingleDocument = async (imagePart: { inlineData: { mimeType: string; data: string } }): Promise<ExtractedInfo | null> => {
-    try {
-        const textPart = { text: PROMPT };
+const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = (reader.result as string).split(",")[1];
+            resolve(base64String);
+        };
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+    });
+};
 
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash-preview-04-17",
-            contents: { parts: [imagePart, textPart] },
-            config: {
+export const analyzeSingleDocument = async (
+    imagePart: { inlineData: { mimeType: string; data: string } }
+): Promise<ExtractedInfo | null> => {
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+        const result = await model.generateContent({
+            contents: [
+                {
+                    role: "user",
+                    parts: [
+                        imagePart,
+                        { text: PROMPT }
+                    ]
+                }
+            ],
+            generationConfig: {
                 responseMimeType: "application/json",
-            }
+            },
         });
 
-        let jsonStr = response.text.trim();
+        const response = await result.response;
+        let jsonStr = response.text().trim();
+
+        // Gỡ bỏ ```json nếu có
         const fenceRegex = /^```(\w*)?\s*\n?(.*?)\n?\s*```$/s;
         const match = jsonStr.match(fenceRegex);
         if (match && match[2]) {
@@ -69,42 +81,35 @@ export const analyzeSingleDocument = async (imagePart: { inlineData: { mimeType:
         }
 
         const parsedData = JSON.parse(jsonStr) as ExtractedInfo;
-        // Basic validation
         if (parsedData && parsedData.classId && Array.isArray(parsedData.instructors)) {
             return parsedData;
         }
+
         console.warn("Parsed data is missing required fields:", parsedData);
         return null;
 
-
     } catch (e) {
-        console.error(`Failed to analyze file:`, e);
-        // Also log the problematic string to help debug
-        // Note: The response object might not be available in all error cases
-        // but we try to log it if the error is from parsing.
-        if (e instanceof SyntaxError) {
-             console.error("Problematic JSON string:", (e as any).source);
-        }
+        console.error("Failed to analyze file:", e);
         return null;
     }
 };
 
 export const analyzeDocuments = async (files: File[]): Promise<(ExtractedInfo | null)[]> => {
-    const analysisPromises = files.map(async (file) => {
-        try {
-            const base64Data = await fileToBase64(file);
-            const imagePart = {
-                inlineData: {
-                    mimeType: file.type,
-                    data: base64Data,
-                },
-            };
-            return analyzeSingleDocument(imagePart);
-        } catch (error) {
-            console.error(`Error processing file ${file.name}:`, error);
-            return null;
-        }
-    });
-
-    return Promise.all(analysisPromises);
+    return Promise.all(
+        files.map(async (file) => {
+            try {
+                const base64Data = await fileToBase64(file);
+                const imagePart = {
+                    inlineData: {
+                        mimeType: file.type,
+                        data: base64Data,
+                    },
+                };
+                return await analyzeSingleDocument(imagePart);
+            } catch (error) {
+                console.error(`Error processing file ${file.name}:`, error);
+                return null;
+            }
+        })
+    );
 };

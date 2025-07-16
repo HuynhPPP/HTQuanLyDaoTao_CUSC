@@ -35,7 +35,7 @@ class AccountAuthenticationController extends Controller
         $password = $request->input('password');
 
         try {
-            $dbUser = DB::table('ldap_accounts')->where('username', $username)->first();
+            $dbUser = DB::table('accounts')->where('username', $username)->first();
 
             if (!$dbUser) {
                 return redirect()->route('login')->with('error', 'Tài khoản không tồn tại.');

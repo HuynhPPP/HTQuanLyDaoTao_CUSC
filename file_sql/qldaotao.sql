@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jul 15, 2025 at 05:04 PM
+-- Generation Time: Jul 16, 2025 at 09:22 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -69,12 +69,12 @@ INSERT INTO `accounts` (`id`, `MaTaiKhoan`, `username`, `email`, `full_name`, `i
 
 CREATE TABLE `chuongtrinh` (
   `MaChuongTrinh` varchar(12) NOT NULL,
-  `TenChuongTrinh` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `TenChuongTrinh` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `PhienBan` varchar(12) DEFAULT NULL,
   `NgayTrienKhaiPB` date DEFAULT NULL,
-  `TenKhoaDaoTao` varchar(20) DEFAULT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `TenKhoaDaoTao` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -82,10 +82,10 @@ CREATE TABLE `chuongtrinh` (
 --
 
 INSERT INTO `chuongtrinh` (`MaChuongTrinh`, `TenChuongTrinh`, `PhienBan`, `NgayTrienKhaiPB`, `TenKhoaDaoTao`, `created_at`, `updated_at`) VALUES
-('OV-6062', 'An toàn an ninh thông tin (Hacker mũ trắng)', NULL, NULL, 'Ngắn hạn', '2025-05-21 10:14:30', '2025-05-21 10:14:30'),
-('OV-7023', 'Lập trình viên Quốc tế – Aptech', '1.0', '2025-06-24', 'Dài hạn', '2025-05-17 13:48:56', '2025-05-19 14:30:03'),
-('OV-7096', 'ACN Pro (CPIDA) - Khóa học chuyên ngành về Khoa học Dữ liệu', '1.0', '2023-08-01', 'Ngắn hạn', '2025-05-19 14:38:55', '2025-06-07 06:20:47'),
-('OV9001', 'Mỹ thuật Đa phương tiện – Arena', '2.0', '2025-06-16', 'Dài hạn', '2025-05-17 13:48:56', '2025-05-19 14:31:16');
+('OV-6062', 'An toàn an ninh thông tin (Hacker mũ trắng)', NULL, NULL, 'Ngắn hạn', '2025-05-21 03:14:30', '2025-05-21 03:14:30'),
+('OV-7023', 'Lập trình viên Quốc tế – Aptech', '1.0', '2025-06-24', 'Dài hạn', '2025-05-17 06:48:56', '2025-05-19 07:30:03'),
+('OV-7096', 'ACN Pro (CPIDA) - Khóa học chuyên ngành về Khoa học Dữ liệu', '1.0', '2023-08-01', 'Ngắn hạn', '2025-05-19 07:38:55', '2025-06-06 23:20:47'),
+('OV9001', 'Mỹ thuật Đa phương tiện – Arena', '2.0', '2025-06-16', 'Dài hạn', '2025-05-17 06:48:56', '2025-05-19 07:31:16');
 
 -- --------------------------------------------------------
 
@@ -324,8 +324,8 @@ CREATE TABLE `giangday` (
   `NgayBatDau` date DEFAULT NULL,
   `NgayKetThuc` date DEFAULT NULL,
   `GhiChu` text,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -333,15 +333,15 @@ CREATE TABLE `giangday` (
 --
 
 INSERT INTO `giangday` (`MaGV`, `MaLop`, `MaMH`, `NgayBatDau`, `NgayKetThuc`, `GhiChu`, `created_at`, `updated_at`) VALUES
-('GV001', 'CP2296H07', 'MH15', NULL, NULL, NULL, '2025-06-07 06:09:01', '2025-06-07 06:09:01'),
-('GV001', 'CP2296H07', 'MH21', NULL, NULL, NULL, '2025-06-11 07:01:40', '2025-06-11 07:01:40'),
-('GV001', 'CP2396G11', 'MH21', NULL, NULL, NULL, '2025-06-11 07:01:40', '2025-06-11 07:01:40'),
-('GV004', 'CP2396M02', 'MH21', NULL, NULL, NULL, '2025-06-11 07:15:36', '2025-06-11 07:15:36'),
-('GV002', 'CP2296H07', 'MH16', '2025-08-01', '2025-08-30', NULL, '2025-07-01 05:31:10', '2025-07-01 05:31:10'),
-('GV003', 'CP2296H07', 'MH17', '2025-08-01', '2025-08-30', NULL, '2025-07-01 05:31:27', '2025-07-01 05:31:27'),
-('GV005', 'CP2296H07', 'MH18', '2025-08-01', '2025-08-31', NULL, '2025-07-01 05:32:09', '2025-07-01 05:32:09'),
-('GV006', 'CP2296H07', 'MH19', '2025-08-01', '2025-08-30', NULL, '2025-07-01 05:32:27', '2025-07-01 05:32:27'),
-('GV007', 'CP2296H07', 'MH20', '2025-08-01', '2025-08-30', NULL, '2025-07-01 05:32:44', '2025-07-01 05:32:44');
+('GV001', 'CP2296H07', 'MH15', NULL, NULL, NULL, '2025-06-06 23:09:01', '2025-06-06 23:09:01'),
+('GV001', 'CP2296H07', 'MH21', NULL, NULL, NULL, '2025-06-11 00:01:40', '2025-06-11 00:01:40'),
+('GV001', 'CP2396G11', 'MH21', NULL, NULL, NULL, '2025-06-11 00:01:40', '2025-06-11 00:01:40'),
+('GV004', 'CP2396M02', 'MH21', NULL, NULL, NULL, '2025-06-11 00:15:36', '2025-06-11 00:15:36'),
+('GV002', 'CP2296H07', 'MH16', '2025-08-01', '2025-08-30', NULL, '2025-06-30 22:31:10', '2025-06-30 22:31:10'),
+('GV003', 'CP2296H07', 'MH17', '2025-08-01', '2025-08-30', NULL, '2025-06-30 22:31:27', '2025-06-30 22:31:27'),
+('GV005', 'CP2296H07', 'MH18', '2025-08-01', '2025-08-31', NULL, '2025-06-30 22:32:09', '2025-06-30 22:32:09'),
+('GV006', 'CP2296H07', 'MH19', '2025-08-01', '2025-08-30', NULL, '2025-06-30 22:32:27', '2025-06-30 22:32:27'),
+('GV007', 'CP2296H07', 'MH20', '2025-08-01', '2025-08-30', NULL, '2025-06-30 22:32:44', '2025-06-30 22:32:44');
 
 -- --------------------------------------------------------
 
@@ -398,8 +398,8 @@ CREATE TABLE `hinh_thuc_danh_gia` (
   `DiemMoiBai` int DEFAULT NULL,
   `ThoiGian` int DEFAULT NULL,
   `DonViThoiGian` enum('phút','giờ') DEFAULT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -407,13 +407,13 @@ CREATE TABLE `hinh_thuc_danh_gia` (
 --
 
 INSERT INTO `hinh_thuc_danh_gia` (`id`, `MaChuongTrinh`, `HinhThuc`, `TiLePhanTram`, `SoBaiThi`, `DiemMoiBai`, `ThoiGian`, `DonViThoiGian`, `created_at`, `updated_at`) VALUES
-(1, 'OV-7096', 'Lý thuyết trắc nghiệm', 50, 6, 20, 40, 'phút', '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
-(2, 'OV-7096', 'Thực hành', 30, 5, 20, 60, 'phút', '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
-(3, 'OV-7096', 'Dự án', 20, 1, 100, 24, 'giờ', '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
-(4, 'OV-7023', 'Lý thuyết trắc nghiệm', 50, 6, 20, 40, 'phút', '2025-06-27 08:35:31', '2025-06-27 08:35:31'),
-(5, 'OV-7023', 'Thực hành', 30, 5, 20, 60, 'phút', '2025-06-27 08:35:31', '2025-06-27 08:35:31'),
-(6, 'OV-7023', 'Dự án', 20, 1, 100, 24, 'giờ', '2025-06-27 08:35:31', '2025-06-27 08:35:31'),
-(8, 'OV-6062', 'Lý thuyết trắc nghiệm', 100, 5, 100, 40, 'phút', '2025-07-01 01:19:15', '2025-07-01 01:19:15');
+(1, 'OV-7096', 'Lý thuyết trắc nghiệm', 50, 6, 20, 40, 'phút', '2025-06-07 19:57:57', '2025-06-07 19:57:57'),
+(2, 'OV-7096', 'Thực hành', 30, 5, 20, 60, 'phút', '2025-06-07 19:57:57', '2025-06-07 19:57:57'),
+(3, 'OV-7096', 'Dự án', 20, 1, 100, 24, 'giờ', '2025-06-07 19:57:57', '2025-06-07 19:57:57'),
+(4, 'OV-7023', 'Lý thuyết trắc nghiệm', 50, 6, 20, 40, 'phút', '2025-06-27 01:35:31', '2025-06-27 01:35:31'),
+(5, 'OV-7023', 'Thực hành', 30, 5, 20, 60, 'phút', '2025-06-27 01:35:31', '2025-06-27 01:35:31'),
+(6, 'OV-7023', 'Dự án', 20, 1, 100, 24, 'giờ', '2025-06-27 01:35:31', '2025-06-27 01:35:31'),
+(8, 'OV-6062', 'Lý thuyết trắc nghiệm', 100, 5, 100, 40, 'phút', '2025-06-30 18:19:15', '2025-06-30 18:19:15');
 
 -- --------------------------------------------------------
 
@@ -452,8 +452,8 @@ INSERT INTO `hocki` (`MaHK`, `TenHK`, `TongGioGoc`, `TongGioTrienKhai`, `MaChuon
 CREATE TABLE `khoadaotao` (
   `TenKhoaDaoTao` varchar(20) NOT NULL,
   `ThoiGianDaoTao` varchar(10) DEFAULT NULL,
-  `create_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `create_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -461,9 +461,9 @@ CREATE TABLE `khoadaotao` (
 --
 
 INSERT INTO `khoadaotao` (`TenKhoaDaoTao`, `ThoiGianDaoTao`, `create_at`, `update_at`) VALUES
-('Dài hạn', '2 năm', '2025-05-18 21:26:47', '2025-05-18 21:26:47'),
-('Ngắn hạn', '1 Học Kỳ', '2025-05-18 21:26:47', '2025-05-18 21:26:47'),
-('Steam', '1 học kỳ', '2025-05-19 15:08:26', '2025-06-25 14:09:53');
+('Dài hạn', '2 năm', '2025-05-18 14:26:47', '2025-05-18 14:26:47'),
+('Ngắn hạn', '1 Học Kỳ', '2025-05-18 14:26:47', '2025-05-18 14:26:47'),
+('Steam', '1 học kỳ', '2025-05-19 08:08:26', '2025-06-25 07:09:53');
 
 -- --------------------------------------------------------
 
@@ -508,8 +508,8 @@ CREATE TABLE `lichthi` (
   `HinhThucThi` enum('Tự luận','Trắc nghiệm','Thực hành','Bài tập lớn') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'Trắc nghiệm',
   `LanThi` int DEFAULT NULL,
   `GhiChu` text,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -517,11 +517,11 @@ CREATE TABLE `lichthi` (
 --
 
 INSERT INTO `lichthi` (`MaLichThi`, `MaLop`, `MaMH`, `NgayThi`, `KhungGio`, `PhongThi`, `HinhThucThi`, `LanThi`, `GhiChu`, `created_at`, `updated_at`) VALUES
-('LT2506061451', 'CP2296H07', 'MH15', '2025-07-26', '13:00 - 13:40', 'Class1', 'Trắc nghiệm', 1, NULL, '2025-06-06 14:51:16', '2025-06-06 14:51:16'),
-('LT2506061453', 'CP2296H07', 'MH15', '2025-07-27', '13:00 - 14:00', 'Lab1', 'Thực hành', 1, NULL, '2025-06-06 14:53:23', '2025-06-06 14:53:23'),
-('LT2506061454', 'CP2396G11', 'MH21', '2025-07-31', '13:00 - 13:40', 'Class2', 'Trắc nghiệm', 1, NULL, '2025-06-06 14:54:02', '2025-06-08 01:54:11'),
-('LT25060634', 'CP2296H07', 'MH16', '2025-08-30', '09:00 - 10:00', 'Lab3', 'Thực hành', 1, NULL, '2025-06-06 15:03:34', '2025-06-06 15:03:34'),
-('LT25071404', 'CP2296H07', 'MH18', '2025-07-17', '12:02 - 12:42', 'Lab3', 'Bài tập lớn', 1, NULL, '2025-07-14 02:03:04', '2025-07-14 02:03:04');
+('LT2506061451', 'CP2296H07', 'MH15', '2025-07-26', '13:00 - 13:40', 'Class1', 'Trắc nghiệm', 1, NULL, '2025-06-06 07:51:16', '2025-06-06 07:51:16'),
+('LT2506061453', 'CP2296H07', 'MH15', '2025-07-27', '13:00 - 14:00', 'Lab1', 'Thực hành', 1, NULL, '2025-06-06 07:53:23', '2025-06-06 07:53:23'),
+('LT2506061454', 'CP2396G11', 'MH21', '2025-07-31', '13:00 - 13:40', 'Class2', 'Trắc nghiệm', 1, NULL, '2025-06-06 07:54:02', '2025-06-07 18:54:11'),
+('LT25060634', 'CP2296H07', 'MH16', '2025-08-30', '09:00 - 10:00', 'Lab3', 'Thực hành', 1, NULL, '2025-06-06 08:03:34', '2025-06-06 08:03:34'),
+('LT25071404', 'CP2296H07', 'MH18', '2025-07-17', '12:02 - 12:42', 'Lab3', 'Bài tập lớn', 1, NULL, '2025-07-13 19:03:04', '2025-07-13 19:03:04');
 
 -- --------------------------------------------------------
 
@@ -767,6 +767,7 @@ CREATE TABLE `sessions` (
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
 ('3ZSqADTFZVnhImajUujODV6vQP3ne3uZ08mYn00W', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il90b2tlbiI7czo0MDoiUW1La3I4MTdSdHF4ZU9nT2NqRWdhbkQ1NUc0cmtZSnlsRUwwcURyWCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9naWFvdmllbi9jcmVhdGUiO31zOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJDZk9oSiI7czoyOiJpZCI7czo3OiJhZG1pbjAxIjtzOjQ6InVzZXIiO3M6NToiYWRtaW4iO3M6MTE6ImRpc3BsYXluYW1lIjtzOjU6ImFkbWluIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO3M6MjI6IlBIUERFQlVHQkFSX1NUQUNLX0RBVEEiO2E6MDp7fX0=', 1752598065),
+('TJp1ZwgDTAg3CHgtQBkCwZvWgLYgRRr44oLEOWyB', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il90b2tlbiI7czo0MDoiNnBVNFBGdEtuWlVmYTZ2eFNHUTZwem1uSVhMZWJnQm80ZlU4N1kydiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTM6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC90aG9uZy1rZS90aG9uZy1rZS1iYW8tY2FvLWRvLWFuIjt9czoxNDoiY2FwdGNoYV9waHJhc2UiO3M6NToiaTVqVHEiO3M6MjoiaWQiO3M6NzoiYWRtaW4wMSI7czo0OiJ1c2VyIjtzOjU6ImFkbWluIjtzOjExOiJkaXNwbGF5bmFtZSI7czo1OiJhZG1pbiI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjtzOjIyOiJQSFBERUJVR0JBUl9TVEFDS19EQVRBIjthOjA6e319', 1752650267),
 ('xShjDJ78F4egbtsIxtxbeWQygV17yLawY0r0erwF', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czozNDoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3RyYS1jdXUtZGllbSI7fXM6NjoiX3Rva2VuIjtzOjQwOiJzMklpOTRld0h5MFVwN21Fc3NEeWJnRkM5WmdFRGdGb2tuOUx3SjlTIjtzOjE0OiJjYXB0Y2hhX3BocmFzZSI7czo1OiJIU3RjZCI7czoyOiJpZCI7czo4OiIyMTAxMDAwMyI7czo0OiJ1c2VyIjtzOjE0OiIyMTAxMDAwM2xldmFuYyI7czoxMToiZGlzcGxheW5hbWUiO3M6MTA6IkzDqiBWxINuIEMiO3M6NDoicm9sZSI7czo3OiJzdHVkZW50IjtzOjIyOiJQSFBERUJVR0JBUl9TVEFDS19EQVRBIjthOjA6e319', 1752594517);
 
 -- --------------------------------------------------------
@@ -1023,8 +1024,8 @@ CREATE TABLE `tieu_chi_xep_loai` (
   `XepLoai` enum('Đạt','Khá','Giỏi') DEFAULT NULL,
   `DiemTu` float DEFAULT NULL,
   `DiemDen` float DEFAULT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -1032,12 +1033,12 @@ CREATE TABLE `tieu_chi_xep_loai` (
 --
 
 INSERT INTO `tieu_chi_xep_loai` (`id`, `MaChuongTrinh`, `XepLoai`, `DiemTu`, `DiemDen`, `created_at`, `updated_at`) VALUES
-(1, 'OV-7096', 'Đạt', 40, 60, '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
-(2, 'OV-7096', 'Khá', 60, 75, '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
-(3, 'OV-7096', 'Giỏi', 75, 100, '2025-06-08 02:57:57', '2025-06-08 02:57:57'),
-(4, 'OV-7023', 'Đạt', 40, 60, '2025-06-27 08:35:31', '2025-06-27 08:35:31'),
-(5, 'OV-7023', 'Khá', 60, 75, '2025-06-27 08:35:31', '2025-06-27 08:35:31'),
-(6, 'OV-7023', 'Giỏi', 70, 100, '2025-06-27 08:35:31', '2025-06-27 08:35:31');
+(1, 'OV-7096', 'Đạt', 40, 60, '2025-06-07 19:57:57', '2025-06-07 19:57:57'),
+(2, 'OV-7096', 'Khá', 60, 75, '2025-06-07 19:57:57', '2025-06-07 19:57:57'),
+(3, 'OV-7096', 'Giỏi', 75, 100, '2025-06-07 19:57:57', '2025-06-07 19:57:57'),
+(4, 'OV-7023', 'Đạt', 40, 60, '2025-06-27 01:35:31', '2025-06-27 01:35:31'),
+(5, 'OV-7023', 'Khá', 60, 75, '2025-06-27 01:35:31', '2025-06-27 01:35:31'),
+(6, 'OV-7023', 'Giỏi', 70, 100, '2025-06-27 01:35:31', '2025-06-27 01:35:31');
 
 -- --------------------------------------------------------
 
