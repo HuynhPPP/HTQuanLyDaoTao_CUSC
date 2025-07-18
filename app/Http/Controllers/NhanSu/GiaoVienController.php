@@ -92,17 +92,8 @@ class GiaoVienController extends Controller
     {
         $giaovien = giaovien::findOrFail($maGV);
 
-        $hocvis = hocvi::all();
-        $bangcaps = bangcapcanbo::all();
-        $chucvus = chucvu::all();
-        $donvis = donvi::all();
-
         return view('quanly_nhansu.giaovien.edit', compact(
             'giaovien',
-            'hocvis',
-            'bangcaps',
-            'chucvus',
-            'donvis'
         ));
     }
     public function update(Request $request, $maGV)

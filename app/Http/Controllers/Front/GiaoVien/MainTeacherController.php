@@ -38,16 +38,8 @@ class MainTeacherController extends Controller
             return redirect()->back()->with('error', 'Không tìm thấy thông tin giáo viên');
         }
 
-        // Lấy danh sách các danh mục để hiển thị
-        $hocvis = hocvi::all();
-        $chucvus = chucvu::all();
-        $donvis = donvi::all();
-
         return view('frontend.giangvien.thong_tin_giang_vien.profile', compact(
             'giaoVien',
-            'hocvis',
-            'chucvus',
-            'donvis'
         ));
     }
     public function updateProfile(Request $request)
