@@ -231,10 +231,8 @@ export const SummaryTable: React.FC<SummaryTableProps> = ({ data, setData }) => 
                     </thead>
                     <tbody>
                         {data.entries.map((entry, entryIndex) => {
-                            // Kiểm tra nếu tất cả các dòng trong nhóm có cùng notes (Năm 1/Năm 2)
-                            const allNotes = entry.instructors.map(i => (i.notes && i.notes.trim()) || '');
-                            const uniqueNotes = Array.from(new Set(allNotes.filter(Boolean)));
-                            const groupNote = uniqueNotes.length === 1 ? uniqueNotes[0] : '';
+                            // Với logic mới, chỉ có dòng "Giáo viên phản biện" có ghi chú
+                            // Không cần merge cells nữa
                             return (
                                 <React.Fragment key={entry.id}>
                                     <tr className="bg-slate-100 font-bold print-break-inside-avoid">
@@ -282,26 +280,13 @@ export const SummaryTable: React.FC<SummaryTableProps> = ({ data, setData }) => 
                                                     type="number"
                                                 />
                                             </td>
-                                            {/* Gộp ô ghi chú nếu tất cả các dòng cùng notes */}
-                                            {groupNote && instIndex === 0 ? (
-                                                <td className={`border border-slate-500 p-0 font-bold`} rowSpan={entry.instructors.length}>
-                                                    <EditableCell value={groupNote} onChange={v => {
-                                                        // Khi sửa, cập nhật notes cho tất cả các dòng trong nhóm
-                                                        entry.instructors.forEach(i => handleInstructorChange(entry.id, i.id, 'notes', v as string));
-                                                    }} />
-                                                </td>
-                                            ) : !groupNote ? (
-                                                <td className={`border border-slate-500 p-0${inst.isChamDoAn ? ' font-bold' : ''}`}>
-                                                    <EditableCell
-                                                        value={
-                                                            inst.notes && inst.notes.trim()
-                                                                ? inst.notes
-                                                                : (entry.instructors.find(i => i.isChamDoAn)?.notes || '')
-                                                        }
-                                                        onChange={v => handleInstructorChange(entry.id, inst.id, 'notes', v as string)}
-                                                    />
-                                                </td>
-                                            ) : null}
+                                            {/* Hiển thị ghi chú cho từng dòng riêng biệt */}
+                                            <td className={`border border-slate-500 p-0${inst.isChamDoAn ? ' font-bold' : ''}`}>
+                                                <EditableCell
+                                                    value={inst.notes || ''}
+                                                    onChange={v => handleInstructorChange(entry.id, inst.id, 'notes', v as string)}
+                                                />
+                                            </td>
                                             <td className="border border-slate-500 p-1 text-center no-print">
                                                 <button onClick={() => handleDeleteInstructor(entry.id, inst.id)} className="text-slate-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity" title="Xóa giảng viên">
                                                     <TrashIcon className="w-5 h-5"/>

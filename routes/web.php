@@ -50,7 +50,6 @@ Route::get('/captcha', [CaptchaController::class, 'generateCaptcha'])->name('cap
 Route::middleware([RoleMiddleware::class . ':admin'])->group(function () {
     Route::post('/admin/change-password', [CanBoController::class, 'changePassword'])
         ->name('admin.change.password');
-
     Route::prefix('schedules')->group(function () {
         Route::get('/ministry/schedules', [SchedulesController::class, 'CreateSchedules'])->name('schedules');
         Route::post('/ministry/schedules/save', [SchedulesController::class, 'saveSchedule'])->name('saveSchedule');

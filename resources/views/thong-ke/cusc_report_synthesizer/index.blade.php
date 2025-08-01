@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Báo cáo Đồ án</title>
+    <title>Lập bảng thống kê báo cáo đồ án</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -11,7 +11,7 @@
     <div id="root"></div>
 
     {{-- Nhúng file bundle React --}}
-    <script type="module" src="{{ asset('cusc_report_synthesizer/dist/assets/index-BgycCagx.js') }}"></script>
+    <script type="module" src="{{ asset('cusc_report_synthesizer/dist/assets/index-CXKMsVuq.js') }}"></script>
 </body>
 
 </html>

@@ -174,12 +174,7 @@ export const exportSummaryToExcel = async (data: SummaryData) => {
     gr.getCell(1).border = borderAll;
     gr.getCell(5).border = { right: { style: 'thin' } }; // Right border for merged cell
 
-    // Kiểm tra nếu tất cả instructors có notes giống nhau và khác rỗng
-    const allNotes = entry.instructors.map(i => (i.notes && i.notes.trim()) || '');
-    const uniqueNotes = Array.from(new Set(allNotes.filter(Boolean)));
-    const groupNote = uniqueNotes.length === 1 ? uniqueNotes[0] : '';
-    const shouldMergeNote = groupNote && allNotes.every(n => n === groupNote);
-
+    // Logic ghi chú - hiển thị notes riêng cho từng dòng
     entry.instructors.forEach((inst, instIndex) => {
       const r = next();
       r.height = 18;
@@ -196,12 +191,16 @@ export const exportSummaryToExcel = async (data: SummaryData) => {
           hours = (yearType === 1 ? 1.5 * getGroupCount(entry.classInfo) : 2.0 * getGroupCount(entry.classInfo));
         }
       }
+      
+      // Hiển thị notes riêng cho từng dòng
+      const noteValue = inst.notes || '';
+      
       const vals = [
         inst.stt ?? (instIndex + 1),
         inst.name,
         inst.role,
         hours,
-        shouldMergeNote && instIndex === 0 ? groupNote : (!shouldMergeNote ? ((inst.notes && inst.notes.trim()) || '') : '')
+        noteValue
       ];
       vals.forEach((v, i) => {
         const c = r.getCell(i + 1);
@@ -212,10 +211,6 @@ export const exportSummaryToExcel = async (data: SummaryData) => {
         Object.assign(c, i === 0 || i === 3 ? styles.center : styles.default);
         c.border = borderAll;
       });
-      // Nếu gộp ô ghi chú, merge cell ở cột ghi chú cho toàn bộ nhóm (sau khi gán giá trị)
-      if (shouldMergeNote && instIndex === 0) {
-        ws.mergeCells(r.number, 5, r.number + entry.instructors.length - 1, 5);
-      }
     });
   });
 

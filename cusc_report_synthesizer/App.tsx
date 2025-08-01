@@ -3,7 +3,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { FileUpload } from './components/FileUpload.tsx';
 import { SummaryTable } from './components/SummaryTable.tsx';
 import { SavedReportsList } from './components/SavedReportsList.tsx';
-import { analyzeDocuments } from './services/geminiService.ts';
+import { analyzeDocuments, checkGeminiAPI } from './services/geminiService.ts';
 import { ExtractedInfo, SummaryData, SummaryInstructor, Instructor } from './types.ts';
 import { Header } from './components/Header.tsx';
 import { UploadedFilesList } from './components/UploadedFilesList.tsx';
@@ -71,6 +71,7 @@ const App: React.FC = () => {
     const [isUploading, setIsUploading] = useState<boolean>(false);
     const [isDbLoading, setIsDbLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [apiStatus, setApiStatus] = useState<string | null>(null);
 
     useEffect(() => {
         const loadFromDb = async () => {
@@ -126,7 +127,7 @@ const App: React.FC = () => {
                     name: gvhd.name,
                     role: gvhd.role,
                     hours: sessionDuration,
-                    notes: note,
+                    notes: '', // GVHD không có ghi chú
                 });
             }
             if (gvpb) {
@@ -136,14 +137,14 @@ const App: React.FC = () => {
                     name: gvpb.name,
                     role: gvpb.role,
                     hours: sessionDuration,
-                    notes: note,
+                    notes: note, // Chỉ GVPB có ghi chú
                 });
                 allInstructors.push({
                     id: `inst-${Date.now()}-${Math.random()}-chamdoan`,
                     name: gvpb.name,
                     role: 'Chấm đồ án',
                     hours: (/năm\s*2/i.test(note) ? 2.0 : 1.5) * groupCountNum,
-                    notes: note,
+                    notes: '', // Chấm đồ án không có ghi chú
                     isChamDoAn: true
                 });
             }
@@ -166,6 +167,21 @@ const App: React.FC = () => {
         };
     };
     
+    const checkAPI = useCallback(async () => {
+        setApiStatus("Đang kiểm tra API...");
+        try {
+            const result = await checkGeminiAPI();
+            if (result.success) {
+                setApiStatus("✅ API hoạt động bình thường");
+                setTimeout(() => setApiStatus(null), 3000);
+            } else {
+                setApiStatus(`❌ Lỗi API: ${result.message}`);
+            }
+        } catch (error) {
+            setApiStatus(`❌ Lỗi kiểm tra API: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+    }, []);
+
     const runAnalysis = useCallback(async () => {
         if (selectedFiles.length === 0) {
             setError("Vui lòng chọn ít nhất một tệp để phân tích.");
@@ -176,22 +192,34 @@ const App: React.FC = () => {
         setSummaryData(null);
 
         try {
+            console.log(`Starting analysis of ${selectedFiles.length} files...`);
             const results = await analyzeDocuments(selectedFiles);
+            console.log("Analysis results:", results);
+            
             const validResults = results.filter(r => r !== null) as ExtractedInfo[];
+            console.log(`Valid results: ${validResults.length}/${results.length}`);
+            
             if(validResults.length < selectedFiles.length) {
-                setError(`Không thể xử lý tất cả các tệp đã chọn. ${validResults.length} trong số ${selectedFiles.length} đã thành công.`);
+                const failedCount = selectedFiles.length - validResults.length;
+                setError(`Không thể xử lý ${failedCount} trong số ${selectedFiles.length} tệp đã chọn. ${validResults.length} tệp đã thành công. Vui lòng kiểm tra console để biết chi tiết.`);
             }
             if (validResults.length > 0) {
+                console.log("Aggregating valid results...");
                 const aggregated = aggregateData(validResults);
                 setSummaryData(aggregated);
                 await saveReport(aggregated);
                 setSavedReports(prev => [aggregated, ...prev.filter(r => r.id !== aggregated.id)].sort((a,b) => b.id.localeCompare(a.id)));
+                console.log("Analysis completed successfully");
             } else {
-                 setError('Phân tích không mang lại dữ liệu hợp lệ nào từ các tệp đã chọn.');
+                 setError('Phân tích không mang lại dữ liệu hợp lệ nào từ các tệp đã chọn. Vui lòng kiểm tra console để biết chi tiết lỗi.');
             }
         } catch (e) {
-            console.error(e);
-            setError('Đã xảy ra lỗi trong quá trình phân tích tệp. Vui lòng kiểm tra console để biết chi tiết.');
+            console.error("Analysis failed with error:", e);
+            if (e instanceof Error) {
+                setError(`Đã xảy ra lỗi trong quá trình phân tích tệp: ${e.message}`);
+            } else {
+                setError('Đã xảy ra lỗi trong quá trình phân tích tệp. Vui lòng kiểm tra console để biết chi tiết.');
+            }
         } finally {
             setIsAnalyzing(false);
         }
@@ -328,14 +356,25 @@ const App: React.FC = () => {
                                 onRemoveFile={handleRemoveFile}
                             />
                             {uploadedFiles.length > 0 && (
-                                <div className="pt-4 border-t">
-                                     <button
+                                <div className="pt-4 border-t space-y-2">
+                                    <button
                                         onClick={runAnalysis}
                                         disabled={isAnalyzing || selectedFiles.length === 0}
                                         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors disabled:bg-slate-400 disabled:cursor-not-allowed flex items-center justify-center"
                                     >
                                         {isAnalyzing ? <LoaderIcon className="w-5 h-5 animate-spin"/> : `Phân tích tệp đã chọn (${selectedFiles.length})`}
                                     </button>
+                                    <button
+                                        onClick={checkAPI}
+                                        className="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition-colors text-sm"
+                                    >
+                                        Kiểm tra API Gemini
+                                    </button>
+                                    {apiStatus && (
+                                        <div className="text-sm p-2 bg-blue-50 border border-blue-200 rounded">
+                                            {apiStatus}
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
