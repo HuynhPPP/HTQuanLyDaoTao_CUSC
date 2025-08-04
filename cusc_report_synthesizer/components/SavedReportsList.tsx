@@ -50,12 +50,15 @@ export const SavedReportsList: React.FC<SavedReportsListProps> = ({ reports, onL
                     <ul className="space-y-2 max-h-60 overflow-y-auto pr-1 border-t pt-2">
                         {filteredReports.length > 0 ? filteredReports.map(report => (
                             <li key={report.id} className="flex items-center justify-between bg-slate-50 p-3 rounded-md hover:bg-slate-100 group">
-                                <div>
+                                <div className="flex-1">
                                     <p className="text-sm font-medium text-slate-800">
                                         Tháng {String(report.month).padStart(2, '0')}-{report.year}
                                     </p>
                                     <p className="text-xs text-slate-500">
                                         Tạo ngày: {new Date(parseInt(report.id.split('-')[1])).toLocaleDateString('vi-VN')}
+                                    </p>
+                                    <p className="text-xs text-slate-400">
+                                        {report.entries.length} buổi báo cáo • {report.entries.reduce((total, entry) => total + entry.instructors.length, 0)} giảng viên
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

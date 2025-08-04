@@ -181,13 +181,19 @@ export const exportSummaryToExcel = async (data: SummaryData) => {
       // Logic số giờ fallback như cũ
       let hours = inst.hours;
       if ((hours === undefined || hours === null || hours === 0)) {
-        if (/hướng dẫn/i.test(inst.role)) {
+        if (/hướng\s*dẫn|hương\s*dận/i.test(inst.role)) {
           hours = calcHoursFromTimeRange(entry.timeRange);
-        } else if (/phản biện/i.test(inst.role)) {
-          const hd = entry.instructors.find(i => /hướng dẫn/i.test(i.role));
-          hours = hd ? (hd.hours && hd.hours !== 0 ? hd.hours : calcHoursFromTimeRange(entry.timeRange)) : 0;
+        } else if (/phản\s*biện/i.test(inst.role)) {
+          hours = calcHoursFromTimeRange(entry.timeRange);
         } else if (inst.isChamDoAn) {
-          const yearType = /năm\s*2/i.test(inst.notes) ? 2 : 1;
+          // Ưu tiên lấy năm học từ entry.semester
+          let yearType = 1;
+          if ((entry as any).semester) {
+            if (/2/.test((entry as any).semester)) yearType = 2;
+            if (/1/.test((entry as any).semester)) yearType = 1;
+          } else if (/năm\s*2/i.test(inst.notes)) {
+            yearType = 2;
+          }
           hours = (yearType === 1 ? 1.5 * getGroupCount(entry.classInfo) : 2.0 * getGroupCount(entry.classInfo));
         }
       }

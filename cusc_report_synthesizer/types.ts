@@ -13,6 +13,7 @@ export interface ExtractedInfo {
     time: string;
     location: string;
     groupCount: string;
+    semester: string;
     instructors: Instructor[];
 }
 

@@ -55,15 +55,23 @@ function getGroupCount(classInfo: string): number {
     return match ? parseInt(match[1]) : 1;
 }
 
-function getYearType(notes: string): 1 | 2 {
+function getYearType(notes: string, semester?: string): 1 | 2 {
+    if (semester) {
+        if (/2/.test(semester)) return 2;
+        if (/1/.test(semester)) return 1;
+    }
     if (/năm\s*2|học\s*kỳ\s*2/i.test(notes)) return 2;
     return 1;
 }
 
-function calcInstructorHours(inst: SummaryInstructor, entry: SummaryEntry): number {
-    if (/phản\s*biện/i.test(inst.role)) {
+function calcInstructorHours(inst: SummaryInstructor, entry: SummaryEntry & { semester?: string }): number {
+    if (/hướng\s*dẫn|hương\s*dận/i.test(inst.role)) {
+        return calcHoursFromTimeRange(entry.timeRange);
+    } else if (/phản\s*biện/i.test(inst.role)) {
+        return calcHoursFromTimeRange(entry.timeRange);
+    } else if (/chấm\s*đồ\s*án/i.test(inst.role)) {
         const groupCount = getGroupCount(entry.classInfo);
-        const yearType = getYearType(inst.notes);
+        const yearType = getYearType(inst.notes, (entry as any).semester);
         return yearType === 1 ? 1.5 * groupCount : 2.0 * groupCount;
     }
     return calcHoursFromTimeRange(entry.timeRange);

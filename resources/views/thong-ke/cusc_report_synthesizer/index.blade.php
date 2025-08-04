@@ -11,7 +11,7 @@
     <div id="root"></div>
 
     {{-- Nhúng file bundle React --}}
-    <script type="module" src="{{ asset('cusc_report_synthesizer/dist/assets/index-CXKMsVuq.js') }}"></script>
+    <script type="module" src="{{ asset('cusc_report_synthesizer/dist/assets/index-DpVr7A6G.js') }}"></script>
 </body>
 
 </html>

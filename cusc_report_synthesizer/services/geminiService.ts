@@ -19,36 +19,68 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 
 
 const PROMPT = `
-You are an expert data extraction tool. Analyze the provided image of a document titled 'BẢNG THỐNG KÊ CÁC BUỔI CHẤM BÁO CÁO ĐỒ ÁN'. Your task is to extract the specified information and format it as a single, valid JSON object.
+You are an expert data extraction tool. Your task is to analyze the provided image of a document titled 'BẢNG THỐNG KÊ CÁC BUỔI CHẤM BÁO CÁO ĐỒ ÁN' and extract specific information. The final output must be a single, valid JSON object that follows the specified structure precisely.
 
 **CRITICAL INSTRUCTIONS:**
-1.  **JSON Only**: Your entire output must be ONLY the JSON object. Do not include any text, comments, or markdown like \`\`\`json.
-2.  **Valid Syntax**: Ensure the JSON is perfectly valid. All strings must be in double quotes. All object properties and array items must be separated by commas. There must be no trailing commas.
-3.  **Hours as Number**: The "hours" field must always be a number, not a string. The application will recalculate hours, but extract what you see.
-4.  **Required Fields**: You MUST include all required fields. If a field is not found, use empty string "" or 0 as appropriate.
 
-**JSON OUTPUT STRUCTURE AND EXAMPLE:**
-{"classId":"CP24Y0H06","reportSession":"02","date":"28/02/2025","time":"17:30-18:30","location":"","groupCount":"01 nhóm","instructors":[{"name":"Nguyễn Việt Nga","role":"Giáo viên hướng dẫn","hours":1.00,"note":""},{"name":"Võ Duy Anh","role":"Giáo viên phản biện","hours":1.00,"note":"Năm 1"}]}
+1.  **JSON Only**: Your output must be a JSON object and nothing else. No introductory text, explanations, or markdown like \`\`\`json.
+2.  **Valid Syntax**: Ensure perfect JSON syntax. All keys and string values must be in double quotes. Objects and array elements must be separated by commas. Do not include any trailing commas.
+3.  **Data Types**: The \`hours\` field must be a number (e.g., \`1.50\`), not a string. All other fields should be strings.
+4.  **Required Fields**: All fields specified below are mandatory. If a field's value cannot be found in the image, use an empty string (\`""\`) for string values or \`0\` for numeric values.
 
-**DETAILED FIELD EXTRACTION RULES:**
-- "classId": From "Lớp:". Example: "CP24Y0H06". REQUIRED.
-- "reportSession": Session number from "Lớp:". Example: "02". REQUIRED.
-- "date": From "Ngày:". Example: "28/02/2025". REQUIRED.
-- "time": Time range from "Ngày:". Example: "17:30-18:30". REQUIRED.
-- "location": From "Địa điểm:". Use "" if not present.
-- "groupCount": Group count from "Lớp:". Example: "01 nhóm". REQUIRED.
-- "instructors": Array of instructor objects. REQUIRED - must have at least one instructor.
-    - **IMPORTANT**: Extract only "Giáo viên hướng dẫn" and "Giáo viên phản biện" roles. DO NOT extract or create "Chấm đồ án" entries. The application will do that.
-    - "name": From "HỌ VÀ TÊN". REQUIRED.
-    - "role": From "CÔNG VIỆC". REQUIRED.
-    - "hours": From "SỐ GIỜ" (as a number). REQUIRED.
-    - "note": From "GHI CHÚ". Convert "Học kỳ 1" to "Năm 1", and "Học kỳ 2" to "Năm 2". Use "" if empty.
+**JSON OUTPUT STRUCTURE:**
+
+\`\`\`json
+{
+  "classId": "string",
+  "reportSession": "string",
+  "date": "string",
+  "time": "string",
+  "location": "string",
+  "groupCount": "string",
+  "instructors": [
+    {
+      "name": "string",
+      "role": "string",
+      "hours": 0,
+      "note": "string"
+    }
+  ]
+}
+\`\`\`
+
+**DETAILED EXTRACTION RULES:**
+
+* \`classId\`: Extract the class ID from the "Lớp:" field. Example: \`CP010120\`.
+* \`reportSession\`: Extract the session number from the "Lớp:" field. Example: \`02\`.
+* \`date\`: Extract the date from the "Ngày:" field. Example: \`20/06/2025\`.
+* \`time\`: Extract the time range from the "Thời gian:" field. Example: \`9:00-11:00\`.
+* \`location\`: Extract the location from the "Địa điểm:" field. Use \`""\` if not present.
+* \`groupCount\`: Extract the group count from the "Lớp:" field. Example: \`01 nhóm\`.
+* \`instructors\`: This is an array of objects. Extract ALL instructor entries from the table.
+    * **IMPORTANT**: Extract ONLY the roles that appear in the table: "Giáo viên hướng dẫn", "Giáo viên phản biện", and "Chấm đồ án".
+    * \`name\`: The full name from the "HỌ VÀ TÊN" column. Extract the exact name as shown, including any typos or misspellings.
+    * \`role\`: The exact job title from the "CÔNG VIỆC" column. If you see "Giáo viên hướng dẫn", extract it as is. Do not correct spelling errors.
+    * \`hours\`: The number of hours from the "SỐ GIỜ" column, as a number. Use the exact value shown.
+    * \`note\`: The note from the "GHI CHÚ" column. Use \`""\` if the note is empty.
+
+**SPECIAL INSTRUCTIONS:**
+
+* Extract ONLY the instructors that are actually listed in the table
+* Do NOT create additional entries for "Chấm đồ án" - this will be calculated later
+* Use the exact hours as shown in the "SỐ GIỜ" column
+* If there are no instructors in the table, return an empty array
+* Pay attention to the session structure - each session may have multiple instructors
+* If the document has multiple sessions, extract the FIRST session only
+* Handle missing or unclear data gracefully by using default values
+* **VERY IMPORTANT**: Extract the exact names as they appear in the "HỌ VÀ TÊN" column, including any typos
+* **VERY IMPORTANT**: Extract the exact role names as they appear in the "CÔNG VIỆC" column, including any spelling errors
+* **VERY IMPORTANT**: Use the exact hours from the "SỐ GIỜ" column for each role separately
 
 **ERROR HANDLING:**
-- If you cannot extract any required field, return a valid JSON with empty values rather than failing.
-- If the image is unclear or unreadable, still attempt to extract what you can see.
 
-**Final Check**: Before you provide the response, mentally validate the JSON. Is it 100% correct according to JSON specifications?
+* If the image is blurry, unreadable, or a field is missing, extract what you can and fill the rest with empty or default values as specified. Your output must always be a valid JSON object.
+* If you cannot extract any instructors, return an empty array for instructors.
 `;
 
 const fileToBase64 = (file: File): Promise<string> => {
@@ -68,7 +100,7 @@ export const analyzeSingleDocument = async (
 ): Promise<ExtractedInfo | null> => {
     try {
         console.log("Starting analysis with Gemini API...");
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         const result = await model.generateContent({
             contents: [
@@ -98,30 +130,30 @@ export const analyzeSingleDocument = async (
         }
 
         const parsedData = JSON.parse(jsonStr) as ExtractedInfo;
-        
+
         // Kiểm tra dữ liệu cơ bản
         if (!parsedData) {
             console.warn("Parsed data is null or undefined");
             return null;
         }
-        
+
         // Kiểm tra các trường bắt buộc
         if (!parsedData.classId) {
             console.warn("Missing classId in parsed data:", parsedData);
             return null;
         }
-        
+
         if (!Array.isArray(parsedData.instructors)) {
             console.warn("Missing or invalid instructors array in parsed data:", parsedData);
             return null;
         }
-        
+
         // Kiểm tra ít nhất một instructor
         if (parsedData.instructors.length === 0) {
             console.warn("No instructors found in parsed data:", parsedData);
             return null;
         }
-        
+
         console.log("Successfully parsed data:", parsedData);
         return parsedData;
 
@@ -141,13 +173,13 @@ export const analyzeDocuments = async (files: File[]): Promise<(ExtractedInfo | 
         files.map(async (file) => {
             try {
                 console.log(`Processing file: ${file.name} (${file.type}, ${file.size} bytes)`);
-                
+
                 // Kiểm tra file type
                 if (!file.type.startsWith('image/')) {
                     console.error(`File ${file.name} is not an image: ${file.type}`);
                     return null;
                 }
-                
+
                 const base64Data = await fileToBase64(file);
                 const imagePart = {
                     inlineData: {
@@ -170,18 +202,18 @@ export const analyzeDocuments = async (files: File[]): Promise<(ExtractedInfo | 
 export const checkGeminiAPI = async (): Promise<{ success: boolean; message: string }> => {
     try {
         console.log("Checking Gemini API availability...");
-        
+
         if (!API_KEY) {
             return { success: false, message: "API key not found" };
         }
-        
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        
+
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
         // Thử gọi API với một prompt đơn giản
         const result = await model.generateContent({
             contents: [{ role: "user", parts: [{ text: "Hello" }] }],
         });
-        
+
         const response = await result.response;
         if (response.text()) {
             console.log("Gemini API is working correctly");
@@ -191,9 +223,9 @@ export const checkGeminiAPI = async (): Promise<{ success: boolean; message: str
         }
     } catch (error) {
         console.error("Gemini API check failed:", error);
-        return { 
-            success: false, 
-            message: error instanceof Error ? error.message : "Unknown error" 
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : "Unknown error"
         };
     }
 };
