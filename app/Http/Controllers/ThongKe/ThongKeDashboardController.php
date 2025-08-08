@@ -11,6 +11,7 @@ use App\Models\ChuongTrinhMonHoc;
 use App\Models\TieuChiXepLoai;
 use App\Models\DiemThi;
 use App\Models\LopHoc;
+use App\Models\HinhThucDanhGia;
 use Illuminate\Support\Facades\DB;
 use App\Exports\ThongKeKetQuaHocTapExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -127,28 +128,75 @@ class ThongKeDashboardController extends Controller
     public function thongkehoctap($MaLop, $MaChuongTrinh)
     {
         $lop = LopHoc::where('MaLop', $MaLop)->first();
-        $MaCT = ChuongTrinh::where('MaChuongTrinh', $MaChuongTrinh)->firstOrFail();
+        // Giữ mã chương trình là string để dùng cho route/view
+        $MaCT = $MaChuongTrinh;
         $monHocs = ChuongTrinhMonHoc::where('MaChuongTrinh', $MaChuongTrinh)->pluck('MaMH');
-        $dsDiem = DiemThi::where('MaLop', $MaLop)->whereIn('MaMH', $monHocs)->get();
+        $dsDiem = DiemThi::where('MaLop', $MaLop)->whereIn('MaMH', $monHocs)->with('sinhVien')->get();
+
+        // Lấy cấu hình hình thức đánh giá của CTĐT
+        $hinhThucDanhGia = HinhThucDanhGia::where('MaChuongTrinh', $MaChuongTrinh)
+            ->orderBy('id')
+            ->get();
+
+        // Map tên hình thức -> trường điểm trong DiemThi
+        $mapFieldByHinhThuc = function (string $hinhThuc): ?string {
+            $hinhThucLower = mb_strtolower($hinhThuc, 'UTF-8');
+            if (strpos($hinhThucLower, 'lý thuyết') !== false || strpos($hinhThucLower, 'ly thuyet') !== false) {
+                return 'DiemLyThuyet';
+            }
+            if (strpos($hinhThucLower, 'thực hành') !== false || strpos($hinhThucLower, 'thuc hanh') !== false) {
+                return 'DiemThucHanh';
+            }
+            if (strpos($hinhThucLower, 'dự án') !== false || strpos($hinhThucLower, 'du an') !== false) {
+                return 'DiemDuAn';
+            }
+            return null;
+        };
+
+        // Tính lại tổng điểm theo hình thức đánh giá cho từng bản ghi điểm
+        foreach ($dsDiem as $diem) {
+            $tongTinhLai = 0.0;
+            $coCauHinh = $hinhThucDanhGia->count() > 0;
+            if ($coCauHinh) {
+                foreach ($hinhThucDanhGia as $ht) {
+                    $field = $mapFieldByHinhThuc($ht->HinhThuc ?? '');
+                    if ($field && isset($diem->$field)) {
+                        $tiLe = (float) ($ht->TiLePhanTram ?? 0) / 100.0;
+                        $giaTri = (float) ($diem->$field ?? 0);
+                        $tongTinhLai += $giaTri * $tiLe;
+                    }
+                }
+                $diem->TongDiemTinhLai = round($tongTinhLai, 2);
+            } else {
+                // Không có cấu hình => dùng DiemTong hiện có
+                $diem->TongDiemTinhLai = round((float) ($diem->DiemTong ?? 0), 2);
+            }
+        }
 
         // Dữ liệu mỗi tab
         $theoMon = $dsDiem->groupBy('MaMH');
         $thongKeDat = $dsDiem->groupBy('MaMH')->map(function ($ds) {
             return [
-                'dat' => $ds->where('DiemTong', '>=', 40)->count(),
-                'khongDat' => $ds->where('DiemTong', '<', 40)->count(),
+                'dat' => $ds->filter(fn($d) => ($d->TongDiemTinhLai ?? 0) >= 5.0)->count(),
+                'khongDat' => $ds->filter(fn($d) => ($d->TongDiemTinhLai ?? 0) < 5.0)->count(),
                 'tong' => $ds->count()
             ];
         });
 
         // Tổng kết học lực như đã viết ở trước
-        $tieuChi = TieuChiXepLoai::where('MaChuongTrinh', $MaChuongTrinh)->get();
+        $tieuChi = TieuChiXepLoai::where('MaChuongTrinh', $MaChuongTrinh)
+            ->orderBy('DiemTu')
+            ->get();
         $tongKet = $dsDiem->groupBy('MaSV')->map(function ($ds) use ($tieuChi) {
-            $tb = $ds->avg('DiemTong');
+            $tb = $ds->avg(function ($d) {
+                return $d->TongDiemTinhLai ?? 0;
+            });
             $loai = 'Chưa xếp loại';
             foreach ($tieuChi as $tc) {
-                if ($tb >= $tc->DiemTu && $tb < $tc->DiemDen)
+                if ($tb >= $tc->DiemTu && $tb < $tc->DiemDen) {
                     $loai = $tc->XepLoai;
+                    break;
+                }
             }
             return [
                 'MaSV' => $ds->first()->MaSV,
@@ -164,24 +212,65 @@ class ThongKeDashboardController extends Controller
     {
         $lop = LopHoc::where('MaLop', $MaLop)->first();
         $monHocs = ChuongTrinhMonHoc::where('MaChuongTrinh', $MaChuongTrinh)->pluck('MaMH');
-        $dsDiem = DiemThi::where('MaLop', $MaLop)->whereIn('MaMH', $monHocs)->get();
+        $dsDiem = DiemThi::where('MaLop', $MaLop)->whereIn('MaMH', $monHocs)->with('sinhVien')->get();
+
+        // Lấy cấu hình hình thức đánh giá của CTĐT
+        $hinhThucDanhGia = HinhThucDanhGia::where('MaChuongTrinh', $MaChuongTrinh)
+            ->orderBy('id')
+            ->get();
+
+        $mapFieldByHinhThuc = function (string $hinhThuc): ?string {
+            $hinhThucLower = mb_strtolower($hinhThuc, 'UTF-8');
+            if (strpos($hinhThucLower, 'lý thuyết') !== false || strpos($hinhThucLower, 'ly thuyet') !== false) {
+                return 'DiemLyThuyet';
+            }
+            if (strpos($hinhThucLower, 'thực hành') !== false || strpos($hinhThucLower, 'thuc hanh') !== false) {
+                return 'DiemThucHanh';
+            }
+            if (strpos($hinhThucLower, 'dự án') !== false || strpos($hinhThucLower, 'du an') !== false) {
+                return 'DiemDuAn';
+            }
+            return null;
+        };
+
+        foreach ($dsDiem as $diem) {
+            $tongTinhLai = 0.0;
+            $coCauHinh = $hinhThucDanhGia->count() > 0;
+            if ($coCauHinh) {
+                foreach ($hinhThucDanhGia as $ht) {
+                    $field = $mapFieldByHinhThuc($ht->HinhThuc ?? '');
+                    if ($field && isset($diem->$field)) {
+                        $tiLe = (float) ($ht->TiLePhanTram ?? 0) / 100.0;
+                        $giaTri = (float) ($diem->$field ?? 0);
+                        $tongTinhLai += $giaTri * $tiLe;
+                    }
+                }
+                $diem->TongDiemTinhLai = round($tongTinhLai, 2);
+            } else {
+                $diem->TongDiemTinhLai = round((float) ($diem->DiemTong ?? 0), 2);
+            }
+        }
 
         $theoMon = $dsDiem->groupBy('MaMH');
         $thongKeDat = $dsDiem->groupBy('MaMH')->map(function ($ds) {
             return [
-                'dat' => $ds->where('DiemTong', '>=', 40)->count(),
-                'khongDat' => $ds->where('DiemTong', '<', 40)->count(),
+                'dat' => $ds->filter(fn($d) => ($d->TongDiemTinhLai ?? 0) >= 5.0)->count(),
+                'khongDat' => $ds->filter(fn($d) => ($d->TongDiemTinhLai ?? 0) < 5.0)->count(),
                 'tong' => $ds->count()
             ];
         });
 
-        $tieuChi = TieuChiXepLoai::where('MaChuongTrinh', $MaChuongTrinh)->get();
+        $tieuChi = TieuChiXepLoai::where('MaChuongTrinh', $MaChuongTrinh)->orderBy('DiemTu')->get();
         $tongKet = $dsDiem->groupBy('MaSV')->map(function ($ds) use ($tieuChi) {
-            $tb = $ds->avg('DiemTong');
+            $tb = $ds->avg(function ($d) {
+                return $d->TongDiemTinhLai ?? 0;
+            });
             $loai = 'Chưa xếp loại';
             foreach ($tieuChi as $tc) {
-                if ($tb >= $tc->DiemTu && $tb < $tc->DiemDen)
+                if ($tb >= $tc->DiemTu && $tb < $tc->DiemDen) {
                     $loai = $tc->XepLoai;
+                    break;
+                }
             }
             return [
                 'MaSV' => $ds->first()->MaSV,

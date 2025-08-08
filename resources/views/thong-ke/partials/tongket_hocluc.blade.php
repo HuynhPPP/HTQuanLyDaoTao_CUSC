@@ -29,7 +29,7 @@
     <div class="col-12 col-md-12 col-lg-12">
         <div class="card">
             <div class="card-header">
-                <h4>Chi tiết học lực sinh viên</h4>
+                 <h4>Chi tiết học lực sinh viên (điểm TB theo CTĐT)</h4>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -47,7 +47,7 @@
                                 <tr>
                                     <td>{{ $sv['MaSV'] }}</td>
                                     <td>{{ $sv['HoTen'] }}</td>
-                                    <td>{{ number_format($sv['DiemTB'], 2) }}</td>
+                                     <td>{{ number_format($sv['DiemTB'], 2) }}</td>
                                     <td>
                                         <span>
                                             {{ $sv['XepLoai'] }}

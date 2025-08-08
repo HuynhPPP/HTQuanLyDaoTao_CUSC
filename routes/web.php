@@ -19,7 +19,7 @@ use App\Http\Controllers\DaoTao\ChuongTrinhDaoTaoController;
 use App\Http\Controllers\DaoTao\MonHocController;
 use App\Http\Controllers\DaoTao\KhoaDaoTaoController;
 use App\Http\Controllers\DaoTao\HocKiController;
-use App\Http\Controllers\TuyenSinh\TuyenSinhController;
+
 use App\Http\Controllers\Facilities\DanhSachPhongController;
 use App\Http\Controllers\Facilities\LopHocController;
 use App\Http\Controllers\Facilities\PhongHocController;
@@ -37,6 +37,7 @@ use App\Http\Controllers\Front\GiaoVien\CalendarExamController;
 use App\Http\Controllers\Front\GiaoVien\CalendarTeacherController;
 use App\Http\Controllers\Front\GiaoVien\MainTeacherController;
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Controllers\TienTrinhHocTapController;
 
 // Trang chủ, giới thiệu, login, logout, captcha: ai cũng truy cập được
 Route::get('/', [MainController::class, 'about'])->name('about');
@@ -268,15 +269,15 @@ Route::middleware([RoleMiddleware::class . ':admin'])->group(function () {
         Route::put('/mon-hoc/{MaMH}/update-teacher/{maGV}', [MonHocController::class, 'updateTeacherAssignment'])
             ->name('monhoc.update-teacher');
     });
-    Route::prefix('tuyensinh')->group(function () {
-        Route::get('/', [TuyenSinhController::class, 'index'])->name('tuyensinh.index');
-        Route::post('/store', [TuyenSinhController::class, 'store'])->name('tuyensinh.store');
-        Route::delete('/{maTS}', [TuyenSinhController::class, 'destroy'])->name('tuyensinh.destroy');
-        Route::get('/dot/{maTS}', [TuyenSinhController::class, 'danhSachHoSo'])->name('tuyensinh.danhsach_hoso');
-        Route::post('/hoso', [TuyenSinhController::class, 'taoHoSo'])->name('tuyensinh.tao_hoso');
-        Route::post('/capnhat-hoso/{maHoSo}', [TuyenSinhController::class, 'capNhatHoSo'])->name('tuyensinh.capnhat_hoso');
-        Route::post('/hoso/{maHoSo}', [TuyenSinhController::class, 'capNhatTrangThai'])->name('tuyensinh.capnhat_trangthai');
-    });
+    // Route::prefix('tuyensinh')->group(function () {
+    //     Route::get('/', [TuyenSinhController::class, 'index'])->name('tuyensinh.index');
+    //     Route::post('/store', [TuyenSinhController::class, 'store'])->name('tuyensinh.store');
+    //     Route::delete('/{maTS}', [TuyenSinhController::class, 'destroy'])->name('tuyensinh.destroy');
+    //     Route::get('/dot/{maTS}', [TuyenSinhController::class, 'danhSachHoSo'])->name('tuyensinh.danhsach_hoso');
+    //     Route::post('/hoso', [TuyenSinhController::class, 'taoHoSo'])->name('tuyensinh.tao_hoso');
+    //     Route::post('/capnhat-hoso/{maHoSo}', [TuyenSinhController::class, 'capNhatHoSo'])->name('tuyensinh.capnhat_hoso');
+    //     Route::post('/hoso/{maHoSo}', [TuyenSinhController::class, 'capNhatTrangThai'])->name('tuyensinh.capnhat_trangthai');
+    // });
     Route::prefix('khoadaotao')->group(function () {
         Route::get('/list', [KhoaDaoTaoController::class, 'index'])->name('khoadaotao.index');
         Route::get('/create', [KhoaDaoTaoController::class, 'create'])->name('khoadaotao.create');
@@ -381,6 +382,13 @@ Route::middleware([RoleMiddleware::class . ':admin,staff'])->group(function () {
         )
             ->name('thongke.sinhvien.datmon');
     });
+
+    // Tiến trình học tập
+    Route::prefix('tien-trinh-hoc-tap')->name('tien-trinh-hoc-tap.')->group(function () {
+        Route::get('/{maSV}', [TienTrinhHocTapController::class, 'show'])->name('show');
+        Route::post('/cap-nhat-tu-diem-thi', [TienTrinhHocTapController::class, 'capNhatTuDiemThi'])->name('cap-nhat-tu-diem-thi');
+        Route::post('/xuat-bao-cao', [TienTrinhHocTapController::class, 'xuatBaoCao'])->name('xuat-bao-cao');
+    });
 });
 
 Route::middleware([RoleMiddleware::class . ':teacher'])->group(function () {
@@ -431,6 +439,8 @@ Route::middleware([RoleMiddleware::class . ':student'])->group(function () {
             ->name('tracuu.diem');
     });
 });
+
+
 
 
 

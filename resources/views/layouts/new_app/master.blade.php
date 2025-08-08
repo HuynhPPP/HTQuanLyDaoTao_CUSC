@@ -7,10 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('page-title', 'Hệ Thống Quản Lý Đào Tạo')</title>
+    <title>@yield('page-title', 'Hệ thống quản lý đào tạo')</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('Images/banner_cusc.png') }}" type="image/x-icon">
 
     <!-- General CSS Files -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"

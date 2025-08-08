@@ -75,27 +75,23 @@
 
 @section('custom-js')
     <script>
-        $(document).ready(function() {
-            $(document).on('click', '.delete-chuongtrinh', function(e) {
-                e.preventDefault(); // Ngăn submit mặc định
-                const form = $(this).closest('form'); // Tìm form cha gần nhất
-
-                Swal.fire({
-                    title: 'Bạn có chắc chắn muốn xóa chương trình đào tạo này?',
-                    text: 'Dữ liệu đã xóa sẽ không thể khôi phục!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Xóa',
-                    cancelButtonText: 'Hủy',
-                    dangerMode: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    } else {
-                        Swal.fire('Thao tác đã bị hủy.');
-                    }
+            $(document).ready(function() {
+                $(document).on('click', '.delete-chuongtrinh', function(e) {
+                    e.preventDefault();
+                    const form = $(this).closest('form');
+                    Swal.fire({
+                        title: 'Bạn có chắc chắn muốn xóa chương trình đào tạo này?',
+                        text: 'Dữ liệu đã xóa sẽ không thể khôi phục!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Xóa',
+                        cancelButtonText: 'Hủy'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
                 });
             });
-        });
     </script>
 @endsection

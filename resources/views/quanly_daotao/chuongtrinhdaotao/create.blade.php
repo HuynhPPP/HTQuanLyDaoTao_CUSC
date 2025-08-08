@@ -160,5 +160,6 @@
 @endsection
 
 @section('custom-js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{ asset('assets/js/add_hinhthuc_tieuchi.js') }}"></script>
 @endsection

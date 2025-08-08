@@ -17,6 +17,9 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0"></h5>
                             <div>
+                                <a href="{{ route('tien-trinh-hoc-tap.show', $sinhVien->MaSV) }}" class="btn btn-info">
+                                    <i class="fas fa-chart-line"></i> Tiến trình học tập
+                                </a>
                                 <a href="{{ route('student.edit_all', $sinhVien->MaSV) }}" class="btn btn-warning">
                                     <i class="fas fa-edit"></i> Chỉnh sửa
                                 </a>

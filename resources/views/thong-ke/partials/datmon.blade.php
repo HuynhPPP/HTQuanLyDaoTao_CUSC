@@ -8,7 +8,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h4>Thống kê đạt/chưa đạt theo môn học</h4>
+                <h4>Thống kê đạt/chưa đạt theo môn học (tổng điểm theo CTĐT)</h4>
             </div>
             <div class="card-body">
                 <canvas id="chart-datmon" height="120"></canvas>

@@ -222,16 +222,11 @@ $(document).ready(function () {
             e.preventDefault();
             
             // Hiển thị thông báo tổng quan
-            swal({
+            Swal.fire({
                 title: 'Lỗi Nhập Liệu',
                 text: 'Vui lòng kiểm tra và điều chỉnh các trường có lỗi.',
                 icon: 'error',
-                buttons: {
-                    confirm: {
-                        text: 'Đóng',
-                        visible: true
-                    }
-                }
+                confirmButtonText: 'Đóng'
             });
 
             // Cuộn đến phần đầu tiên có lỗi

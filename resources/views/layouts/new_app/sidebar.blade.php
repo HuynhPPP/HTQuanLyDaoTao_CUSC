@@ -42,8 +42,10 @@
                     request()->routeIs('monhoc.*') ||
                     request()->routeIs('hocki.*');
 
+                $TienTrinhHocTapActive = request()->routeIs('tien-trinh-hoc-tap.*');
+
                 $dropdownActive =
-                    $nhanSuActive || $donViLopActive || $hanhChinhActive || $DaoTaoActive || $TuyenSinhActive;
+                    $nhanSuActive || $donViLopActive || $hanhChinhActive || $DaoTaoActive || $TuyenSinhActive || $TienTrinhHocTapActive;
 
                 $ThongKeActive = request()->routeIs('thong-ke.*');
             @endphp

@@ -60,4 +60,6 @@ class sinhvien extends Model
     {
         return $this->hasOne(LdapAccount::class, 'MaSV', 'MaSV');
     }
+
+    
 }

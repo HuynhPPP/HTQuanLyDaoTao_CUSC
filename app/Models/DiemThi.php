@@ -87,7 +87,7 @@ class DiemThi extends Model
 
     public function monHoc()
     {
-        return $this->belongsTo(MonHoc::class, 'TenMH', 'TenMH');
+        return $this->belongsTo(MonHoc::class, 'MaMH', 'MaMH');
     }
 
     public function lopHoc()

@@ -17,7 +17,7 @@
                             <th>Lý thuyết</th>
                             <th>Thực hành</th>
                             <th>Dự án</th>
-                            <th>Tổng điểm</th>
+                            <th>Tổng điểm (theo CTĐT)</th>
                             <th>Ghi chú</th>
                         </tr>
                     </thead>
@@ -30,13 +30,7 @@
                                 <td>{{ number_format($diem->DiemThucHanh ?? 0, 2) }}</td>
                                 <td>{{ number_format($diem->DiemDuAn ?? 0, 2) }}</td>
                                 <td>
-                                    @php
-                                        $diemTong = $diem->DiemTong ?? 0;
-                                        $bgColor = $diemTong >= 5 ? 'success' : 'danger';
-                                    @endphp
-                                    <span>
-                                        {{ number_format($diemTong, 2) }}
-                                    </span>
+                                    {{ number_format($diem->TongDiemTinhLai ?? ($diem->DiemTong ?? 0), 2) }}
                                 </td>
                                 <td>{{ $diem->GhiChu }}</td>
                             </tr>

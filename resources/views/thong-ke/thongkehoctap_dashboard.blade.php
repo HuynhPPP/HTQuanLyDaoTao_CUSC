@@ -2,13 +2,12 @@
 
 @section('main-content')
     <div class="section">
-        <div class="section-header">
-            <h1>Thống kê kết quả học tập - Lớp {{ $lop->MaLop }}</h1>
-            <div class="section-header-breadcrumb">
-            <a href="{{ route('thong-ke.export', ['MaLop' => $lop->MaLop, 'MaChuongTrinh' => $MaCT]) }}"
-                class="btn btn-success">
-                <i class="fas fa-file-excel"></i> Tải Excel thống kê
-            </a>
+        <div class="section-header d-flex justify-content-between align-items-center">
+            <h1 class="mb-0">Thống kê kết quả học tập - Lớp {{ $lop->MaLop }}</h1>
+            <div class="section-header-breadcrumb mb-0">
+                <a href="{{ route('thong-ke.export', ['MaLop' => $lop->MaLop, 'MaChuongTrinh' => $MaCT]) }}" class="btn btn-success">
+                    <i class="fas fa-file-excel"></i> Tải Excel thống kê
+                </a>
             </div>
         </div>
 

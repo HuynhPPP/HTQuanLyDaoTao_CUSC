@@ -142,7 +142,7 @@ class ChuongTrinhDaoTaoController extends Controller
             'PhienBan' => 'nullable|max:12',
             'NgayTrienKhaiPB' => 'nullable|date',
             'TenKhoaDaoTao' => 'required',
-        ], messages: [
+        ], [
             'MaChuongTrinh.required' => 'Mã chương trình không được để trống',
             'TenKhoaDaoTao.required' => 'Tên khoá đào tạo không được để trống',
             'TenChuongTrinh.required' => 'Tên chương trình đào tạo không được để trống'
@@ -212,6 +212,9 @@ class ChuongTrinhDaoTaoController extends Controller
     {
         try {
             $chuongTrinh = ChuongTrinh::findOrFail($maChuongTrinh);
+            // Xoá các bản ghi con trước để tránh lỗi ràng buộc
+            HinhThucDanhGia::where('MaChuongTrinh', $maChuongTrinh)->delete();
+            TieuChiXepLoai::where('MaChuongTrinh', $maChuongTrinh)->delete();
             $chuongTrinh->delete();
             return redirect()->route('chuongtrinh.index')
                 ->with('success', 'Xóa chương trình đào tạo thành công');

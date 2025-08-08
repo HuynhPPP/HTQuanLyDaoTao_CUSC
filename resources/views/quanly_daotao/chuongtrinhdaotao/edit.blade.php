@@ -182,16 +182,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <form method="POST" class="col-md-1 d-flex align-items-center"
-                                            action="{{ route('chuongtrinh.xoa.hinhthucdanhgia', [$danhGia->id, $chuongTrinh->MaChuongTrinh]) }}">
-                                            @csrf
-                                            <div class="col-md-1 d-flex align-items-center">
-                                                <button type="submit"
-                                                    class="btn btn-danger btn-sm delete-hinhthucdanhgia">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </div>
-                                        </form>
+                                        <div class="col-md-1 d-flex align-items-center">
+                                            <button type="button"
+                                                class="btn btn-danger btn-sm remove-row"
+                                                data-id="{{ $danhGia->id }}" data-type="danhgia">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
 
                                     </div>
                                 @empty
@@ -300,8 +297,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-1 d-flex align-items-center">
-                                            <button type="button" class="btn btn-danger btn-sm remove-row"
-                                                onclick="$(this).closest('.xep-loai-row').remove()">
+                                            <button type="button" class="btn btn-danger btn-sm remove-row" data-type="xeploai">
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </div>
@@ -349,28 +345,12 @@
 @endsection
 
 @section('custom-js')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('assets/js/add_hinhthuc_tieuchi.js') }}"></script>
     <script>
         $(document).ready(function() {
-            $('.delete-hinhthucdanhgia').click(function(e) {
-                e.preventDefault(); // Ngăn submit mặc định
-                const form = $(this).closest('form'); // Tìm form cha gần nhất
-
-                Swal.fire({
-                    title: 'Bạn có chắc muốn xóa?',
-                    text: 'Hành động này không thể hoàn tác!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Xóa',
-                    cancelButtonText: 'Hủy',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit(); // Gửi request xóa
-                    } else {
-                        Swal.fire('Đã hủy', 'Không có dữ liệu nào bị xóa.', 'info');
-                    }
-                });
+            $(document).on('click', '.remove-row', function() {
+                $(this).closest('.danh-gia-row, .xep-loai-row').remove();
             });
         });
     </script>
