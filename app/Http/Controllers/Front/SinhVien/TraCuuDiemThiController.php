@@ -10,15 +10,67 @@ use Illuminate\Support\Facades\Auth;
 
 class TraCuuDiemThiController extends Controller
 {
-    // Hiển thị form tra cứu điểm
+    // Hiển thị bảng điểm trực tiếp cho sinh viên đã đăng nhập
     public function index()
     {
-        // Lấy thông tin tài khoản LDAP
-        $id = session('id');
-        $maSV = LdapAccount::where('MaTaiKhoan', $id)->first();
-        
-        return view('frontend.sinhvien.tra_cuu_diem_thi.index', [
-            'maSV' => $maSV
+        $username = session('user');
+        if (!$username) {
+            return redirect()->route('login')->with('error', 'Bạn chưa đăng nhập!');
+        }
+
+        $ldap = LdapAccount::where('username', $username)->first();
+        if (!$ldap) {
+            return redirect()->back()->with('error', 'Không tìm thấy tài khoản');
+        }
+
+        $maSV = $ldap->MaTaiKhoan;
+
+        // Lấy thông tin sinh viên
+        $sinhVien = DB::table('sinhvien')->where('MaSV', $maSV)->first();
+
+        // Lấy lớp của sinh viên (từ bảng danh sách SV)
+        $lopHoc = DB::table('danhsachsv')
+            ->where('MaSV', $maSV)
+            ->first();
+
+        if (!$lopHoc) {
+            return back()->with('error', 'Sinh viên chưa được phân lớp');
+        }
+
+        // Lấy thông tin lớp (tên lớp, mã chương trình)
+        $lopInfo = DB::table('lophoc')
+            ->where('MaLop', $lopHoc->MaLop)
+            ->first();
+
+        // Lấy danh sách điểm thi của sinh viên theo CTĐT
+        $danhSachDiem = DB::table('chuongtrinh_monhoc')
+            ->join('monhoc', 'chuongtrinh_monhoc.MaMH', '=', 'monhoc.MaMH')
+            ->leftJoin('diemthi', function ($join) use ($maSV) {
+                $join->on('monhoc.MaMH', '=', 'diemthi.MaMH')
+                    ->where('diemthi.MaSV', '=', $maSV);
+            })
+            ->where('chuongtrinh_monhoc.MaChuongTrinh', $lopInfo->MaChuongTrinh)
+            ->select(
+                'monhoc.MaMH',
+                'monhoc.TenMH',
+                'diemthi.MaLop',
+                'diemthi.DiemLyThuyet',
+                'diemthi.DiemThucHanh',
+                'diemthi.DiemDuAn',
+                'diemthi.DiemTong',
+                'diemthi.GhiChu'
+            )
+            ->get()
+            ->map(function ($item) use ($lopHoc) {
+                $item->MaLop = $item->MaLop ?? $lopHoc->MaLop;
+                return $item;
+            });
+
+        return view('frontend.sinhvien.tra_cuu_diem_thi.ketqua', [
+            'sinhVien' => $sinhVien,
+            'danhSachDiem' => $danhSachDiem,
+            'MaLop' => $lopHoc->MaLop,
+            'TenLop' => optional($lopInfo)->TenLop,
         ]);
     }
 

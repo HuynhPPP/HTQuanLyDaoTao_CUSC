@@ -13,6 +13,7 @@ use App\Models\TieuChiXepLoai;
 use App\Models\tkb;
 use App\Models\danhsachmonhoc;
 use App\Models\LichThi;
+use App\Models\HinhThucDanhGia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -52,6 +53,11 @@ class TienTrinhHocTapController extends Controller
             ->where('MaSV', $maSV)
             ->get();
         
+        // Lấy cấu hình hình thức đánh giá theo CTĐT (nếu có)
+        $hinhThucDanhGias = $maChuongTrinh
+            ? HinhThucDanhGia::where('MaChuongTrinh', $maChuongTrinh)->orderBy('id')->get()
+            : collect();
+
         // Tạo dữ liệu tiến trình từ tất cả môn học trong chương trình
         $tienTrinh = collect();
         
@@ -60,9 +66,34 @@ class TienTrinhHocTapController extends Controller
             // Tìm điểm thi tương ứng nếu có
             $diemThi = $diemThis->where('MaMH', $monHocCT->MaMH)->first();
             
+            // Tính tổng điểm theo hình thức đánh giá của CTĐT (nếu có)
+            $tongDiemTinhLai = null;
+            if ($diemThi) {
+                if ($hinhThucDanhGias->count() > 0) {
+                    $mapField = function (string $hinhThuc): ?string {
+                        $lh = mb_strtolower($hinhThuc, 'UTF-8');
+                        if (strpos($lh, 'lý thuyết') !== false || strpos($lh, 'ly thuyet') !== false) return 'DiemLyThuyet';
+                        if (strpos($lh, 'thực hành') !== false || strpos($lh, 'thuc hanh') !== false) return 'DiemThucHanh';
+                        if (strpos($lh, 'dự án') !== false || strpos($lh, 'du an') !== false) return 'DiemDuAn';
+                        return null;
+                    };
+                    $sum = 0.0;
+                    foreach ($hinhThucDanhGias as $ht) {
+                        $field = $mapField($ht->HinhThuc ?? '');
+                        if ($field && isset($diemThi->$field)) {
+                            $tiLe = (float) ($ht->TiLePhanTram ?? 0) / 100.0;
+                            $sum += (float) ($diemThi->$field ?? 0) * $tiLe;
+                        }
+                    }
+                    $tongDiemTinhLai = round($sum, 2);
+                } else {
+                    $tongDiemTinhLai = $diemThi->DiemTong !== null ? round((float) $diemThi->DiemTong, 2) : null;
+                }
+            }
+
             // Xác định trạng thái học tập
             $trangThai = $this->xacDinhTrangThai(
-                $diemThi ? $diemThi->DiemTong : null,
+                $tongDiemTinhLai,
                 $maSV,
                 $monHocCT->MaMH,
                 $diemThi ? $diemThi->MaLop : null,
@@ -74,12 +105,13 @@ class TienTrinhHocTapController extends Controller
                 'MaMH' => $monHocCT->MaMH,
                 'MaLop' => $diemThi ? $diemThi->MaLop : null,
                 'DiemTong' => $diemThi ? $diemThi->DiemTong : null,
+                'TongDiemTinhLai' => $tongDiemTinhLai,
                 'DiemLyThuyet' => $diemThi ? $diemThi->DiemLyThuyet : null,
                 'DiemThucHanh' => $diemThi ? $diemThi->DiemThucHanh : null,
                 'DiemDuAn' => $diemThi ? $diemThi->DiemDuAn : null,
                 'GhiChu' => $diemThi ? $diemThi->GhiChu : null,
                 'TrangThai' => $trangThai,
-                'XepLoai' => $this->xacDinhXepLoai($diemThi ? $diemThi->DiemTong : null, $maChuongTrinh),
+                'XepLoai' => $this->xacDinhXepLoai($tongDiemTinhLai, $maChuongTrinh),
                 'NgayHoanThanh' => $trangThai === 'DaHoanThanh' ? now() : null,
                 'monHoc' => $monHocCT->monHoc,
                 'lopHoc' => $diemThi ? $diemThi->lopHoc : null,
@@ -96,7 +128,8 @@ class TienTrinhHocTapController extends Controller
             'monDaDangKy' => $tienTrinh->where('TrangThai', 'DangKy')->count(),
             'monChuaDangKy' => $tienTrinh->where('TrangThai', 'ChuaDangKy')->count(),
             'tongTinChi' => $tienTrinh->where('TrangThai', 'DaHoanThanh')->sum('SoTinChi'),
-            'diemTrungBinh' => $tienTrinh->whereNotNull('DiemTong')->avg('DiemTong') ?? 0,
+            'diemTrungBinh' => $tienTrinh->whereNotNull('TongDiemTinhLai')->avg('TongDiemTinhLai')
+                ?? ($tienTrinh->whereNotNull('DiemTong')->avg('DiemTong') ?? 0),
             'xepLoai' => $this->xacDinhXepLoaiChung($tienTrinh)
         ];
 

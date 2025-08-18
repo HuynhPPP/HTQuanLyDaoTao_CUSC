@@ -8,33 +8,18 @@
 
     <div class="section-body">
         <div class="row justify-content-center">
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h4>Nhập mã sinh viên</h4>
+                        <h4>Bảng điểm của tôi</h4>
+                        <div class="card-header-form ml-auto">
+                            <a href="{{ route('tracuu.index') }}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-sync-alt"></i> Làm mới
+                            </a>
+                        </div>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('tracuu.diem') }}" method="POST">
-                            @csrf
-                            <div class="form-group">
-                                <label for="MaSV">Mã sinh viên</label>
-                                <input type="text" 
-                                       class="form-control @error('MaSV') is-invalid @enderror" 
-                                       id="MaSV" 
-                                       name="MaSV" 
-                                       value="{{ old('MaSV', $maSV) }}"
-                                       placeholder="Nhập mã sinh viên"
-                                       required>
-                                @error('MaSV')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block">
-                                <i class="fas fa-search"></i> Tra cứu điểm
-                            </button>
-                        </form>
+                        <p class="text-muted mb-0">Vui lòng truy cập mục này từ menu. Trang sẽ tự động hiển thị bảng điểm của bạn khi đã đăng nhập.</p>
                     </div>
                 </div>
             </div>

@@ -3,7 +3,7 @@
 @section('main-content')
 <section class="section">
     <div class="section-header">
-        <h1>Kết Quả Tra Cứu Điểm</h1>
+        <h1>Kết quả học tập</h1>
     </div>
 
     <div class="section-body">
@@ -11,14 +11,14 @@
             <div class="col-md-12">
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h4>Thông Tin Sinh Viên</h4>
+                        <h4>Thông tin sinh viên</h4>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>Mã Sinh Viên:</strong> {{ $sinhVien->MaSV }}</p>
-                                <p><strong>Họ Tên:</strong> {{ $sinhVien->HoTen }}</p>
-                                <p><strong>Lớp:</strong> {{ $lopHoc }}</p>
+                                <p><strong>Mã số sinh viên:</strong> {{ $sinhVien->MaSV }}</p>
+                                <p><strong>Họ tên:</strong> {{ $sinhVien->HoTen }}</p>
+                                <p><strong>Lớp:</strong> {{ $MaLop }} - {{ $TenLop }}</p>
                             </div>
                         </div>
                     </div>
@@ -26,7 +26,7 @@
 
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h4>Bảng Điểm Chi Tiết</h4>
+                        <h4>Bảng điểm chi tiết</h4>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">

@@ -417,6 +417,7 @@ Route::middleware([RoleMiddleware::class . ':teacher'])->group(function () {
     });
 
     Route::get('/giao-vien/lich-giang-day', [CalendarTeacherController::class, 'teacherSchedule'])->name('giaovien.schedule');
+    Route::get('/giao-vien/lich-giang-day/export', [CalendarTeacherController::class, 'exportSchedule'])->name('giaovien.calendar.export');
 });
 
 Route::middleware([RoleMiddleware::class . ':student'])->group(function () {
@@ -428,15 +429,18 @@ Route::middleware([RoleMiddleware::class . ':student'])->group(function () {
 
     Route::prefix('calendar')->group(function () {
         Route::get('/student/list', [CalendarController::class, 'StudentCalendar'])->name('student.calendar.list');
+        Route::get('/student/export', [CalendarController::class, 'exportSchedule'])->name('student.calendar.export');
 
     });
+
+    // Tiến trình học tập cá nhân
+    Route::get('/sinh-vien/tien-trinh', [\App\Http\Controllers\Front\SinhVien\TienTrinhCaNhanController::class, 'index'])
+        ->name('student.progress');
 
     // Route tra cứu điểm thi
     Route::prefix('tra-cuu-diem')->group(function () {
         Route::get('/', [TraCuuDiemThiController::class, 'index'])
             ->name('tracuu.index');
-        Route::post('/ket-qua', [TraCuuDiemThiController::class, 'traCuuDiem'])
-            ->name('tracuu.diem');
     });
 });
 

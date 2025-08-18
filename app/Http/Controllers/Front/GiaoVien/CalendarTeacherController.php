@@ -16,6 +16,8 @@ use App\Models\hocki;
 use App\Models\ngaytuhoc;
 use App\Models\danhsachngaynghi;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ScheduleExport;
 
 class CalendarTeacherController extends Controller
 {
@@ -91,7 +93,12 @@ class CalendarTeacherController extends Controller
 
         // Lọc các môn mà GV này dạy
         $maMHsGVDay = $giangDays->pluck('MaMH')->unique()->values();
-        $filteredMonHocs = $monhocs->whereIn('MaMH', $maMHsGVDay);
+        
+        // Lọc môn học có giờ triển khai > 0 và chỉ lấy môn mà GV này dạy
+        $filteredMonHocs = $monhocs->filter(function($monhoc) use ($maMHsGVDay) {
+            return $monhoc && $monhoc->GioTrienKhai > 0 && $maMHsGVDay->contains($monhoc->MaMH);
+        });
+        
         $subjectOccurrences = [];
         $subjectCount = count($filteredMonHocs);
         foreach ($filteredMonHocs as $index => $monhoc) {
@@ -185,14 +192,11 @@ class CalendarTeacherController extends Controller
                             $holidayDates,
                             $examCounter
                         );
-                        // Chỉ hiển thị nếu là môn mà GV này dạy
-                        if ($subject && !$maMHsGVDay->contains($subject)) {
-                            $subject = '';
-                        }
+                        // Chỉ hiển thị nếu là môn mà GV này dạy (đã được lọc ở trên)
                         if ($subject) {
-                            if (isset($subjectOccurrences[$subject]['first']) && $subjectOccurrences[$subject]['first']->eq($currentDate)) {
+                            if (isset($subjectOccurrences[$subject]['first']) && $subjectOccurrences[$subject]['first'] instanceof Carbon && $subjectOccurrences[$subject]['first']->eq($currentDate)) {
                                 $inlineStyle = 'color: red; font-weight: bold;';
-                            } elseif (isset($subjectOccurrences[$subject]['last']) && $subjectOccurrences[$subject]['last']->eq($currentDate)) {
+                            } elseif (isset($subjectOccurrences[$subject]['last']) && $subjectOccurrences[$subject]['last'] instanceof Carbon && $subjectOccurrences[$subject]['last']->eq($currentDate)) {
                                 $inlineStyle = 'color: purple; font-weight: bold;';
                             }
                         }
@@ -206,9 +210,24 @@ class CalendarTeacherController extends Controller
             }
         }
 
-        // Lấy tuần hiện tại từ request, mặc định là 1
-        $selectedWeek = $request->input('week', 1);
+        // Xác định tuần hiện tại theo ngày thực tế để làm mặc định
+        $today = Carbon::today();
+        $endDate = $startDate->copy()->addWeeks($totalWeeks - 1)->endOfWeek();
+        if ($today->lt($startDate)) {
+            $selectedWeekDefault = 1;
+        } elseif ($today->gt($endDate)) {
+            $selectedWeekDefault = $totalWeeks;
+        } else {
+            $selectedWeekDefault = $startDate->copy()->startOfWeek()->diffInWeeks($today->copy()->startOfWeek()) + 1;
+        }
+
+        // Lấy tuần từ request (nếu có), nếu không dùng mặc định vừa tính
+        $selectedWeek = (int) ($request->input('week', $selectedWeekDefault));
+        if ($selectedWeek < 1) $selectedWeek = 1;
+        if ($selectedWeek > $totalWeeks) $selectedWeek = $totalWeeks;
         $viewMode = $request->input('viewMode', 'week');
+
+        $exportUrl = route('giaovien.calendar.export', ['lop' => $selectedMaLop], false);
 
         return view('frontend.giangvien.lich_giang_day.teacher_schedule', compact(
             'schedule',
@@ -228,6 +247,48 @@ class CalendarTeacherController extends Controller
             'giangVien',
             'maLops',
             'selectedMaLop',
+            'exportUrl'
         ));
+    }
+
+    public function exportSchedule(Request $request)
+    {
+        $username = session('user');
+        if (!$username) {
+            return redirect()->route('login')->with('error', 'Bạn chưa đăng nhập!');
+        }
+
+        $ldapAccount = LdapAccount::where('username', $username)->first();
+        if (!$ldapAccount) {
+            return back()->with('error', 'Không tìm thấy tài khoản LDAP.');
+        }
+
+        $giangVien = giaovien::where('MaGV', $ldapAccount->MaTaiKhoan)->first();
+        if (!$giangVien) {
+            return back()->with('error', 'Không tìm thấy thông tin giảng viên.');
+        }
+
+        $selectedMaLop = $request->input('lop');
+        if (!$selectedMaLop) {
+            return back()->with('error', 'Vui lòng chọn lớp để xuất lịch.');
+        }
+
+        $schedule = tkb::where('MaLop', $selectedMaLop)->latest('NgayHoc')->first();
+        if (!$schedule) {
+            return back()->with('error', 'Không tìm thấy thời khoá biểu cho lớp này.');
+        }
+
+        $lophoc = lophoc::where('MaLop', $schedule->MaLop)->first();
+        $chuongtrinh = chuongtrinh::where('MaChuongTrinh', optional($lophoc)->MaChuongTrinh)->first();
+        $phonglt = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
+        $phongth = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
+        $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
+        $dsmh = danhsachmonhoc::where('MaHK', $hocki->MaHK)->first();
+        $ngaynghis = danhsachngaynghi::where('TenTKB', $schedule->TenTKB)->get()->pluck('ngayNghi');
+        $monhocs = danhsachmonhoc::where('MaHK', $hocki->MaHK)->get();
+        $ngaytuhocs = ngaytuhoc::where('TenTKB', $schedule->TenTKB)->get();
+
+        $fileName = 'lich_giang_day_' . $schedule->MaLop . '_' . $giangVien->MaGV . '.xlsx';
+        return Excel::download(new ScheduleExport($schedule, $chuongtrinh, $phonglt, $phongth, $dsmh, $hocki, $ngaynghis, $monhocs, $ngaytuhocs), $fileName);
     }
 }

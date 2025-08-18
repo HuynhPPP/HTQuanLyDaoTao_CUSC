@@ -36,6 +36,11 @@
                 <input type="hidden" name="viewMode" value="{{ $viewMode }}">
                 <button type="submit" name="viewMode" value="week" class="btn btn-primary mr-4 btn-sm {{ $viewMode == 'week' ? 'active' : '' }}">Xem theo tuần</button>
                 <button type="submit" name="viewMode" value="all" class="btn btn-secondary btn-sm {{ $viewMode == 'all' ? 'active' : '' }}">Xem toàn bộ</button>
+                @isset($exportUrl)
+                    <a href="{{ $exportUrl }}" class="btn btn-outline-info btn-sm ml-auto">
+                        <i class="fas fa-print"></i> In lịch
+                    </a>
+                @endisset
             </form>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover shadow-sm bg-white">
@@ -104,6 +109,9 @@
                                                     @elseif($subject && str_contains($subject, 'nghỉ'))
                                                         <span class="badge bg-warning ms-1">Nghỉ</span>
                                                     @endif
+                                                    @if(config('app.debug') && $subject)
+                                                        <br><small class="text-muted">Debug: {{ $subject }}</small>
+                                                    @endif
                                                 </div>
                                                 @if (
                                                     $tenMH &&
@@ -134,15 +142,22 @@
 
 @push('styles')
     <style>
-        .table th,
-        .table td {
-            vertical-align: middle !important;
-        }
-        .badge {
-            font-size: 90%;
-        }
-        .btn.active {
-            font-weight: bold;
-        }
+        /* Cải thiện khả năng đọc và khoảng cách như giao diện mẫu */
+        .table { table-layout: fixed; }
+        .table th, .table td { vertical-align: top !important; padding: 10px 12px; }
+        .table thead th { font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: .3px; }
+        .table tbody td { font-size: 14px; line-height: 1.35; }
+        .table tbody td .fw-bold { font-size: 14px; }
+        .table tbody td .small { font-size: 12px; }
+        .badge { font-size: 85%; padding: 4px 8px; }
+        .btn.active { font-weight: 600; }
+        /* Ô nội dung lịch học có nền nhẹ và bo góc giống thẻ sự kiện */
+        .event-card { background: #eaf7ff; border: 1px solid #d6ecff; border-left: 4px solid #4da3ff; border-radius: 6px; padding: 8px 10px; }
+        .event-card.exam { background: #fff6e5; border-color: #ffe0a3; border-left-color: #ffb84d; }
+        .event-card.self-study { background: #ebffef; border-color: #cdf5d5; border-left-color: #52c27f; }
+        .event-card.holiday { background: #fff; border-color: #f0f0f0; border-left-color: #ff6868; }
+        /* Căn giữa nội dung nhẹ */
+        td.align-middle.text-center > .event-wrapper { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .legend { display: inline-block; width: 14px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
     </style>
 @endpush

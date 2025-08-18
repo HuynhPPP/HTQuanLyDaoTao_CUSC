@@ -168,10 +168,16 @@
                         <span>Lịch học theo tuần</span>
                     </a>
                 </li>
+                <li class="dropdown {{ request()->routeIs('student.progress') ? 'active' : '' }}">
+                    <a href="{{ route('student.progress') }}" class="nav-link">
+                        <i class="fas fa-tasks"></i>
+                        <span>Tiến trình học tập</span>
+                    </a>
+                </li>
                 <li class="dropdown">
                     <a href="{{ route('tracuu.index') }}" class="nav-link">
                         <i class="fas fa-laptop-code"></i>
-                        <span>Tra cứu điểm thi</span>
+                        <span>Kết quả học tập</span>
                     </a>
                 </li>
             @endif

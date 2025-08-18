@@ -2,9 +2,9 @@
 
 @section('main-content')
     <div class="section">
-        <div class="section-header">
-            <h1>Tiến trình học tập - {{ $sinhVien->HoTen }}</h1>
-            <div class="section-header-breadcrumb">
+        <div class="section-header d-flex justify-content-between align-items-center">
+            <h1 class="mb-0">Tiến trình học tập - {{ $sinhVien->HoTen }}</h1>
+            <div class="section-header-breadcrumb mb-0">
                 <div class="breadcrumb-item active"><a href="{{ route('about') }}">Trang Chủ</a></div>
                 <div class="breadcrumb-item active"><a href="{{ route('student.list') }}">Danh sách sinh viên</a></div>
                 <div class="breadcrumb-item active"><a href="{{ route('student.show', $sinhVien->MaSV) }}">Thông tin sinh viên</a></div>
@@ -16,9 +16,9 @@
             <!-- Thông tin sinh viên -->
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Thông tin sinh viên</h4>
+                    <div class="card shadow-sm rounded-4 border-0">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0"><i class="fas fa-user-graduate mr-2"></i>Thông tin sinh viên</h4>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -63,7 +63,7 @@
             <!-- Thống kê tổng quan -->
             <div class="row">
                 <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-                    <div class="card card-statistic-1">
+                    <div class="card card-statistic-1 shadow-sm">
                         <div class="card-icon bg-primary">
                             <i class="fas fa-book"></i>
                         </div>
@@ -78,7 +78,7 @@
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-                    <div class="card card-statistic-1">
+                    <div class="card card-statistic-1 shadow-sm">
                         <div class="card-icon bg-success">
                             <i class="fas fa-check-circle"></i>
                         </div>
@@ -93,7 +93,7 @@
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-                    <div class="card card-statistic-1">
+                    <div class="card card-statistic-1 shadow-sm">
                         <div class="card-icon bg-info">
                             <i class="fas fa-clock"></i>
                         </div>
@@ -108,7 +108,7 @@
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-                    <div class="card card-statistic-1">
+                    <div class="card card-statistic-1 shadow-sm">
                         <div class="card-icon bg-warning">
                             <i class="fas fa-star"></i>
                         </div>
@@ -127,12 +127,13 @@
             <!-- Xếp loại học lực -->
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4><i class="fas fa-trophy"></i> Xếp loại học lực</h4>
+                    <div class="card shadow-sm rounded-4 border-0">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0"><i class="fas fa-trophy"></i> Xếp loại học lực</h4>
+                            <span class="badge badge-light">Cập nhật: {{ now()->format('d/m/Y H:i') }}</span>
                         </div>
                         <div class="card-body">
-                            <div class="alert alert-info">
+                            <div class="">
                                 <strong><i class="fas fa-chart-line"></i> Xếp loại hiện tại:</strong> 
                                 @php
                                     $xepLoaiColors = [
@@ -162,7 +163,7 @@
                             
                             <!-- Thông tin tiêu chí xếp loại -->
                             @if($tienTrinh->isNotEmpty() && $tienTrinh->first()->MaChuongTrinh)
-                                <div class="alert alert-warning">
+                                <div class="">
                                     <strong><i class="fas fa-info-circle"></i> Tiêu chí xếp loại:</strong>
                                     <small class="d-block mt-2">
                                         Xếp loại được tính dựa trên tiêu chí của chương trình đào tạo 
@@ -178,10 +179,10 @@
             <!-- Bảng tiến trình học tập -->
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4><i class="fas fa-list-alt"></i> Chi tiết tiến trình học tập</h4>
-                            <div class="card-header-action">
+                    <div class="card shadow rounded-4 border-0">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0"><i class="fas fa-list-alt"></i> Chi tiết tiến trình học tập</h4>
+                            <div class="card-header-action d-flex align-items-center">
                                 <button class="btn btn-primary" onclick="window.print()">
                                     <i class="fas fa-print"></i> In báo cáo
                                 </button>
@@ -200,7 +201,7 @@
                                             <th>Điểm lý thuyết</th>
                                             <th>Điểm thực hành</th>
                                             <th>Điểm dự án</th>
-                                            <th>Điểm tổng</th>
+                                            <th>Điểm tổng (CTĐT)</th>
                                             <th>Trạng thái</th>
                                             <th>Ngày hoàn thành</th>
                                             <th>Ghi chú</th>
@@ -236,15 +237,17 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if($item->DiemTong !== null)
+                                                    @php
+                                                        $tong = $item->TongDiemTinhLai ?? $item->DiemTong;
+                                                    @endphp
+                                                    @if($tong !== null)
                                                         @php
-                                                            $isDat = $item->DiemTong >= 5.0;
+                                                            $isDat = $tong >= 5.0;
                                                             $diemClass = $isDat ? 'success' : 'danger';
                                                             $diemIcon = $isDat ? 'fas fa-check' : 'fas fa-times';
                                                         @endphp
-                                                        <span class="badge badge-{{ $diemClass }}">
-                                                            <i class="{{ $diemIcon }}"></i>
-                                                            {{ number_format($item->DiemTong, 2) }}
+                                                        <span>                                                 
+                                                            {{ number_format($tong, 2) }}
                                                         </span>
                                                     @else
                                                         <span class="text-muted">
@@ -316,24 +319,14 @@
             </div>
 
             <!-- Biểu đồ tiến trình -->
-            <div class="row">
+            <div class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
                             <h4>Thống kê theo trạng thái</h4>
                         </div>
                         <div class="card-body">
-                            <canvas id="chart-trang-thai" height="200"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Thống kê theo xếp loại</h4>
-                        </div>
-                        <div class="card-body">
-                            <canvas id="chart-xep-loai" height="200"></canvas>
+                            <canvas id="chart-trang-thai" height="100" width="100"></canvas>
                         </div>
                     </div>
                 </div>
@@ -358,23 +351,6 @@
                         {{ $tienTrinh->where('TrangThai', 'ChuaDangKy')->count() }}
                     ],
                     backgroundColor: ['#28a745', '#17a2b8', '#dc3545', '#6c757d', '#ffc107']
-                }]
-            };
-
-            // Dữ liệu cho biểu đồ xếp loại
-            const xepLoaiData = {
-                labels: ['Giỏi', 'Khá', 'Trung bình', 'Yếu', 'Kém', 'Chưa xếp loại', 'Đạt'],
-                datasets: [{
-                    data: [
-                        {{ $tienTrinh->where('XepLoai', 'Giỏi')->count() }},
-                        {{ $tienTrinh->where('XepLoai', 'Khá')->count() }},
-                        {{ $tienTrinh->where('XepLoai', 'Trung bình')->count() }},
-                        {{ $tienTrinh->where('XepLoai', 'Yếu')->count() }},
-                        {{ $tienTrinh->where('XepLoai', 'Kém')->count() }},
-                        {{ $tienTrinh->where('XepLoai', 'Chưa xếp loại')->count() }},
-                        {{ $tienTrinh->where('XepLoai', 'Đạt')->count() }}
-                    ],
-                    backgroundColor: ['#28a745', '#17a2b8', '#ffc107', '#fd7e14', '#6f42c1', '#6c757d', '#007bff']
                 }]
             };
 

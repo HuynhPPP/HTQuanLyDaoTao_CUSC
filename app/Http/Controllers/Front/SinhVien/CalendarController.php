@@ -18,6 +18,8 @@ use App\Models\danhsachngaynghi;
 use App\Models\ngaytuhoc;
 use App\Models\hocki;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ScheduleExport;
 class CalendarController extends Controller
 {
     public function StudentCalendar(Request $request)
@@ -56,7 +58,7 @@ class CalendarController extends Controller
         $hocki = hocki::find($schedule->MaHK);
         $dsmh = danhsachmonhoc::where('MaHK', $hocki->MaHK)->first();
         $ngaynghis = danhsachngaynghi::with('ngayNghi')->where('TenTKB', $schedule->TenTKB)->get()->pluck('ngayNghi');
-        $monhocs = danhsachmonhoc::where('MaHK', $hocki->MaHK)->get();
+        $monhocs = danhsachmonhoc::where('MaHK', $hocki->MaHK)->with('khungGio')->get();
         $ngaytuhocs = ngaytuhoc::where('TenTKB', $schedule->TenTKB)->get();
 
         // Lấy toàn bộ phòng học của lớp, keyBy ngày sử dụng
@@ -87,11 +89,18 @@ class CalendarController extends Controller
                 $weekDays = ['THỨ HAI', 'THỨ BA', 'THỨ TƯ', 'THỨ NĂM', 'THỨ SÁU', 'THỨ BẢY'];
         }
 
-        // Lọc môn học có giờ triển khai > 0
+        // Lọc môn học có giờ triển khai > 0 và xây dựng mapping thời gian theo môn
         $filteredMonHocs = [];
+        $thoiGianTheoMon = [];
         foreach ($monhocs as $monhoc) {
             if ($monhoc && $monhoc->GioTrienKhai > 0) {
                 $filteredMonHocs[] = $monhoc;
+            }
+            if ($monhoc) {
+                $thoiGianTheoMon[$monhoc->MaMH] = [
+                    'tenKhungGio' => $monhoc->TenKhungGio,
+                    'thoiGian' => optional($monhoc->khungGio)->ThoiGian,
+                ];
             }
         }
         $subjectOccurrences = [];
@@ -191,9 +200,17 @@ class CalendarController extends Controller
                             $examCounter
                         );
                         if ($subject) {
-                            if (isset($subjectOccurrences[$subject]['first']) && $subjectOccurrences[$subject]['first']->eq($currentDate)) {
+                            if (
+                                isset($subjectOccurrences[$subject]['first']) &&
+                                $subjectOccurrences[$subject]['first'] instanceof Carbon &&
+                                $subjectOccurrences[$subject]['first']->eq($currentDate)
+                            ) {
                                 $inlineStyle = 'color: red; font-weight: bold;';
-                            } elseif (isset($subjectOccurrences[$subject]['last']) && $subjectOccurrences[$subject]['last']->eq($currentDate)) {
+                            } elseif (
+                                isset($subjectOccurrences[$subject]['last']) &&
+                                $subjectOccurrences[$subject]['last'] instanceof Carbon &&
+                                $subjectOccurrences[$subject]['last']->eq($currentDate)
+                            ) {
                                 $inlineStyle = 'color: purple; font-weight: bold;';
                             }
                         }
@@ -207,9 +224,24 @@ class CalendarController extends Controller
             }
         }
 
-        // Lấy tuần hiện tại từ request, mặc định là 1
-        $selectedWeek = $request->input('week', 1);
+        // Xác định tuần hiện tại theo ngày thực tế để làm mặc định
+        $today = Carbon::today();
+        $endDate = $startDate->copy()->addWeeks($totalWeeks - 1)->endOfWeek();
+        if ($today->lt($startDate)) {
+            $selectedWeekDefault = 1;
+        } elseif ($today->gt($endDate)) {
+            $selectedWeekDefault = $totalWeeks;
+        } else {
+            $selectedWeekDefault = $startDate->copy()->startOfWeek()->diffInWeeks($today->copy()->startOfWeek()) + 1;
+        }
+
+        // Lấy tuần từ request (nếu có), nếu không dùng mặc định vừa tính
+        $selectedWeek = (int) ($request->input('week', $selectedWeekDefault));
+        if ($selectedWeek < 1) $selectedWeek = 1;
+        if ($selectedWeek > $totalWeeks) $selectedWeek = $totalWeeks;
         $viewMode = $request->input('viewMode', 'week'); // 'week' hoặc 'all'
+
+        $exportUrl = route('student.calendar.export', [], false);
 
         return view('frontend.sinhvien.lich_hoc.calendar_index', compact(
             'schedule',
@@ -226,6 +258,49 @@ class CalendarController extends Controller
             'subjectOccurrences',
             'viewMode',
             'phongHocTheoNgay',
+            'thoiGianTheoMon',
+            'exportUrl'
         ));
+    }
+
+    public function exportSchedule(Request $request)
+    {
+        $username = session('user');
+        if (!$username) {
+            return redirect()->route('login')->with('error', 'Bạn chưa đăng nhập!');
+        }
+
+        $ldapAccount = LdapAccount::where('username', $username)->first();
+        if (!$ldapAccount) {
+            return back()->with('error', 'Không tìm thấy tài khoản LDAP.');
+        }
+
+        $sinhVien = sinhvien::where('MaSV', $ldapAccount->MaTaiKhoan)->first();
+        if (!$sinhVien) {
+            return back()->with('error', 'Không tìm thấy thông tin sinh viên.');
+        }
+
+        $danhSachLop = $sinhVien->danhSachLop()->first();
+        if (!$danhSachLop) {
+            return back()->with('error', 'Không tìm thấy lớp của sinh viên.');
+        }
+
+        $schedule = tkb::where('MaLop', $danhSachLop->MaLop)->latest('NgayHoc')->first();
+        if (!$schedule) {
+            return back()->with('error', 'Không tìm thấy thời khoá biểu.');
+        }
+
+        $lophoc = lophoc::where('MaLop', $schedule->MaLop)->first();
+        $chuongtrinh = chuongtrinh::where('MaChuongTrinh', optional($lophoc)->MaChuongTrinh)->first();
+        $phonglt = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Class%')->first();
+        $phongth = danhsachphong::where('MaLop', $lophoc->MaLop)->where('TenPhong', 'LIKE', '%Lab%')->first();
+        $hocki = hocki::where('MaHK', $schedule->MaHK)->first();
+        $dsmh = danhsachmonhoc::where('MaHK', $hocki->MaHK)->first();
+        $ngaynghis = danhsachngaynghi::where('TenTKB', $schedule->TenTKB)->get()->pluck('ngayNghi');
+        $monhocs = danhsachmonhoc::where('MaHK', $hocki->MaHK)->get();
+        $ngaytuhocs = ngaytuhoc::where('TenTKB', $schedule->TenTKB)->get();
+
+        $fileName = 'lich_hoc_thi_' . $schedule->MaLop . '.xlsx';
+        return Excel::download(new ScheduleExport($schedule, $chuongtrinh, $phonglt, $phongth, $dsmh, $hocki, $ngaynghis, $monhocs, $ngaytuhocs), $fileName);
     }
 }
