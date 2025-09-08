@@ -77,6 +77,26 @@ function calcInstructorHours(inst: SummaryInstructor, entry: SummaryEntry & { se
     return calcHoursFromTimeRange(entry.timeRange);
 }
 
+// Parse định dạng ngày dd/mm/yyyy hoặc dd-mm-yyyy -> milliseconds để so sánh
+function parseVietnamDate(dateStr: string): number {
+    const match = dateStr.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+    if (!match) return Number.MAX_SAFE_INTEGER;
+    const day = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10) - 1;
+    let year = parseInt(match[3], 10);
+    if (year < 100) year += 2000;
+    return new Date(year, month, day).getTime();
+}
+
+// Lấy phút từ đầu khoảng thời gian HH:MM - HH:MM để sắp xếp trong cùng ngày
+function getStartMinutes(timeRange: string): number {
+    const m = timeRange.match(/(\d{1,2}):(\d{2})\s*[–\-]/);
+    if (!m) return Number.MAX_SAFE_INTEGER;
+    const hour = parseInt(m[1], 10);
+    const minute = parseInt(m[2], 10);
+    return hour * 60 + minute;
+}
+
 export const SummaryTable: React.FC<SummaryTableProps> = ({ data, setData }) => {
 
     const handleEntryChange = <K extends keyof SummaryEntry, V extends SummaryEntry[K]>(id: string, field: K, value: V) => {
@@ -156,7 +176,13 @@ export const SummaryTable: React.FC<SummaryTableProps> = ({ data, setData }) => 
     };
 
     const handleExportExcel = () => {
-        exportSummaryToExcel(data);
+        const sortedEntries = [...data.entries].sort((a, b) => {
+            const da = parseVietnamDate(a.date);
+            const db = parseVietnamDate(b.date);
+            if (da !== db) return da - db;
+            return getStartMinutes(a.timeRange) - getStartMinutes(b.timeRange);
+        });
+        exportSummaryToExcel({ ...data, entries: sortedEntries });
     };
 
     return (
@@ -197,7 +223,7 @@ export const SummaryTable: React.FC<SummaryTableProps> = ({ data, setData }) => 
                         <div className="w-16">
                             <EditableCell
                                 type="number"
-                                value={String(data.month).padStart(2, '0')}
+                                value={String((data.month || (new Date().getMonth() + 1))).padStart(2, '0')}
                                 onChange={v => handleFooterChange('month', Number(v) || 1)}
                                 className="text-center font-bold"
                             />
@@ -206,7 +232,7 @@ export const SummaryTable: React.FC<SummaryTableProps> = ({ data, setData }) => 
                         <div className="w-24">
                             <EditableCell
                                 type="number"
-                                value={data.year}
+                                value={data.year || new Date().getFullYear()}
                                 onChange={v => handleFooterChange('year', Number(v) || new Date().getFullYear())}
                                 className="text-center font-bold"
                             />
@@ -215,13 +241,13 @@ export const SummaryTable: React.FC<SummaryTableProps> = ({ data, setData }) => 
                 </div>
 
                 <div className="my-4 p-2 border text-xs text-slate-700">
-                    <p className="font-bold">Ghi chú về cách tính giờ:</p>
+                    <p className="font-bold">Ghi chú cách tính giờ:</p>
                     <ul className="list-disc list-inside ml-2">
                         <li>
-                            <span className="font-bold">Giờ chấm đồ án (GV Phản biện):</span> 1.5 giờ * số nhóm (Đối với đồ án Năm 1) hoặc 2.0 giờ * số nhóm (Đối với đồ án Năm 2).
+                            <span className="font-bold">Giờ chấm báo cáo:</span> năm 1 = 1.5 × số nhóm; năm 2 = 2 × số nhóm.
                         </li>
                         <li>
-                            <span className="font-bold">Thời gian buổi báo cáo:</span> Giờ bắt đầu tính theo biên bản, giờ kết thúc được điều chỉnh theo quy chế của trung tâm.
+                            <span className="font-bold">Thời gian buổi báo cáo:</span> Giờ bắt đầu theo biên bản, giờ kết thúc cắt lại theo quy chế.
                         </li>
                     </ul>
                 </div>
@@ -238,7 +264,14 @@ export const SummaryTable: React.FC<SummaryTableProps> = ({ data, setData }) => 
                         </tr>
                     </thead>
                     <tbody>
-                        {data.entries.map((entry, entryIndex) => {
+                        {[...data.entries]
+                            .sort((a, b) => {
+                                const da = parseVietnamDate(a.date);
+                                const db = parseVietnamDate(b.date);
+                                if (da !== db) return da - db;
+                                return getStartMinutes(a.timeRange) - getStartMinutes(b.timeRange);
+                            })
+                            .map((entry, entryIndex) => {
                             // Với logic mới, chỉ có dòng "Giáo viên phản biện" có ghi chú
                             // Không cần merge cells nữa
                             return (
@@ -322,11 +355,17 @@ export const SummaryTable: React.FC<SummaryTableProps> = ({ data, setData }) => 
 
                 <div className="grid grid-cols-2 gap-8 mt-12 text-center print-break-inside-avoid text-sm">
                     <div>
-                        <EditableCell
-                            value={data.signatureDate}
-                            onChange={v => handleFooterChange('signatureDate', v as string)}
-                            className="text-center"
-                        />
+                        {(() => {
+                            const now = new Date();
+                            const defaultSig = `Ngày ${String(now.getDate()).padStart(2, '0')} tháng ${String(now.getMonth() + 1).padStart(2, '0')} năm ${now.getFullYear()}`;
+                            return (
+                                <EditableCell
+                                    value={(data.signatureDate && data.signatureDate.trim().length > 0) ? data.signatureDate : defaultSig}
+                                    onChange={v => handleFooterChange('signatureDate', v as string)}
+                                    className="text-center"
+                                />
+                            );
+                        })()}
                         <p className="font-bold mt-2">NGƯỜI LẬP</p>
                         <p className="text-xs italic">(Ký, họ tên)</p>
                         <div className="mt-24">
@@ -334,11 +373,17 @@ export const SummaryTable: React.FC<SummaryTableProps> = ({ data, setData }) => 
                         </div>
                     </div>
                     <div>
-                        <EditableCell
-                            value={data.signatureDate}
-                            onChange={v => handleFooterChange('signatureDate', v as string)}
-                            className="text-center"
-                        />
+                        {(() => {
+                            const now = new Date();
+                            const defaultSig = `Ngày ${String(now.getDate()).padStart(2, '0')} tháng ${String(now.getMonth() + 1).padStart(2, '0')} năm ${now.getFullYear()}`;
+                            return (
+                                <EditableCell
+                                    value={(data.signatureDate && data.signatureDate.trim().length > 0) ? data.signatureDate : defaultSig}
+                                    onChange={v => handleFooterChange('signatureDate', v as string)}
+                                    className="text-center"
+                                />
+                            );
+                        })()}
                         <p className="font-bold mt-2">P. TRƯỞNG BP ĐÀO TẠO</p>
                         <p className="text-xs italic">(Ký, họ tên)</p>
                         <div className="mt-24">

@@ -206,19 +206,26 @@ const App: React.FC = () => {
                     if (/1/.test(semester)) return 'Năm 1';
                 }
                 // Tìm ghi chú có chứa thông tin năm học
-                const yearNote = instructors.find(inst => 
-                    inst.note?.includes('Năm 1') || 
-                    inst.note?.includes('Năm 2') ||
-                    inst.note?.includes('Học kỳ 1') ||
-                    inst.note?.includes('Học kỳ 2') ||
-                    inst.note?.includes('Year 1') ||
-                    inst.note?.includes('Year 2')
-                )?.note;
+                const normalizeSemesterText = (text: string): string => {
+                    // Chuẩn hóa các biến thể I/1, II/2, HK I/II
+                    let t = text;
+                    t = t.replace(/HK\s*I\b|Học\s*kỳ\s*I\b/gi, 'Học kỳ 1');
+                    t = t.replace(/HK\s*II\b|Học\s*kỳ\s*II\b/gi, 'Học kỳ 2');
+                    t = t.replace(/Học\s*kỳ\s*0?1\b/gi, 'Học kỳ 1');
+                    t = t.replace(/Học\s*kỳ\s*0?2\b/gi, 'Học kỳ 2');
+                    return t;
+                };
+
+                const yearNote = instructors.find(inst => {
+                    const note = inst.note ? normalizeSemesterText(inst.note) : '';
+                    return note.includes('Năm 1') || note.includes('Năm 2') || note.includes('Học kỳ 1') || note.includes('Học kỳ 2') || note.includes('Year 1') || note.includes('Year 2');
+                })?.note;
                 if (yearNote) {
-                    if (yearNote.includes('Năm 2') || yearNote.includes('Học kỳ 2') || yearNote.includes('Year 2')) {
+                    const nn = normalizeSemesterText(yearNote);
+                    if (nn.includes('Năm 2') || nn.includes('Học kỳ 2') || nn.includes('Year 2')) {
                         return 'Năm 2';
                     }
-                    if (yearNote.includes('Năm 1') || yearNote.includes('Học kỳ 1') || yearNote.includes('Year 1')) {
+                    if (nn.includes('Năm 1') || nn.includes('Học kỳ 1') || nn.includes('Year 1')) {
                         return 'Năm 1';
                     }
                 }
@@ -286,6 +293,9 @@ const App: React.FC = () => {
                 
                 // Xử lý ghi chú - cải thiện để linh hoạt hơn
                 let note = instructor.note || '';
+                // Chuẩn hóa các biến thể học kỳ I/II -> 1/2
+                note = note.replace(/HK\s*I\b|Học\s*kỳ\s*I\b/gi, 'Học kỳ 1');
+                note = note.replace(/HK\s*II\b|Học\s*kỳ\s*II\b/gi, 'Học kỳ 2');
                 if (/học\s*kỳ\s*1/i.test(note)) note = 'Năm 1';
                 if (/học\s*kỳ\s*2/i.test(note)) note = 'Năm 2';
                 if (/học\s*kỳ\s*3/i.test(note)) note = 'Năm 3';
@@ -341,20 +351,39 @@ const App: React.FC = () => {
             
             console.log(`Session ${sessionIndex + 1} final instructors:`, allInstructors);
             
+            // Chuẩn hóa hiển thị số nhóm: luôn là 2 chữ số + " Nhóm"
+            const groupCountDisplay = `${String(groupCountNum).padStart(2, '0')} Nhóm`;
+
             return {
                 id: `entry-${Date.now()}-${Math.random()}`,
                 date: info.date,
                 timeRange: info.time,
-                classInfo: `${info.classId} (${info.groupCount})-Lần ${info.reportSession}`,
+                classInfo: `${info.classId} (${groupCountDisplay})-Lần ${info.reportSession}`,
                 instructors: allInstructors
             };
         });
         
+        // Xác định tháng mới nhất dựa trên ngày của các phiên hợp lệ
+        const parseVietnamDate = (dateStr: string): number => {
+            const m = dateStr.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+            if (!m) return -Infinity;
+            const day = parseInt(m[1], 10);
+            const month = parseInt(m[2], 10) - 1;
+            let year = parseInt(m[3], 10);
+            if (year < 100) year += 2000;
+            return new Date(year, month, day).getTime();
+        };
+
+        const newestDateMs = validInfos
+            .map(i => parseVietnamDate(i.date))
+            .reduce((max, v) => (v > max ? v : max), -Infinity);
+        const newestDate = isFinite(newestDateMs) ? new Date(newestDateMs) : new Date();
+
         const result = {
             id: `summary-${Date.now()}`,
             entries: classEntries,
-            month: new Date().getMonth() + 1,
-            year: new Date().getFullYear(),
+            month: newestDate.getMonth() + 1,
+            year: newestDate.getFullYear(),
             signatureDate: '',
             preparer: '',
             approver: ''

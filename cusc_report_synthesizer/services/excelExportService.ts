@@ -68,8 +68,12 @@ function getGroupCount(classInfo: string): number {
 
 export const exportSummaryToExcel = async (data: SummaryData) => {
   const wb = new ExcelJS.Workbook();
-  const monthStr = String(data.month).padStart(2, '0');
-  const sheetName = `ThongKe_T${monthStr}_${data.year}`;
+  // Dùng tháng/năm hiện tại nếu không được cung cấp
+  const nowForHeader = new Date();
+  const useMonth = data.month || (nowForHeader.getMonth() + 1);
+  const useYear = data.year || nowForHeader.getFullYear();
+  const monthStr = String(useMonth).padStart(2, '0');
+  const sheetName = `ThongKe_T${monthStr}_${useYear}`;
   const ws = wb.addWorksheet(sheetName);
 
   // 🧱 Thiết lập cấu trúc cột & chiều rộng
@@ -133,7 +137,7 @@ export const exportSummaryToExcel = async (data: SummaryData) => {
   const subtitleRow = next();
   subtitleRow.height = 20;
   ws.mergeCells(subtitleRow.number, 1, subtitleRow.number, 5);
-  subtitleRow.getCell(1).value = `THÁNG ${monthStr}-${data.year}`;
+  subtitleRow.getCell(1).value = `THÁNG ${monthStr}-${useYear}`;
   Object.assign(subtitleRow.getCell(1), styles.subtitle);
 
   next(); // spacer
@@ -142,9 +146,9 @@ export const exportSummaryToExcel = async (data: SummaryData) => {
   const noteRow = next();
   ws.mergeCells(noteRow.number, 1, noteRow.number + 2, 5);
   const noteText = 
-    'Ghi chú về cách tính giờ:\n' +
-    '• Giờ chấm đồ án (GV Phản biện): 1.5 giờ * số nhóm (Đối với đồ án Năm 1) hoặc 2.0 giờ * số nhóm (Đối với đồ án Năm 2).\n' +
-    '• Thời gian buổi báo cáo: Giờ bắt đầu tính theo biên bản, giờ kết thúc được điều chỉnh theo quy chế của trung tâm.';
+    'Ghi chú cách tính giờ:\n' +
+    '• Giờ chấm báo cáo: năm 1 = 1.5 × số nhóm; năm 2 = 2 × số nhóm.\n' +
+    '• Giờ bắt đầu theo biên bản, giờ kết thúc cắt lại theo quy chế.';
   noteRow.getCell(1).value = noteText;
   Object.assign(noteRow.getCell(1), styles.note);
   noteRow.getCell(1).border = borderAll;
@@ -174,10 +178,25 @@ export const exportSummaryToExcel = async (data: SummaryData) => {
     gr.getCell(1).border = borderAll;
     gr.getCell(5).border = { right: { style: 'thin' } }; // Right border for merged cell
 
-    // Logic ghi chú - hiển thị notes riêng cho từng dòng
+    // Xác định ghi chú gộp cho phiên (ưu tiên Năm 2/1 hoặc Học kỳ 2/1)
+    const sessionNote = (() => {
+      const normalize = (t: string) => t
+        .replace(/HK\s*I\b|Học\s*kỳ\s*I\b/gi, 'Học kỳ 1')
+        .replace(/HK\s*II\b|Học\s*kỳ\s*II\b/gi, 'Học kỳ 2');
+      const noteText = (entry.instructors.map(i => i.notes || '')).map(normalize).join(' | ');
+      if (/Năm\s*2|Học\s*kỳ\s*2/i.test(noteText)) return 'Năm 2';
+      if (/Năm\s*1|Học\s*kỳ\s*1/i.test(noteText)) return 'Năm 1';
+      return '';
+    })();
+
+    // Ghi nhận dòng bắt đầu để merge cột GHI CHÚ (E)
+    let mergeStartRow = 0;
+    let mergeEndRow = 0;
+
     entry.instructors.forEach((inst, instIndex) => {
       const r = next();
       r.height = 18;
+      if (instIndex === 0) mergeStartRow = r.number;
       // Logic số giờ fallback như cũ
       let hours = inst.hours;
       if ((hours === undefined || hours === null || hours === 0)) {
@@ -198,9 +217,9 @@ export const exportSummaryToExcel = async (data: SummaryData) => {
         }
       }
       
-      // Hiển thị notes riêng cho từng dòng
-      const noteValue = inst.notes || '';
-      
+      // Không ghi chú từng dòng; sẽ gộp sau
+      const noteValue = '';
+
       const vals = [
         inst.stt ?? (instIndex + 1),
         inst.name,
@@ -217,7 +236,17 @@ export const exportSummaryToExcel = async (data: SummaryData) => {
         Object.assign(c, i === 0 || i === 3 ? styles.center : styles.default);
         c.border = borderAll;
       });
+      mergeEndRow = r.number;
     });
+
+    // Gộp ô ghi chú cho cả phiên và căn giữa
+    if (mergeStartRow && mergeEndRow && mergeEndRow >= mergeStartRow) {
+      ws.mergeCells(mergeStartRow, 5, mergeEndRow, 5);
+      const mergedCell = ws.getCell(mergeStartRow, 5);
+      mergedCell.value = sessionNote;
+      Object.assign(mergedCell, styles.center);
+      mergedCell.border = borderAll;
+    }
   });
 
   next(); // spacer
@@ -226,10 +255,14 @@ export const exportSummaryToExcel = async (data: SummaryData) => {
   const sigDateRow = next();
   sigDateRow.height = 18;
   ws.mergeCells(sigDateRow.number, 2, sigDateRow.number, 3);
-  sigDateRow.getCell(2).value = data.signatureDate;
+  // Tự động hiển thị "Ngày .. tháng .. năm .." theo thời điểm hiện tại nếu chưa có
+  const now = new Date();
+  const defaultSig = `Ngày ${String(now.getDate()).padStart(2, '0')} tháng ${String(now.getMonth() + 1).padStart(2, '0')} năm ${now.getFullYear()}`;
+  const sigText = (data.signatureDate && data.signatureDate.trim().length > 0) ? data.signatureDate : defaultSig;
+  sigDateRow.getCell(2).value = sigText;
   Object.assign(sigDateRow.getCell(2), styles.signatureItalic);
   ws.mergeCells(sigDateRow.number, 4, sigDateRow.number, 5);
-  sigDateRow.getCell(4).value = data.signatureDate;
+  sigDateRow.getCell(4).value = sigText;
   Object.assign(sigDateRow.getCell(4), styles.signatureItalic);
   
   const sigTitleRow = next();
