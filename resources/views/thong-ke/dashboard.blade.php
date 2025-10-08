@@ -113,6 +113,60 @@
                 </div>
             </div>
 
+            {{-- Widget Đánh Giá Học Tập --}}
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4>📊 Đánh giá kết quả học tập</h4>
+                            <a href="{{ route('ranking.index') }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-chart-bar"></i> Xem chi tiết
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-6 mb-3">
+                                    <div class="card border-left-primary">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-graduation-cap fa-2x text-primary mb-2"></i>
+                                            <h5>Đánh giá theo lớp</h5>
+                                            <p class="text-muted">Xem kết quả học tập từng lớp</p>
+                                            <a href="{{ route('ranking.index') }}" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-list"></i> Chọn lớp
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 mb-3">
+                                    <div class="card border-left-success">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-star fa-2x text-success mb-2"></i>
+                                            <h5>Sinh viên xuất sắc</h5>
+                                            <p class="text-muted">Danh sách sinh viên có thành tích tốt</p>
+                                            <a href="{{ route('ranking.top') }}" class="btn btn-outline-success btn-sm">
+                                                <i class="fas fa-chart-line"></i> Xem danh sách
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 mb-3">
+                                    <div class="card border-left-info">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-balance-scale fa-2x text-info mb-2"></i>
+                                            <h5>So sánh hiệu suất</h5>
+                                            <p class="text-muted">Phân tích hiệu suất giữa các lớp</p>
+                                            <a href="{{ route('ranking.so-sanh-lop') }}" class="btn btn-outline-info btn-sm">
+                                                <i class="fas fa-analytics"></i> So sánh
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {{-- Chi Tiết Thống Kê --}}
             <div class="row">
 

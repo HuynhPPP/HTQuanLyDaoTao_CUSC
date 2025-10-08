@@ -1,6 +1,0 @@
-{
-  "name": "CUSC_Report_Synthesizer",
-  "description": "An intelligent system to upload, analyze, and synthesize report assignment files into a consolidated summary schedule. Users can review, edit, and export the final schedule.",
-  "requestFramePermissions": [],
-  "prompt": ""
-}

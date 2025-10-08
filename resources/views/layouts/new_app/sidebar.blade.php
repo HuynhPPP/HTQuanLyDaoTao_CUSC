@@ -45,17 +45,26 @@
                 $TienTrinhHocTapActive = request()->routeIs('tien-trinh-hoc-tap.*');
 
                 $dropdownActive =
-                    $nhanSuActive || $donViLopActive || $hanhChinhActive || $DaoTaoActive || $TuyenSinhActive || $TienTrinhHocTapActive;
+                    $nhanSuActive ||
+                    $donViLopActive ||
+                    $hanhChinhActive ||
+                    $DaoTaoActive ||
+                    $TuyenSinhActive ||
+                    $TienTrinhHocTapActive;
 
                 $ThongKeActive = request()->routeIs('thong-ke.*');
+                $RankingActive = request()->routeIs('ranking.*');
+                $CanhBaoActive = request()->routeIs('canh-bao.*');
             @endphp
             @if (session('role') == 'admin')
+                <!-- Thống kê tổng quan -->
                 <li class="dropdown {{ request()->routeIs('thong-ke.dashboard') ? 'active' : '' }}">
                     <a href="{{ route('thong-ke.dashboard') }}" class="nav-link">
                         <i class="fas fa-chart-pie"></i>
                         <span>Thống kê tổng quan</span>
                     </a>
                 </li>
+                <!-- Dữ liệu hệ thống -->
                 <li class="dropdown {{ $dropdownActive ? 'active' : '' }}">
                     <a href="#" class="nav-link has-dropdown"><i class="fas fa-server"></i> <span>Dữ liệu hệ
                             thống</span></a>
@@ -69,43 +78,19 @@
                                 <li class="{{ request()->routeIs('giaovien.*') ? 'active' : '' }}">
                                     <a class="nav-link" href="{{ route('giaovien.index') }}">Giáo viên</a>
                                 </li>
-                                {{-- <li class="{{ request()->routeIs('staff.*') ? 'active' : '' }}">
-                                    <a class="nav-link" href="{{ route('staff.index') }}">Cán bộ</a>
-                                </li> --}}
                             </ul>
                         </li>
                         <li class="dropdown {{ $donViLopActive ? 'active' : '' }}">
                             <a href="#" class="nav-link has-dropdown">Phòng học & Lớp</a>
                             <ul class="dropdown-menu">
-                                {{-- <li class="{{ request()->routeIs('donvi.*') ? 'active' : '' }}">
-                                    <a class="nav-link" href="{{ route('donvi.index') }}">Đơn vị</a>
-                                </li> --}}
                                 <li class="{{ request()->routeIs('phonghoc.*') ? 'active' : '' }}">
                                     <a class="nav-link" href="{{ route('phonghoc.index') }}">Phòng học</a>
                                 </li>
                                 <li class="{{ request()->routeIs('lophoc.*') ? 'active' : '' }}">
                                     <a class="nav-link" href="{{ route('lophoc.index') }}">Lớp học</a>
                                 </li>
-                                {{-- <li class="{{ request()->routeIs('danhsachphong.*') ? 'active' : '' }}">
-                                    <a class="nav-link" href="{{ route('danhsachphong.index') }}">Gán phòng cho lớp</a>
-                                </li> --}}
                             </ul>
                         </li>
-                        {{-- <li class="dropdown {{ $hanhChinhActive ? 'active' : '' }}">
-                            <a href="#" class="nav-link has-dropdown">Hành Chính</a>
-                            <ul class="dropdown-menu">
-                                <li class="{{ request()->routeIs('taphuan.*') ? 'active' : '' }}">
-                                    <a class="nav-link" href="{{ route('taphuan.index') }}">Tập Huấn</a>
-                                </li>
-                                <li class="{{ request()->routeIs('bangcapcanbo.*') ? 'active' : '' }}">
-                                    <a class="nav-link" href="{{ route('bangcapcanbo.index') }}">Bằng Cấp</a>
-                                </li>
-                                <li class="{{ request()->routeIs('hocvi.*') ? 'active' : '' }}">
-                                    <a class="nav-link" href="{{ route('hocvi.index') }}">Học Vị</a>
-                                </li>
-
-                            </ul>
-                        </li> --}}
                         <li class="dropdown {{ $DaoTaoActive ? 'active' : '' }}">
                             <a href="#" class="nav-link has-dropdown">Quản lý đào tạo</a>
                             <ul class="dropdown-menu">
@@ -124,23 +109,32 @@
                                 </li>
                             </ul>
                         </li>
-                        {{-- <li class="dropdown {{ $TuyenSinhActive ? 'active' : '' }}">
-                            <a href="#" class="nav-link has-dropdown">Quản lý tuyển sinh</a>
-                            <ul class="dropdown-menu">
-                                <li class="{{ request()->routeIs('tuyensinh.*') ? 'active' : '' }}">
-                                    <a class="nav-link" href="{{ route('tuyensinh.index') }}">Đợt tuyển sinh</a>
-                                </li>
-                            </ul>
-                        </li> --}}
                     </ul>
                 </li>
+                <!-- Đánh giá học tập -->
+                <li class="dropdown {{ $RankingActive ? 'active' : '' }}">
+                    <a href="{{ route('ranking.index') }}" class="nav-link">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Đánh giá học tập</span>
+                    </a>
+                </li>
+                <!-- Hệ thống cảnh báo -->
+                <li class="dropdown {{ $CanhBaoActive ? 'active' : '' }}">
+                    <a href="{{ route('canh-bao.index') }}" class="nav-link">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Hệ thống cảnh báo</span>
+                    </a>
+                </li>
+                <!-- Hệ thống lập lịch -->
                 <li class="dropdown {{ request()->routeIs('home') ? 'active' : '' }}">
                     <a href="{{ route('home') }}" class="nav-link">
                         <i class="far fa-calendar-alt"></i>
-                        <span>Hệ thống lập lịch</span>
+                        <span>Tạo báo cáo & lập lịch</span>
                     </a>
                 </li>
             @endif
+
+            <!-- Giảng viên -->
             @if (session('role') == 'teacher')
                 <li class="dropdown">
                     <a href="{{ route('giaovien.schedule') }}" class="nav-link">
@@ -160,7 +154,15 @@
                         <span>Nhập điểm thi</span>
                     </a>
                 </li>
+                <li class="dropdown {{ request()->routeIs('giaovien.thamdu.*') ? 'active' : '' }}">
+                    <a href="{{ route('giaovien.thamdu.index') }}" class="nav-link">
+                        <i class="fas fa-user-check"></i>
+                        <span>Thống kê tham dự</span>
+                    </a>
+                </li>
             @endif
+
+            <!-- Sinh viên -->
             @if (session('role') == 'student')
                 <li class="dropdown {{ request()->routeIs('student.calendar.list') ? 'active' : '' }}">
                     <a href="{{ route('student.calendar.list') }}" class="nav-link">

@@ -38,6 +38,8 @@ use App\Http\Controllers\Front\GiaoVien\CalendarTeacherController;
 use App\Http\Controllers\Front\GiaoVien\MainTeacherController;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Controllers\TienTrinhHocTapController;
+use App\Http\Controllers\RankingController;
+use App\Http\Controllers\CanhBaoController;
 
 // Trang chủ, giới thiệu, login, logout, captcha: ai cũng truy cập được
 Route::get('/', [MainController::class, 'about'])->name('about');
@@ -389,6 +391,30 @@ Route::middleware([RoleMiddleware::class . ':admin,staff'])->group(function () {
         Route::post('/cap-nhat-tu-diem-thi', [TienTrinhHocTapController::class, 'capNhatTuDiemThi'])->name('cap-nhat-tu-diem-thi');
         Route::post('/xuat-bao-cao', [TienTrinhHocTapController::class, 'xuatBaoCao'])->name('xuat-bao-cao');
     });
+
+    // Hệ thống xếp hạng học tập
+    Route::prefix('ranking')->group(function () {
+        Route::get('/', [RankingController::class, 'index'])->name('ranking.index');
+        Route::get('/lop/{MaLop}', [RankingController::class, 'xepHangLop'])->name('ranking.lop');
+        Route::get('/top-sinh-vien', [RankingController::class, 'topSinhVien'])->name('ranking.top');
+        Route::get('/chuong-trinh/{MaChuongTrinh}', [RankingController::class, 'xepHangChuongTrinh'])->name('ranking.chuong-trinh');
+        Route::get('/so-sanh-lop', [RankingController::class, 'soSanhLop'])->name('ranking.so-sanh-lop');
+        
+        // API routes
+        Route::get('/api/lop/{MaLop}', [RankingController::class, 'apiXepHangLop'])->name('ranking.api.lop');
+        Route::get('/api/top-sinh-vien/{limit?}', [RankingController::class, 'apiTopSinhVien'])->name('ranking.api.top');
+    });
+
+    // Hệ thống cảnh báo đơn giản
+    Route::prefix('canh-bao')->name('canh-bao.')->group(function () {
+        Route::get('/', [CanhBaoController::class, 'index'])->name('index');
+        Route::post('/chay', [CanhBaoController::class, 'chayCanhBao'])->name('chay');
+        Route::get('/chi-tiet/{id}', [CanhBaoController::class, 'chiTiet'])->name('chi-tiet');
+        
+        // API routes
+        Route::get('/api', [CanhBaoController::class, 'apiCanhBao'])->name('api');
+        Route::get('/api/thong-ke', [CanhBaoController::class, 'apiThongKe'])->name('api.thong-ke');
+    });
 });
 
 Route::middleware([RoleMiddleware::class . ':teacher'])->group(function () {
@@ -418,6 +444,16 @@ Route::middleware([RoleMiddleware::class . ':teacher'])->group(function () {
 
     Route::get('/giao-vien/lich-giang-day', [CalendarTeacherController::class, 'teacherSchedule'])->name('giaovien.schedule');
     Route::get('/giao-vien/lich-giang-day/export', [CalendarTeacherController::class, 'exportSchedule'])->name('giaovien.calendar.export');
+
+    // Thống kê tham dự lớp học
+    Route::prefix('giao-vien/tham-du')->name('giaovien.thamdu.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Front\GiaoVien\ThamDuController::class, 'index'])->name('index');
+        Route::get('/lop/{maLop}', [App\Http\Controllers\Front\GiaoVien\ThamDuController::class, 'chiTietLop'])->name('chitiet-lop');
+        Route::get('/lop/{maLop}/sinh-vien/{maSV}', [App\Http\Controllers\Front\GiaoVien\ThamDuController::class, 'chiTietSinhVien'])->name('chitiet-sinhvien');
+        Route::get('/lop/{maLop}/mon-hoc/{maMH}', [App\Http\Controllers\Front\GiaoVien\ThamDuController::class, 'chiTietMonHoc'])->name('chitiet-mon-hoc');
+        Route::get('/lop/{maLop}/xuat-bao-cao', [App\Http\Controllers\Front\GiaoVien\ThamDuController::class, 'xuatBaoCao'])->name('xuat-bao-cao');
+        Route::get('/api/thong-ke', [App\Http\Controllers\Front\GiaoVien\ThamDuController::class, 'apiThongKe'])->name('api-thong-ke');
+    });
 });
 
 Route::middleware([RoleMiddleware::class . ':student'])->group(function () {
@@ -443,9 +479,6 @@ Route::middleware([RoleMiddleware::class . ':student'])->group(function () {
             ->name('tracuu.index');
     });
 });
-
-
-
 
 
 

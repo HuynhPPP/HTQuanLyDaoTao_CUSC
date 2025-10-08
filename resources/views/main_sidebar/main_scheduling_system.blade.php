@@ -3,7 +3,7 @@
 @section('main-content')
     <section class="section">
         <div class="section-header">
-            <h1>Quản lý đào tạo</h1>
+            <h1>Hệ thống lập bảng báo cáo & lập lịch</h1>
         </div>
         <div class="row">
             @foreach ($functions as $func)
